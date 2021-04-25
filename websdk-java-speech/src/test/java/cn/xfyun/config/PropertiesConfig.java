@@ -27,12 +27,12 @@ public class PropertiesConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        appId = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getProperty("appId") : properties.getProperty("appId");
-        apiSecret = StringUtils.isNullOrEmpty(properties.getProperty("apiSecret")) ? System.getProperty("apiSecret") : properties.getProperty("apiSecret");
-        apiKey = StringUtils.isNullOrEmpty(properties.getProperty("apiKey")) ? System.getProperty("apiKey") : properties.getProperty("apiKey");
+        appId = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getenv("appId") : properties.getProperty("appId");
+        apiSecret = StringUtils.isNullOrEmpty(properties.getProperty("apiSecret")) ? System.getenv("apiSecret") : properties.getProperty("apiSecret");
+        apiKey = StringUtils.isNullOrEmpty(properties.getProperty("apiKey")) ? System.getenv("apiKey") : properties.getProperty("apiKey");
 
-        lfasrAppId = StringUtils.isNullOrEmpty(properties.getProperty("lfasrAppId")) ? System.getProperty("lfasrAppId") : properties.getProperty("lfasrAppId");
-        secretKey = StringUtils.isNullOrEmpty(properties.getProperty("secretKey")) ? System.getProperty("secretKey") : properties.getProperty("secretKey");
+        lfasrAppId = StringUtils.isNullOrEmpty(properties.getProperty("lfasrAppId")) ? System.getenv("lfasrAppId") : properties.getProperty("lfasrAppId");
+        secretKey = StringUtils.isNullOrEmpty(properties.getProperty("secretKey")) ? System.getenv("secretKey") : properties.getProperty("secretKey");
     }
 
     public static String getAppId() {
