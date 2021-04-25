@@ -45,8 +45,8 @@ public class LfasrClientHttpTest {
         while (!"9".equals(status) && i < 5) {
             i++;
             LfasrMessage message = lfasrClient.getProgress(taskId);
-            assertNotNull(message.getData());
             System.out.println(message.toString());
+            assertEquals(message.getOk(), 0);
             Gson gson = new Gson();
             Map<String, String> map = gson.fromJson(message.getData(), new TypeToken<Map<String, String>>() {
             }.getType());
@@ -56,6 +56,8 @@ public class LfasrClientHttpTest {
         //4、获取结果
         LfasrMessage result = lfasrClient.getResult(taskId);
         System.out.println("转写结果: \n" + result.getData());
-        assertEquals(result.getOk(), 0);
+        if(result.getData() != null){
+            assertEquals(result.getOk(), 0);
+        }
     }
 }
