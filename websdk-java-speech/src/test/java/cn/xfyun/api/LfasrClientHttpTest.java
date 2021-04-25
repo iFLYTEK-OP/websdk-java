@@ -1,9 +1,9 @@
 package cn.xfyun.api;
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.model.response.lfasr.LfasrMessage;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
 
 import java.security.SignatureException;
@@ -39,7 +39,11 @@ public class LfasrClientHttpTest {
 
         //3、查看转写进度
         String status = "0";
-        while (!"9".equals(status)) {
+
+        //5次以后结束循环
+        int i = 0;
+        while (!"9".equals(status) && i < 5) {
+            i++;
             LfasrMessage message = lfasrClient.getProgress(taskId);
             assertNotNull(message.getData());
             System.out.println(message.toString());
