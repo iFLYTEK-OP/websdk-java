@@ -187,7 +187,7 @@ public class IatClientTest {
     }
 
     @Test
-    public void testErrorSignature() throws MalformedURLException, SignatureException, FileNotFoundException, InterruptedException {
+    public void testErrorSignature() throws MalformedURLException, SignatureException, FileNotFoundException {
         IatClient iatClient = new IatClient.Builder()
                 .signature("123456", apiKey, apiSecret)
                 .build();
@@ -207,7 +207,11 @@ public class IatClientTest {
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
         });
-        Thread.sleep(5000);
+        try {
+            Thread.sleep(5000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Test
