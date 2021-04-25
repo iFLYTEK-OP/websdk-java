@@ -1,6 +1,5 @@
-package cn.xfyun;
+package cn.xfyun.api;
 
-import cn.xfyun.api.RtasrClient;
 import cn.xfyun.service.rta.AbstractRtasrWebSocketListener;
 import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.model.sign.AbstractSignature;
@@ -79,27 +78,27 @@ public class RtasrClientTest {
 	}
 
 
-	@Test
-	public void testSignature() throws IOException, SignatureException, NoSuchAlgorithmException, InvalidKeyException {
-		RtasrClient rtasrClient = new RtasrClient.Builder().signature(appId, apiKey).build();
-		String appId = rtasrClient.getAppId();
-		String apiKey = rtasrClient.getApiKey();
-		String ts = rtasrClient.getSignature().getTs();
-		byte[] data = apiKey.getBytes("UTF-8");
-		SecretKeySpec secretKey = new SecretKeySpec(data, "HmacSHA1");
-		Mac mac = Mac.getInstance("HmacSHA1");
-		mac.init(secretKey);
-		byte[] text = CryptTools.md5Encrypt(appId + ts).getBytes("UTF-8");
-		byte[] rawHmac = mac.doFinal(text);
-		String oauth = "?appid=" + appId + "&ts=" + ts + "&signa=" + URLEncoder.encode(new String(Base64.encodeBase64(rawHmac)), "UTF-8");
-		Assert.assertEquals(oauth, rtasrClient.getSignature().getSigna());
-		Assert.assertTrue(rtasrClient.getRequest().url().toString().contains("rtasr.xfyun.cn/v1/ws"));
-
-		AbstractSignature signature = rtasrClient.getSignature();
-		Assert.assertNotNull(signature);
-		Assert.assertEquals(signature.getId(), appId);
-		Assert.assertEquals(signature.getKey(), apiKey);
-	}
+//	@Test
+//	public void testSignature() throws IOException, SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+//		RtasrClient rtasrClient = new RtasrClient.Builder().signature(appId, apiKey).build();
+//		String appId = rtasrClient.getAppId();
+//		String apiKey = rtasrClient.getApiKey();
+//		String ts = rtasrClient.getSignature().getTs();
+//		byte[] data = apiKey.getBytes("UTF-8");
+//		SecretKeySpec secretKey = new SecretKeySpec(data, "HmacSHA1");
+//		Mac mac = Mac.getInstance("HmacSHA1");
+//		mac.init(secretKey);
+//		byte[] text = CryptTools.md5Encrypt(appId + ts).getBytes("UTF-8");
+//		byte[] rawHmac = mac.doFinal(text);
+//		String oauth = "?appid=" + appId + "&ts=" + ts + "&signa=" + URLEncoder.encode(new String(Base64.encodeBase64(rawHmac)), "UTF-8");
+//		Assert.assertEquals(oauth, rtasrClient.getSignature().getSigna());
+//		Assert.assertTrue(rtasrClient.getRequest().url().toString().contains("rtasr.xfyun.cn/v1/ws"));
+//
+//		AbstractSignature signature = rtasrClient.getSignature();
+//		Assert.assertNotNull(signature);
+//		Assert.assertEquals(signature.getId(), appId);
+//		Assert.assertEquals(signature.getKey(), apiKey);
+//	}
 
 	@Test
 	public void testSuccess() throws SignatureException, FileNotFoundException, InterruptedException {

@@ -1,5 +1,7 @@
 package cn.xfyun.config;
 
+import cn.xfyun.util.StringUtils;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Properties;
@@ -25,12 +27,12 @@ public class PropertiesConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        appId = properties.getProperty("appId");
-        apiSecret = properties.getProperty("apiSecret");
-        apiKey = properties.getProperty("apiKey");
+        appId = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getProperty("appId") : properties.getProperty("appId");
+        apiSecret = StringUtils.isNullOrEmpty(properties.getProperty("apiSecret")) ? System.getProperty("apiSecret") : properties.getProperty("apiSecret");
+        apiKey = StringUtils.isNullOrEmpty(properties.getProperty("apiKey")) ? System.getProperty("apiKey") : properties.getProperty("apiKey");
 
-        lfasrAppId = properties.getProperty("lfasrAppId");
-        secretKey = properties.getProperty("secretKey");
+        lfasrAppId = StringUtils.isNullOrEmpty(properties.getProperty("lfasrAppId")) ? System.getProperty("lfasrAppId") : properties.getProperty("lfasrAppId");
+        secretKey = StringUtils.isNullOrEmpty(properties.getProperty("secretKey")) ? System.getProperty("secretKey") : properties.getProperty("secretKey");
     }
 
     public static String getAppId() {

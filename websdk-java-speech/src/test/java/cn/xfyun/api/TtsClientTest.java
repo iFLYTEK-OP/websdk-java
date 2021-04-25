@@ -1,6 +1,7 @@
-package cn.xfyun;
+package cn.xfyun.api;
 
 import cn.xfyun.api.TtsClient;
+import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.model.response.TtsResponse;
 import cn.xfyun.service.tts.AbstractTtsWebSocketListener;
 import okhttp3.Response;
@@ -15,7 +16,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
-import java.util.Properties;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -25,27 +25,9 @@ import static org.junit.Assert.assertNull;
 @PowerMockIgnore({"cn.xfyun.util.HttpConnector", "javax.crypto.*", "javax.net.ssl.*"})
 public class TtsClientTest {
 
-    private static final String appId;
-    private static final String apiKey;
-    private static final String apiSecret;
-
-    /**
-     * 从配置文件中获得所需属性
-     */
-    static {
-        Properties properties = new Properties();
-        try {
-            //替换成自己的配置文件
-            properties.load(new FileInputStream("src/test/resources/app-test.properties"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        appId = properties.getProperty("appId");
-        apiKey = properties.getProperty("apiKey");
-        apiSecret = properties.getProperty("apiSecret");
-    }
-
-    Properties prop = new Properties();
+    private static final String appId = PropertiesConfig.getAppId();
+    private static final String apiKey = PropertiesConfig.getApiKey();
+    private static final String apiSecret = PropertiesConfig.getApiSecret();
 
     @Test
     public void defaultParamTest() throws MalformedURLException, SignatureException {
@@ -72,7 +54,7 @@ public class TtsClientTest {
     }
 
 
-    @Test
+//    @Test
     public void test() throws MalformedURLException, SignatureException, FileNotFoundException, UnsupportedEncodingException {
         //正常流程
         TtsClient ttsClient1 = new TtsClient.Builder()

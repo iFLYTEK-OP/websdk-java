@@ -1,4 +1,4 @@
-package cn.xfyun;
+package cn.xfyun.api;
 
 import cn.xfyun.api.IseClient;
 import cn.xfyun.common.IseConstant;
