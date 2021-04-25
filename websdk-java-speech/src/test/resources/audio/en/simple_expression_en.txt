@@ -1,0 +1,128 @@
+[choice]
+1. What should I do with the topic?
+2. How can I deal with the topic?
+3. What can I do with the topic?
+4. What should I do with this subject?
+5. How can I deal with this subject?
+6. What can I do with this subject?
+7. What should I do with this title?
+8. How can I deal with this title?
+9. What can I do with this title?
+10. What should I manage this title?
+11. How can I manage this title?
+12. What can I manage this title?
+13. What should I manage this subject?
+14. How can I manage this subject?
+15. What should I manage this topic?
+16. How can I manage this topic?
+17. What can I manage this topic?
+18. How should I deal with this topic?
+19. How should I deal with this title?
+20. How should I deal with this subject?
+[keywords]
+what do topic | how deal topic | what do subject | how deal subject | what do title | how deal title | what manage title | how manage title | what manage subject | how manage subject | what manage topic | how manage topic
+[script]
+W: Congratulations, Tom! You gave a wonderful speech yesterday morning.
+M: Thank you Mary.
+W: I will give a speech next Wednesday in my English class, but I am not fully prepared yet. Can you give me some advice?
+M: Sure. What's your topic?
+W: Well, I am always concerned about environmental issues, so my topic is Environmental Protection.
+M: This is a good topic, but it is too big.
+[question]
+我该如何处理这个题目？
+[macanswer]
+You have to narrow down your topic. For example, you may talk about what college students can do to protect our environment. After that, you need to do some research to collect relevant information as much as possible. Then, you should organize your arguments well. Logical organization is very important.
+[lmtext]
+What should I do with the topic?
+How can I deal with the topic?
+What can I do with the topic?
+What should I do with this subject?
+How can I deal with this subject?
+What can I do with this subject?
+What should I do with this title?
+How can I deal with this title?
+What can I do with this title?
+What should I manage this title?
+How can I manage this title?
+What can I manage this title?
+What should I manage this subject?
+How can I manage this subject?
+What should I manage this topic?
+How can I manage this topic?
+What can I manage this topic?
+How should I deal with this topic?
+How should I deal with this title?
+How should I deal with this subject?
+Congratulations, Tom! You gave a wonderful speech yesterday morning.
+Thank you Mary.
+I will give a speech next Wednesday in my English class, but I am not fully prepared yet. Can you give me some advice?
+Sure. What's your topic?
+Well, I am always concerned about environmental issues, so my topic is Environmental Protection.
+This is a good topic, but it is too big.
+You have to narrow down your topic. For example, you may talk about what college students can do to protect our environment. After that, you need to do some research to collect relevant information as much as possible. Then, you should organize your arguments well. Logical organization is very important.
+Can you tell me how to do that?
+Can you tell me how?
+Can you tell me what I can do?
+Can you tell me how to do it?
+Can you tell me how I should do?
+Can you tell me how to deal with it?
+Can you tell me how to manage that?
+Can you tell me how to manage it?
+Can you tell me what to do?
+Could you tell me how to do that?
+Could you tell what to do?
+You need to see relationships among ideas clearly. You may use words like ""firstly"", ""secondly"" and ""thirdly"" to help you indicate the development of your ideas. Also, do remember to provide evidence for your arguments. For instance, data and research findings can make your speech more convincing. In order to give a good speech, you've also got to know some public speaking skills.
+What are these skills?
+What skills?
+What are those skills?
+Well, there are so many. It is very important to have good control of the pace of your speech. Don't speak too fast or too slowly. Use appropriate body language to better express yourself. For example, standing straight and having eye contact with the audience will give an impression of self confidence.
+Yesterday morning.
+Tom gave his speech yesterday morning.
+He gave his speech yesterday morning.
+Tom gave his lecture yesterday morning.
+He gave his lecture yesterday morning.
+The topic is too big.
+The topic is too broad.
+The topic is too general.
+The topic is very big.
+The topic is very broad.
+The topic is very general.
+Very big.
+Very broad.
+Very general.
+The topic is too obscure.
+Too obscure.
+To collect relevant information as much as possible.
+To collect related information as much as possible.
+To collect relative information as much as possible.
+Collect relevant information as much as possible.
+Collect related information as much as possible.
+Collect relative information as much as possible.
+To collect relevant messages as many as possible.
+To collect related messages as many as possible.
+To collect relative messages as many as possible.
+To gather relevant information as much as possible.
+To gather related information as much as possible.
+To gather relative information as much as possible.
+Gather relevant information as much as possible.
+Gather related information as much as possible.
+Gather relative information as much as possible.
+To gather relevant messages as many as possible.
+To gather related messages as many as possible.
+To gather relative messages as many as possible.
+More convincing.
+Convincing.
+Data and research findings can make the speech more convincing.
+Make the speech more convincing.
+Data and research findings can convince people.
+They can convince people.
+Convince people.
+Stand straight and have eye contact.
+Stand straight and keep eye contact.
+Stand straight and maintain eye contact.
+To stand straight and have eye contact.
+To stand straight and keep eye contact.
+To stand straight and maintain eye contact.
+To stand straight and have eye contact can make us look more confident.
+To stand straight and keep eye contact can make us look more confident.
+To stand straight and maintain eye contact can make us look more confident.

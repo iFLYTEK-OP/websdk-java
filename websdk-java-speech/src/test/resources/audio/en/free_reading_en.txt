@@ -1,0 +1,6 @@
+[topic]
+1. hello
+1.1. hello world
+[vocabulary]
+hello/hh ax - 'l ow | hh eh - 'l ow/
+world/w er r l d | w er l d/
