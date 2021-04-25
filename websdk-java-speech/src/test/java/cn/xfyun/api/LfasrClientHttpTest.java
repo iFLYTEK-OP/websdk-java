@@ -5,7 +5,6 @@ import cn.xfyun.model.response.lfasr.LfasrMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import org.junit.Test;
-
 import java.security.SignatureException;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
