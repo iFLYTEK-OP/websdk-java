@@ -43,8 +43,7 @@
                 <artifactId>javancss-maven-plugin</artifactId>
                 <configuration>
                     <excludes>
-                        <exclude>HttpConnector.java</exclude>
-                        <exclude>**/foobar.java</exclude>
+                        <exclude>**/HttpConnector.java</exclude>
                     </excludes>
                 </configuration>
             </plugin>
