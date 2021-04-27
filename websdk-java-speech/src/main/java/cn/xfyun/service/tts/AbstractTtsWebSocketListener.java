@@ -122,7 +122,6 @@ public abstract class AbstractTtsWebSocketListener extends WebSocketListener {
     public void onClosed(WebSocket webSocket, int code, String reason) {
         super.onClosed(webSocket, code, reason);
         logger.info("socket closed");
-        System.exit(0);
     }
 
     @Override

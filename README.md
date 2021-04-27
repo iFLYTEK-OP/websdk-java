@@ -17,4 +17,5 @@
 ### 使用
 
 [1、非实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/main/lfasr.md)
+[2、在线语音合成文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/main/tts.md)
 
