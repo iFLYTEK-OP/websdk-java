@@ -7,6 +7,7 @@ import okhttp3.WebSocket;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.Base64;
 
@@ -107,6 +108,16 @@ public class TtsClient extends WebSocketClient {
      */
     private String rdn;
 
+    /**
+     * 引擎类型，可选值：
+     * aisound（普通效果）
+     * intp65（中文）
+     * intp65_en（英文）
+     * mtts（小语种，需配合小语种发音人使用）
+     * x（优化效果）
+     * 默认为intp65
+     */
+    private String ent;
 
     public TtsClient(Builder builder) {
         this.okHttpClient = new OkHttpClient().newBuilder().build();
@@ -125,6 +136,7 @@ public class TtsClient extends WebSocketClient {
         this.tte = builder.tte;
         this.reg = builder.reg;
         this.rdn = builder.rdn;
+        this.ent = builder.ent;
     }
 
     public String getAppId() {
@@ -187,6 +199,10 @@ public class TtsClient extends WebSocketClient {
         return rdn;
     }
 
+    public String getEnt() {
+        return ent;
+    }
+
     public OkHttpClient getClient() {
         return okHttpClient;
     }
@@ -206,9 +222,9 @@ public class TtsClient extends WebSocketClient {
         createWebSocketConnect(webSocketListener);
         //小语种必须使用UNICODE编码，合成的文本需使用utf16小端的编码方式
         if (MINOR_LANGUAGE.equals(tte)) {
-            text = Base64.getEncoder().encodeToString(text.getBytes("UTF-16LE"));
+            text = Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_16LE));
         } else {
-            text = Base64.getEncoder().encodeToString(text.getBytes("utf8"));
+            text = Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
         }
         //发送数据
         JsonObject frame = new JsonObject();
@@ -229,6 +245,8 @@ public class TtsClient extends WebSocketClient {
         business.addProperty("tte", tte);
         business.addProperty("reg", reg);
         business.addProperty("rdn", rdn);
+        business.addProperty("ent", ent);
+
         //填充data
         data.addProperty("text", text);
         //固定位2
@@ -256,7 +274,7 @@ public class TtsClient extends WebSocketClient {
         private String tte = "UTF8";
         private String reg = "0";
         private String rdn = "0";
-
+        private String ent = "intp65";
         public TtsClient build() throws MalformedURLException, SignatureException {
             return new TtsClient(this);
         }
@@ -329,6 +347,11 @@ public class TtsClient extends WebSocketClient {
 
         public TtsClient.Builder rdn(String rdn) {
             this.rdn = rdn;
+            return this;
+        }
+
+        public TtsClient.Builder ent(String ent) {
+            this.ent = ent;
             return this;
         }
     }
