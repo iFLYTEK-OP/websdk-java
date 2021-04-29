@@ -74,7 +74,7 @@ public abstract class AbstractTtsWebSocketListener extends WebSocketListener {
     @Override
     public void onMessage(WebSocket webSocket, String text) {
         super.onMessage(webSocket, text);
-        logger.info("receive=>" + text);
+        logger.debug("receive=>" + text);
         TtsResponse resp = JSON.fromJson(text, TtsResponse.class);
         if (resp != null) {
             if (resp.getCode() != 0) {
@@ -101,7 +101,9 @@ public abstract class AbstractTtsWebSocketListener extends WebSocketListener {
                     }
                     webSocket.close(1000, "");
                     try {
-                        os.close();
+                        if (os != null) {
+                            os.close();
+                        }
                     } catch (IOException e) {
                         System.out.println(e.getMessage());
                         onBusinessFail(webSocket, new TtsResponse(-1, "IO Exception", null, null));
