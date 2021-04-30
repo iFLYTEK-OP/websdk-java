@@ -8,7 +8,7 @@
     <artifactId>websdk-java-parent</artifactId>
     <name>websdk-java-parent</name>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>1.0.3</version>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

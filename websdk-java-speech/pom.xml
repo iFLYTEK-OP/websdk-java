@@ -8,7 +8,7 @@
     <parent>
         <artifactId>websdk-java-parent</artifactId>
         <groupId>cn.xfyun</groupId>
-        <version>1.0.0</version>
+        <version>1.0.3</version>
         <relativePath>../websdk-java-parent/pom.xml</relativePath>
     </parent>
 
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>cn.xfyun</groupId>
             <artifactId>websdk-java-speech-core</artifactId>
-            <version>1.0.0</version>
+            <version>1.0.3</version>
         </dependency>
     </dependencies>
 
