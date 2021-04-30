@@ -6,7 +6,7 @@
     <artifactId>websdk-java</artifactId>
     <name>websdk-java</name>
     <packaging>pom</packaging>
-    <version>1.0.0</version>
+    <version>1.0.3</version>
     <url>https://github.com/iFLYTEK-OP</url>
     <description>speech SDK</description>
 
