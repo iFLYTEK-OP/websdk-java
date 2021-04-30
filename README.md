@@ -16,13 +16,16 @@
 
 ### 使用
 
-[1、非实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/main/LFASR.md)
+[1、非实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/LFASR.md)
 
 
-[2、实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/main/RTASR.md)
+[2、实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/RTASR.md)
 
 
-[3、在线语音合成文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/main/TTS.md)
+[3、在线语音合成文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/TTS.md)
+
+
+[4、语音听写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/IAT.md)
 
 
 
