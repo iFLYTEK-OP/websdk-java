@@ -28,4 +28,5 @@
 [4、语音听写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/IAT.md)
 
 
+[5、语音评测文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/ISE.md)
 

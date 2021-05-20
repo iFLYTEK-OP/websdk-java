@@ -3,7 +3,7 @@
 **示例代码**
 
 ```java
-import com.iflytek.api.IatClient;
+import cn.xfyun.api.IatClient;
 
 // 设置听写参数,这里的appid,apiKey,apiSecret是在开放平台控制台获得
 IatClient iatClient = new IatClient.Builder()
