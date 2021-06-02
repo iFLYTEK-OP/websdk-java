@@ -29,12 +29,13 @@ public class IgrClientTest {
     @Test
     public void testSuccess() throws FileNotFoundException, SignatureException, MalformedURLException {
         IgrClient igrClient = new IgrClient.Builder()
-                .signature("", "", "").build();
-        File file = new File("");
+                .signature("586d6ce4", "8ceb8d92faf3277f9ab346d40e5b51c4", "NTE3NjQ3OWIwMDljM2ViZTNlZmI5YTM5").build();
+        File file = new File("D:\\work\\workspace\\data\\voice\\test1.mp3");
         igrClient.send(file, new AbstractIgrWebSocketListener(){
             @Override
             public void onSuccess(WebSocket webSocket, IgrResponseData iseResponseData) {
-
+                System.out.println("sid:" + iseResponseData.getSid());
+                webSocket.close(1000, "");
             }
 
             @Override

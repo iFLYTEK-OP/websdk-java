@@ -1,7 +1,6 @@
 package cn.xfyun.api;
 
 import cn.xfyun.common.IgrConstant;
-import cn.xfyun.common.IseConstant;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.Hmac256Signature;
 import cn.xfyun.service.igr.IgrSendTask;
@@ -244,7 +243,7 @@ public class IgrClient extends WebSocketClient {
         private int rate;
         private String audio;
 
-        private String hostUrl = IseConstant.HOST_URL;
+        private String hostUrl = IgrConstant.HOST_URL;
         private String apiKey;
         private String apiSecret;
         private Hmac256Signature signature;
