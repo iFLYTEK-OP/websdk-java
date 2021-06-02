@@ -1,9 +1,8 @@
 package cn.xfyun.api;
 
-import cn.xfyun.api.IseClient;
 import cn.xfyun.common.IseConstant;
 import cn.xfyun.config.PropertiesConfig;
-import cn.xfyun.model.ise.IseResponseData;
+import cn.xfyun.model.response.ise.*;
 import cn.xfyun.service.ise.AbstractIseWebSocketListener;
 import com.google.gson.JsonObject;
 import cn.xfyun.model.sign.AbstractSignature;
