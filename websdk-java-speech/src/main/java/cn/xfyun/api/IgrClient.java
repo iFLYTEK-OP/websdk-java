@@ -61,10 +61,10 @@ public class IgrClient extends WebSocketClient {
     private String aue;
 
     /**
-     * 音频采样率 16000/8000
+     * 音频采样率 16000/8000,必填，设置个兜底值8000
      */
-    private int rate;
-    private Integer frameSize;
+    private int rate = 8000;
+    private Integer frameSize = IgrConstant.IGR_SIZE_FRAME;
 
     public IgrClient(Builder builder) {
         this.appId = builder.appId;
@@ -75,7 +75,14 @@ public class IgrClient extends WebSocketClient {
         this.common = builder.common;
         this.business = builder.business;
 
+        this.apiKey = builder.apiKey;
+        this.apiSecret = builder.apiSecret;
+        this.originHostUrl = builder.hostUrl;
+
+        this.request = builder.request;
         this.frameSize = builder.frameSize;
+        this.okHttpClient = new OkHttpClient().newBuilder().build();
+        this.signature = builder.signature;
         this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
         this.callTimeout = builder.callTimeout;
         this.connectTimeout = builder.connectTimeout;
@@ -93,7 +100,7 @@ public class IgrClient extends WebSocketClient {
      * @throws FileNotFoundException
      */
     public void send(File file, WebSocketListener webSocketListener) throws FileNotFoundException, MalformedURLException, SignatureException {
-        createWebSocketConnect(webSocketListener);
+        //createWebSocketConnect(webSocketListener);
         FileInputStream fileInputStream = new FileInputStream(file);
         send(fileInputStream, webSocketListener);
     }
@@ -104,8 +111,8 @@ public class IgrClient extends WebSocketClient {
      * @param data 发送的文件
      * @throws FileNotFoundException
      */
-    public void send(String data, WebSocketListener webSocketListener) throws FileNotFoundException, MalformedURLException, SignatureException {
-        createWebSocketConnect(webSocketListener);
+    public void send(String data, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+        //createWebSocketConnect(webSocketListener);
         InputStream inputStream = new ByteArrayInputStream(data.getBytes());
         send(inputStream, webSocketListener);
     }
@@ -241,13 +248,15 @@ public class IgrClient extends WebSocketClient {
         private String ent;
         private String aue;
         private int rate;
-        private String audio;
 
         private String hostUrl = IgrConstant.HOST_URL;
         private String apiKey;
         private String apiSecret;
         private Hmac256Signature signature;
         private Integer frameSize = IgrConstant.IGR_SIZE_FRAME;
+
+        private Request request;
+        private OkHttpClient client;
 
         // websocket相关
         boolean retryOnConnectionFailure = true;
@@ -321,6 +330,17 @@ public class IgrClient extends WebSocketClient {
 
         public IgrClient.Builder frameSize(Integer frameSize) {
             this.frameSize = frameSize;
+            return this;
+        }
+
+        public IgrClient.Builder addRequest(Request request) {
+            this.request = request;
+            return this;
+        }
+
+
+        public IgrClient.Builder addClient(OkHttpClient client) {
+            this.client = client;
             return this;
         }
 

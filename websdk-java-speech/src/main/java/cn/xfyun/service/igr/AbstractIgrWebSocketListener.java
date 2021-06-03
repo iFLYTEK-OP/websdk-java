@@ -34,6 +34,7 @@ public abstract class AbstractIgrWebSocketListener extends WebSocketListener {
     @Override
     public void onMessage(WebSocket webSocket, String text) {
         super.onMessage(webSocket, text);
+
         IgrResponseData resp = JSON.fromJson(text, IgrResponseData.class);
         if (resp != null) {
             if (resp.getCode() != 0) {
@@ -41,7 +42,7 @@ public abstract class AbstractIgrWebSocketListener extends WebSocketListener {
                 return;
             }
 
-            if (resp.getData() != null && resp.getData().getStatus() == IgrConstant.CODE_STATUS_SUCCESS) {
+            if (resp.getData() != null && resp.getData().get("status").getAsInt() == IgrConstant.CODE_STATUS_SUCCESS) {
                 onSuccess(webSocket, resp);
                 webSocket.close(1000, "");
             }

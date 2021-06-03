@@ -5,9 +5,11 @@ import cn.xfyun.common.IgrConstant;
 import cn.xfyun.model.request.igr.IgrRequest;
 import cn.xfyun.service.common.AbstractTimedTask;
 import cn.xfyun.util.StringUtils;
+import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 
 import java.util.Base64;
+import java.util.Objects;
 
 /**
  * @author: <flhong2@iflytek.com>
@@ -60,6 +62,7 @@ public class IgrSendTask extends AbstractTimedTask {
                 JsonObject business = new JsonObject();
                 business.addProperty("ent", igrClient.getEnt());
                 business.addProperty("aue", igrClient.getAue());
+                business.addProperty("rate", igrClient.getRate());
 
                 data.addProperty("status", STATUS_FIRST_FRAME);
                 data.addProperty("audio", ENCODER.encodeToString(contents));
@@ -71,6 +74,7 @@ public class IgrSendTask extends AbstractTimedTask {
 
                 //发送完第一帧,改变status 为 1
                 status = STATUS_CONTINUED_FRAME;
+
                 return StringUtils.gson.toJson(firstFrame);
 
             case STATUS_CONTINUED_FRAME:
@@ -85,7 +89,12 @@ public class IgrSendTask extends AbstractTimedTask {
             case STATUS_LAST_FRAME:
                 IgrRequest lastFrame = new IgrRequest();
                 data.addProperty("status", STATUS_LAST_FRAME);
-                data.addProperty("audio", ENCODER.encodeToString(contents));
+
+                if (Objects.isNull(contents)){
+                    data.addProperty("audio", "");
+                }else {
+                    data.addProperty("audio", ENCODER.encodeToString(contents));
+                }
                 lastFrame.setData(data);
                 return StringUtils.gson.toJson(lastFrame);
 

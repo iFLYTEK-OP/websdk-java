@@ -1,5 +1,7 @@
 package cn.xfyun.model.response.igr;
 
+import com.google.gson.JsonObject;
+
 /**
  * @author: <flhong2@iflytek.com>
  * @description: 接口返回消息体
@@ -10,7 +12,7 @@ public class IgrResponseData {
     private int code;
     private String message;
     private String sid;
-    private IgrInnerData data;
+    private JsonObject data;
     public int getCode() {
         return code;
     }
@@ -20,41 +22,7 @@ public class IgrResponseData {
     public String getSid() {
         return sid;
     }
-    public IgrInnerData getData() {
+    public JsonObject getData() {
         return data;
-    }
-
-    /**
-     * 消息体内部的data消息体
-     */
-    public class IgrInnerData {
-        private int status;
-        private ResultBody result;
-
-        public int getStatus() {
-            return status;
-        }
-
-        public ResultBody getResult() {
-            return result;
-        }
-    }
-
-    private class ResultBody {
-        private Age age;
-        private Gender gender;
-    }
-
-    private class Age {
-        private String age_type;
-        private String child;
-        private String middle;
-        private String old;
-    }
-
-    private class Gender {
-        private String gender_type;
-        private String female;
-        private String male;
     }
 }
