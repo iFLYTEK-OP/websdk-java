@@ -6,7 +6,6 @@ import cn.xfyun.model.response.igr.IgrResponseData;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.service.igr.AbstractIgrWebSocketListener;
 import cn.xfyun.util.AuthUtil;
-import com.google.gson.JsonParser;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import org.junit.Assert;
@@ -18,8 +17,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
@@ -27,6 +25,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author: <flhong2@iflytek.com>
@@ -42,6 +41,59 @@ public class IgrClientTest {
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getApiKey();
     private static final String apiSecret = PropertiesConfig.getApiSecret();
+    String filePath = "src/test/resources/audio/cn/read_sentence_cn.pcm";
+
+    @Test
+    public void defaultParamTest() {
+        IgrClient igrClient = new IgrClient.Builder()
+                .signature(appId, apiKey, apiSecret)
+                .build();
+
+        Assert.assertEquals(igrClient.getEnt(), "igr");
+        Assert.assertEquals(igrClient.getApiKey(), apiKey);
+        Assert.assertEquals(igrClient.getAppId(), appId);
+        Assert.assertEquals(igrClient.getApiSecret(), apiSecret);
+
+        Assert.assertEquals(igrClient.getCallTimeout(), 0);
+        Assert.assertEquals(igrClient.getConnectTimeout(), 10000);
+        Assert.assertEquals(igrClient.getReadTimeout(), 10000);
+        Assert.assertEquals(igrClient.getWriteTimeout(), 10000);
+        Assert.assertEquals(igrClient.getPingInterval(), 0);
+        Assert.assertTrue(igrClient.isRetryOnConnectionFailure());
+
+        Assert.assertNotNull(igrClient.getClient());
+    }
+
+    @Test
+    public void testParamBuild() {
+        IgrClient igrClient = new IgrClient.Builder()
+                .signature(appId, apiKey, apiSecret)
+                .ent("igr").aue("raw").rate(8000)
+                .frameSize(40)
+                .callTimeout(2000, TimeUnit.MILLISECONDS)
+                .connectTimeout(2000, TimeUnit.MILLISECONDS)
+                .readTimeout(2000, TimeUnit.MILLISECONDS)
+                .writeTimeout(2000, TimeUnit.MILLISECONDS)
+                .pingInterval(10, TimeUnit.MILLISECONDS)
+                .retryOnConnectionFailure(false)
+                .build();
+
+        Assert.assertEquals(igrClient.getApiKey(), apiKey);
+        Assert.assertEquals(igrClient.getAppId(), appId);
+        Assert.assertEquals(igrClient.getApiSecret(), apiSecret);
+        Assert.assertEquals(igrClient.getEnt(), "igr");
+        Assert.assertEquals(igrClient.getAue(), "raw");
+        Assert.assertEquals(igrClient.getRate(), 8000);
+
+        Assert.assertTrue(igrClient.getFrameSize() == 40);
+        Assert.assertEquals(igrClient.getCallTimeout(), 2000);
+        Assert.assertEquals(igrClient.getConnectTimeout(), 2000);
+        Assert.assertEquals(igrClient.getReadTimeout(), 2000);
+        Assert.assertEquals(igrClient.getWriteTimeout(), 2000);
+        Assert.assertEquals(igrClient.getPingInterval(), 10);
+        Assert.assertFalse(igrClient.isRetryOnConnectionFailure());
+
+    }
 
     @Test
     public void testSignature() throws MalformedURLException, SignatureException, NoSuchAlgorithmException, InvalidKeyException {
@@ -78,11 +130,31 @@ public class IgrClientTest {
     }
 
     @Test
-    public void testSuccess() throws FileNotFoundException, SignatureException, MalformedURLException, InterruptedException {
+    public void testErrorSignature() throws FileNotFoundException, SignatureException, MalformedURLException, InterruptedException {
+        IgrClient igrClient = new IgrClient.Builder()
+                .signature("123456", apiKey, apiSecret)
+                .build();
+        File file = new File(filePath);
+        igrClient.send(file, new AbstractIgrWebSocketListener() {
+            @Override
+            public void onSuccess(WebSocket webSocket, IgrResponseData igrResponseData) {
+
+            }
+
+            @Override
+            public void onFail(WebSocket webSocket, Throwable t, Response response) {
+                System.out.println("授权失败了!");
+            }
+        });
+        Thread.sleep(50000);
+    }
+
+    @Test
+    public void testSuccessByFile() throws FileNotFoundException, SignatureException, MalformedURLException, InterruptedException {
         IgrClient igrClient = new IgrClient.Builder()
                 .signature(appId, apiKey, apiSecret).ent("igr").aue("raw").rate(8000)
                 .build();
-        File file = new File("D:\\work\\workspace\\project\\websdk-java-speech\\websdk-java-speech\\src\\test\\resources\\audio\\cn\\read_sentence_cn.pcm");
+        File file = new File(filePath);
         igrClient.send(file, new AbstractIgrWebSocketListener(){
             @Override
             public void onSuccess(WebSocket webSocket, IgrResponseData igrResponseData) {
@@ -97,6 +169,110 @@ public class IgrClientTest {
             }
         });
         Thread.sleep(50000);
+    }
+
+    @Test
+    public void testSuccessByStream() throws FileNotFoundException, SignatureException, MalformedURLException, InterruptedException {
+        IgrClient igrClient = new IgrClient.Builder()
+                .signature(appId, apiKey, apiSecret).ent("igr").aue("raw").rate(8000)
+                .build();
+        File file = new File(filePath);
+        igrClient.send(new FileInputStream(file), new AbstractIgrWebSocketListener(){
+            @Override
+            public void onSuccess(WebSocket webSocket, IgrResponseData igrResponseData) {
+                System.out.println("sid:" + igrResponseData.getSid());
+                System.out.println("识别结果为: " + igrResponseData.getData());
+                webSocket.close(1000, "");
+            }
+
+            @Override
+            public void onFail(WebSocket webSocket, Throwable t, Response response) {
+
+            }
+        });
+        Thread.sleep(50000);
+    }
+
+    @Test
+    public void testSuccessByString() throws FileNotFoundException, SignatureException, MalformedURLException, InterruptedException {
+        IgrClient igrClient = new IgrClient.Builder()
+                .signature(appId, apiKey, apiSecret).ent("igr").aue("raw").rate(8000)
+                .build();
+        InputStream inputStream = new FileInputStream(filePath);
+        String datas = "";
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int i=-1;
+        try {
+            while((i=inputStream.read())!=-1){
+                baos.write(i);
+            }
+            datas = baos.toString();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        igrClient.send(datas, new AbstractIgrWebSocketListener(){
+            @Override
+            public void onSuccess(WebSocket webSocket, IgrResponseData igrResponseData) {
+                System.out.println("sid:" + igrResponseData.getSid());
+                System.out.println("识别结果为: " + igrResponseData.getData());
+                webSocket.close(1000, "");
+            }
+
+            @Override
+            public void onFail(WebSocket webSocket, Throwable t, Response response) {
+
+            }
+        });
+        Thread.sleep(50000);
+    }
+
+    @Test
+    public void testSuccessByBytes() throws IOException, InterruptedException, SignatureException {
+        IgrClient igrClient = new IgrClient.Builder()
+                .signature(appId, apiKey, apiSecret).ent("igr").aue("raw").rate(8000)
+                .build();
+        InputStream inputStream = new FileInputStream(filePath);
+        byte[] buffer = new byte[102400];
+        int len = inputStream.read(buffer);
+        System.out.println("len:" + len);
+
+        igrClient.send(buffer, inputStream, new AbstractIgrWebSocketListener(){
+            @Override
+            public void onSuccess(WebSocket webSocket, IgrResponseData igrResponseData) {
+                System.out.println("sid:" + igrResponseData.getSid());
+                System.out.println("识别结果为: " + igrResponseData.getData());
+                webSocket.close(1000, "");
+            }
+
+            @Override
+            public void onFail(WebSocket webSocket, Throwable t, Response response) {
+
+            }
+        });
+        Thread.sleep(20000);
+    }
+
+    @Test
+    public void testSendNull() throws MalformedURLException, SignatureException, InterruptedException {
+        IgrClient igrClient = new IgrClient.Builder()
+                .signature(appId, apiKey, apiSecret).ent("igr").aue("raw").rate(8000)
+                .build();
+        FileInputStream stream = null;
+        igrClient.send(stream, new AbstractIgrWebSocketListener(){
+            @Override
+            public void onSuccess(WebSocket webSocket, IgrResponseData igrResponseData) {
+                System.out.println("sid:" + igrResponseData.getSid());
+                System.out.println("识别结果为: " + igrResponseData.getData());
+                webSocket.close(1000, "");
+            }
+
+            @Override
+            public void onFail(WebSocket webSocket, Throwable t, Response response) {
+
+            }
+        });
+        Thread.sleep(20000);
     }
 
 }

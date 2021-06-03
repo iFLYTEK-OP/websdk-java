@@ -283,7 +283,7 @@ public class IseClientTest {
         byte[] buffer = new byte[1024000];
         int len = inputStream.read(buffer);
         System.out.println("len:" + len);
-        AbstractIseWebSocketListener iatWebSocketListener = new AbstractIseWebSocketListener() {
+        AbstractIseWebSocketListener iseWebSocketListener = new AbstractIseWebSocketListener() {
             @Override
             public void onSuccess(WebSocket webSocket, IseResponseData iseResponseData) {
                 Assert.assertNotNull(iseResponseData);
@@ -304,7 +304,7 @@ public class IseClientTest {
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
         };
-        iseClient.send(buffer, inputStream, iatWebSocketListener);
+        iseClient.send(buffer, inputStream, iseWebSocketListener);
         Thread.sleep(15000);
     }
 

@@ -48,7 +48,7 @@ public class IgrClient extends WebSocketClient {
     /**
      * 引擎类型，目前仅支持igr
      */
-    private String ent = "igr";
+    private String ent;
 
     /**
      * 音频格式
@@ -61,9 +61,9 @@ public class IgrClient extends WebSocketClient {
     private String aue;
 
     /**
-     * 音频采样率 16000/8000,必填，设置个兜底值8000
+     * 音频采样率 16000/8000,必填
      */
-    private int rate = 8000;
+    private int rate;
     private Integer frameSize = IgrConstant.IGR_SIZE_FRAME;
 
     public IgrClient(Builder builder) {
@@ -245,9 +245,10 @@ public class IgrClient extends WebSocketClient {
         private JsonObject business = new JsonObject();
 
         private String appId;
-        private String ent;
+        private String ent = "igr";
         private String aue;
-        private int rate;
+        //设置个兜底值8000
+        private int rate = 8000;
 
         private String hostUrl = IgrConstant.HOST_URL;
         private String apiKey;
