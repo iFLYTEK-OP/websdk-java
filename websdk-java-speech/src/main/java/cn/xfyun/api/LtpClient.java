@@ -60,7 +60,8 @@ public class LtpClient {
         /**
          * 构建请求头
          */
-        Map<String, String> header = BuildHttpHeader.buildHttpHeader(type, apiKey, appId);
+        String param = "{\"type\":\"" + type +"\"}";
+        Map<String, String> header = BuildHttpHeader.buildHttpHeader(param, apiKey, appId);
         Map<String, String> body = new HashMap<>();
         body.put("text", text);
         String result = connector.post(hostUrl, header, body);

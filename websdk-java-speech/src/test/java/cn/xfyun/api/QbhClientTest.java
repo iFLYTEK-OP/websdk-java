@@ -24,10 +24,10 @@ public class QbhClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getApiKey();
-    String filePath = "D:\\work\\workspace\\data\\voice\\output\\cut_0.wav";
+    String filePath = "src/test/resources/audio/cn/read_sentence_cn.pcm";
 
     @Test
-    public void defaultParamTest() throws IOException, HttpException {
+    public void defaultParamTest() {
         QbhClient qbhClient = new QbhClient.Builder()
                 .appId(appId).apiKey(apiKey)
                 .build();
@@ -43,7 +43,7 @@ public class QbhClientTest {
     @Test
     public void testParamBuild() {
         QbhClient qbhClient = new QbhClient.Builder()
-                .appId(appId).apiKey(apiKey)
+                .appId(appId).apiKey(apiKey).maxConnections(100).connTimeout(800).retryCount(3)
                 .aue("aac").engineType("afs").sampleRate("8000")
                 .build();
 
@@ -52,6 +52,7 @@ public class QbhClientTest {
         Assert.assertEquals(qbhClient.getAue(), "aac");
         Assert.assertEquals(qbhClient.getEngineType(), "afs");
         Assert.assertEquals(qbhClient.getSampleRate(), "8000");
+
     }
 
     @Test

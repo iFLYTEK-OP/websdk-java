@@ -15,15 +15,15 @@ public class BuildHttpHeader {
 
     /**
      * 构建自然语言处理能力请求头
-     * @param type 类型
+     * @param param 待处理的数据
      * @param apiKey apiKey
      * @param appId appId
      * @return 请求头
      * @throws UnsupportedEncodingException 异常
      */
-    public static Map<String, String> buildHttpHeader(String type, String apiKey, String appId) throws UnsupportedEncodingException {
+    public static Map<String, String> buildHttpHeader(String param, String apiKey, String appId) throws UnsupportedEncodingException {
         String curTime = System.currentTimeMillis() / 1000L + "";
-        String param = "{\"type\":\"" + type +"\"}";
+
         String paramBase64 = new String(Base64.encodeBase64(param.getBytes("UTF-8")));
         String checkSum = DigestUtils.md5Hex(apiKey + curTime + paramBase64);
         Map<String, String> header = new HashMap<String, String>();

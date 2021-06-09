@@ -1,18 +1,14 @@
 package cn.xfyun.api;
 
 import cn.xfyun.exception.HttpException;
+import cn.xfyun.model.header.BuildHttpHeader;
 import cn.xfyun.util.HttpConnector;
 import com.google.gson.JsonObject;
-import org.apache.commons.codec.binary.Base64;
-import org.apache.commons.codec.digest.DigestUtils;
 import sun.misc.IOUtils;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -102,31 +98,14 @@ public class QbhClient {
      */
     public String send(byte[] bytes) throws IOException, HttpException {
 
-        String result = connector.postByBytes(this.hostUrl, buildHttpHeader(), bytes);
+        String result = connector.postByBytes(this.hostUrl, BuildHttpHeader.buildHttpHeader(paramJson.toString(), apiKey, appId), bytes);
         return result;
     }
 
     public String send() throws IOException, HttpException {
 
-        String result = connector.postByBytes(this.hostUrl, buildHttpHeader(), null);
+        String result = connector.postByBytes(this.hostUrl, BuildHttpHeader.buildHttpHeader(paramJson.toString(), apiKey, appId), null);
         return result;
-    }
-
-    /**
-     * 组装http请求头
-     */
-    private Map<String, String> buildHttpHeader() {
-        String curTime = "" + System.currentTimeMillis() / 1000L;
-
-        String paramBase64 = new String(Base64.encodeBase64(paramJson.toString().getBytes(StandardCharsets.UTF_8)));
-        String checkSum = DigestUtils.md5Hex(this.apiKey + curTime + paramBase64);
-        Map<String, String> header = new HashMap<String, String>(5);
-        header.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-        header.put("X-Param", paramBase64);
-        header.put("X-CurTime", curTime);
-        header.put("X-CheckSum", checkSum);
-        header.put("X-Appid", this.appId);
-        return header;
     }
 
     public String getHostUrl() {
