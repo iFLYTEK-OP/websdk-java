@@ -31,6 +31,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * TODO
@@ -89,6 +90,17 @@ public class HttpConnector {
 
     public String post(String url, Map<String, String> param) throws HttpException, IOException {
         HttpPost httpPost = new HttpPost(url);
+        httpPost.setEntity(new UrlEncodedFormEntity(convertMapToPair(param), Consts.UTF_8));
+        return doExecute(httpPost, Consts.UTF_8.toString());
+    }
+
+    public String post(String url, Map<String, String> header, Map<String, String> param) throws HttpException, IOException {
+        HttpPost httpPost = new HttpPost(url);
+        //setHeader,添加头文件
+        Set<String> keys = header.keySet();
+        for (String key : keys) {
+            httpPost.setHeader(key, header.get(key));
+        }
         httpPost.setEntity(new UrlEncodedFormEntity(convertMapToPair(param), Consts.UTF_8));
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
