@@ -115,7 +115,7 @@ public class QbhClient {
     /**
      * 组装http请求头
      */
-    private Map<String, String> buildHttpHeader() throws UnsupportedEncodingException {
+    private Map<String, String> buildHttpHeader() {
         String curTime = "" + System.currentTimeMillis() / 1000L;
 
         String paramBase64 = new String(Base64.encodeBase64(paramJson.toString().getBytes(StandardCharsets.UTF_8)));
@@ -173,9 +173,21 @@ public class QbhClient {
         private String audioUrl;
 
         private HttpConnector connector;
+        /**
+         * 最大连接数
+         */
         private Integer maxConnections = 50;
+        /**
+         *  建立连接的超时时间
+         */
         private Integer connTimeout = 10000;
+        /**
+         * 读数据包的超时时间
+         */
         private Integer soTimeout = 30000;
+        /**
+         *  重试次数
+         */
         private Integer retryCount = 3;
 
         public QbhClient build() {
