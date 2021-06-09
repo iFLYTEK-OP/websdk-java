@@ -162,19 +162,19 @@ public class IgrClient extends WebSocketClient {
         executorService.submit(igrSendTask);
     }
 
-    public String getAppId(){
+    public String getAppId() {
         return this.appId;
     }
 
-    public String getEnt(){
+    public String getEnt() {
         return this.ent;
     }
 
-    public String getAue(){
+    public String getAue() {
         return this.aue;
     }
 
-    public int getRate(){
+    public int getRate() {
         return this.rate;
     }
 
@@ -267,7 +267,7 @@ public class IgrClient extends WebSocketClient {
         int writeTimeout = 10000;
         int pingInterval = 0;
 
-        public IgrClient build(){
+        public IgrClient build() {
             return new IgrClient(this);
         }
 

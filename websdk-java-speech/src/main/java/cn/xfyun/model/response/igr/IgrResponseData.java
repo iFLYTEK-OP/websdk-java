@@ -13,15 +13,19 @@ public class IgrResponseData {
     private String message;
     private String sid;
     private JsonObject data;
+
     public int getCode() {
         return code;
     }
+
     public String getMessage() {
         return message;
     }
+
     public String getSid() {
         return sid;
     }
+
     public JsonObject getData() {
         return data;
     }

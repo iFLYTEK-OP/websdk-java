@@ -1,11 +1,9 @@
 package cn.xfyun.service.igr;
 
 import cn.xfyun.api.IgrClient;
-import cn.xfyun.common.IgrConstant;
 import cn.xfyun.model.request.igr.IgrRequest;
 import cn.xfyun.service.common.AbstractTimedTask;
 import cn.xfyun.util.StringUtils;
-import com.google.common.base.Strings;
 import com.google.gson.JsonObject;
 
 import java.util.Base64;
@@ -90,9 +88,9 @@ public class IgrSendTask extends AbstractTimedTask {
                 IgrRequest lastFrame = new IgrRequest();
                 data.addProperty("status", STATUS_LAST_FRAME);
 
-                if (Objects.isNull(contents)){
+                if (Objects.isNull(contents)) {
                     data.addProperty("audio", "");
-                }else {
+                } else {
                     data.addProperty("audio", ENCODER.encodeToString(contents));
                 }
                 lastFrame.setData(data);
@@ -104,7 +102,7 @@ public class IgrSendTask extends AbstractTimedTask {
     }
 
     private IgrClient getIgrClient() {
-        if (igrClient == null){
+        if (igrClient == null) {
             return igrClient = (IgrClient) webSocketClient;
         }
 

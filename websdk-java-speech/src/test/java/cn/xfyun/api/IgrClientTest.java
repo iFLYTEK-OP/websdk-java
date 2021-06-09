@@ -21,6 +21,7 @@ import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
@@ -111,7 +112,7 @@ public class IgrClientTest {
         StringBuilder builder = new StringBuilder("host: ").append(url.getHost()).append("\n").//
                 append("date: ").append(ts).append("\n").//
                 append("GET ").append(url.getPath()).append(" HTTP/1.1");
-        Charset charset = Charset.forName("UTF-8");
+        Charset charset = StandardCharsets.UTF_8;
         Mac mac = Mac.getInstance("hmacsha256");
         SecretKeySpec spec = new SecretKeySpec(apiSecret.getBytes(charset), "hmacsha256");
         mac.init(spec);
@@ -155,7 +156,7 @@ public class IgrClientTest {
                 .signature(appId, apiKey, apiSecret).ent("igr").aue("raw").rate(8000)
                 .build();
         File file = new File(filePath);
-        igrClient.send(file, new AbstractIgrWebSocketListener(){
+        igrClient.send(file, new AbstractIgrWebSocketListener() {
             @Override
             public void onSuccess(WebSocket webSocket, IgrResponseData igrResponseData) {
                 System.out.println("sid:" + igrResponseData.getSid());
@@ -177,7 +178,7 @@ public class IgrClientTest {
                 .signature(appId, apiKey, apiSecret).ent("igr").aue("raw").rate(8000)
                 .build();
         File file = new File(filePath);
-        igrClient.send(new FileInputStream(file), new AbstractIgrWebSocketListener(){
+        igrClient.send(new FileInputStream(file), new AbstractIgrWebSocketListener() {
             @Override
             public void onSuccess(WebSocket webSocket, IgrResponseData igrResponseData) {
                 System.out.println("sid:" + igrResponseData.getSid());
@@ -190,7 +191,7 @@ public class IgrClientTest {
 
             }
         });
-        Thread.sleep(50000);
+        Thread.sleep(10000);
     }
 
     @Test
@@ -201,9 +202,9 @@ public class IgrClientTest {
         InputStream inputStream = new FileInputStream(filePath);
         String datas = "";
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        int i=-1;
+        int i = -1;
         try {
-            while((i=inputStream.read())!=-1){
+            while ((i = inputStream.read()) != -1) {
                 baos.write(i);
             }
             datas = baos.toString();
@@ -211,7 +212,7 @@ public class IgrClientTest {
             e.printStackTrace();
         }
 
-        igrClient.send(datas, new AbstractIgrWebSocketListener(){
+        igrClient.send(datas, new AbstractIgrWebSocketListener() {
             @Override
             public void onSuccess(WebSocket webSocket, IgrResponseData igrResponseData) {
                 System.out.println("sid:" + igrResponseData.getSid());
@@ -224,7 +225,7 @@ public class IgrClientTest {
 
             }
         });
-        Thread.sleep(50000);
+        Thread.sleep(10000);
     }
 
     @Test
@@ -237,7 +238,7 @@ public class IgrClientTest {
         int len = inputStream.read(buffer);
         System.out.println("len:" + len);
 
-        igrClient.send(buffer, inputStream, new AbstractIgrWebSocketListener(){
+        igrClient.send(buffer, null, new AbstractIgrWebSocketListener() {
             @Override
             public void onSuccess(WebSocket webSocket, IgrResponseData igrResponseData) {
                 System.out.println("sid:" + igrResponseData.getSid());
@@ -250,7 +251,7 @@ public class IgrClientTest {
 
             }
         });
-        Thread.sleep(20000);
+        Thread.sleep(10000);
     }
 
     @Test
@@ -259,7 +260,7 @@ public class IgrClientTest {
                 .signature(appId, apiKey, apiSecret).ent("igr").aue("raw").rate(8000)
                 .build();
         FileInputStream stream = null;
-        igrClient.send(stream, new AbstractIgrWebSocketListener(){
+        igrClient.send(stream, new AbstractIgrWebSocketListener() {
             @Override
             public void onSuccess(WebSocket webSocket, IgrResponseData igrResponseData) {
                 System.out.println("sid:" + igrResponseData.getSid());
@@ -272,7 +273,7 @@ public class IgrClientTest {
 
             }
         });
-        Thread.sleep(20000);
+        Thread.sleep(10000);
     }
 
 }
