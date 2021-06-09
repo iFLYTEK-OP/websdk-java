@@ -1,5 +1,6 @@
 package cn.xfyun.api;
 
+import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.model.response.ltp.LtpResponse;
 import org.junit.Assert;
 import org.junit.Test;
@@ -16,8 +17,8 @@ import static org.junit.Assert.assertEquals;
 @PowerMockIgnore("cn.xfyun.util.HttpConnector")
 public class LtpClientTest {
 
-    private static final String appId = "6e144f5c";
-    private static final String apiKey = "bfd4d93899b8c65e7168377570caf0b7";
+    private static final String appId = PropertiesConfig.getAppId();
+    private static final String apiKey = PropertiesConfig.getLtpKey();
 
     /**
      * 测试参数设置
