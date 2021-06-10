@@ -4,7 +4,6 @@ import cn.xfyun.common.IgrConstant;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.Hmac256Signature;
 import cn.xfyun.service.igr.IgrSendTask;
-import cn.xfyun.service.ise.IseSendTask;
 import com.google.gson.JsonObject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -132,7 +131,7 @@ public class IgrClient extends WebSocketClient {
 
         // 数据发送任务
         IgrSendTask igrSendTask = new IgrSendTask();
-        new IseSendTask.Builder()
+        new IgrSendTask.Builder()
                 .inputStream(inputStream)
                 .webSocketClient(this)
                 .build(igrSendTask);

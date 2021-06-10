@@ -25,12 +25,12 @@ public class QbhClient {
     private String hostUrl;
 
     /**
-     * 应用ID,控制台获区
+     * 应用ID,控制台获取
      */
     private String appId;
 
     /**
-     * 应用Key,控制台获区
+     * 应用Key,控制台获取
      */
     private String apiKey;
 
