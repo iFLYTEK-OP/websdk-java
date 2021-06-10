@@ -1,8 +1,8 @@
-package cn.xfyun.service.ise;
+package cn.xfyun.service.igr;
 
-import cn.xfyun.model.response.ise.IseResponseData;
+import cn.xfyun.common.IgrConstant;
+import cn.xfyun.model.response.igr.IgrResponseData;
 import com.google.gson.Gson;
-import cn.xfyun.common.IseConstant;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
@@ -13,41 +13,39 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 
 /**
- * @version 1.0
  * @author: <flhong2@iflytek.com>
- * @description: 语音评测服务层
- * @create: 2021-03-17 19:46
+ * @description: 性别年龄识别服务层
+ * @version: v1.0
+ * @create: 2021-06-02 15:14
  **/
-public abstract class AbstractIseWebSocketListener extends WebSocketListener {
-
+public abstract class AbstractIgrWebSocketListener extends WebSocketListener {
     public static final Gson JSON = new Gson();
-    private static final Logger logger = LoggerFactory.getLogger(AbstractIseWebSocketListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractIgrWebSocketListener.class);
 
-    public AbstractIseWebSocketListener() {
+    public AbstractIgrWebSocketListener() {
 
     }
 
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
         super.onOpen(webSocket, response);
-
     }
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
         super.onMessage(webSocket, text);
-        IseResponseData resp = JSON.fromJson(text, IseResponseData.class);
+
+        IgrResponseData resp = JSON.fromJson(text, IgrResponseData.class);
         if (resp != null) {
             if (resp.getCode() != 0) {
                 logger.error("errorCode:{},  errorMessage:{}, sid:{}, 错误码查询链接：https://www.xfyun.cn/document/error-code", resp.getCode(), resp.getMessage(), resp.getSid());
                 return;
             }
 
-            if (resp.getData() != null && resp.getData().getStatus() == IseConstant.CODE_STATUS_SUCCESS) {
+            if (resp.getData() != null && resp.getData().get("status").getAsInt() == IgrConstant.CODE_STATUS_SUCCESS) {
                 onSuccess(webSocket, resp);
                 webSocket.close(1000, "");
             }
-
         }
     }
 
@@ -78,7 +76,7 @@ public abstract class AbstractIseWebSocketListener extends WebSocketListener {
      * @param webSocket
      * @param iseResponseData
      */
-    public abstract void onSuccess(WebSocket webSocket, IseResponseData iseResponseData);
+    public abstract void onSuccess(WebSocket webSocket, IgrResponseData iseResponseData);
 
     /**
      * fail
@@ -88,5 +86,4 @@ public abstract class AbstractIseWebSocketListener extends WebSocketListener {
      * @param response
      */
     public abstract void onFail(WebSocket webSocket, Throwable t, Response response);
-
 }
