@@ -11,6 +11,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
@@ -28,10 +29,7 @@ import javax.net.ssl.SSLException;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * TODO
@@ -91,6 +89,18 @@ public class HttpConnector {
     public String post(String url, Map<String, String> param) throws HttpException, IOException {
         HttpPost httpPost = new HttpPost(url);
         httpPost.setEntity(new UrlEncodedFormEntity(convertMapToPair(param), Consts.UTF_8));
+        return doExecute(httpPost, Consts.UTF_8.toString());
+    }
+
+    public String postByBytes(String url, Map<String, String> param, byte[] bytes) throws HttpException, IOException {
+        HttpPost httpPost = new HttpPost(url);
+        // 设置 header
+        for (String key : param.keySet()) {
+            httpPost.setHeader(key, param.get(key));
+        }
+        if (Objects.nonNull(bytes)){
+            httpPost.setEntity(new ByteArrayEntity(bytes));
+        }
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
 
