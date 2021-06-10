@@ -4,14 +4,16 @@ import cn.xfyun.exception.HttpException;
 import cn.xfyun.model.header.BuildHttpHeader;
 import cn.xfyun.util.HttpConnector;
 import com.google.gson.JsonObject;
+import org.apache.commons.codec.binary.Base64;
 import sun.misc.IOUtils;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -117,36 +119,34 @@ public class CommonIseClient {
 
     public String send(File file) throws IOException, HttpException {
         byte[] bytes = Files.readAllBytes(Paths.get(file.getPath()));
-        return send(bytes);
+        this.audio = new String(Base64.encodeBase64(bytes), "UTF-8");
+        return send();
     }
 
     public String send(String data) throws IOException, HttpException {
-        InputStream inputStream = new ByteArrayInputStream(data.getBytes());
-        return send(inputStream);
+        this.audio = data;
+        return send();
     }
 
     public String send(InputStream inputStream) throws IOException, HttpException {
         byte[] bytes = IOUtils.readFully(inputStream, -1, true);
-        return send(bytes);
+        this.audio = new String(Base64.encodeBase64(bytes), "UTF-8");
+        return send();
     }
 
     /**
      * 发送数据到服务端
      *
-     * @param bytes
      * @return
      * @throws IOException
      * @throws HttpException
      */
-    public String send(byte[] bytes) throws IOException, HttpException {
-
-        String result = connector.postByBytes(this.hostUrl, BuildHttpHeader.buildHttpHeader(paramJson.toString(), apiKey, appId), bytes);
-        return result;
-    }
-
     public String send() throws IOException, HttpException {
 
-        String result = connector.postByBytes(this.hostUrl, BuildHttpHeader.buildHttpHeader(paramJson.toString(), apiKey, appId), null);
+        Map<String,String> param = new HashMap<>();
+        param.put("audio", audio);
+        param.put("text", text);
+        String result = connector.post(this.hostUrl, BuildHttpHeader.buildHttpHeader(paramJson.toString(), apiKey, appId), param);
         return result;
     }
 
