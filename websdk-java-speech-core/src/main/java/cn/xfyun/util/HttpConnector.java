@@ -11,7 +11,9 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
+import org.apache.http.entity.AbstractHttpEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -31,6 +33,7 @@ import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 
 /**
  * TODO
@@ -93,6 +96,14 @@ public class HttpConnector {
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
 
+    public String post(String url, String param) throws IOException, HttpException {
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.addHeader("Content-Type", "application/json;charset=utf-8");
+        StringEntity httpEntity = new StringEntity(param, ContentType.APPLICATION_JSON);
+        httpPost.setEntity(httpEntity);
+        return doExecute(httpPost, Consts.UTF_8.toString());
+    }
+
     public String post(String url, Map<String, String> param, byte[] body) throws HttpException, IOException {
         HttpPost httpPost = new HttpPost(url);
         MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create();
@@ -116,7 +127,7 @@ public class HttpConnector {
             int statusCode = response.getStatusLine().getStatusCode();
             if (statusCode != HttpStatus.SC_OK) {
                 log.warn("request: " + requestBase.getURI() + ", status: " + statusCode);
-                throw new HttpException(requestBase.getURI() + "请求异常");
+                throw new HttpException(response.toString());
             }
             result = (charset == null) ? EntityUtils.toString(response.getEntity()) : EntityUtils.toString(response.getEntity(), charset);
         } finally {

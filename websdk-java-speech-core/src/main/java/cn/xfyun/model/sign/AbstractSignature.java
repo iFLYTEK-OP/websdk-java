@@ -1,5 +1,7 @@
 package cn.xfyun.model.sign;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.security.SignatureException;
 
 /**
@@ -71,6 +73,18 @@ public abstract class AbstractSignature {
      * @throws SignatureException
      */
     public abstract String getSigna() throws SignatureException;
+
+    public String generateOriginSign() throws SignatureException {
+        try {
+            URL url = new URL(this.getUrl());
+
+            return "host: " + url.getHost() + "\n" +
+                    "date: " + this.getTs() + "\n" +
+                    "GET " + url.getPath() + " HTTP/1.1";
+        } catch (MalformedURLException e) {
+            throw new SignatureException("MalformedURLException:" + e.getMessage());
+        }
+    }
 
 
     public String getId() {

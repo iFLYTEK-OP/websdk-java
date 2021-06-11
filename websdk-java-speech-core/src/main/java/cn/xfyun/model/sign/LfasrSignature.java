@@ -46,6 +46,7 @@ public class LfasrSignature extends AbstractSignature {
      *
      * @throws NoSuchAlgorithmException
      */
+    @Override
     public String generateOriginSign() throws SignatureException {
         return CryptTools.md5Encrypt(this.getId() + this.getTs());
     }
