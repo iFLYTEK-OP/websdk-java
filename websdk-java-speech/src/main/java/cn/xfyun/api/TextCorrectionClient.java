@@ -7,17 +7,8 @@ import cn.xfyun.util.AuthUtil;
 import cn.xfyun.util.HttpConnector;
 import com.google.gson.JsonObject;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.IOException;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.Base64;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
 
 /**
  *
