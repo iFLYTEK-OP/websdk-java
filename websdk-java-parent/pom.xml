@@ -5,14 +5,14 @@
     <parent>
         <artifactId>websdk-java</artifactId>
         <groupId>cn.xfyun</groupId>
-        <version>1.0.0</version>
+        <version>1.0.4</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
     <artifactId>websdk-java-parent</artifactId>
     <name>${project.artifactId}</name>
     <packaging>pom</packaging>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 
     <dependencies>
         <dependency>

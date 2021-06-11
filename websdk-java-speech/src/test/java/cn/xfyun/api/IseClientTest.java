@@ -1,9 +1,8 @@
 package cn.xfyun.api;
 
-import cn.xfyun.api.IseClient;
 import cn.xfyun.common.IseConstant;
 import cn.xfyun.config.PropertiesConfig;
-import cn.xfyun.model.ise.IseResponseData;
+import cn.xfyun.model.response.ise.*;
 import cn.xfyun.service.ise.AbstractIseWebSocketListener;
 import com.google.gson.JsonObject;
 import cn.xfyun.model.sign.AbstractSignature;
@@ -284,7 +283,7 @@ public class IseClientTest {
         byte[] buffer = new byte[1024000];
         int len = inputStream.read(buffer);
         System.out.println("len:" + len);
-        AbstractIseWebSocketListener iatWebSocketListener = new AbstractIseWebSocketListener() {
+        AbstractIseWebSocketListener iseWebSocketListener = new AbstractIseWebSocketListener() {
             @Override
             public void onSuccess(WebSocket webSocket, IseResponseData iseResponseData) {
                 Assert.assertNotNull(iseResponseData);
@@ -305,7 +304,7 @@ public class IseClientTest {
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
         };
-        iseClient.send(buffer, inputStream, iatWebSocketListener);
+        iseClient.send(buffer, inputStream, iseWebSocketListener);
         Thread.sleep(15000);
     }
 

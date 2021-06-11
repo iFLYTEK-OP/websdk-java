@@ -18,6 +18,7 @@ public class PropertiesConfig {
     private static final String apiSecret;
     private static final String secretKey;
     private static final String lfasrAppId;
+    private static final String ltpKey;
 
     static {
         Properties properties = new Properties();
@@ -33,6 +34,7 @@ public class PropertiesConfig {
 
         lfasrAppId = StringUtils.isNullOrEmpty(properties.getProperty("lfasrAppId")) ? System.getenv("lfasrAppId") : properties.getProperty("lfasrAppId");
         secretKey = StringUtils.isNullOrEmpty(properties.getProperty("secretKey")) ? System.getenv("secretKey") : properties.getProperty("secretKey");
+        ltpKey = StringUtils.isNullOrEmpty(properties.getProperty("ltpKey")) ? System.getenv("ltpKey") : properties.getProperty("ltpKey");
     }
 
     public static String getAppId() {
@@ -53,5 +55,9 @@ public class PropertiesConfig {
 
     public static String getApiSecret() {
         return apiSecret;
+    }
+
+    public static String getLtpKey() {
+        return ltpKey;
     }
 }
