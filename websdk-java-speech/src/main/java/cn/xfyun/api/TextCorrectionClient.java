@@ -1,7 +1,5 @@
 package cn.xfyun.api;
 
-import cn.xfyun.model.sign.AbstractSignature;
-import cn.xfyun.model.sign.Hmac256Signature;
 import cn.xfyun.model.sign.TextCorrectionSignature;
 import cn.xfyun.util.AuthUtil;
 import cn.xfyun.util.HttpConnector;
@@ -71,7 +69,7 @@ public class TextCorrectionClient {
 	private String text;
 
 	/**
-	 *   http最大连接数  默认3
+	 *   http最大连接数  默认20
 	 */
 	private int maxConnections;
 
@@ -291,7 +289,7 @@ public class TextCorrectionClient {
 
 		private String text;
 
-		private int maxConnections = 3;
+		private int maxConnections = 20;
 
 		private int connTimeout = 3000;
 
