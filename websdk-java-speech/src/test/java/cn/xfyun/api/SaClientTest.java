@@ -1,8 +1,6 @@
 package cn.xfyun.api;
 
 import cn.xfyun.config.PropertiesConfig;
-import cn.xfyun.model.response.ltp.LtpResponse;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -51,7 +49,7 @@ public class SaClientTest {
 	public void test() throws Exception {
 		SaClinet saClinet = new SaClinet.Builder(appId, apiKey)
 				.build();
-		System.out.println(saClinet.send("我来自北方"));
+		System.out.println(saClinet.send("你好，李焕英"));
 	}
 
 }
