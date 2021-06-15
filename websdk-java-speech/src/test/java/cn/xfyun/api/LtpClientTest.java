@@ -151,4 +151,18 @@ public class LtpClientTest {
         System.out.println(response.toString());
         Assert.assertEquals(response.getDesc(), "success");
     }
+
+    /**
+     * 测试关键词提取
+     * @throws Exception
+     */
+    @Test
+    public void testKe() throws Exception {
+        LtpClient ltpClient = new LtpClient.Builder(appId, apiKey)
+                .func("ke")
+                .build();
+        LtpResponse response = ltpClient.send("讯飞开放平台作为开放的智能交互技术服务平台，致力于为开发者打造一站式智能人机交互解决方案");
+        System.out.println(response.toString());
+        Assert.assertEquals(response.getDesc(), "success");
+    }
 }
