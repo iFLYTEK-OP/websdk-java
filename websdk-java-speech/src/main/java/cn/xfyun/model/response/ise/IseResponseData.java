@@ -1,4 +1,4 @@
-package cn.xfyun.model.ise;
+package cn.xfyun.model.response.ise;
 
 /**
  * @author: <flhong2@iflytek.com>

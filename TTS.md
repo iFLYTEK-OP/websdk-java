@@ -3,7 +3,7 @@
 **示例代码**
 
 ```java
-import com.iflytek.api.TtsClient;
+import cn.xfyun.api.TtsClient;
 
 // 设置合成参数,这里的appid,apiKey,apiSecret是在开放平台控制台获得
 TtsClient ttsClient = new TtsClient.Builder()
