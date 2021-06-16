@@ -38,6 +38,22 @@ public class AuthUtil {
     }
 
     /**
+     * 生成翻译鉴权内容
+     *
+     * @param signature 鉴权实例
+     * @param algorithm 加密方式
+     * @return
+     * @throws SignatureException
+     */
+    public static String generateTransAuthorization(AbstractSignature signature, String algorithm) throws SignatureException {
+        return String.format("api_key=\"%s\", algorithm=\"%s\", headers=\"%s\", signature=\"%s\"",
+                signature.getId(),
+                algorithm,
+                "host date request-line digest",
+                signature.getSigna());
+    }
+
+    /**
      * 生成带鉴权的请求URL
      *
      * @param signature 鉴权实例
