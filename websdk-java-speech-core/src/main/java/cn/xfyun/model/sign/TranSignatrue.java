@@ -9,7 +9,7 @@ import java.security.SignatureException;
 
 /**
  * @author <ydwang16@iflytek.com>
- * @description
+ * @description 小牛翻译及自研机器翻译鉴权
  * @date 2021/6/15
  */
 public class TranSignatrue extends Hmac256Signature {

@@ -44,6 +44,9 @@ public abstract class AbstractSignature {
      */
     private String ts;
 
+    /**
+     * 请求类型，默认get
+     */
     protected String requestMethod = "GET";
 
     /**
@@ -59,9 +62,11 @@ public abstract class AbstractSignature {
     }
 
     /**
+     * 可设置请求类型
      * @param id
      * @param key
      * @param url
+     * @param isPost 是否为POST
      */
     public AbstractSignature(String id, String key, String url, boolean isPost) {
         this.id = id;
