@@ -1,5 +1,7 @@
 package cn.xfyun.model.response.trans;
 
+import java.util.Map;
+
 /**
  * @author <ydwang16@iflytek.com>
  * @description 翻译结果
@@ -32,7 +34,7 @@ public class TransData {
          * trans_result.src	string	源文本
          * trans_result.dst	string	目标文本
          */
-        private Object trans_result;
+        private Map<String,String> trans_result;
 
         public String getFrom() {
             return from;
@@ -50,11 +52,11 @@ public class TransData {
             this.to = to;
         }
 
-        public Object getTrans_result() {
+        public Map<String,String> getTrans_result() {
             return trans_result;
         }
 
-        public void setTrans_result(Object trans_result) {
+        public void setTrans_result(Map<String,String> trans_result) {
             this.trans_result = trans_result;
         }
     }
