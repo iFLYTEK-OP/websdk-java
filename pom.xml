@@ -6,14 +6,15 @@
     <artifactId>websdk-java</artifactId>
     <name>websdk-java</name>
     <packaging>pom</packaging>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <url>https://github.com/iFLYTEK-OP</url>
     <description>speech SDK</description>
 
     <modules>
 		<module>websdk-java-parent</module>
         <module>websdk-java-speech</module>
-        <module>websdk-java-speech-core</module>
+        <module>websdk-java-core</module>
+        <module>websdk-java-nlp</module>
     </modules>
 
     <scm>
