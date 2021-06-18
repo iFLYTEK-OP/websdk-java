@@ -13,6 +13,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -89,6 +90,13 @@ public class HttpConnector {
     public String post(String url, Map<String, String> param) throws HttpException, IOException {
         HttpPost httpPost = new HttpPost(url);
         httpPost.setEntity(new UrlEncodedFormEntity(convertMapToPair(param), Consts.UTF_8));
+        return doExecute(httpPost, Consts.UTF_8.toString());
+    }
+
+    public String postByJson(String url, String jsonStr) throws HttpException, IOException {
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.setHeader("Content-Type", "application/json");
+        httpPost.setEntity(new StringEntity(jsonStr));
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
 
