@@ -95,8 +95,8 @@ public class HttpConnector {
 
     public String postByJson(String url, String jsonStr) throws HttpException, IOException {
         HttpPost httpPost = new HttpPost(url);
-        httpPost.setHeader("Content-Type", "application/json");
-        httpPost.setEntity(new StringEntity(jsonStr));
+        httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
+        httpPost.setEntity(new StringEntity(jsonStr, Consts.UTF_8));
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
 

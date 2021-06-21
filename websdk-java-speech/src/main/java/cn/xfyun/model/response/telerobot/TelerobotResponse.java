@@ -3,10 +3,10 @@ package cn.xfyun.model.response.telerobot;
 /**
  * AI客服平台能力中间件 返回值类型
  */
-public class TelerobotResponse {
+public class TelerobotResponse<T> {
     private int code;
     private String message;
-    private Object result;
+    private T result;
 
     public TelerobotResponse() {
     }
@@ -32,12 +32,11 @@ public class TelerobotResponse {
         this.message = message;
     }
 
-
-    public Object getResult() {
+    public T getResult() {
         return result;
     }
 
-    public void setResult(Object result) {
+    public void setResult(T result) {
         this.result = result;
     }
 }
