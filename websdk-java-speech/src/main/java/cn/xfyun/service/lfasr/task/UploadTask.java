@@ -39,7 +39,7 @@ public class UploadTask extends AbstractTask {
         LfasrMessage message = new LfasrMessage();
         try {
             message = resolveMessage(this.connector.post("https://raasr.xfyun.cn/api/upload", this.param, this.slice));
-        } catch (HttpException | IOException e) {
+        } catch (IOException e) {
             logger.warn(getIntro() + " 处理失败", e);
             message.setOk(LfasrTaskStatusEnum.STATUS_1.getKey());
         }

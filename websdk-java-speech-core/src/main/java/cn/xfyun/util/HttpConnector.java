@@ -1,6 +1,5 @@
 package cn.xfyun.util;
 
-import cn.xfyun.exception.HttpException;
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
@@ -86,25 +85,25 @@ public class HttpConnector {
         return pairs;
     }
 
-    public String post(String url, Map<String, String> param) throws HttpException, IOException {
+    public String post(String url, Map<String, String> param) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         httpPost.setEntity(new UrlEncodedFormEntity(convertMapToPair(param), Consts.UTF_8));
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
 
-    public String postByBytes(String url, Map<String, String> param, byte[] bytes) throws HttpException, IOException {
+    public String postByBytes(String url, Map<String, String> param, byte[] bytes) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         // 设置 header
         for (String key : param.keySet()) {
             httpPost.setHeader(key, param.get(key));
         }
-        if (Objects.nonNull(bytes)){
+        if (Objects.nonNull(bytes)) {
             httpPost.setEntity(new ByteArrayEntity(bytes));
         }
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
 
-    public String post(String url, Map<String, String> header, Map<String, String> param) throws HttpException, IOException {
+    public String post(String url, Map<String, String> header, Map<String, String> param) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         //setHeader,添加头文件
         Set<String> keys = header.keySet();
@@ -115,7 +114,7 @@ public class HttpConnector {
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
 
-    public String post(String url, Map<String, String> param, byte[] body) throws HttpException, IOException {
+    public String post(String url, Map<String, String> param, byte[] body) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         MultipartEntityBuilder reqEntity = MultipartEntityBuilder.create();
         reqEntity.addPart("content", new ByteArrayBody(body, ContentType.DEFAULT_BINARY, param.get("slice_id")));
@@ -130,17 +129,17 @@ public class HttpConnector {
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
 
-    private String doExecute(HttpRequestBase requestBase, String charset) throws HttpException, IOException {
+    private String doExecute(HttpRequestBase requestBase, String charset) throws IOException {
         String result;
         CloseableHttpResponse response = null;
         try {
             response = this.httpClient.execute(requestBase);
             int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != HttpStatus.SC_OK) {
-                log.warn("request: " + requestBase.getURI() + ", status: " + statusCode);
-                throw new HttpException(requestBase.getURI() + "请求异常");
-            }
             result = (charset == null) ? EntityUtils.toString(response.getEntity()) : EntityUtils.toString(response.getEntity(), charset);
+            if (statusCode != HttpStatus.SC_OK) {
+                log.warn("request:{} , status:{} , result:{}", requestBase.getURI(), statusCode, result);
+            }
+
         } finally {
             if (null != response) {
                 EntityUtils.consumeQuietly(response.getEntity());

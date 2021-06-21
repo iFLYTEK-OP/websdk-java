@@ -16,19 +16,9 @@ import java.security.SignatureException;
  * @description websocket能力的客户端
  * @date 2021/4/7
  */
-public class WebSocketClient {
+public class WebSocketClient extends Client {
 
     protected String originHostUrl;
-
-    protected String hostUrl;
-
-    protected String appId;
-
-    protected String apiKey;
-
-    protected String apiSecret;
-
-    protected AbstractSignature signature;
 
     /**
      * websocket相关配置

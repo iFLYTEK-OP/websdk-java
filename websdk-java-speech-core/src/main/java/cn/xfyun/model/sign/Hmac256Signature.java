@@ -31,6 +31,17 @@ public class Hmac256Signature extends AbstractSignature {
         super(apiKey, secretKey, hostUrl);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param apiKey
+     * @param secretKey
+     * @param hostUrl
+     */
+    public Hmac256Signature(String apiKey, String secretKey, String hostUrl, boolean isPost) {
+        super(apiKey, secretKey, hostUrl, isPost);
+    }
+
     @Override
     public String getSigna() throws SignatureException {
         if (StringUtils.isNullOrEmpty(this.signa)) {
@@ -77,7 +88,7 @@ public class Hmac256Signature extends AbstractSignature {
 
             return "host: " + url.getHost() + "\n" +
                     "date: " + this.getTs() + "\n" +
-                    "GET " + url.getPath() + " HTTP/1.1";
+                    requestMethod + " " + url.getPath() + " HTTP/1.1";
         } catch (MalformedURLException e) {
             throw new SignatureException("MalformedURLException:" + e.getMessage());
         }

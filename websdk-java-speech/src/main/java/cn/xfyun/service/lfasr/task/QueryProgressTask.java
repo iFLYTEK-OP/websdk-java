@@ -32,7 +32,7 @@ public class QueryProgressTask extends AbstractTask {
         LfasrMessage message = new LfasrMessage();
         try {
             message = resolveMessage(this.connector.post("https://raasr.xfyun.cn/api/getProgress", this.param));
-        } catch (HttpException | IOException e) {
+        } catch (Exception e) {
             logger.warn(getIntro() + " 处理失败", e);
             message.setOk(LfasrTaskStatusEnum.STATUS_1.getKey());
         }

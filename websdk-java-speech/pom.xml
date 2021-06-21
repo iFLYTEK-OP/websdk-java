@@ -18,6 +18,11 @@
             <artifactId>websdk-java-speech-core</artifactId>
             <version>1.0.4</version>
         </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.13</version>
+        </dependency>
     </dependencies>
 
     <build>
