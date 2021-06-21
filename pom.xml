@@ -14,6 +14,7 @@
 		<module>websdk-java-parent</module>
         <module>websdk-java-speech</module>
         <module>websdk-java-speech-core</module>
+        <module>websdk-java-nlp</module>
     </modules>
 
     <scm>
