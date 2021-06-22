@@ -1,9 +1,6 @@
 package cn.xfyun.util;
 
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -12,6 +9,7 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpRequestBase;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.ContentType;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.StringBody;
@@ -111,6 +109,14 @@ public class HttpConnector {
             httpPost.setHeader(key, header.get(key));
         }
         httpPost.setEntity(new UrlEncodedFormEntity(convertMapToPair(param), Consts.UTF_8));
+        return doExecute(httpPost, Consts.UTF_8.toString());
+    }
+
+    public String post(String url, String param) throws IOException {
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.addHeader("Content-Type", "application/json;charset=utf-8");
+        StringEntity httpEntity = new StringEntity(param, ContentType.APPLICATION_JSON);
+        httpPost.setEntity(httpEntity);
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
 
