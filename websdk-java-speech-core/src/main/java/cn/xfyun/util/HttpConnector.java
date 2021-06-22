@@ -1,9 +1,6 @@
 package cn.xfyun.util;
 
-import org.apache.http.Consts;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpStatus;
-import org.apache.http.NameValuePair;
+import org.apache.http.*;
 import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -115,7 +112,7 @@ public class HttpConnector {
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
 
-    public String post(String url, String param) throws IOException, HttpException {
+    public String post(String url, String param) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         httpPost.addHeader("Content-Type", "application/json;charset=utf-8");
         StringEntity httpEntity = new StringEntity(param, ContentType.APPLICATION_JSON);
@@ -144,10 +141,6 @@ public class HttpConnector {
         try {
             response = this.httpClient.execute(requestBase);
             int statusCode = response.getStatusLine().getStatusCode();
-            if (statusCode != HttpStatus.SC_OK) {
-                log.warn("request: " + requestBase.getURI() + ", status: " + statusCode);
-                throw new HttpException(response.toString());
-            }
             result = (charset == null) ? EntityUtils.toString(response.getEntity()) : EntityUtils.toString(response.getEntity(), charset);
             if (statusCode != HttpStatus.SC_OK) {
                 log.warn("request:{} , status:{} , result:{}", requestBase.getURI(), statusCode, result);
