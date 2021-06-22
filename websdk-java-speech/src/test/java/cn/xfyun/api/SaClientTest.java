@@ -21,7 +21,7 @@ import static org.junit.Assert.assertEquals;
 public class SaClientTest {
 
 	private static final String appId = PropertiesConfig.getAppId();
-	private static final String apiKey = PropertiesConfig.getLtpKey();
+	private static final String apiKey = PropertiesConfig.getApiKey();
 
 	/**
 	 * 测试参数设置
