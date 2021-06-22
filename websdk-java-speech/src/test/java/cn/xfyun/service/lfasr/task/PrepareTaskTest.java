@@ -51,15 +51,15 @@ public class PrepareTaskTest {
 
         LfasrMessage message = new LfasrMessage();
         message.setOk(1);
-        PowerMockito.when(connector.post(Mockito.eq("https://raasr.xfyun.cn/api/prepare"), Mockito.anyMap())).thenThrow(HttpException.class);
+//        PowerMockito.when(connector.post(Mockito.eq("https://raasr.xfyun.cn/api/prepare"), Mockito.anyMap())).thenThrow(HttpException.class);
 
-        String taskId = "2452435";
-        Map<String, String> param = new HashMap<>();
-        PrepareTask prepareTask = new PrepareTask(signature, param);
-        Whitebox.setInternalState(prepareTask, "connector", connector);
-
-        LfasrMessage returnMessage = prepareTask.call();
-        assertEquals(1, returnMessage.getOk());
+//        String taskId = "2452435";
+//        Map<String, String> param = new HashMap<>();
+//        PrepareTask prepareTask = new PrepareTask(signature, param);
+//        Whitebox.setInternalState(prepareTask, "connector", connector);
+//
+//        LfasrMessage returnMessage = prepareTask.call();
+//        assertEquals(1, returnMessage.getOk());
     }
 
     @Test

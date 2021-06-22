@@ -36,7 +36,7 @@ public class PrepareTask extends AbstractTask {
             if (message.getOk() == LfasrTaskStatusEnum.STATUS_FAILED.getKey()) {
                 message.setOk(LfasrTaskStatusEnum.STATUS_1.getKey());
             }
-        } catch (HttpException | IOException e) {
+        } catch (Exception e) {
             logger.warn(getIntro() + " 处理失败", e);
             message.setOk(LfasrTaskStatusEnum.STATUS_1.getKey());
         }

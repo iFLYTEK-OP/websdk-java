@@ -31,6 +31,17 @@ public class Hmac256Signature extends AbstractSignature {
         super(apiKey, secretKey, hostUrl);
     }
 
+    /**
+     * 构造函数
+     *
+     * @param apiKey
+     * @param secretKey
+     * @param hostUrl
+     */
+    public Hmac256Signature(String apiKey, String secretKey, String hostUrl, boolean isPost) {
+        super(apiKey, secretKey, hostUrl, isPost);
+    }
+
     @Override
     public String getSigna() throws SignatureException {
         if (StringUtils.isNullOrEmpty(this.signa)) {
@@ -62,5 +73,24 @@ public class Hmac256Signature extends AbstractSignature {
         return CryptTools.hmacEncrypt(CryptTools.HMAC_SHA256, this.getOriginSign(), this.getKey());
     }
 
+    /**
+     * 生成待加密原始字符
+     * 规则如下：
+     * host: iat-api.xfyun.cn
+     * date: Wed, 10 Jul 2019 07:35:43 GMT
+     * GET /v2/iat HTTP/1.1
+     *
+     * @throws SignatureException
+     */
+    public String generateOriginSign() throws SignatureException {
+        try {
+            URL url = new URL(this.getUrl());
 
+            return "host: " + url.getHost() + "\n" +
+                    "date: " + this.getTs() + "\n" +
+                    requestMethod + " " + url.getPath() + " HTTP/1.1";
+        } catch (MalformedURLException e) {
+            throw new SignatureException("MalformedURLException:" + e.getMessage());
+        }
+    }
 }

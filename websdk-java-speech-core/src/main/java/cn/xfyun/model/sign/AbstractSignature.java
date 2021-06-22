@@ -47,7 +47,11 @@ public abstract class AbstractSignature {
     private String ts;
 
     /**
-     *
+     * 请求类型，默认get
+     */
+    protected String requestMethod = "GET";
+
+    /**
      * @param id
      * @param key
      * @param url
@@ -56,6 +60,26 @@ public abstract class AbstractSignature {
         this.id = id;
         this.key = key;
         this.url = url;
+        this.ts = generateTs();
+    }
+
+    /**
+     * 可设置请求类型
+     * @param id
+     * @param key
+     * @param url
+     * @param isPost 是否为POST
+     */
+    public AbstractSignature(String id, String key, String url, boolean isPost) {
+        this.id = id;
+        this.key = key;
+        this.url = url;
+        if (isPost) {
+            this.requestMethod = "POST";
+        }else{
+            this.requestMethod = "GET";
+        }
+
         this.ts = generateTs();
     }
 
@@ -69,6 +93,7 @@ public abstract class AbstractSignature {
 
     /**
      * 完成签名，返回完整签名
+     *
      * @return
      * @throws SignatureException
      */
