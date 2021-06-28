@@ -85,7 +85,7 @@
                     <target>${maven.compiler.target}</target>
                     <source>${maven.compiler.source}</source>
                     <encoding>${project.build.sourceEncoding}</encoding>
-                    <skip>true</skip>
+<!--                    <skip>true</skip>-->
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
