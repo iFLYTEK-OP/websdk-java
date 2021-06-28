@@ -2,12 +2,9 @@ package cn.xfyun.api;
 
 import cn.xfyun.service.rta.AbstractRtasrWebSocketListener;
 import cn.xfyun.config.PropertiesConfig;
-import cn.xfyun.model.sign.AbstractSignature;
-import cn.xfyun.util.CryptTools;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okio.ByteString;
-import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,12 +13,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.annotation.Nullable;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.*;
-import java.net.URLEncoder;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;

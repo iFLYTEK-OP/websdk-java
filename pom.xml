@@ -8,12 +8,12 @@
     <packaging>pom</packaging>
     <version>1.0.4</version>
     <url>https://github.com/iFLYTEK-OP</url>
-    <description>speech SDK</description>
+    <description>xfyun SDK</description>
 
     <modules>
 		<module>websdk-java-parent</module>
         <module>websdk-java-speech</module>
-        <module>websdk-java-speech-core</module>
+        <module>websdk-java-core</module>
         <module>websdk-java-nlp</module>
     </modules>
 

@@ -1,6 +1,7 @@
-package cn.xfyun.api;
+package api;
 
-import cn.xfyun.config.PropertiesConfig;
+import cn.xfyun.api.TextCorrectionClient;
+import config.PropertiesConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

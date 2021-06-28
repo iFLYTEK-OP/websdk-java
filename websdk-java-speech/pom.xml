@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>cn.xfyun</groupId>
-            <artifactId>websdk-java-speech-core</artifactId>
+            <artifactId>websdk-java-core</artifactId>
             <version>1.0.4</version>
         </dependency>
         <dependency>

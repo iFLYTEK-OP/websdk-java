@@ -1,4 +1,4 @@
-package cn.xfyun.api;
+package cn.xfyun.config;
 
 import cn.xfyun.model.sign.AbstractSignature;
 

@@ -1,6 +1,5 @@
 package cn.xfyun.api;
 
-import cn.xfyun.api.IatClient;
 import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.model.response.iat.IatResponse;
 import cn.xfyun.model.response.iat.IatResult;
