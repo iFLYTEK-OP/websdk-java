@@ -195,7 +195,7 @@ public class IseClientTest {
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
         });
-        Thread.sleep(50000);
+        Thread.sleep(10000);
     }
 
     @Test
@@ -229,7 +229,7 @@ public class IseClientTest {
                 System.out.println(response);
             }
         });
-        Thread.sleep(50000);
+        Thread.sleep(10000);
     }
 
     @Test
@@ -264,7 +264,7 @@ public class IseClientTest {
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
         });
-        Thread.sleep(30000);
+//        Thread.sleep(30000);
     }
 
     @Test
