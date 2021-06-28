@@ -1,6 +1,5 @@
 package cn.xfyun.api;
 
-import cn.xfyun.api.TtsClient;
 import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.model.response.TtsResponse;
 import cn.xfyun.service.tts.AbstractTtsWebSocketListener;

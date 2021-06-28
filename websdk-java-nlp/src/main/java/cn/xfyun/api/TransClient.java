@@ -1,5 +1,6 @@
 package cn.xfyun.api;
 
+import cn.xfyun.config.Client;
 import cn.xfyun.exception.HttpException;
 import cn.xfyun.model.response.trans.TransResponse;
 import cn.xfyun.model.sign.TranSignatrue;

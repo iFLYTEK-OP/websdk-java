@@ -1,4 +1,4 @@
-package cn.xfyun.config;
+package config;
 
 import cn.xfyun.util.StringUtils;
 
