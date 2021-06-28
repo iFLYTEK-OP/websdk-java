@@ -1,7 +1,8 @@
-package cn.xfyun.api;
+package api;
 
-import cn.xfyun.config.PropertiesConfig;
+import cn.xfyun.api.LtpClient;
 import cn.xfyun.model.response.ltp.LtpResponse;
+import config.PropertiesConfig;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

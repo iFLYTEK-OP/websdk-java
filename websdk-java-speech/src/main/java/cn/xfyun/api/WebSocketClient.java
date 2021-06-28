@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.model.sign.AbstractSignature;
+import cn.xfyun.config.Client;
 import cn.xfyun.model.sign.Hmac256Signature;
 import cn.xfyun.util.AuthUtil;
 import okhttp3.OkHttpClient;

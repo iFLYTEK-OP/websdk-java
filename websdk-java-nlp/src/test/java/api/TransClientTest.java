@@ -1,9 +1,9 @@
-package cn.xfyun.api;
+package api;
 
 import cn.xfyun.api.TransClient;
-import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.model.response.trans.TransResponse;
 import com.google.gson.Gson;
+import config.PropertiesConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
