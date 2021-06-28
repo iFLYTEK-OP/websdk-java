@@ -209,7 +209,7 @@ public class IatClientTest {
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
     }
 
@@ -264,7 +264,7 @@ public class IatClientTest {
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
         });
-        Thread.sleep(150000);
+        Thread.sleep(15000);
     }
 
     @Test

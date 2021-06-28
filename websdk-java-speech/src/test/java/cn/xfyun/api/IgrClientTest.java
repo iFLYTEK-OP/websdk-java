@@ -147,7 +147,7 @@ public class IgrClientTest {
                 System.out.println("授权失败了!");
             }
         });
-        Thread.sleep(50000);
+//        Thread.sleep(50000);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class IgrClientTest {
 
             }
         });
-        Thread.sleep(50000);
+//        Thread.sleep(50000);
     }
 
     @Test
