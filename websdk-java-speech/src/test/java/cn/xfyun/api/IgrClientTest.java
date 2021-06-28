@@ -1,7 +1,7 @@
 package cn.xfyun.api;
 
+import config.PropertiesConfig;
 import cn.xfyun.common.IgrConstant;
-import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.model.response.igr.IgrResponseData;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.service.igr.AbstractIgrWebSocketListener;

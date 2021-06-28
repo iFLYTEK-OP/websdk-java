@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.config.PropertiesConfig;
+import config.PropertiesConfig;
 import cn.xfyun.model.response.lfasr.LfasrMessage;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
