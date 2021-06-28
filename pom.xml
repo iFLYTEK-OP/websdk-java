@@ -100,7 +100,7 @@
                         <format>html</format>
                         <format>xml</format>
                     </formats>
-                    <check />
+                    <check>false</check>
                 </configuration>
             </plugin>
         </plugins>
