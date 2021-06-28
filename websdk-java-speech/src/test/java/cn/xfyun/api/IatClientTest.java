@@ -253,7 +253,6 @@ public class IatClientTest {
                         System.out.println("耗时:" + (dateEnd.getTime() - dateBegin.getTime()) + "ms");
                         System.out.println("本次识别sid ==》" + iatResponse.getSid());
                         iatClient.closeWebsocket();
-                        System.exit(0);
                     } else {
                         // 根据返回的数据处理
                         System.out.println(StringUtils.gson.toJson(iatResponse));
@@ -265,7 +264,7 @@ public class IatClientTest {
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
         });
-        Thread.sleep(150000);
+        Thread.sleep(15000);
     }
 
     @Test
