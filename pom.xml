@@ -11,7 +11,7 @@
     <description>xfyun SDK</description>
 
     <modules>
-		<module>websdk-java-parent</module>
+        <module>websdk-java-parent</module>
         <module>websdk-java-speech</module>
         <module>websdk-java-core</module>
         <module>websdk-java-nlp</module>
@@ -85,34 +85,13 @@
                     <target>${maven.compiler.target}</target>
                     <source>${maven.compiler.source}</source>
                     <encoding>${project.build.sourceEncoding}</encoding>
-<!--                    <skip>true</skip>-->
                     <compilerArgs>
                         <arg>-parameters</arg>
                     </compilerArgs>
                 </configuration>
             </plugin>
 
-<!--            <plugin>-->
-<!--                <groupId>org.jacoco</groupId>-->
-<!--                <artifactId>jacoco-maven-plugin</artifactId>-->
-<!--                <version>0.8.7</version>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <goals>-->
-<!--                            <goal>prepare-agent</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                    <execution>-->
-<!--                        <id>report</id>-->
-<!--                        <phase>test</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>report</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-
-
+            <!-- JaCoCo和PowerMock冲突解决：使用离线模式-->
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
