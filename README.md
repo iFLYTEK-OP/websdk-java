@@ -1,6 +1,6 @@
 # 讯飞开放平台AI能力-JAVASDK
 
-[![Build Status](https://travis-ci.com/iFLYTEK-OP/websdk-java-speech.svg?branch=master)](https://www.travis-ci.com/iFLYTEK-OP/websdk-java-speech)[![codecov](https://codecov.io/gh/iFLYTEK-OP/websdk-java/branch/master/graph/badge.svg?token=KQRe0Igv9b)](https://codecov.io/gh/iFLYTEK-OP/websdk-java)
+[![Build Status](https://travis-ci.com/iFLYTEK-OP/websdk-java-speech.svg?branch=master)](https://www.travis-ci.com/iFLYTEK-OP/websdk-java-speech)[![codecov](https://codecov.io/gh/iFLYTEK-OP/websdk-java/branch/feature-ci/graph/badge.svg?token=KQRe0Igv9b)](https://codecov.io/gh/iFLYTEK-OP/websdk-java)
 
 提供各种语音能力的JAVASDK。
 
