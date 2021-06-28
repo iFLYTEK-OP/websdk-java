@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.config.PropertiesConfig;
+import config.PropertiesConfig;
 import cn.xfyun.model.response.iat.IatResponse;
 import cn.xfyun.model.response.iat.IatResult;
 import cn.xfyun.service.iat.AbstractIatWebSocketListener;

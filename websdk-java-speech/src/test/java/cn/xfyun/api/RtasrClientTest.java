@@ -1,7 +1,7 @@
 package cn.xfyun.api;
 
+import config.PropertiesConfig;
 import cn.xfyun.service.rta.AbstractRtasrWebSocketListener;
-import cn.xfyun.config.PropertiesConfig;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import okio.ByteString;

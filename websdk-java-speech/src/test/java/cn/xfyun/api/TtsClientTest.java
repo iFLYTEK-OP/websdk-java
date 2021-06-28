@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.config.PropertiesConfig;
+import config.PropertiesConfig;
 import cn.xfyun.model.response.TtsResponse;
 import cn.xfyun.service.tts.AbstractTtsWebSocketListener;
 import okhttp3.Response;
