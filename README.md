@@ -30,3 +30,9 @@
 
 [5、语音评测文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/ISE.md)
 
+
+[6、情感分析文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/SA.md)
+
+
+[7、文本纠错文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/TEXT_CORRECTION.md)
+
