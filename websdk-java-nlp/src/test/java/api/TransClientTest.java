@@ -1,6 +1,7 @@
 package api;
 
 import cn.xfyun.api.TransClient;
+import cn.xfyun.model.response.trans.TransData;
 import cn.xfyun.model.response.trans.TransResponse;
 import com.google.gson.Gson;
 import config.PropertiesConfig;
@@ -13,8 +14,10 @@ import org.powermock.reflect.Whitebox;
 
 import java.io.IOException;
 import java.security.SignatureException;
+import java.util.HashMap;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * @author <ydwang16@iflytek.com>
@@ -63,11 +66,31 @@ public class TransClientTest {
         assertNotNull(niuResponse);
         assertNotNull(itsResponse);
 
-//        assertTrue(niuResponse.getCode() == 0);
-//        assertTrue(itsResponse.getCode() == 0);
-//
-//        assertTrue(niuResponse.getData().getResult().getTrans_result().toString().contains("June 9th"));
-//        assertTrue(itsResponse.getData().getResult().getTrans_result().toString().contains("June 9th"));
+        assertSame(niuResponse.getCode(),0);
+        assertSame(itsResponse.getCode(),0);
+
+        assertTrue(niuResponse.getData().getResult().getTrans_result().toString().contains("June 9th"));
+        assertTrue(itsResponse.getData().getResult().getTrans_result().toString().contains("June 9th"));
+
+        assertEquals(niuResponse.getData().getResult().getFrom(),"zh");
+        assertEquals(niuResponse.getData().getResult().getTo(),"en");
+
+        assertEquals(itsResponse.getData().getResult().getFrom(),"cn");
+        assertEquals(itsResponse.getData().getResult().getTo(),"en");
+
+        System.out.println(niuResponse.getSid());
+        System.out.println(niuResponse.getCode());
+        System.out.println(niuResponse.getMessage());
+
+        TransData.Result result = niuResponse.getData().getResult();
+        result.setFrom("cn");
+        result.setTo("en");
+        result.setTrans_result(new HashMap<>(16));
+
+        niuResponse.setCode(1);
+        niuResponse.setData(new TransData());
+        niuResponse.setMessage("test");
+        niuResponse.setSid("123456");
     }
 
     @Test
