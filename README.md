@@ -34,3 +34,8 @@
 [6、自然语言处理文档](https://github.com/iFLYTEK-OP/websdk-java/blob/master/LTP.md)
 
 
+[7、情感分析文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/SA.md)
+
+
+[8、文本纠错文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/TEXT_CORRECTION.md)
+
