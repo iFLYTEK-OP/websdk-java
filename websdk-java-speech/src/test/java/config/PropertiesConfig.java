@@ -19,6 +19,8 @@ public class PropertiesConfig {
     private static final String secretKey;
     private static final String lfasrAppId;
     private static final String ltpKey;
+    private static final String telerobotAPPKey;
+    private static final String telerobotAPPSecret;
 
     static {
         Properties properties = new Properties();
@@ -35,6 +37,10 @@ public class PropertiesConfig {
         lfasrAppId = StringUtils.isNullOrEmpty(properties.getProperty("lfasrAppId")) ? System.getenv("lfasrAppId") : properties.getProperty("lfasrAppId");
         secretKey = StringUtils.isNullOrEmpty(properties.getProperty("secretKey")) ? System.getenv("secretKey") : properties.getProperty("secretKey");
         ltpKey = StringUtils.isNullOrEmpty(properties.getProperty("ltpKey")) ? System.getenv("ltpKey") : properties.getProperty("ltpKey");
+
+        telerobotAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("telerobotAPPKey")) ? System.getenv("telerobotAPPKey") : properties.getProperty("telerobotAPPKey");
+        telerobotAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("telerobotAPPSecret")) ? System.getenv("telerobotAPPSecret") : properties.getProperty("telerobotAPPSecret");
+
     }
 
     public static String getAppId() {
@@ -59,5 +65,13 @@ public class PropertiesConfig {
 
     public static String getLtpKey() {
         return ltpKey;
+    }
+
+    public static String getTelerobotAPPKey() {
+        return telerobotAPPKey;
+    }
+
+    public static String getTelerobotAPPSecret() {
+        return telerobotAPPSecret;
     }
 }

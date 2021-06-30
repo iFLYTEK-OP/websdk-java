@@ -89,6 +89,13 @@ public class HttpConnector {
         return doExecute(httpPost, Consts.UTF_8.toString());
     }
 
+    public String postByJson(String url, String jsonStr) throws IOException {
+        HttpPost httpPost = new HttpPost(url);
+        httpPost.setHeader("Content-Type", "application/json;charset=UTF-8");
+        httpPost.setEntity(new StringEntity(jsonStr, Consts.UTF_8));
+        return doExecute(httpPost, Consts.UTF_8.toString());
+    }
+
     public String postByBytes(String url, Map<String, String> param, byte[] bytes) throws IOException {
         HttpPost httpPost = new HttpPost(url);
         // 设置 header
