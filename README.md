@@ -1,6 +1,6 @@
 # 讯飞开放平台AI能力-JAVASDK
 
-[![Build Status](https://travis-ci.com/iFLYTEK-OP/websdk-java-speech.svg?branch=master)](https://www.travis-ci.com/iFLYTEK-OP/websdk-java-speech)[![codecov](https://codecov.io/gh/iFLYTEK-OP/websdk-java/branch/master/graph/badge.svg?token=KQRe0Igv9b)](https://codecov.io/gh/iFLYTEK-OP/websdk-java)
+[![Build Status](https://www.travis-ci.com/iFLYTEK-OP/websdk-java.svg?branch=feature-ci)](https://www.travis-ci.com/iFLYTEK-OP/websdk-java)[![codecov](https://codecov.io/gh/iFLYTEK-OP/websdk-java/branch/feature-ci/graph/badge.svg?token=KQRe0Igv9b)](https://codecov.io/gh/iFLYTEK-OP/websdk-java)
 
 提供各种语音能力的JAVASDK。
 
@@ -30,3 +30,20 @@
 
 [5、语音评测文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/ISE.md)
 
+
+[6、自然语言处理文档](https://github.com/iFLYTEK-OP/websdk-java/blob/master/LTP.md)
+
+
+[7、情感分析文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/SA.md)
+
+
+[8、文本纠错文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/TEXT_CORRECTION.md)
+
+
+[9、语音评测（普通版）](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/ISE_COMMON.md)
+
+
+[10、性别年龄识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/IGR.md)
+
+
+[11、歌曲识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/QBH.md)

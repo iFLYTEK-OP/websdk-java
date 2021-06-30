@@ -2,6 +2,7 @@ package api;
 
 import cn.xfyun.api.SaClinet;
 import config.PropertiesConfig;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -41,6 +42,20 @@ public class SaClientTest {
 		assertEquals("https://ltpapi.xfyun.cn/v2/sa", Whitebox.getInternalState(saClinet, "hostUrl"));
 	}
 
+	@Test
+	public void testParams1() {
+		SaClinet saClinet = new SaClinet.Builder(appId, apiKey)
+				.hostUrl("https://ltpapi.xfyun.cn/v2/sa")
+				.connTimeout(1)
+				.maxConnections(2)
+				.retryCount(3)
+				.socketTimeout(4)
+				.build();
+		Assert.assertEquals(2, saClinet.getConnTimeout());
+		Assert.assertEquals(3, saClinet.getRetryCount());
+		Assert.assertEquals("https://ltpapi.xfyun.cn/v2/sa", saClinet.getHostUrl());
+	}
+
 	/**
 	 *    一句话调用服务
 	 *
@@ -52,5 +67,16 @@ public class SaClientTest {
 				.build();
 		System.out.println(saClinet.send("你好，李焕英"));
 	}
+
+
+	@Test
+	public void test1() throws Exception {
+		SaClinet saClinet = new SaClinet.Builder(appId, apiKey)
+				.maxConnections(2)
+				.retryCount(3)
+				.build();
+		System.out.println(saClinet.send("websdk java"));
+	}
+
 
 }

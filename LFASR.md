@@ -66,9 +66,9 @@ public class LfasrClientApp {
 |role_type|string|否|支持两种参数<br/>1: 通用角色分离<br/>2: 电话信道角色分离（适用于speaker_number为2的说话场景）该字段只有在开通了角色分离功能的前提下才会生效，正确传入该参数后角色分离效果会有所提升。 如果该字段不传，默认采用 1 类型|
 |language|string|否|语种<br>cn:中英文&中文（默认）<br>en:英文（英文不支持热词）|cn|
 |pd|string|否|垂直领域个性化参数:<br>法院: court<br>教育: edu<br>金融: finance<br>医疗: medical<br>科技: tech 设置示例:prepareParam.put("pd", "edu")<br>pd为非必须设置参数，不设置参数默认为通用|
-|coreThreads|int|否|线程池核心线程数||
-|maxThreads|int|否|线程池最大线程数||
-|maxConnections|int|否|HTTP最大连接数||
-|connTimeout|int|否|连接超时时间||
-|soTimeout|int|否|响应超时时间||
+|coreThreads|int|否|线程池核心线程数|10|
+|maxThreads|int|否|线程池最大线程数|50|
+|maxConnections|int|否|HTTP最大连接数|50|
+|connTimeout|int|否|连接超时时间|10000(单位：毫秒)|
+|soTimeout|int|否|响应超时时间|30000(单位：毫秒)|
 
