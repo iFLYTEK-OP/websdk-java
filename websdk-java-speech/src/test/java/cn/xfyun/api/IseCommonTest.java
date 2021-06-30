@@ -69,8 +69,8 @@ public class IseCommonTest {
                 .extraAbility("multi_dimension").text("今天天气怎么样？")
                 .build();
 
-        String result = iseCommonClient.send(new File(filePath));
-        System.out.println("返回结果: " + result);
+//        String result = iseCommonClient.send(new File(filePath));
+//        System.out.println("返回结果: " + result);
     }
 
     @Test
