@@ -30,15 +30,11 @@ public class IseClient extends WebSocketClient {
     /**
      * 公共参数，仅在握手成功后首帧请求时上传
      */
-    private JsonObject common = new JsonObject();
+    private JsonObject common;
     /**
      * 业务参数，在握手成功后首帧请求与后续数据发送时上传
      */
-    private JsonObject business = new JsonObject();
-    /**
-     * 业务数据流参数，在握手成功后的所有请求中都需要上传
-     */
-    private JsonObject data = new JsonObject();
+    private JsonObject business;
 
     /**
      * 服务类型指定
@@ -96,7 +92,7 @@ public class IseClient extends WebSocketClient {
     /**
      * 跳过ttp直接使用ssb中的文本进行评测（使用时结合cmd参数查看）,默认值true
      */
-    private boolean ttp_skip = true;
+    private boolean ttp_skip;
     /**
      * 拓展能力（生效条件ise_unite="1", rst="entirety"）
      * 多维度分信息显示（准确度分、流畅度分、完整度打分）
@@ -113,18 +109,18 @@ public class IseClient extends WebSocketClient {
      * lame: mp3格式音频
      * speex-wb;7: 讯飞定制speex格式音频(默认值)
      */
-    private String aue = "raw";
+    private String aue;
     /**
      * 音频采样率
      * 默认 audio/L16;rate=16000
      */
-    private String auf = "audio/L16;rate=16000";
+    private String auf;
     /**
      * 返回结果格式
      * utf8
      * gbk （默认值）
      */
-    private String rstcd = "gbk";
+    private String rstcd;
     /**
      * 针对群体不同，相同试卷音频评分结果不同 （仅中文字、词、句、篇章题型支持），此参数会影响准确度得分
      * adult（成人群体，不设置群体参数时默认为成人）

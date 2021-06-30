@@ -25,7 +25,7 @@ import java.io.InputStream;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IatClient.class})
 @PowerMockIgnore({"cn.xfyun.util.HttpConnector", "javax.crypto.*", "javax.net.ssl.*"})
-public class CommonIseTest {
+public class IseCommonTest {
 
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getApiKey();
@@ -33,61 +33,61 @@ public class CommonIseTest {
 
     @Test
     public void defaultParamTest() {
-        CommonIseClient commonIseClient = new CommonIseClient.Builder()
+        IseCommonClient iseCommonClient = new IseCommonClient.Builder()
                 .appId(appId).apiKey(apiKey)
                 .build();
 
-        Assert.assertEquals(commonIseClient.getAppId(), appId);
-        Assert.assertEquals(commonIseClient.getApiKey(), apiKey);
-        Assert.assertEquals(commonIseClient.getResultLevel(), "entirety");
+        Assert.assertEquals(iseCommonClient.getAppId(), appId);
+        Assert.assertEquals(iseCommonClient.getApiKey(), apiKey);
+        Assert.assertEquals(iseCommonClient.getResultLevel(), "entirety");
     }
 
     @Test
     public void testParamBuild() {
-        CommonIseClient commonIseClient = new CommonIseClient.Builder()
+        IseCommonClient iseCommonClient = new IseCommonClient.Builder()
                 .appId(appId).apiKey(apiKey).aue("raw").speexSize("70")
                 .resultLevel("simple").language("zh_cn").category("read_sentence")
                 .extraAbility("multi_dimension").text("今天天气怎么样？")
                 .build();
 
-        Assert.assertEquals(commonIseClient.getAppId(), appId);
-        Assert.assertEquals(commonIseClient.getApiKey(), apiKey);
-        Assert.assertEquals(commonIseClient.getAue(), "raw");
-        Assert.assertEquals(commonIseClient.getSpeexSize(), "70");
-        Assert.assertEquals(commonIseClient.getResultLevel(), "simple");
-        Assert.assertEquals(commonIseClient.getLanguage(), "zh_cn");
-        Assert.assertEquals(commonIseClient.getCategory(), "read_sentence");
-        Assert.assertEquals(commonIseClient.getExtraAbility(), "multi_dimension");
-        Assert.assertEquals(commonIseClient.getText(), "今天天气怎么样？");
+        Assert.assertEquals(iseCommonClient.getAppId(), appId);
+        Assert.assertEquals(iseCommonClient.getApiKey(), apiKey);
+        Assert.assertEquals(iseCommonClient.getAue(), "raw");
+        Assert.assertEquals(iseCommonClient.getSpeexSize(), "70");
+        Assert.assertEquals(iseCommonClient.getResultLevel(), "simple");
+        Assert.assertEquals(iseCommonClient.getLanguage(), "zh_cn");
+        Assert.assertEquals(iseCommonClient.getCategory(), "read_sentence");
+        Assert.assertEquals(iseCommonClient.getExtraAbility(), "multi_dimension");
+        Assert.assertEquals(iseCommonClient.getText(), "今天天气怎么样？");
     }
 
     @Test
     public void testSuccessByFile() throws IOException, HttpException {
-        CommonIseClient commonIseClient = new CommonIseClient.Builder()
+        IseCommonClient iseCommonClient = new IseCommonClient.Builder()
                 .appId(appId).apiKey(apiKey).aue("raw").speexSize("70")
                 .resultLevel("simple").language("zh_cn").category("read_sentence")
                 .extraAbility("multi_dimension").text("今天天气怎么样？")
                 .build();
 
-        String result = commonIseClient.send(new File(filePath));
+        String result = iseCommonClient.send(new File(filePath));
         System.out.println("返回结果: " + result);
     }
 
     @Test
     public void testSuccessByStream() throws IOException, HttpException {
-        CommonIseClient commonIseClient = new CommonIseClient.Builder()
+        IseCommonClient iseCommonClient = new IseCommonClient.Builder()
                 .appId(appId).apiKey(apiKey).aue("raw").speexSize("70")
                 .resultLevel("simple").language("zh_cn").category("read_sentence")
                 .extraAbility("multi_dimension").text("今天天气怎么样？")
                 .build();
         InputStream inputStream = new FileInputStream(new File(filePath));
-        String result = commonIseClient.send(inputStream);
+        String result = iseCommonClient.send(inputStream);
         System.out.println("返回结果: " + result);
     }
 
     @Test
     public void testSuccessByString() throws IOException, HttpException {
-        CommonIseClient commonIseClient = new CommonIseClient.Builder()
+        IseCommonClient iseCommonClient = new IseCommonClient.Builder()
                 .appId(appId).apiKey(apiKey).aue("raw").speexSize("70")
                 .resultLevel("simple").language("zh_cn").category("read_sentence")
                 .extraAbility("multi_dimension").text("今天天气怎么样？")
@@ -95,19 +95,19 @@ public class CommonIseTest {
 
         InputStream inputStream = new FileInputStream(new File(filePath));
         byte[] bytes = IOUtils.readFully(inputStream, -1, true);
-        String result = commonIseClient.send(new String(Base64.encodeBase64(bytes), "UTF-8"));
+        String result = iseCommonClient.send(new String(Base64.encodeBase64(bytes), "UTF-8"));
         System.out.println("返回结果: " + result);
     }
 
     @Test
     public void testSendNull() throws IOException, HttpException {
-        CommonIseClient commonIseClient = new CommonIseClient.Builder()
+        IseCommonClient iseCommonClient = new IseCommonClient.Builder()
                 .appId(appId).apiKey(apiKey).aue("raw").speexSize("70")
                 .resultLevel("simple").language("zh_cn").category("read_sentence")
                 .extraAbility("multi_dimension").text("今天天气怎么样？")
                 .build();
 
-        String result = commonIseClient.send(" ");
+        String result = iseCommonClient.send(" ");
         System.out.println("返回结果: " + result);
     }
 }

@@ -39,3 +39,11 @@
 
 [8、文本纠错文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/TEXT_CORRECTION.md)
 
+
+[9、语音评测（普通版）](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/ISE_COMMON.md)
+
+
+[10、性别年龄识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/IGR.md)
+
+
+[11、歌曲识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/QBH.md)

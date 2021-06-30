@@ -18,11 +18,11 @@ import java.util.Objects;
 
 /**
  * @author: <flhong2@iflytek.com>
- * @description: 歌曲识别
+ * @description: 语音评测（普通版）
  * @version: v1.0
  * @create: 2021-06-03 20:28
  **/
-public class CommonIseClient {
+public class IseCommonClient {
 
     /**
      * 服务请求地址
@@ -101,7 +101,7 @@ public class CommonIseClient {
 
     private HttpConnector connector;
 
-    public CommonIseClient(Builder builder) {
+    public IseCommonClient(Builder builder) {
         this.hostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
@@ -143,7 +143,7 @@ public class CommonIseClient {
      */
     public String send() throws IOException, HttpException {
 
-        Map<String,String> param = new HashMap<>();
+        Map<String,String> param = new HashMap<>(16);
         param.put("audio", audio);
         param.put("text", text);
         String result = connector.post(this.hostUrl, BuildHttpHeader.buildHttpHeader(paramJson.toString(), apiKey, appId), param);
@@ -232,7 +232,7 @@ public class CommonIseClient {
          */
         private Integer retryCount = 3;
 
-        public CommonIseClient build() {
+        public IseCommonClient build() {
 
             if (Objects.nonNull(paramJson)) {
                 paramJson.addProperty("aue", aue);
@@ -244,91 +244,91 @@ public class CommonIseClient {
             }
 
             this.connector = HttpConnector.build(maxConnections, connTimeout, soTimeout, retryCount);
-            return new CommonIseClient(this);
+            return new IseCommonClient(this);
         }
 
-        public CommonIseClient.Builder hostUrl(String hostUrl) {
+        public IseCommonClient.Builder hostUrl(String hostUrl) {
             this.hostUrl = hostUrl;
             return this;
         }
 
-        public CommonIseClient.Builder appId(String appId) {
+        public IseCommonClient.Builder appId(String appId) {
             this.appId = appId;
             return this;
         }
 
-        public CommonIseClient.Builder apiKey(String apiKey) {
+        public IseCommonClient.Builder apiKey(String apiKey) {
             this.apiKey = apiKey;
             return this;
         }
 
-        public CommonIseClient.Builder paramJson(JsonObject paramJson) {
+        public IseCommonClient.Builder paramJson(JsonObject paramJson) {
             this.paramJson = paramJson;
             return this;
         }
 
-        public CommonIseClient.Builder aue(String aue) {
+        public IseCommonClient.Builder aue(String aue) {
             this.aue = aue;
             this.paramJson.addProperty("aue", aue);
             return this;
         }
 
-        public CommonIseClient.Builder speexSize(String speexSize) {
+        public IseCommonClient.Builder speexSize(String speexSize) {
             this.speexSize = speexSize;
             this.paramJson.addProperty("speex_size", speexSize);
             return this;
         }
 
-        public CommonIseClient.Builder resultLevel(String resultLevel) {
+        public IseCommonClient.Builder resultLevel(String resultLevel) {
             this.resultLevel = resultLevel;
             this.paramJson.addProperty("result_level", resultLevel);
             return this;
         }
 
-        public CommonIseClient.Builder language(String language) {
+        public IseCommonClient.Builder language(String language) {
             this.language = language;
             this.paramJson.addProperty("language", language);
             return this;
         }
 
-        public CommonIseClient.Builder category(String category) {
+        public IseCommonClient.Builder category(String category) {
             this.category = category;
             this.paramJson.addProperty("category", category);
             return this;
         }
 
-        public CommonIseClient.Builder extraAbility(String extraAbility) {
+        public IseCommonClient.Builder extraAbility(String extraAbility) {
             this.extraAbility = extraAbility;
             this.paramJson.addProperty("extra_ability", extraAbility);
             return this;
         }
 
-        public CommonIseClient.Builder audio(String audio) {
+        public IseCommonClient.Builder audio(String audio) {
             this.audio = audio;
             return this;
         }
 
-        public CommonIseClient.Builder text(String text) {
+        public IseCommonClient.Builder text(String text) {
             this.text = text;
             return this;
         }
 
-        public CommonIseClient.Builder maxConnections(Integer maxConnections) {
+        public IseCommonClient.Builder maxConnections(Integer maxConnections) {
             this.maxConnections = maxConnections;
             return this;
         }
 
-        public CommonIseClient.Builder connTimeout(Integer connTimeout) {
+        public IseCommonClient.Builder connTimeout(Integer connTimeout) {
             this.connTimeout = connTimeout;
             return this;
         }
 
-        public CommonIseClient.Builder soTimeout(Integer soTimeout) {
+        public IseCommonClient.Builder soTimeout(Integer soTimeout) {
             this.soTimeout = soTimeout;
             return this;
         }
 
-        public CommonIseClient.Builder retryCount(Integer retryCount) {
+        public IseCommonClient.Builder retryCount(Integer retryCount) {
             this.retryCount = retryCount;
             return this;
         }
