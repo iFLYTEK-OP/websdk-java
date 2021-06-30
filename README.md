@@ -30,3 +30,7 @@
 
 [5、语音评测文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/ISE.md)
 
+
+[6、自然语言处理文档](https://github.com/iFLYTEK-OP/websdk-java/blob/master/LTP.md)
+
+
