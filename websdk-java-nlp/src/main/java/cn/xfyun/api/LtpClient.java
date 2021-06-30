@@ -84,6 +84,7 @@ public class LtpClient {
          * 语义角色标注(srl)
          * 语义依存 (依存树) 分析(sdp)
          * 语义依存 (依存图) 分析(sdgp)
+         * 关键词提取(ke)
          */
         private String func;
 

@@ -1,7 +1,7 @@
 package cn.xfyun.api;
 
+import config.PropertiesConfig;
 import cn.xfyun.common.IgrConstant;
-import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.model.response.igr.IgrResponseData;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.service.igr.AbstractIgrWebSocketListener;
@@ -147,7 +147,7 @@ public class IgrClientTest {
                 System.out.println("授权失败了!");
             }
         });
-        Thread.sleep(50000);
+//        Thread.sleep(50000);
     }
 
     @Test
@@ -169,7 +169,7 @@ public class IgrClientTest {
 
             }
         });
-        Thread.sleep(50000);
+//        Thread.sleep(50000);
     }
 
     @Test

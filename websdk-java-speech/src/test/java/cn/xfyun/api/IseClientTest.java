@@ -1,7 +1,7 @@
 package cn.xfyun.api;
 
+import config.PropertiesConfig;
 import cn.xfyun.common.IseConstant;
-import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.model.response.ise.*;
 import cn.xfyun.service.ise.AbstractIseWebSocketListener;
 import com.google.gson.JsonObject;
@@ -195,7 +195,7 @@ public class IseClientTest {
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
         });
-        Thread.sleep(50000);
+        Thread.sleep(10000);
     }
 
     @Test
@@ -229,7 +229,7 @@ public class IseClientTest {
                 System.out.println(response);
             }
         });
-        Thread.sleep(50000);
+        Thread.sleep(10000);
     }
 
     @Test
@@ -264,7 +264,7 @@ public class IseClientTest {
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
         });
-        Thread.sleep(30000);
+//        Thread.sleep(30000);
     }
 
     @Test

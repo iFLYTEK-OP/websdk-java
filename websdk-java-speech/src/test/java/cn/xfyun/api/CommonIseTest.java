@@ -1,7 +1,7 @@
 package cn.xfyun.api;
 
-import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.exception.HttpException;
+import config.PropertiesConfig;
 import org.apache.commons.codec.binary.Base64;
 import org.junit.Assert;
 import org.junit.Test;

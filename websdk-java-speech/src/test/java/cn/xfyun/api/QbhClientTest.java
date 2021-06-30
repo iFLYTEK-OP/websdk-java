@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.config.PropertiesConfig;
+import config.PropertiesConfig;
 import cn.xfyun.exception.HttpException;
 import org.junit.Assert;
 import org.junit.Test;
