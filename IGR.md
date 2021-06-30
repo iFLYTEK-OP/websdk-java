@@ -5,7 +5,7 @@
 ```java
 import cn.xfyun.api.IgrClient;
 
-// 设置评测参数,这里的appid,apiKey,apiSecret是在开放平台控制台获得
+// 设置性别年龄识别参数,这里的appid,apiKey,apiSecret是在开放平台控制台获得
  IgrClient igrClient = new IgrClient.Builder()
                 //... 这里可以继续设置评测相关参数，参数见下面表格
                 .build();
