@@ -294,7 +294,7 @@ public class IatClientTest {
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
         });
-        Thread.sleep(5000);
+//        Thread.sleep(5000);
     }
 
     @Test
