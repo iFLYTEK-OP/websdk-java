@@ -47,3 +47,6 @@
 
 
 [11、歌曲识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/QBH.md)
+
+
+[12、小牛翻译及自研机器翻译](https://github.com/iFLYTEK-OP/websdk-java/blob/master/TRANSLATE.md)
