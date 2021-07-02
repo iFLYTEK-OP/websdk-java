@@ -15,7 +15,7 @@ import java.util.Map;
  * @version 1.0
  * @date 2021/6/11 10:43
  */
-public class SaClinet {
+public class SaClient {
 
 	private static final String TYPE = "{\"type\":\"dependent\"}";
 
@@ -134,7 +134,7 @@ public class SaClinet {
 		this.retryCount = retryCount;
 	}
 
-	public SaClinet(SaClinet.Builder builder) {
+	public SaClient(SaClient.Builder builder) {
 		this.hostUrl = builder.hostUrl;
 		this.appId = builder.appId;
 		this.apiKey = builder.apiKey;
@@ -188,31 +188,31 @@ public class SaClinet {
 			this.apiKey = apiKey;
 		}
 
-		public SaClinet build() {
-			return new SaClinet(this);
+		public SaClient build() {
+			return new SaClient(this);
 		}
 
-		public SaClinet.Builder hostUrl(String hostUrl) {
+		public SaClient.Builder hostUrl(String hostUrl) {
 			this.hostUrl = hostUrl;
 			return this;
 		}
 
-		public SaClinet.Builder maxConnections(int maxConnections) {
+		public SaClient.Builder maxConnections(int maxConnections) {
 			this.maxConnections = maxConnections;
 			return this;
 		}
 
-		public SaClinet.Builder connTimeout(int connTimeout) {
+		public SaClient.Builder connTimeout(int connTimeout) {
 			this.connTimeout = connTimeout;
 			return this;
 		}
 
-		public SaClinet.Builder retryCount(int retryCount) {
+		public SaClient.Builder retryCount(int retryCount) {
 			this.retryCount = retryCount;
 			return this;
 		}
 
-		public SaClinet.Builder socketTimeout(int socketTimeout) {
+		public SaClient.Builder socketTimeout(int socketTimeout) {
 			this.socketTimeout = socketTimeout;
 			return this;
 		}
