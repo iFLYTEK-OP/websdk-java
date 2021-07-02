@@ -1,6 +1,7 @@
 package cn.xfyun.api;
 
 import cn.xfyun.config.Client;
+import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.Hmac256Signature;
 import cn.xfyun.util.AuthUtil;
 import okhttp3.OkHttpClient;
@@ -28,6 +29,8 @@ public class WebSocketClient extends Client {
     protected OkHttpClient okHttpClient;
 
     protected WebSocket webSocket;
+
+    protected AbstractSignature signature;
 
 
     /**

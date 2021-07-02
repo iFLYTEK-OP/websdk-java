@@ -1,6 +1,5 @@
 package cn.xfyun.config;
 
-import cn.xfyun.model.sign.AbstractSignature;
 
 /**
  * @author <ydwang16@iflytek.com>
@@ -17,5 +16,5 @@ public class Client {
 
     protected String apiSecret;
 
-    protected AbstractSignature signature;
+
 }
