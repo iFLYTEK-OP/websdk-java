@@ -1,7 +1,8 @@
 package api;
 
-import cn.xfyun.api.SaClinet;
+import cn.xfyun.api.SaClient;
 import config.PropertiesConfig;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -29,16 +30,30 @@ public class SaClientTest {
 	 */
 	@Test
 	public void testParams() {
-		SaClinet saClinet = new SaClinet.Builder(appId, apiKey)
+		SaClient saClient = new SaClient.Builder(appId, apiKey)
 				.hostUrl("https://ltpapi.xfyun.cn/v2/sa")
 				.connTimeout(1)
 				.maxConnections(2)
 				.retryCount(3)
 				.socketTimeout(4)
 				.build();
-		assertEquals(appId, Whitebox.getInternalState(saClinet, "appId"));
-		assertEquals(apiKey, Whitebox.getInternalState(saClinet, "apiKey"));
-		assertEquals("https://ltpapi.xfyun.cn/v2/sa", Whitebox.getInternalState(saClinet, "hostUrl"));
+		assertEquals(appId, Whitebox.getInternalState(saClient, "appId"));
+		assertEquals(apiKey, Whitebox.getInternalState(saClient, "apiKey"));
+		assertEquals("https://ltpapi.xfyun.cn/v2/sa", Whitebox.getInternalState(saClient, "hostUrl"));
+	}
+
+	@Test
+	public void testParams1() {
+		SaClient saClient = new SaClient.Builder(appId, apiKey)
+				.hostUrl("https://ltpapi.xfyun.cn/v2/sa")
+				.connTimeout(1)
+				.maxConnections(2)
+				.retryCount(3)
+				.socketTimeout(4)
+				.build();
+		Assert.assertEquals(2, saClient.getConnTimeout());
+		Assert.assertEquals(3, saClient.getRetryCount());
+		Assert.assertEquals("https://ltpapi.xfyun.cn/v2/sa", saClient.getHostUrl());
 	}
 
 	/**
@@ -48,9 +63,20 @@ public class SaClientTest {
 	 */
 	@Test
 	public void test() throws Exception {
-		SaClinet saClinet = new SaClinet.Builder(appId, apiKey)
+		SaClient saClinet = new SaClient.Builder(appId, apiKey)
 				.build();
 		System.out.println(saClinet.send("你好，李焕英"));
 	}
+
+
+	@Test
+	public void test1() throws Exception {
+		SaClient saClinet = new SaClient.Builder(appId, apiKey)
+				.maxConnections(2)
+				.retryCount(3)
+				.build();
+		System.out.println(saClinet.send("websdk java"));
+	}
+
 
 }
