@@ -1,5 +1,6 @@
 package cn.xfyun.api;
 
+import cn.xfyun.base.webscoket.WebSocketClient;
 import cn.xfyun.common.IseConstant;
 import cn.xfyun.service.ise.IseSendTask;
 import com.google.gson.JsonObject;
@@ -262,6 +263,7 @@ public class IseClient extends WebSocketClient {
         executorService.submit(iseSendTask);
     }
 
+    @Override
     public String getAppId() {
         return appId;
     }
@@ -338,6 +340,7 @@ public class IseClient extends WebSocketClient {
         return plev;
     }
 
+    @Override
     public String getHostUrl() {
         return originHostUrl;
     }
@@ -346,10 +349,12 @@ public class IseClient extends WebSocketClient {
         return originHostUrl;
     }
 
+    @Override
     public String getApiKey() {
         return apiKey;
     }
 
+    @Override
     public String getApiSecret() {
         return apiSecret;
     }

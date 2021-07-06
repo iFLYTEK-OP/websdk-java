@@ -15,6 +15,7 @@
         <module>websdk-java-speech</module>
         <module>websdk-java-core</module>
         <module>websdk-java-nlp</module>
+        <module>websdk-java-face-detector</module>
     </modules>
 
     <scm>

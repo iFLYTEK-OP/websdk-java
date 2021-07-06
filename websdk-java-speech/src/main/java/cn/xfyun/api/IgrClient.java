@@ -1,5 +1,6 @@
 package cn.xfyun.api;
 
+import cn.xfyun.base.webscoket.WebSocketClient;
 import cn.xfyun.common.IgrConstant;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.Hmac256Signature;
@@ -161,6 +162,7 @@ public class IgrClient extends WebSocketClient {
         executorService.submit(igrSendTask);
     }
 
+    @Override
     public String getAppId() {
         return this.appId;
     }
@@ -177,6 +179,7 @@ public class IgrClient extends WebSocketClient {
         return this.rate;
     }
 
+    @Override
     public String getHostUrl() {
         return this.originHostUrl;
     }
@@ -185,10 +188,12 @@ public class IgrClient extends WebSocketClient {
         return this.originHostUrl;
     }
 
+    @Override
     public String getApiKey() {
         return this.apiKey;
     }
 
+    @Override
     public String getApiSecret() {
         return this.apiSecret;
     }

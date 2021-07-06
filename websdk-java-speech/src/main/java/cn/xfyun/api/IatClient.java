@@ -1,5 +1,6 @@
 package cn.xfyun.api;
 
+import cn.xfyun.base.webscoket.WebSocketClient;
 import cn.xfyun.service.iat.IatSendTask;
 import cn.xfyun.model.sign.AbstractSignature;
 import okhttp3.OkHttpClient;
@@ -235,6 +236,7 @@ public class IatClient extends WebSocketClient {
         executorService.submit(iatSendTask);
     }
 
+    @Override
     public String getHostUrl() {
         return originHostUrl;
     }
@@ -243,14 +245,17 @@ public class IatClient extends WebSocketClient {
         return originHostUrl;
     }
 
+    @Override
     public String getAppId() {
         return appId;
     }
 
+    @Override
     public String getApiSecret() {
         return apiSecret;
     }
 
+    @Override
     public String getApiKey() {
         return apiKey;
     }

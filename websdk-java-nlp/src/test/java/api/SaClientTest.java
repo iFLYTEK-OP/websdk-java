@@ -1,6 +1,6 @@
 package api;
 
-import cn.xfyun.api.SaClinet;
+import cn.xfyun.api.SaClient;
 import config.PropertiesConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SaClientTest.class})
-@PowerMockIgnore("cn.xfyun.util.HttpConnector")
+@PowerMockIgnore("javax.net.ssl.*")
 public class SaClientTest {
 
 	private static final String appId = PropertiesConfig.getAppId();
@@ -30,30 +30,27 @@ public class SaClientTest {
 	 */
 	@Test
 	public void testParams() {
-		SaClinet saClinet = new SaClinet.Builder(appId, apiKey)
-				.hostUrl("https://ltpapi.xfyun.cn/v2/sa")
-				.connTimeout(1)
-				.maxConnections(2)
-				.retryCount(3)
-				.socketTimeout(4)
+		SaClient saClient = new SaClient
+				.Builder(appId, apiKey)
 				.build();
-		assertEquals(appId, Whitebox.getInternalState(saClinet, "appId"));
-		assertEquals(apiKey, Whitebox.getInternalState(saClinet, "apiKey"));
-		assertEquals("https://ltpapi.xfyun.cn/v2/sa", Whitebox.getInternalState(saClinet, "hostUrl"));
+		assertEquals(appId, saClient.getAppId());
+		assertEquals(apiKey, saClient.getApiKey());
+		assertEquals("https://ltpapi.xfyun.cn/v2/sa", Whitebox.getInternalState(saClient, "hostUrl"));
 	}
 
 	@Test
-	public void testParams1() {
-		SaClinet saClinet = new SaClinet.Builder(appId, apiKey)
-				.hostUrl("https://ltpapi.xfyun.cn/v2/sa")
-				.connTimeout(1)
-				.maxConnections(2)
-				.retryCount(3)
-				.socketTimeout(4)
+	public void testBuildParams() {
+		SaClient saClient = new SaClient
+				.Builder(appId, apiKey)
+				.connectTimeout(1)
+				.readTimeout(2)
+				.callTimeout(3)
+				.writeTimeout(4)
 				.build();
-		Assert.assertEquals(2, saClinet.getConnTimeout());
-		Assert.assertEquals(3, saClinet.getRetryCount());
-		Assert.assertEquals("https://ltpapi.xfyun.cn/v2/sa", saClinet.getHostUrl());
+		Assert.assertEquals(3, saClient.getCallTimeout());
+		Assert.assertEquals(2, saClient.getReadTimeout());
+		Assert.assertEquals(4, saClient.getWriteTimeout());
+		Assert.assertEquals(1, saClient.getConnectTimeout());
 	}
 
 	/**
@@ -63,19 +60,20 @@ public class SaClientTest {
 	 */
 	@Test
 	public void test() throws Exception {
-		SaClinet saClinet = new SaClinet.Builder(appId, apiKey)
+		SaClient saClient = new SaClient.Builder(appId, apiKey)
 				.build();
-		System.out.println(saClinet.send("你好，李焕英"));
+		System.out.println(saClient.send("你好，李焕英"));
 	}
 
 
 	@Test
 	public void test1() throws Exception {
-		SaClinet saClinet = new SaClinet.Builder(appId, apiKey)
-				.maxConnections(2)
-				.retryCount(3)
+		SaClient saClient = new SaClient.Builder(appId, apiKey)
+				.connectTimeout(3)
+				.writeTimeout(2)
+				.readTimeout(1)
 				.build();
-		System.out.println(saClinet.send("websdk java"));
+		System.out.println(saClient.send("websdk java"));
 	}
 
 

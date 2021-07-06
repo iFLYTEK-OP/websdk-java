@@ -1,5 +1,6 @@
 package cn.xfyun.api;
 
+import cn.xfyun.base.webscoket.WebSocketClient;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.RtasrSignature;
 import cn.xfyun.service.rta.AbstractRtasrWebSocketListener;
@@ -161,7 +162,8 @@ public class RtasrClient extends WebSocketClient {
 		return pd;
 	}
 
-	public String getHostUrl() {
+	@Override
+    public String getHostUrl() {
 		return originHostUrl;
 	}
 
@@ -169,14 +171,17 @@ public class RtasrClient extends WebSocketClient {
 		return originHostUrl;
 	}
 
+	@Override
 	public String getAppId() {
 		return appId;
 	}
 
+	@Override
 	public String getApiSecret() {
 		return apiSecret;
 	}
 
+	@Override
 	public String getApiKey() {
 		return apiKey;
 	}

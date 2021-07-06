@@ -1,5 +1,6 @@
 package cn.xfyun.api;
 
+import cn.xfyun.base.webscoket.WebSocketClient;
 import com.google.gson.JsonObject;
 import cn.xfyun.service.tts.AbstractTtsWebSocketListener;
 import okhttp3.OkHttpClient;
@@ -139,14 +140,17 @@ public class TtsClient extends WebSocketClient {
         this.ent = builder.ent;
     }
 
+    @Override
     public String getAppId() {
         return appId;
     }
 
+    @Override
     public String getApiKey() {
         return apiKey;
     }
 
+    @Override
     public String getApiSecret() {
         return apiSecret;
     }

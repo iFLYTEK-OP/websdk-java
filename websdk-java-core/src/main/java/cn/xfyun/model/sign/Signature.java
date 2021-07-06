@@ -42,16 +42,17 @@ public class Signature {
             url = new URL(httpRequestUrl);
             //获取当前日期并格式化
             SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
-            format.setTimeZone(TimeZone.getTimeZone("GMT"));
+            format.setTimeZone(TimeZone.getTimeZone("UTC"));
             String date = format.format(new Date());
 
             String host = url.getHost();
-            StringBuilder builder = new StringBuilder("host: ").append(host).append("\n")
-                    .append("date: ").append(date).append("\n")
-                    .append(requestMethod + " ").append(url.getPath()).append(" HTTP/1.1");
+            StringBuilder builder = new StringBuilder().
+                    append("host: ").append(host).append("\n").//
+                    append("date: ").append(date).append("\n").//
+                    append(requestMethod).append(" ").append(url.getPath()).append(" HTTP/1.1");
             Charset charset = Charset.forName("UTF-8");
-            Mac mac = Mac.getInstance("hmacsha256");
             SecretKeySpec spec = new SecretKeySpec(apiSecret.getBytes(charset), "hmacsha256");
+            Mac mac = Mac.getInstance("hmacsha256");
             mac.init(spec);
             byte[] hexDigits = mac.doFinal(builder.toString().getBytes(charset));
             String sha = Base64.getEncoder().encodeToString(hexDigits);
@@ -150,7 +151,7 @@ public class Signature {
     public static Map<String, String> signHttpHeaderCheckSum(String appId, String apiKey, String param, String contentType) throws UnsupportedEncodingException {
         String curTime = System.currentTimeMillis() / 1000L + "";
 
-        String paramBase64 = new String(org.apache.commons.codec.binary.Base64.encodeBase64(param.getBytes("UTF-8")));
+        String paramBase64 = Base64.getEncoder().encodeToString(param.getBytes("UTF-8"));
         String checkSum = DigestUtils.md5Hex(apiKey + curTime + paramBase64);
         Map<String, String> header = new HashMap<>();
         if (StringUtils.isNullOrEmpty(contentType)) {
