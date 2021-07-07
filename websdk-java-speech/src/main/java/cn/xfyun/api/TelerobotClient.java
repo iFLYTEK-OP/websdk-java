@@ -50,7 +50,7 @@ public class TelerobotClient {
     /**
      * 获取token
      */
-    public TelerobotResponse<TelerobotToken> token() throws IOException, HttpException {
+    public TelerobotResponse<TelerobotToken> token() throws IOException {
         hostUrl = "https://callapi.xfyun.cn/v1/service/v1/aicall/oauth/v1/token";
         Map<String, String> body = new HashMap<>();
         body.put("app_key", appKey);
@@ -63,7 +63,7 @@ public class TelerobotClient {
     /**
      * 查询配置
      */
-    public TelerobotResponse<TelerobotQuery> query(String token, Integer type) throws IOException, HttpException {
+    public TelerobotResponse<TelerobotQuery> query(String token, Integer type) throws IOException {
         hostUrl = "https://callapi.xfyun.cn/v1/service/v1/aicall/config/v1/query?token="+token;
         String param = "{\"type\":\"" + type +"\"}";
         String result = connector.postByJson(hostUrl, param);
@@ -74,10 +74,9 @@ public class TelerobotClient {
     /**
      * 直接外呼
      */
-    public TelerobotResponse<TelerobotCallout> callout(String token, Callout callout) throws IOException, HttpException {
+    public TelerobotResponse<TelerobotCallout> callout(String token, Callout callout) throws IOException {
         hostUrl = "https://callapi.xfyun.cn/v1/service/v1/aicall/outbound/v1/task/callout?token="+token;
         String result = connector.postByJson(hostUrl, StringUtils.gson.toJson(callout));
-        System.out.println("result:" + result);
         return StringUtils.gson.fromJson(result, new TypeToken<TelerobotResponse<TelerobotCallout>>() {}.getType());
     }
 
@@ -85,7 +84,7 @@ public class TelerobotClient {
     /**
      * 创建外呼任务
      */
-    public TelerobotResponse<TelerobotCreate> createTask(String token, TaskCreate taskCreate) throws IOException, HttpException {
+    public TelerobotResponse<TelerobotCreate> createTask(String token, TaskCreate taskCreate) throws IOException {
         hostUrl = "https://callapi.xfyun.cn/v1/service/v1/aicall/outbound/v1/task/create?token="+token;
         String result = connector.postByJson(hostUrl, StringUtils.gson.toJson(taskCreate));
         return StringUtils.gson.fromJson(result,  new TypeToken<TelerobotResponse<TelerobotCreate>>() {}.getType());
@@ -95,7 +94,7 @@ public class TelerobotClient {
      * 提交任务数据
      * 向指定任务提交号码数据，可以分多批次提交
      */
-    public TelerobotResponse<TelerobotCallout> insertTask(String token, TaskInsert taskInsert) throws IOException, HttpException {
+    public TelerobotResponse<TelerobotCallout> insertTask(String token, TaskInsert taskInsert) throws IOException {
         hostUrl = "https://callapi.xfyun.cn/v1/service/v1/aicall/outbound/v1/task/insert?token=" + token;
         String result = connector.postByJson(hostUrl, StringUtils.gson.toJson(taskInsert));
         return StringUtils.gson.fromJson(result, new TypeToken<TelerobotResponse<TelerobotCallout>>() {}.getType());
@@ -105,40 +104,40 @@ public class TelerobotClient {
      * 启动外呼任务
      * 启动外呼任务，任务将按照预设的开始时间和工作时段进行外呼。 任务启动之后，将不能再提交号码数据。
      */
-    public TelerobotResponse startTask(String token, String taskId) throws IOException, HttpException {
-        String param = "{\"taskId\":\"" + taskId +"\"}";
+    public TelerobotResponse<String> startTask(String token, String taskId) throws IOException {
+        String param = "{\"task_id\":\"" + taskId +"\"}";
         hostUrl = "https://callapi.xfyun.cn/v1/service/v1/aicall/outbound/v1/task/start?token="+token;
         String result = connector.postByJson(hostUrl, param);
-        return StringUtils.gson.fromJson(result, TelerobotResponse.class);
+        return StringUtils.gson.fromJson(result, new TypeToken<TelerobotResponse<Object>>() {}.getType());
     }
 
     /**
      * 暂停外呼任务
      * 功能：暂时停止任务呼叫。可以通过启动外呼任务接口恢复任务呼叫
      */
-    public TelerobotResponse pauseTask(String token, String taskId) throws IOException, HttpException {
-        String param = "{\"taskId\":\"" + taskId +"\"}";
+    public TelerobotResponse<String> pauseTask(String token, String taskId) throws IOException {
+        String param = "{\"task_id\":\"" + taskId +"\"}";
         hostUrl = "https://callapi.xfyun.cn/v1/service/v1/aicall/outbound/v1/task/pause?token="+token;
         String result = connector.postByJson(hostUrl, param);
-        return StringUtils.gson.fromJson(result, TelerobotResponse.class);
+        return StringUtils.gson.fromJson(result, new TypeToken<TelerobotResponse<Object>>() {}.getType());
     }
 
     /**
      * 删除外呼任务
      * 功能：对外呼任务进行强制停止并删除，删除后不能再次启动
      */
-    public TelerobotResponse deleteTask(String token, String taskId) throws IOException, HttpException {
-        String param = "{\"taskId\":\"" + taskId +"\"}";
+    public TelerobotResponse<String> deleteTask(String token, String taskId) throws IOException {
+        String param = "{\"task_id\":\"" + taskId +"\"}";
         hostUrl = "https://callapi.xfyun.cn/v1/service/v1/aicall/outbound/v1/task/delete?token="+token;
         String result = connector.postByJson(hostUrl, param);
-        return StringUtils.gson.fromJson(result, TelerobotResponse.class);
+        return StringUtils.gson.fromJson(result, new TypeToken<TelerobotResponse<Object>>() {}.getType());
     }
 
     /**
      * 查询任务
      * 功能：查询任务信息和任务列表
      */
-    public TelerobotResponse<TelerobotTaskQuery> queryTask(String token, TaskQuery taskQuery) throws IOException, HttpException {
+    public TelerobotResponse<TelerobotTaskQuery> queryTask(String token, TaskQuery taskQuery) throws IOException {
         hostUrl = "https://callapi.xfyun.cn/v1/service/v1/aicall/outbound/v1/task/query?token="+token;
         String result = connector.postByJson(hostUrl, StringUtils.gson.toJson(taskQuery));
         return StringUtils.gson.fromJson(result, new TypeToken<TelerobotResponse<TelerobotTaskQuery>>() {}.getType());

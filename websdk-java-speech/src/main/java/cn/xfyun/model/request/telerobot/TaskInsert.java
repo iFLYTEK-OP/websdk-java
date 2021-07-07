@@ -19,7 +19,7 @@ public class TaskInsert {
     /**
      * 数据行	单次上限50条
      */
-    private String[] call_list;
+    private String[][] call_list;
 
 
     public String getTask_id() {
@@ -38,11 +38,11 @@ public class TaskInsert {
         this.call_column = call_column;
     }
 
-    public String[] getCall_list() {
+    public String[][] getCall_list() {
         return call_list;
     }
 
-    public void setCall_list(String[] call_list) {
+    public void setCall_list(String[][] call_list) {
         this.call_list = call_list;
     }
 }
