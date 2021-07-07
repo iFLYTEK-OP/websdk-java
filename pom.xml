@@ -16,6 +16,7 @@
         <module>websdk-java-core</module>
         <module>websdk-java-nlp</module>
         <module>websdk-java-face-detector</module>
+        <module>wehsdk-java-ocr</module>
     </modules>
 
     <scm>
