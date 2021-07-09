@@ -21,8 +21,65 @@ import java.util.Map;
  */
 public class FingerOcrClient extends HttpClient {
 
+    /**
+     *   根据指尖位置选取ROI（感兴趣区域）的宽度倍数，
+     *   即设置ROI的宽度是手指宽度的几倍（宽度= cut_w_scale * 手指宽度），默认3.0，取值范围：[0,65536]
+     */
+    private float cutWScale;
+
+    /**
+     *  根据指尖位置选取ROI（感兴趣区域）的高度倍数，
+     *  即设置ROI的高度是手指宽度的几倍（高度= cut_h_scale * 手指宽度），默认2.0，取值范围：[0,65536]
+     */
+    private float cutHScale;
+
+    /**
+     *  根据指尖位置选取ROI（感兴趣区域）的往下平移的倍数，
+     *  即设置ROI往下平移的距离是ROI宽度的几倍（平移量= cut_shift * 手指宽度），默认0.3，取值范围：[0,1]
+     */
+    private float cutShift;
+
+    /**
+     *  引擎内部处理模块输入图像宽度，取值范围：[1,65536]。
+     *  若应用端上传图像宽为input_w，scale为缩放系数，则resize_w=input_w*scale。
+     *  若不缩放直接按原图处理，引擎耗时会变长，建议根据实际情况测试以寻求最佳值
+     */
+    private int resizeW;
+
+    /**
+     *  引擎内部处理模块输入图像高度，取值范围：[1,65536]。
+     *  若应用端上传图像高为input_h，scale为缩放系数，则resize_h=input_h*scale。
+     *  若不缩放直接按原图处理，引擎耗时会变长，建议根据实际情况测试以寻求最佳值
+     */
+    private int resizeH;
+
+    public float getCutWScale() {
+        return cutWScale;
+    }
+
+    public float getCutHScale() {
+        return cutHScale;
+    }
+
+    public float getCutShift() {
+        return cutShift;
+    }
+
+    public int getResizeW() {
+        return resizeW;
+    }
+
+    public int getResizeH() {
+        return resizeH;
+    }
+
     public FingerOcrClient(Builder builder) {
         super(builder);
+        this.cutHScale = builder.cutHScale;
+        this.cutWScale = builder.cutWScale;
+        this.cutShift = builder.cutShift;
+        this.resizeH = builder.resizeH;
+        this.resizeW = builder.resizeW;
     }
 
     public String fingerOcr(String imageBase64) throws Exception {
@@ -42,11 +99,11 @@ public class FingerOcrClient extends HttpClient {
         business.addProperty("ent", "fingerocr");
         business.addProperty("mode", "finger+ocr");
         business.addProperty("method", "dynamic");
-        //business.addProperty("cut_w_scale", 5.0);
-        //business.addProperty("cut_h_scale", 2);
-        //business.addProperty("cut_shift", 1);
-        business.addProperty("resize_w", 1088);
-        business.addProperty("resize_h", 1632);
+        business.addProperty("cut_w_scale", cutWScale);
+        business.addProperty("cut_h_scale", cutHScale);
+        business.addProperty("cut_shift", cutShift);
+        business.addProperty("resize_w", resizeW);
+        business.addProperty("resize_h", resizeH);
         //填充data
         data.addProperty("image", imageBase64);
 
@@ -62,8 +119,44 @@ public class FingerOcrClient extends HttpClient {
 
         private static final String HOST_URL = "https://tyocr.xfyun.cn/v2/ocr";
 
+        private float cutWScale = 3.0F;
+
+        private float cutHScale = 2.0F;
+
+        private float cutShift = 0.3F;
+
+        private int resizeW = 1088;
+
+        private int resizeH = 1632;
+
+
         public Builder(String appId, String apiKey, String apiSecret) {
             super(HOST_URL, appId, apiKey, apiSecret);
+        }
+
+        public Builder cutWScale(float cutWScale) {
+            this.cutWScale = cutWScale;
+            return this;
+        }
+
+        public Builder cutHScale(float cutHScale) {
+            this.cutHScale = cutHScale;
+            return this;
+        }
+
+        public Builder cutShift(float cutShift) {
+            this.cutShift = cutShift;
+            return this;
+        }
+
+        public Builder resizeW(int resizeW) {
+            this.resizeW = resizeW;
+            return this;
+        }
+
+        public Builder resizeH(int resizeH) {
+            this.resizeH = resizeH;
+            return this;
         }
 
         @Override

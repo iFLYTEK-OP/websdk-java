@@ -50,6 +50,11 @@ public class FingerOcrClientTest {
         FingerOcrClient client = new FingerOcrClient
                 .Builder(appId, apiKey, apiSecret)
                 .hostUrl("test.url")
+                .cutHScale(1.0f)
+                .cutWScale(1.0f)
+                .cutShift(1.0f)
+                .resizeH(1)
+                .resizeW(1)
                 .callTimeout(1)
                 .readTimeout(2)
                 .writeTimeout(3)
@@ -57,6 +62,11 @@ public class FingerOcrClientTest {
                 .retryOnConnectionFailure(true)
                 .build();
         Assert.assertEquals("test.url", client.getHostUrl());
+        Assert.assertEquals(1.0, client.getCutHScale(), 1.0f);
+        Assert.assertEquals(1.0, client.getCutWScale(), 1.0f);
+        Assert.assertEquals(1.0, client.getCutShift(), 1.0f);
+        Assert.assertEquals(1, client.getResizeH());
+        Assert.assertEquals(1, client.getResizeW());
         Assert.assertEquals(1, client.getCallTimeout());
         Assert.assertEquals(2, client.getReadTimeout());
         Assert.assertEquals(3, client.getWriteTimeout());
