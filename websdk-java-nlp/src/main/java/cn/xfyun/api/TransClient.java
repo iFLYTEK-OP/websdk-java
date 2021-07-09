@@ -1,7 +1,7 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.http.HttpRequestBuilder;
-import cn.xfyun.base.http.HttpRequestClient;
+import cn.xfyun.base.http.HttpBuilder;
+import cn.xfyun.base.http.HttpClient;
 import cn.xfyun.exception.HttpException;
 import cn.xfyun.model.sign.Signature;
 import com.google.gson.JsonObject;
@@ -25,7 +25,7 @@ import java.util.Map;
  * @description 翻译客户端
  * @date 2021/6/15
  */
-public class TransClient extends HttpRequestClient {
+public class TransClient extends HttpClient {
 
     /**
      *   源语种
@@ -106,7 +106,7 @@ public class TransClient extends HttpRequestClient {
         this.to = builder.to;
     }
 
-    public static final class Builder extends HttpRequestBuilder<Builder> {
+    public static final class Builder extends HttpBuilder<Builder> {
         /**
          * 自研机器翻译服务端地址
          */

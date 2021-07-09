@@ -1,7 +1,7 @@
 package cn.xfyun.base.http.platform;
 
 
-import cn.xfyun.base.http.HttpRequestClient;
+import cn.xfyun.base.http.HttpClient;
 import com.google.gson.JsonObject;
 
 /**
@@ -11,7 +11,7 @@ import com.google.gson.JsonObject;
  * @version 1.0
  * @date 2021/7/2 15:04
  */
-public abstract class PlatformHttpClient extends HttpRequestClient {
+public abstract class PlatformHttpClient extends HttpClient {
 
     /**
      * 服务引擎ID
@@ -48,7 +48,6 @@ public abstract class PlatformHttpClient extends HttpRequestClient {
         this.format = builder.getFormat();
     }
 
-
     public String getServiceId() {
         return serviceId;
     }
@@ -70,7 +69,6 @@ public abstract class PlatformHttpClient extends HttpRequestClient {
     }
 
     protected JsonObject buildHeader() {
-        /** header **/
         JsonObject header = new JsonObject();
         header.addProperty("app_id", appId);
         header.addProperty("status", status);

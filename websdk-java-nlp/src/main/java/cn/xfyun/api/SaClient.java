@@ -1,7 +1,8 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.http.HttpRequestBuilder;
-import cn.xfyun.base.http.HttpRequestClient;
+import cn.xfyun.base.http.HttpBuilder;
+import cn.xfyun.base.http.HttpClient;
+import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.model.sign.Signature;
 
 import java.io.IOException;
@@ -20,7 +21,7 @@ import java.util.Map;
  * @version 1.0
  * @date 2021/6/11 10:43
  */
-public class SaClient extends HttpRequestClient {
+public class SaClient extends HttpClient {
 
 	private static final String TYPE = "{\"type\":\"dependent\"}";
 
@@ -31,12 +32,12 @@ public class SaClient extends HttpRequestClient {
 
 
 	public String send(String text) throws IOException {
-		Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, TYPE, null);
+		Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, TYPE, HttpRequestEnum.FORM.getValue());
         return sendPost(hostUrl, FORM, header, "text=" + text);
 	}
 
 
-	public static final class Builder extends HttpRequestBuilder<Builder> {
+	public static final class Builder extends HttpBuilder<Builder> {
 		/**
 		 * 服务请求地址
 		 */

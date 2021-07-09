@@ -5,7 +5,7 @@ package cn.xfyun.config;
  * @version 1.0
  * @date 2021/7/6 17:08
  */
-public enum HandWritingLanguageEnum {
+public enum LanguageEnum {
 
     /**
      *   英文
@@ -20,7 +20,7 @@ public enum HandWritingLanguageEnum {
 
     private String value;
 
-    HandWritingLanguageEnum(String value) {
+    LanguageEnum(String value) {
         this.value = value;
     }
 

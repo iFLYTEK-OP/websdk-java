@@ -1,7 +1,7 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.http.HttpRequestBuilder;
-import cn.xfyun.base.http.HttpRequestClient;
+import cn.xfyun.base.http.HttpBuilder;
+import cn.xfyun.base.http.HttpClient;
 import cn.xfyun.model.sign.Signature;
 import com.google.gson.JsonObject;
 
@@ -12,12 +12,14 @@ import java.util.Map;
  *
  *  指尖文字识别，可检测图片中指尖位置，将指尖处文字转化为计算机可编码的文字。
  *
+ *  错误码链接：https://www.xfyun.cn/document/error-code (code返回错误码时必看)
+ *
  *
  * @author mqgao
  * @version 1.0
  * @date 2021/7/7 14:50
  */
-public class FingerOcrClient extends HttpRequestClient {
+public class FingerOcrClient extends HttpClient {
 
     public FingerOcrClient(Builder builder) {
         super(builder);
@@ -26,7 +28,7 @@ public class FingerOcrClient extends HttpRequestClient {
     public String fingerOcr(String imageBase64) throws Exception {
         String body = buildHttpBody(imageBase64);
         Map<String, String> header = Signature.signHttpHeaderDigest(hostUrl, "POST", apiKey, apiSecret, body);
-        return sendPost(hostUrl, FORM, header, body);
+        return sendPost(hostUrl, JSON, header, body);
     }
 
     private String buildHttpBody(String imageBase64) {
@@ -56,7 +58,7 @@ public class FingerOcrClient extends HttpRequestClient {
         return body.toString();
     }
 
-    public static final class Builder extends HttpRequestBuilder<Builder> {
+    public static final class Builder extends HttpBuilder<Builder> {
 
         private static final String HOST_URL = "https://tyocr.xfyun.cn/v2/ocr";
 

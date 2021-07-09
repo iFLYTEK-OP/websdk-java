@@ -1,7 +1,8 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.http.HttpRequestBuilder;
-import cn.xfyun.base.http.HttpRequestClient;
+import cn.xfyun.base.http.HttpBuilder;
+import cn.xfyun.base.http.HttpClient;
+import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.config.LtpFunctionEnum;
 import cn.xfyun.model.sign.Signature;
 
@@ -15,7 +16,7 @@ import java.util.Map;
  *
  * @author yingpeng
  */
-public class LtpClient extends HttpRequestClient {
+public class LtpClient extends HttpClient {
 
     /**
      *类型，可选值：dependent
@@ -57,11 +58,11 @@ public class LtpClient extends HttpRequestClient {
      */
     public String send(String text) throws IOException {
         String param = "{\"type\":\"" + type +"\"}";
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, param, null);
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, param, HttpRequestEnum.FORM.getValue());
         return sendPost(hostUrl + func, FORM, header, "text=" + text);
     }
 
-    public static final class Builder extends HttpRequestBuilder<Builder> {
+    public static final class Builder extends HttpBuilder<Builder> {
 
         private static final String HOST_URL = "https://ltpapi.xfyun.cn/v1/";
 
@@ -80,12 +81,10 @@ public class LtpClient extends HttpRequestClient {
          */
         private LtpFunctionEnum func;
 
-
         public Builder(String appId, String apiKey, LtpFunctionEnum func) {
            super(HOST_URL, appId, apiKey, null);
            this.func = func;
         }
-
 
         public LtpClient.Builder type(String type){
             this.type = type;

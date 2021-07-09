@@ -6,7 +6,7 @@ package cn.xfyun.base.http;
  * @version 1.0
  * @date 2021/7/2 13:46
  */
-public abstract class HttpRequestBuilder<T> {
+public abstract class HttpBuilder<T> {
 
     private String hostUrl;
 
@@ -35,13 +35,12 @@ public abstract class HttpRequestBuilder<T> {
      */
     private int writeTimeout = 3;
 
-    public HttpRequestBuilder(String hostUrl, String appId, String apiKey, String apiSecret) {
+    public HttpBuilder(String hostUrl, String appId, String apiKey, String apiSecret) {
         this.hostUrl = hostUrl;
         this.appId = appId;
         this.apiKey = apiKey;
         this.apiSecret = apiSecret;
     }
-
 
     public T retryOnConnectionFailure(boolean retryOnConnectionFailure) {
         this.retryOnConnectionFailure = retryOnConnectionFailure;
@@ -124,6 +123,6 @@ public abstract class HttpRequestBuilder<T> {
         return writeTimeout;
     }
 
-    public abstract HttpRequestClient build();
+    public abstract HttpClient build();
 
 }

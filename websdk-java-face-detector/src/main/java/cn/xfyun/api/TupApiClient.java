@@ -1,7 +1,8 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.http.HttpRequestBuilder;
-import cn.xfyun.base.http.HttpRequestClient;
+import cn.xfyun.base.http.HttpBuilder;
+import cn.xfyun.base.http.HttpClient;
+import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.config.TupApiEnum;
 import cn.xfyun.model.sign.Signature;
 
@@ -25,7 +26,7 @@ import java.util.Map;
  * @version 1.0
  * @date 2021/7/1 17:12
  */
-public class TupApiClient extends HttpRequestClient {
+public class TupApiClient extends HttpClient {
 
     private TupApiEnum func;
 
@@ -40,12 +41,12 @@ public class TupApiClient extends HttpRequestClient {
 
     public String recognition(String imageName, byte[] imageByteArray) throws IOException {
         String param = "{\"image_name\":\"" + imageName + "\"}";
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, param, null);
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, param, HttpRequestEnum.FORM.getValue());
         return sendPost(hostUrl + func.getValue(), BINARY, header, imageByteArray);
     }
 
 
-    public static final class Builder extends HttpRequestBuilder<Builder> {
+    public static final class Builder extends HttpBuilder<Builder> {
 
         private static final String HOST_URL = "http://tupapi.xfyun.cn/v1/";
 

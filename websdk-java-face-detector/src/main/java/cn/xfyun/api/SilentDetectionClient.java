@@ -1,10 +1,10 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.http.HttpRequestBuilder;
-import cn.xfyun.base.http.HttpRequestClient;
+import cn.xfyun.base.http.HttpBuilder;
+import cn.xfyun.base.http.HttpClient;
+import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.model.sign.Signature;
 import com.google.gson.JsonObject;
-import org.apache.commons.codec.binary.Base64;
 
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -18,7 +18,7 @@ import java.util.Map;
  * @version 1.0
  * @date 2021/7/1 15:56
  */
-public class SilentDetectionClient extends HttpRequestClient {
+public class SilentDetectionClient extends HttpClient {
 
     public SilentDetectionClient(SilentDetectionClient.Builder builder) {
         super(builder);
@@ -29,11 +29,11 @@ public class SilentDetectionClient extends HttpRequestClient {
         JsonObject jso = new JsonObject();
         jso.addProperty("get_image", true);
         String params = jso.toString();
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, params, null);
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, params, HttpRequestEnum.FORM.getValue());
         return sendPost(hostUrl, FORM, header, "file=" + URLEncoder.encode(audioBase64, "UTF-8"));
     }
 
-    public static final class Builder extends HttpRequestBuilder<Builder> {
+    public static final class Builder extends HttpBuilder<Builder> {
 
         private static final String HOST_URL = "https://api.xfyun.cn/v1/service/v1/image_identify/silent_detection";
 

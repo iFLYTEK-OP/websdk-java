@@ -1,7 +1,8 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.http.HttpRequestBuilder;
-import cn.xfyun.base.http.HttpRequestClient;
+import cn.xfyun.base.http.HttpBuilder;
+import cn.xfyun.base.http.HttpClient;
+import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.model.sign.Signature;
 import com.google.gson.JsonObject;
 
@@ -23,7 +24,7 @@ import java.util.Map;
  * @version 1.0
  * @date 2021/7/1 15:00
  */
-public class WatermarkVerificationClient extends HttpRequestClient {
+public class WatermarkVerificationClient extends HttpClient {
 
     /**
      * 是否对图片进行自动旋转，true旋转，false不旋转，默认false
@@ -41,7 +42,7 @@ public class WatermarkVerificationClient extends HttpRequestClient {
         jso.addProperty("get_image", true);
         jso.addProperty("auto_rotate", autoRotate);
         String params = jso.toString();
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, params, null);
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, params, HttpRequestEnum.FORM.getValue());
         Map<String, String> body = new HashMap<>(2);
         body.put("face_image", faceImageBase64);
         body.put("watermark_image", watermarkImageBase64);
@@ -49,7 +50,7 @@ public class WatermarkVerificationClient extends HttpRequestClient {
     }
 
 
-    public static final class Builder extends HttpRequestBuilder<Builder> {
+    public static final class Builder extends HttpBuilder<Builder> {
 
         private static final String HOST_URL = "https://api.xfyun.cn/v1/service/v1/image_identify/watermark_verification";
 

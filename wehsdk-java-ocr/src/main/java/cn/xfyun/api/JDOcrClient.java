@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.http.HttpRequestClient;
+import cn.xfyun.base.http.HttpClient;
 import cn.xfyun.base.http.platform.PlatformBuilder;
 import cn.xfyun.base.http.platform.PlatformHttpClient;
 import cn.xfyun.config.JDRecgEnum;
@@ -11,17 +11,16 @@ import java.io.IOException;
 
 /**
  *
- *      行驶证识别
- *      驾驶证识别
- *      车牌识别
+ *      行驶证识别  驾驶证识别  车牌识别
  *
- *   基于深度学习技术，识别机动车行驶证正页的关键字段，包括号牌号码、车辆类型、所有人、住址、使用性质、品牌型号、车辆识别代号、发动机号码、注册日期、发证日期等字段，准确可靠。
+ *
+ *    错误码链接：https://www.xfyun.cn/document/error-code (code返回错误码时必看)
  *
  * @author mqgao
  * @version 1.0
  * @date 2021/7/7 15:00
  */
-public class JDRecgClient extends PlatformHttpClient {
+public class JDOcrClient extends PlatformHttpClient {
 
     private JDRecgEnum jdRecgEnum;
 
@@ -29,13 +28,14 @@ public class JDRecgClient extends PlatformHttpClient {
         return jdRecgEnum;
     }
 
-    public JDRecgClient(Builder builder) {
+    public JDOcrClient(Builder builder) {
         super(builder);
+        this.jdRecgEnum = builder.jdRecgEnum;
     }
 
     public String handle(String imageBase64, String encoding) throws IOException {
-        String signUrl = Signature.signHostDateAuthorization(hostUrl, "POST", apiKey, apiSecret);
-        return sendPost(signUrl + jdRecgEnum.getValue(), JSON, null, bodyParam(imageBase64, encoding));
+        String signUrl = Signature.signHostDateAuthorization(hostUrl + jdRecgEnum.getValue(), "POST", apiKey, apiSecret);
+        return sendPost(signUrl, JSON, null, bodyParam(imageBase64, encoding));
     }
 
     private String bodyParam(String imageBase64, String encoding) {
@@ -53,8 +53,8 @@ public class JDRecgClient extends PlatformHttpClient {
         /** payload **/
         JsonObject payload = new JsonObject();
         JsonObject inputImage1 = new JsonObject();
-        inputImage1.addProperty("encoding", imageBase64);
-        inputImage1.addProperty("image", encoding);
+        inputImage1.addProperty("encoding", encoding);
+        inputImage1.addProperty("image", imageBase64);
         inputImage1.addProperty("status",status);
         payload.add(jdRecgEnum.getPayload(), inputImage1);
         jso.add("payload", payload);
@@ -80,8 +80,8 @@ public class JDRecgClient extends PlatformHttpClient {
         }
 
         @Override
-        public HttpRequestClient build() {
-            return null;
+        public JDOcrClient build() {
+            return new JDOcrClient(this);
         }
     }
 }

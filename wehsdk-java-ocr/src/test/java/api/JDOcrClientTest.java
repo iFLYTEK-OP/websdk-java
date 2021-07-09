@@ -1,6 +1,8 @@
 package api;
 
-import cn.xfyun.api.MultilingualWordsClient;
+import cn.xfyun.api.BankcardClient;
+import cn.xfyun.api.JDOcrClient;
+import cn.xfyun.config.JDRecgEnum;
 import config.PropertiesConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -18,12 +20,12 @@ import java.util.Base64;
 /**
  * @author mqgao
  * @version 1.0
- * @date 2021/7/7 9:53
+ * @date 2021/7/8 15:19
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MultilingualWordsClientTest.class})
+@PrepareForTest({JDOcrClientTest.class})
 @PowerMockIgnore({"javax.crypto.*", "javax.net.ssl.*"})
-public class MultilingualWordsClientTest {
+public class JDOcrClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getApiKey();
@@ -33,26 +35,19 @@ public class MultilingualWordsClientTest {
 
     @Test
     public void testParams() {
-        MultilingualWordsClient client = new MultilingualWordsClient
-                .Builder(appId, apiKey, apiSecret)
+        JDOcrClient client = new JDOcrClient
+                .Builder(appId, apiKey, apiSecret, JDRecgEnum.JD_OCR_CAR)
                 .build();
         Assert.assertEquals(appId, client.getAppId());
         Assert.assertEquals(apiKey, client.getApiKey());
-        Assert.assertEquals(apiSecret, client.getApiSecret());
-        Assert.assertEquals(3, client.getStatus());
-        Assert.assertEquals("https://api.xf-yun.com/v1/private/s00b65163", client.getHostUrl());
+        Assert.assertEquals("https://api.xf-yun.com/v1/private/", client.getHostUrl());
     }
 
     @Test
     public void testBuildParams() {
-        MultilingualWordsClient client = new MultilingualWordsClient
-                .Builder(appId, apiKey, apiSecret)
+        JDOcrClient client = new JDOcrClient
+                .Builder(appId, apiKey, apiSecret, JDRecgEnum.JD_OCR_CAR)
                 .hostUrl("test.url")
-                .serviceId("12345")
-                .compress("compress")
-                .encoding("encoding")
-                .format("format")
-                .status(2)
                 .callTimeout(1)
                 .readTimeout(2)
                 .writeTimeout(3)
@@ -60,11 +55,6 @@ public class MultilingualWordsClientTest {
                 .retryOnConnectionFailure(true)
                 .build();
         Assert.assertEquals("test.url", client.getHostUrl());
-        Assert.assertEquals("12345", client.getServiceId());
-        Assert.assertEquals("compress", client.getCompress());
-        Assert.assertEquals("encoding", client.getEncoding());
-        Assert.assertEquals("format", client.getFormat());
-        Assert.assertEquals(2, client.getStatus());
         Assert.assertEquals(1, client.getCallTimeout());
         Assert.assertEquals(2, client.getReadTimeout());
         Assert.assertEquals(3, client.getWriteTimeout());
@@ -74,13 +64,34 @@ public class MultilingualWordsClientTest {
 
     @Test
     public void test() throws IOException {
-        MultilingualWordsClient client = new MultilingualWordsClient
-                .Builder(appId, apiKey, apiSecret)
+        JDOcrClient client = new JDOcrClient
+                .Builder(appId, apiKey, apiSecret, JDRecgEnum.JD_OCR_CAR)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/1.jpg");
+        byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.multilingualWordsRecognition(imageBase64, "jpg"));
+        System.out.println(client.handle(imageBase64, "jpg"));
     }
+
+    @Test
+    public void test1() throws IOException {
+        JDOcrClient client = new JDOcrClient
+                .Builder(appId, apiKey, apiSecret, JDRecgEnum.JD_OCR_DRIVER)
+                .build();
+        byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
+        String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
+        System.out.println(client.handle(imageBase64, "jpg"));
+    }
+
+    @Test
+    public void test2() throws IOException {
+        JDOcrClient client = new JDOcrClient
+                .Builder(appId, apiKey, apiSecret, JDRecgEnum.JD_OCR_VEHICLE)
+                .build();
+        byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
+        String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
+        System.out.println(client.handle(imageBase64, "jpg"));
+    }
+
 
     /**
      * 流转二进制数组
@@ -100,12 +111,11 @@ public class MultilingualWordsClientTest {
     }
 
     private static byte[] read(String filePath) throws IOException {
-
         InputStream in = new FileInputStream(filePath);
         byte[] data = inputStream2ByteArray(in);
         in.close();
-
         return data;
     }
+
 
 }

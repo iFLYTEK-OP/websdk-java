@@ -1,6 +1,7 @@
 package cn.xfyun.base.http;
 
 import cn.xfyun.base.Client;
+import cn.xfyun.config.HttpRequestEnum;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -13,17 +14,15 @@ import java.util.concurrent.TimeUnit;
  * @version 1.0
  * @date 2021/7/2 9:52
  */
-public abstract class HttpRequestClient extends Client {
+public abstract class HttpClient extends Client {
 
-
-    protected static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
-    protected static final MediaType FORM = MediaType.get("application/x-www-form-urlencoded; charset=utf-8");
-    protected static final MediaType BINARY = MediaType.get("binary/octet-stream");
+    protected static final MediaType JSON = MediaType.get(HttpRequestEnum.JSON.getValue());
+    protected static final MediaType FORM = MediaType.get(HttpRequestEnum.FORM.getValue());
+    protected static final MediaType BINARY = MediaType.get(HttpRequestEnum.BINARY.getValue());
 
     protected Request request;
 
     protected OkHttpClient okHttpClient;
-
 
     public Request getRequest() {
         return request;
@@ -35,6 +34,10 @@ public abstract class HttpRequestClient extends Client {
 
     protected String sendPost(String url, MediaType mediaType, Map<String, String> header, String body) throws IOException {
         return sendPost(url, header, RequestBody.create(mediaType, body));
+    }
+
+    protected String sendPost(String url, MediaType mediaType, String body) throws IOException {
+        return sendPost(url, null, RequestBody.create(mediaType, body));
     }
 
     protected String sendPost(String url, MediaType mediaType, Map<String, String> header, byte[] body) throws IOException {
@@ -67,7 +70,7 @@ public abstract class HttpRequestClient extends Client {
         }
     }
 
-    public HttpRequestClient(HttpRequestBuilder builder) {
+    public HttpClient(HttpBuilder builder) {
         this.hostUrl = builder.getHostUrl();
         this.appId = builder.getAppId();
         this.apiKey = builder.getApiKey();

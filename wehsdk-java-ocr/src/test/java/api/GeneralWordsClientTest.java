@@ -1,8 +1,9 @@
 package api;
 
 import cn.xfyun.api.GeneralWordsClient;
-import cn.xfyun.config.HandWritingLanguageEnum;
-import cn.xfyun.config.HandWritingLocationEnum;
+import cn.xfyun.config.LanguageEnum;
+import cn.xfyun.config.LocationEnum;
+import cn.xfyun.config.OcrWordsEnum;
 import config.PropertiesConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,7 +25,7 @@ import java.util.Base64;
  */
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({HandWritingClientTest.class})
+@PrepareForTest({GeneralWordsClientTest.class})
 @PowerMockIgnore("javax.net.ssl.*")
 public class GeneralWordsClientTest {
 
@@ -39,22 +40,22 @@ public class GeneralWordsClientTest {
     @Test
     public void testParams() {
         GeneralWordsClient client = new GeneralWordsClient
-                .Builder(appId, apiKey)
+                .Builder(appId, apiKey, OcrWordsEnum.PRINT)
                 .build();
         Assert.assertEquals(appId, client.getAppId());
         Assert.assertEquals(apiKey, client.getApiKey());
-        Assert.assertEquals("https://webapi.xfyun.cn/v1/service/v1/ocr/general", client.getHostUrl());
-        Assert.assertEquals(HandWritingLocationEnum.OFF, client.getLocation());
-        Assert.assertEquals(HandWritingLanguageEnum.CN, client.getLanguage());
+        Assert.assertEquals("https://webapi.xfyun.cn/v1/service/v1/ocr/", client.getHostUrl());
+        Assert.assertEquals(LocationEnum.OFF, client.getLocation());
+        Assert.assertEquals(LanguageEnum.CN, client.getLanguage());
     }
 
     @Test
     public void testBuildParams() {
         GeneralWordsClient client = new GeneralWordsClient
-                .Builder(appId, apiKey)
+                .Builder(appId, apiKey, OcrWordsEnum.HANDWRITING)
                 .hostUrl("test.url")
-                .language(HandWritingLanguageEnum.EN)
-                .location(HandWritingLocationEnum.ON)
+                .language(LanguageEnum.EN)
+                .location(LocationEnum.ON)
                 .callTimeout(1)
                 .readTimeout(2)
                 .writeTimeout(3)
@@ -62,8 +63,8 @@ public class GeneralWordsClientTest {
                 .retryOnConnectionFailure(true)
                 .build();
         Assert.assertEquals("test.url", client.getHostUrl());
-        Assert.assertEquals(HandWritingLanguageEnum.EN, client.getLanguage());
-        Assert.assertEquals(HandWritingLocationEnum.ON, client.getLocation());
+        Assert.assertEquals(LanguageEnum.EN, client.getLanguage());
+        Assert.assertEquals(LocationEnum.ON, client.getLocation());
         Assert.assertEquals(1, client.getCallTimeout());
         Assert.assertEquals(2, client.getReadTimeout());
         Assert.assertEquals(3, client.getWriteTimeout());
@@ -74,7 +75,7 @@ public class GeneralWordsClientTest {
     @Test
     public void test() throws IOException {
         GeneralWordsClient client = new GeneralWordsClient
-                .Builder(appId, apiKey)
+                .Builder(appId, apiKey, OcrWordsEnum.HANDWRITING)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/1.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);

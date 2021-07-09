@@ -3,22 +3,23 @@ package cn.xfyun.config;
 /**
  * @author mqgao
  * @version 1.0
- * @date 2021/7/6 17:17
+ * @date 2021/7/8 10:51
  */
-public enum HandWritingLocationEnum {
-    /**
-     *   返回文本位置信息
-     */
-    ON("true"),
+public enum OcrWordsEnum {
 
     /**
-     *   不返回文本位置信息
+     *   印刷文字识别
      */
-    OFF("false");
+    PRINT("general"),
+
+    /**
+     *   手写文字识别
+     */
+    HANDWRITING("handwriting");
 
     String value;
 
-    HandWritingLocationEnum(String value) {
+    OcrWordsEnum(String value) {
         this.value = value;
     }
 

@@ -1,7 +1,5 @@
 package cn.xfyun.model.sign;
 
-import cn.xfyun.util.CryptTools;
-import cn.xfyun.util.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.crypto.Mac;
@@ -10,8 +8,8 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -21,7 +19,6 @@ import java.util.*;
  * @date 2021/7/1 9:56
  */
 public class Signature {
-
 
     /**
      * 请求签名方式
@@ -44,13 +41,12 @@ public class Signature {
             SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
             String date = format.format(new Date());
-
             String host = url.getHost();
             StringBuilder builder = new StringBuilder().
-                    append("host: ").append(host).append("\n").//
-                    append("date: ").append(date).append("\n").//
-                    append(requestMethod).append(" ").append(url.getPath()).append(" HTTP/1.1");
-            Charset charset = Charset.forName("UTF-8");
+                    append("host: ").append(host).append("\n")
+                    .append("date: ").append(date).append("\n")
+                    .append(requestMethod).append(" ").append(url.getPath()).append(" HTTP/1.1");
+            Charset charset = StandardCharsets.UTF_8;
             SecretKeySpec spec = new SecretKeySpec(apiSecret.getBytes(charset), "hmacsha256");
             Mac mac = Mac.getInstance("hmacsha256");
             mac.init(spec);
@@ -79,21 +75,17 @@ public class Signature {
      * @throws Exception
      */
     public static Map<String, String> signHttpHeaderDigest(String requestUrl, String requestMethod, String apiKey, String apiSecret, String body) throws Exception {
-        Map<String, String> header = new HashMap<>();
+        Map<String, String> header = new HashMap<>(6);
         URL url = new URL(requestUrl);
         SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
-        Date dateD = new Date();
-        String date = format.format(dateD);
-
+        String date = format.format(new Date());
         String digestBase64 = "SHA-256=" + signBody(body);
         StringBuilder builder = new StringBuilder("host: ").append(url.getHost()).append("\n").
                 append("date: ").append(date).append("\n").
                 append(requestMethod + " ").append(url.getPath()).append(" HTTP/1.1").append("\n").
                 append("digest: ").append(digestBase64);
         String sha = hmacsign(builder.toString(), apiSecret);
-
-        //组装authorization
         String authorization = String.format("api_key=\"%s\", algorithm=\"%s\", headers=\"%s\", signature=\"%s\"", apiKey, "hmac-sha256", "host date request-line digest", sha);
         header.put("Authorization", authorization);
         header.put("Content-Type", "application/json");
@@ -114,9 +106,7 @@ public class Signature {
             messageDigest = MessageDigest.getInstance("SHA-256");
             messageDigest.update(body.getBytes("UTF-8"));
             encodestr = Base64.getEncoder().encodeToString(messageDigest.digest());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return encodestr;
@@ -149,33 +139,15 @@ public class Signature {
      * @throws UnsupportedEncodingException
      */
     public static Map<String, String> signHttpHeaderCheckSum(String appId, String apiKey, String param, String contentType) throws UnsupportedEncodingException {
-        String curTime = System.currentTimeMillis() / 1000L + "";
-
+        String curTime = String.valueOf(System.currentTimeMillis() / 1000L);
         String paramBase64 = Base64.getEncoder().encodeToString(param.getBytes("UTF-8"));
         String checkSum = DigestUtils.md5Hex(apiKey + curTime + paramBase64);
-        Map<String, String> header = new HashMap<>();
-        if (StringUtils.isNullOrEmpty(contentType)) {
-            header.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
-        } else {
-            header.put("Content-Type", contentType);
-        }
+        Map<String, String> header = new HashMap<>(6);
+        header.put("Content-Type", contentType);
         header.put("X-Param", paramBase64);
         header.put("X-CurTime", curTime);
         header.put("X-CheckSum", checkSum);
         header.put("X-Appid", appId);
         return header;
-    }
-
-
-    public static String signRta(String url, String appId, String key) {
-        String ts = String.valueOf(System.currentTimeMillis() / 1000L);
-        try {
-            String signa = CryptTools.hmacEncrypt(CryptTools.HMAC_SHA1, CryptTools.md5Encrypt(appId + ts), key);
-            return url + "?appid=" + appId + "&ts=" + ts + "&signa=" + URLEncoder.encode(signa, "UTF-8");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return "";
     }
 }

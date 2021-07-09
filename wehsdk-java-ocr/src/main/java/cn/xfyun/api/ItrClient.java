@@ -1,7 +1,7 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.http.HttpRequestBuilder;
-import cn.xfyun.base.http.HttpRequestClient;
+import cn.xfyun.base.http.HttpBuilder;
+import cn.xfyun.base.http.HttpClient;
 import cn.xfyun.config.ItrEntEnum;
 import cn.xfyun.model.sign.Signature;
 import com.google.gson.JsonObject;
@@ -20,7 +20,7 @@ import java.util.Map;
  * @version 1.0
  * @date 2021/7/7 13:50
  */
-public class ItrClient extends HttpRequestClient {
+public class ItrClient extends HttpClient {
 
     private ItrEntEnum itrEntEnum;
 
@@ -30,13 +30,14 @@ public class ItrClient extends HttpRequestClient {
 
     public ItrClient(Builder builder) {
         super(builder);
+        this.itrEntEnum = builder.itrEntEnum;
     }
 
 
     public String itr(String imageBase64) throws Exception {
         String body = buildHttpBody(imageBase64);
         Map<String, String> header = Signature.signHttpHeaderDigest(hostUrl, "POST", apiKey, apiSecret, body);
-        return sendPost(hostUrl, FORM, header, body);
+        return sendPost(hostUrl, JSON, header, body);
     }
 
 
@@ -61,19 +62,15 @@ public class ItrClient extends HttpRequestClient {
 
 
 
-    public static final class Builder extends HttpRequestBuilder<Builder> {
+    public static final class Builder extends HttpBuilder<Builder> {
 
         private static final String HOST_URL = "https://rest-api.xfyun.cn/v2/itr";
 
-        public Builder(String appId, String apiKey, String apiSecret) {
+        private ItrEntEnum itrEntEnum;
+
+        public Builder(String appId, String apiKey, String apiSecret, ItrEntEnum itrEntEnum) {
             super(HOST_URL, appId, apiKey, apiSecret);
-        }
-
-        private ItrEntEnum itrEntEnum = ItrEntEnum.MATH_ARITH;
-
-        public Builder itrEnt(ItrEntEnum itrEntEnum) {
             this.itrEntEnum = itrEntEnum;
-            return this;
         }
 
         @Override

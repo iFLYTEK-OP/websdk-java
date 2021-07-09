@@ -1,14 +1,14 @@
 package cn.xfyun.base.http.platform;
 
 
-import cn.xfyun.base.http.HttpRequestBuilder;
+import cn.xfyun.base.http.HttpBuilder;
 
 /**
  * @author mqgao
  * @version 1.0
  * @date 2021/7/2 15:48
  */
-public abstract class PlatformBuilder<T>  extends HttpRequestBuilder<T>  {
+public abstract class PlatformBuilder<T>  extends HttpBuilder<T> {
 
     private String serviceId;
 
@@ -25,7 +25,7 @@ public abstract class PlatformBuilder<T>  extends HttpRequestBuilder<T>  {
         return serviceId;
     }
 
-    public T serviceId(String serviceId) {
+    protected T serviceId(String serviceId) {
         this.serviceId = serviceId;
         return (T)this;
     }

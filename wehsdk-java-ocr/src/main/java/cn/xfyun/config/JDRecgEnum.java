@@ -21,7 +21,7 @@ public enum JDRecgEnum {
     /**
      *   车牌识别
      */
-    JD_OCR_CAR("jd_ocr_car", " carLicenseRes", "jd_ocr_car", "carImgBase64Str");
+    JD_OCR_CAR("jd_ocr_car", "carLicenseRes", "jd_ocr_car", "carImgBase64Str");
 
     private String value;
     private String service;
