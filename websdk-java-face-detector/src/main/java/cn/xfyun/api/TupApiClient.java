@@ -2,7 +2,6 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
-import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.config.TupApiEnum;
 import cn.xfyun.model.sign.Signature;
 
@@ -41,7 +40,7 @@ public class TupApiClient extends HttpClient {
 
     public String recognition(String imageName, byte[] imageByteArray) throws IOException {
         String param = "{\"image_name\":\"" + imageName + "\"}";
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, param, HttpRequestEnum.FORM.getValue());
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, param);
         return sendPost(hostUrl + func.getValue(), BINARY, header, imageByteArray);
     }
 

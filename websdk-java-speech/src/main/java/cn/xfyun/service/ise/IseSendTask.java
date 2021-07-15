@@ -1,9 +1,6 @@
 package cn.xfyun.service.ise;
 
-import cn.xfyun.model.request.ise.IseBusiness;
-import cn.xfyun.model.request.ise.IseRequest;
-import cn.xfyun.model.request.ise.IseRequestData;
-import cn.xfyun.service.common.AbstractTimedTask;
+import cn.xfyun.service.common.AbstractTask;
 import com.google.gson.JsonObject;
 import cn.xfyun.api.IseClient;
 import cn.xfyun.common.IseConstant;
@@ -18,7 +15,7 @@ import java.util.Base64;
  * @version:v1.0
  * @create: 2021-04-06 09:57
  **/
-public class IseSendTask extends AbstractTimedTask {
+public class IseSendTask extends AbstractTask {
     private static final int STATUS_PREPARE_FRAME = -1;
     private static final int STATUS_FIRST_FRAME = 0;
     private static final int STATUS_CONTINUED_FRAME = 1;
@@ -31,6 +28,10 @@ public class IseSendTask extends AbstractTimedTask {
      * 编码
      */
     final static Base64.Encoder ENCODER = Base64.getEncoder();
+
+    public IseSendTask(AbstractBuilder builder) {
+        super(builder);
+    }
 
     @Override
     public String businessDataProcess(byte[] contents, boolean isEnd) throws InterruptedException {

@@ -1,7 +1,6 @@
 package cn.xfyun.base.http;
 
 import cn.xfyun.base.Client;
-import cn.xfyun.config.HttpRequestEnum;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -16,9 +15,9 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class HttpClient extends Client {
 
-    protected static final MediaType JSON = MediaType.get(HttpRequestEnum.JSON.getValue());
-    protected static final MediaType FORM = MediaType.get(HttpRequestEnum.FORM.getValue());
-    protected static final MediaType BINARY = MediaType.get(HttpRequestEnum.BINARY.getValue());
+    protected static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+    protected static final MediaType FORM = MediaType.get("application/x-www-form-urlencoded; charset=utf-8");
+    protected static final MediaType BINARY = MediaType.get("binary/octet-stream");
 
     protected Request request;
 

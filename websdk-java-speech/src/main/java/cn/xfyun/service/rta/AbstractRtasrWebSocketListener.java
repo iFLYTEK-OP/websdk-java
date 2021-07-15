@@ -27,10 +27,13 @@ public abstract class AbstractRtasrWebSocketListener extends WebSocketListener {
 	private static final Logger logger = LoggerFactory.getLogger(AbstractIatWebSocketListener.class);
 
 	private static final String STARTED = "started";
+
 	private static final String RESULT = "result";
+
 	private static final String ERROR = "error";
 
 	public AbstractRtasrWebSocketListener() {
+
 	}
 
 	/**

@@ -2,7 +2,6 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
-import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.config.LanguageEnum;
 import cn.xfyun.config.LocationEnum;
 import cn.xfyun.config.OcrWordsEnum;
@@ -57,7 +56,7 @@ public class GeneralWordsClient extends HttpClient {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("language", language.getValue());
         jsonObject.addProperty("location", location.getValue());
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, jsonObject.toString(), HttpRequestEnum.FORM.getValue());
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, jsonObject.toString());
         return sendPost(hostUrl + ocrTypeEnum.getValue(), FORM, header, "image=" + imageBase64);
     }
 

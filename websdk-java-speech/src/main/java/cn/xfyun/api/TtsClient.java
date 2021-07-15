@@ -121,8 +121,8 @@ public class TtsClient extends WebSocketClient {
     private String ent;
 
     public TtsClient(Builder builder) {
+        super(null);
         this.okHttpClient = new OkHttpClient().newBuilder().build();
-        this.originHostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
         this.apiSecret = builder.apiSecret;
@@ -153,10 +153,6 @@ public class TtsClient extends WebSocketClient {
     @Override
     public String getApiSecret() {
         return apiSecret;
-    }
-
-    public String getOriginHostUrl() {
-        return originHostUrl;
     }
 
     public String getAue() {
@@ -211,11 +207,6 @@ public class TtsClient extends WebSocketClient {
         return okHttpClient;
     }
 
-    @Override
-    public WebSocket getWebSocket() {
-        return webSocket;
-    }
-
     /**
      * 在线语音合成处理方法
      *
@@ -260,6 +251,11 @@ public class TtsClient extends WebSocketClient {
         frame.add("business", business);
         frame.add("data", data);
         webSocket.send(frame.toString());
+    }
+
+    @Override
+    public String getSignature() {
+        return null;
     }
 
     public static final class Builder {

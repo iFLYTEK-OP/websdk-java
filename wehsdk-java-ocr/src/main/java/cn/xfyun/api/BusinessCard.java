@@ -2,7 +2,6 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
-import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.model.sign.Signature;
 import com.google.gson.JsonObject;
 
@@ -33,7 +32,7 @@ public class BusinessCard extends HttpClient {
         JsonObject jsonObject = new JsonObject();
         jsonObject.addProperty("engine_type", BUSINESS_CARD);
         jsonObject.addProperty("pic_required", picRequired);
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, jsonObject.toString(), HttpRequestEnum.FORM.getValue());
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, jsonObject.toString());
         return sendPost(hostUrl, FORM, header, "image=" + imageBase64);
     }
 

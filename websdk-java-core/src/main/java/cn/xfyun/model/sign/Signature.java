@@ -1,5 +1,7 @@
 package cn.xfyun.model.sign;
 
+import cn.xfyun.util.CryptTools;
+import cn.xfyun.util.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.crypto.Mac;
@@ -134,20 +136,30 @@ public class Signature {
      * @param appId
      * @param apiKey
      * @param param
-     * @param contentType
      * @return
      * @throws UnsupportedEncodingException
      */
-    public static Map<String, String> signHttpHeaderCheckSum(String appId, String apiKey, String param, String contentType) throws UnsupportedEncodingException {
+    public static Map<String, String> signHttpHeaderCheckSum(String appId, String apiKey, String param) throws UnsupportedEncodingException {
         String curTime = String.valueOf(System.currentTimeMillis() / 1000L);
         String paramBase64 = Base64.getEncoder().encodeToString(param.getBytes("UTF-8"));
         String checkSum = DigestUtils.md5Hex(apiKey + curTime + paramBase64);
         Map<String, String> header = new HashMap<>(6);
-        header.put("Content-Type", contentType);
         header.put("X-Param", paramBase64);
         header.put("X-CurTime", curTime);
         header.put("X-CheckSum", checkSum);
         header.put("X-Appid", appId);
         return header;
+    }
+
+    public static String rtasrSignature(String url, String appId, String key) {
+        url = url.replace("ws://", "http://").replace("wss://", "https://");
+        String ts = String.valueOf(System.currentTimeMillis() / 1000L);
+        try {
+            String signature = CryptTools.hmacEncrypt(CryptTools.HMAC_SHA1, CryptTools.md5Encrypt(appId + ts), key);
+            return url + "?appid=" + appId + "&ts=" + ts + "&signa=" + URLEncoder.encode(signature, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

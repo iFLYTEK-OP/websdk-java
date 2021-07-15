@@ -2,7 +2,8 @@ package cn.xfyun.service.igr;
 
 import cn.xfyun.api.IgrClient;
 import cn.xfyun.model.request.igr.IgrRequest;
-import cn.xfyun.service.common.AbstractTimedTask;
+import cn.xfyun.service.common.AbstractTask;
+import cn.xfyun.service.lfasr.task.AbstractTask;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 
@@ -15,7 +16,7 @@ import java.util.Objects;
  * @version: v1.0
  * @create: 2021-06-02 11:10
  **/
-public class IgrSendTask extends AbstractTimedTask {
+public class IgrSendTask extends AbstractTask {
 
     private static final int STATUS_FIRST_FRAME = 0;
     private static final int STATUS_CONTINUED_FRAME = 1;
@@ -29,7 +30,7 @@ public class IgrSendTask extends AbstractTimedTask {
     final static Base64.Encoder ENCODER = Base64.getEncoder();
 
     @Override
-    public AbstractTimedTask build(Builder builder) {
+    public AbstractTask build(Builder builder) {
         return super.build(builder);
     }
 

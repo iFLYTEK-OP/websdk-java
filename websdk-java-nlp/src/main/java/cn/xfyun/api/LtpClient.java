@@ -2,7 +2,6 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
-import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.config.LtpFunctionEnum;
 import cn.xfyun.model.sign.Signature;
 
@@ -58,7 +57,7 @@ public class LtpClient extends HttpClient {
      */
     public String send(String text) throws IOException {
         String param = "{\"type\":\"" + type +"\"}";
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, param, HttpRequestEnum.FORM.getValue());
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, param);
         return sendPost(hostUrl + func, FORM, header, "text=" + text);
     }
 

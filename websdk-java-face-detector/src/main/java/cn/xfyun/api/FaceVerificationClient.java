@@ -2,7 +2,6 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
-import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.model.sign.Signature;
 import com.google.gson.JsonObject;
 
@@ -12,12 +11,6 @@ import java.util.Map;
 
 /**
  *     人脸比对sensetime
- *
- *     基于商汤的人脸算法，对两张通过接口上传的人脸照片进行比对，来判断是否为同一个人。
- *     若上传的照片中包含 exif 方向信息，
- *     我们会按此信息旋转、翻转后再做后续处理。同时，我们还提供自动旋转功能，
- *     当照片方向混乱且 exif 方向信息不存在或不正确的情况下，服务会根据照片中人脸方向来检查可能正确的方向，
- *     并按照正确的方向提供人脸检测结果。
  *
  *     错误码链接：https://www.xfyun.cn/document/error-code
  *
@@ -46,7 +39,7 @@ public class FaceVerificationClient extends HttpClient {
         jso.addProperty("get_image", true);
         jso.addProperty("auto_rotate", autoRotate);
         String params = jso.toString();
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, params, HttpRequestEnum.FORM.getValue());
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, params);
         return sendPost(hostUrl, FORM, header, "first_image=" + URLEncoder.encode(imageBase641, "UTF-8") + "&" + "second_image="+ URLEncoder.encode(imageBase642, "UTF-8"));
     }
 

@@ -2,7 +2,6 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
-import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.model.sign.Signature;
 import com.google.gson.JsonObject;
 
@@ -12,11 +11,6 @@ import java.util.Map;
 
 /**
  *     人脸水印照比对
- *
- *     人脸水印照比对，对通过接口上传的人脸照片和一个人脸水印照片进行比对，来判断是否为同一个人。
- *     若上传的照片中包含 exif 方向信息，我们会按此信息旋转、翻转后再做后续处理。
- *     同时，我们还提供自动旋转功能，当照片方向混乱且 exif 方向信息不存在或不正确的情况下，
- *     服务会根据照片中人脸方向来检查可能正确的方向，并按照正确的方向提供人脸检测结果。
  *
  *     错误码链接：https://www.xfyun.cn/document/error-code （code返回错误码时必看）
  *
@@ -42,7 +36,7 @@ public class WatermarkVerificationClient extends HttpClient {
         jso.addProperty("get_image", true);
         jso.addProperty("auto_rotate", autoRotate);
         String params = jso.toString();
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, params, HttpRequestEnum.FORM.getValue());
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, params);
         Map<String, String> body = new HashMap<>(2);
         body.put("face_image", faceImageBase64);
         body.put("watermark_image", watermarkImageBase64);

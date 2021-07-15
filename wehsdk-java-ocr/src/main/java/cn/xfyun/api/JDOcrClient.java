@@ -1,6 +1,5 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.http.HttpClient;
 import cn.xfyun.base.http.platform.PlatformBuilder;
 import cn.xfyun.base.http.platform.PlatformHttpClient;
 import cn.xfyun.config.JDRecgEnum;

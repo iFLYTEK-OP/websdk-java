@@ -2,7 +2,6 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
-import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.model.sign.Signature;
 
 import java.io.IOException;
@@ -32,7 +31,7 @@ public class SaClient extends HttpClient {
 
 
 	public String send(String text) throws IOException {
-		Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, TYPE, HttpRequestEnum.FORM.getValue());
+		Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, TYPE);
         return sendPost(hostUrl, FORM, header, "text=" + text);
 	}
 

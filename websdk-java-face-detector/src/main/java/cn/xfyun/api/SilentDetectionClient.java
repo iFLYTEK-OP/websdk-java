@@ -2,7 +2,6 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
-import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.model.sign.Signature;
 import com.google.gson.JsonObject;
 
@@ -29,7 +28,7 @@ public class SilentDetectionClient extends HttpClient {
         JsonObject jso = new JsonObject();
         jso.addProperty("get_image", true);
         String params = jso.toString();
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, params, HttpRequestEnum.FORM.getValue());
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, params);
         return sendPost(hostUrl, FORM, header, "file=" + URLEncoder.encode(audioBase64, "UTF-8"));
     }
 

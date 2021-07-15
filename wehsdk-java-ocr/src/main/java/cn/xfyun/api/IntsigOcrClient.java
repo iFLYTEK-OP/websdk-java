@@ -2,7 +2,6 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
-import cn.xfyun.config.HttpRequestEnum;
 import cn.xfyun.config.IdcardEnum;
 import cn.xfyun.config.IntsigRecgEnum;
 import cn.xfyun.model.sign.Signature;
@@ -73,7 +72,7 @@ public class IntsigOcrClient extends HttpClient {
 
 
     public String intsigRecg(String imageBase64) throws IOException {
-        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, buildParam(), HttpRequestEnum.FORM.getValue());
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, buildParam());
         return sendPost(hostUrl + intsigRecgEnum.getValue(), FORM, header, "image=" + imageBase64);
     }
 
