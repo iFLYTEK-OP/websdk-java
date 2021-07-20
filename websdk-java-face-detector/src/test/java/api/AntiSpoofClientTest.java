@@ -49,7 +49,6 @@ public class AntiSpoofClientTest {
         AntiSpoofClient client = new AntiSpoofClient
                 .Builder(appId, apiKey, apiSecret)
                 .hostUrl("test.url")
-                .serviceId("12345")
                 .compress("compress")
                 .encoding("encoding")
                 .format("format")

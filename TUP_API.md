@@ -1,0 +1,20 @@
+# 讯飞开放平台AI能力-JAVASDK语音能力库
+
+### 人脸特征分析年龄
+
+**示例代码**
+```java
+AntiSpoofClient client = new AntiSpoofClient
+                .Builder(appId, apiKey, apiSecret)
+                .build();
+        byte[] imageByteArray = read(resourcePath + "/image/daiye2.jpg");
+        String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
+        System.out.println(client.faceContrast(imageBase64, "jpg"));
+```
+
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/AntiSpoofClientApp.java)
+
+##### 人脸特征分析年龄参数
+|参数名|类型|必传|描述|示例|
+|---|---|---|---|---|
+|tupApiEnum|TupApiEnum|是|EXPRESSION:表情 <br>SEX:性别 <br>AGE:年龄 <br>FACE_SCORE:颜值|TupApiEnum.AGE|
