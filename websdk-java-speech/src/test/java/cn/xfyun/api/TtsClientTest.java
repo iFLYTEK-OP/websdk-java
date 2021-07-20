@@ -266,7 +266,7 @@ public class TtsClientTest {
              */
             @Override
             public void onBusinessFail(WebSocket webSocket, TtsResponse response) {
-                
+
             }
         });
         try {
