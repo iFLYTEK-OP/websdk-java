@@ -56,5 +56,20 @@
 
 [20、拍照速算识别和公式识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ITR.md)
 
-[21、客服能力中间件](https://github.com/iFLYTEK-OP/websdk-java/blob/master/TELROBOT.md)
+[21、静默活体检测](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ANTI_SPOOF.md)
 
+[22、人脸比对](https://github.com/iFLYTEK-OP/websdk-java/blob/master/FACE_COMPARE.md)
+
+[23、人脸检测和属性分析](https://github.com/iFLYTEK-OP/websdk-java/blob/master/FACE_DETECT.md)
+
+[24、配合式活体检测](https://github.com/iFLYTEK-OP/websdk-java/blob/master/FACE_STATUS.md)
+
+[25、人脸比对sensetime](https://github.com/iFLYTEK-OP/websdk-java/blob/master/FACE_VER.md)
+
+[26、活体检查sensetime](https://github.com/iFLYTEK-OP/websdk-java/blob/master/SILENT_DETECTION.md)
+
+[27、人脸特征分析年龄(性别 年龄 表情 颜值)](https://github.com/iFLYTEK-OP/websdk-java/blob/master/TUP_API.md)
+
+[28、人脸水印照比对](https://github.com/iFLYTEK-OP/websdk-java/blob/master/WATER_MARK.md)
+
+[29、客服能力中间件](https://github.com/iFLYTEK-OP/websdk-java/blob/master/TELROBOT.md)
