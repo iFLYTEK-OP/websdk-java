@@ -50,7 +50,6 @@ public class FaceCompareClientTest {
         FaceCompareClient client = new FaceCompareClient
                 .Builder(appId, apiKey, apiSecret)
                 .hostUrl("test.url")
-                .serviceId("12345")
                 .compress("compress")
                 .encoding("encoding")
                 .format("format")

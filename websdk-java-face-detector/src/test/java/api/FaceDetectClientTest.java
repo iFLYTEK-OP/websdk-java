@@ -50,7 +50,6 @@ public class FaceDetectClientTest {
         FaceDetectClient client = new FaceDetectClient
                 .Builder(appId, apiKey, apiSecret)
                 .hostUrl("test.url")
-                .serviceId("12345")
                 .detectPoints(FaceDetectEnum.ON)
                 .detectProperty(FaceDetectEnum.ON)
                 .compress("compress")

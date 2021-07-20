@@ -1,7 +1,6 @@
 package api;
 
-import cn.xfyun.api.BankcardClient;
-import cn.xfyun.api.BusinessCard;
+import cn.xfyun.api.BusinessCardClient;
 import config.PropertiesConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -33,7 +32,7 @@ public class BusinessCardClientTest {
 
     @Test
     public void testParams() {
-        BusinessCard client = new BusinessCard
+        BusinessCardClient client = new BusinessCardClient
                 .Builder(appId, apiKey)
                 .build();
         Assert.assertEquals(appId, client.getAppId());
@@ -43,7 +42,7 @@ public class BusinessCardClientTest {
 
     @Test
     public void testBuildParams() {
-        BusinessCard client = new BusinessCard
+        BusinessCardClient client = new BusinessCardClient
                 .Builder(appId, apiKey)
                 .hostUrl("test.url")
                 .callTimeout(1)
@@ -62,7 +61,7 @@ public class BusinessCardClientTest {
 
     @Test
     public void test() throws IOException {
-        BusinessCard client = new BusinessCard
+        BusinessCardClient client = new BusinessCardClient
                 .Builder(appId, apiKey)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/1.jpg");

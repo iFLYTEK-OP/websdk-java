@@ -52,7 +52,6 @@ public class FaceStatusClientTest {
         FaceStatusClient client = new FaceStatusClient
                 .Builder(appId, apiKey, apiSecret)
                 .hostUrl("test.url")
-                .serviceId("12345")
                 .compress("compress")
                 .encoding("encoding")
                 .format("format")

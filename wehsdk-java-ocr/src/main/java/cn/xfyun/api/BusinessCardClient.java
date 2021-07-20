@@ -17,13 +17,13 @@ import java.util.Map;
  * @version 1.0
  * @date 2021/7/7 13:36
  */
-public class BusinessCard extends HttpClient {
+public class BusinessCardClient extends HttpClient {
 
     private static final String BUSINESS_CARD = "business_card";
 
     private String picRequired;
 
-    public BusinessCard(Builder builder) {
+    public BusinessCardClient(Builder builder) {
         super(builder);
         this.picRequired = builder.picRequired;
     }
@@ -52,8 +52,8 @@ public class BusinessCard extends HttpClient {
         }
 
         @Override
-        public BusinessCard build() {
-            return new BusinessCard(this);
+        public BusinessCardClient build() {
+            return new BusinessCardClient(this);
         }
     }
 }
