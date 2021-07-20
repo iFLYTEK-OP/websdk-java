@@ -3,20 +3,18 @@
 **示例代码**
 
 ```java
-import cn.xfyun.api.CommonIseClient;
-
-// 设置评测参数,这里的appid,apiKey是在开放平台控制台获得
- CommonIseClient commonIseClient = new CommonIseClient.Builder()
-                .appId(appId).apiKey(apiKey)
+ IseHttpClient client = new IseHttpClient
+                 .Builder(appId, apiKey, IseAueEnum.RAW, IseLanguageEnum.ZH_CN, IseCategoryEnum.READ_SENTENCE)
+                 .build();
  //... 这里可以继续设置评测相关参数，参数见下面表格
                 .build();
 
  // 进行数据处理，处理方法可见demo
- String result = commonIseClient.send(new File(filePath));
+ String result = client.send(new File(filePath));
 
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/CommonIseApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/IseHttpClientApp.java)
 
 **评测参数**
 
