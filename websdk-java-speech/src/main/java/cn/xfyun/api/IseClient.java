@@ -1,5 +1,6 @@
 package cn.xfyun.api;
 
+import cn.xfyun.base.webscoket.WebSocketClient;
 import cn.xfyun.common.IseConstant;
 import cn.xfyun.service.ise.IseSendTask;
 import com.google.gson.JsonObject;
