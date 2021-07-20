@@ -71,3 +71,5 @@
 [27、人脸特征分析年龄(性别 年龄 表情 颜值)](https://github.com/iFLYTEK-OP/websdk-java/blob/master/TUP_API.md)
 
 [28、人脸水印照比对](https://github.com/iFLYTEK-OP/websdk-java/blob/master/WATER_MARK.md)
+
+[29、客服能力中间件](https://github.com/iFLYTEK-OP/websdk-java/blob/master/TELROBOT.md)
