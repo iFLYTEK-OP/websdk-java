@@ -16,15 +16,15 @@
 
 ### 使用
 
-[1、非实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/LFASR.md)
+[1、非实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/LFASR.md)
 
-[2、实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/RTASR.md)
+[2、实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/RTASR.md)
 
-[3、在线语音合成文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/TTS.md)
+[3、在线语音合成文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/TTS.md)
 
-[4、语音听写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/IAT.md)
+[4、语音听写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/IAT.md)
 
-[5、语音评测文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/ISE.md)
+[5、语音评测文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/ISE.md)
 
 [6、自然语言处理文档](https://github.com/iFLYTEK-OP/websdk-java/blob/master/nlp/LTP.md)
 
@@ -32,11 +32,11 @@
 
 [8、文本纠错文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/nlp/TEXT_CHECK.md)
 
-[9、语音评测（普通版）](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/ISE_HTTP.md)
+[9、语音评测（普通版）](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/ISE_HTTP.md)
 
-[10、性别年龄识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/IGR.md)
+[10、性别年龄识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/IGR.md)
 
-[11、歌曲识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/QBH.md)
+[11、歌曲识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/QBH.md)
 
 [12、小牛翻译及自研机器翻译](https://github.com/iFLYTEK-OP/websdk-java/blob/master/nlp/TRANSLATE.md)
 
@@ -72,4 +72,4 @@
 
 [28、人脸水印照比对](https://github.com/iFLYTEK-OP/websdk-java/blob/master/face/WATER_MARK.md)
 
-[29、客服能力中间件](https://github.com/iFLYTEK-OP/websdk-java/blob/master/TELROBOT.md)
+[29、客服能力中间件](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/TELROBOT.md)
