@@ -55,3 +55,6 @@
 [19、JD_OCR（行驶证识别 驾驶证识别  车牌识别）](https://github.com/iFLYTEK-OP/websdk-java/blob/master/JD_OCR.md)
 
 [20、拍照速算识别和公式识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ITR.md)
+
+[21、客服能力中间件](https://github.com/iFLYTEK-OP/websdk-java/blob/master/TELROBOT.md)
+
