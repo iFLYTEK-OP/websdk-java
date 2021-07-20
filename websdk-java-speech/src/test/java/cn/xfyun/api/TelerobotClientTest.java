@@ -44,6 +44,7 @@ public class TelerobotClientTest {
 
     @Test
     public void test_01_Token() throws Exception {
+        config();
         TelerobotResponse<TelerobotToken> telerobotResponse = telerobotClient.token();
         String token1 = telerobotResponse.getResult().getToken();
         System.out.println("token:" + telerobotResponse.getResult().getToken());
@@ -52,6 +53,7 @@ public class TelerobotClientTest {
 
     @Test
     public void test_02_Query() throws Exception {
+        config();
         TelerobotResponse<TelerobotQuery> telerobotResponse = telerobotClient.query(token, 0);
         System.out.println(StringUtils.gson.toJson(telerobotResponse));
         assertEquals(0, telerobotResponse.getCode());
@@ -59,6 +61,7 @@ public class TelerobotClientTest {
 
     @Test
     public void test_03_callout() throws Exception {
+        config();
         Callout callout = new Callout();
         callout.setLine_num("69101460");
         callout.setRobot_id("20023224");
@@ -77,6 +80,7 @@ public class TelerobotClientTest {
      */
     @Test
     public void test_04_taskCreate() throws Exception {
+        config();
         TaskCreate taskCreate = new TaskCreate();
         taskCreate.setTask_name("abelTest1");
         taskCreate.setLine_num("69101460");
@@ -95,6 +99,7 @@ public class TelerobotClientTest {
      */
     @Test
     public void test_05_insertTask() throws Exception {
+        config();
         TaskInsert taskInsert = new TaskInsert();
         taskInsert.setTask_id("5853928459405440");
         taskInsert.setCall_column(new String[]{"客户手机号码"});
@@ -111,6 +116,7 @@ public class TelerobotClientTest {
      */
     @Test
     public void test_06_startTask() throws Exception {
+        config();
         TelerobotResponse<String> telerobotResponse = telerobotClient.startTask(token, "5853928459405440");
         System.out.println(gson.toJson(telerobotResponse));
         assertTrue(telerobotResponse.getCode() >= 0);
@@ -123,6 +129,7 @@ public class TelerobotClientTest {
      */
     @Test
     public void test_07_pauseTask() throws Exception {
+        config();
         TelerobotResponse<String> telerobotResponse = telerobotClient.pauseTask(token, "5853928459405440");
         System.out.println(gson.toJson(telerobotResponse));
         assertTrue(telerobotResponse.getCode() >= 0);
@@ -136,6 +143,7 @@ public class TelerobotClientTest {
      */
     @Test
     public void test_08_deleteTask() throws Exception {
+        config();
         TelerobotResponse<String> telerobotResponse = telerobotClient.deleteTask(token, "5853928459405440");
         System.out.println(gson.toJson(telerobotResponse));
         assertTrue(telerobotResponse.getCode() >= 0);
@@ -148,6 +156,7 @@ public class TelerobotClientTest {
      */
     @Test
     public void test_09_queryTask() throws Exception {
+        config();
         TaskQuery taskQuery = new TaskQuery();
         taskQuery.setTask_id("5853928459405440");
         taskQuery.setTask_name("abelTest");
