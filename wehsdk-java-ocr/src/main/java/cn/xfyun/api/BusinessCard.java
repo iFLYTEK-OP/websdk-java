@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Map;
 
 /**
- *    银行卡识别
+ *    名片识别
  *
  *   错误码链接：https://www.xfyun.cn/document/error-code (code返回错误码时必看)
  *
