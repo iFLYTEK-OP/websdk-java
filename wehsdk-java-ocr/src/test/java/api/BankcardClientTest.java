@@ -1,7 +1,6 @@
 package api;
 
 import cn.xfyun.api.BankcardClient;
-import cn.xfyun.api.BusinessCard;
 import config.PropertiesConfig;
 import org.junit.Assert;
 import org.junit.Test;

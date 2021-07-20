@@ -26,11 +26,11 @@
 
 [5、语音评测文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/ISE.md)
 
-[6、自然语言处理文档](https://github.com/iFLYTEK-OP/websdk-java/blob/master/LTP.md)
+[6、自然语言处理文档](https://github.com/iFLYTEK-OP/websdk-java/blob/master/nlp/LTP.md)
 
-[7、情感分析文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/SA.md)
+[7、情感分析文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/nlp/SA.md)
 
-[8、文本纠错文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/TEXT_CHECK.md)
+[8、文本纠错文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/nlp/TEXT_CHECK.md)
 
 [9、语音评测（普通版）](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/ISE_HTTP.md)
 
@@ -38,38 +38,38 @@
 
 [11、歌曲识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/QBH.md)
 
-[12、小牛翻译及自研机器翻译](https://github.com/iFLYTEK-OP/websdk-java/blob/master/TRANSLATE.md)
+[12、小牛翻译及自研机器翻译](https://github.com/iFLYTEK-OP/websdk-java/blob/master/nlp/TRANSLATE.md)
 
-[13、银行卡识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/BANK_CARD.md)
+[13、银行卡识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ocr/BANK_CARD.md)
 
-[14、名片识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/BUSINESS_CARD.md)
+[14、名片识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ocr/BUSINESS_CARD.md)
 
-[15、指尖文字识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/FINGER_OCR.md)
+[15、指尖文字识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ocr/FINGER_OCR.md)
 
-[16、印刷文字识别和手写文字识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/GENERAL_WORDS.md)
+[16、印刷文字识别和手写文字识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ocr/GENERAL_WORDS.md)
 
-[17、图片类识别（营业执照 出租车发票 火车票 增值税发票 身份证 印刷文字）](https://github.com/iFLYTEK-OP/websdk-java/blob/master/IMAGE_WORD.md)
+[17、图片类识别（营业执照 出租车发票 火车票 增值税发票 身份证 印刷文字）](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ocr/IMAGE_WORD.md)
 
-[18、INTSIG_OCR(身份证识别 营业执照识别 增值税发票识别 印刷文字识别（多语种））](https://github.com/iFLYTEK-OP/websdk-java/blob/master/INTSIG_OCR.md)
+[18、INTSIG_OCR(身份证识别 营业执照识别 增值税发票识别 印刷文字识别（多语种））](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ocr/INTSIG_OCR.md)
 
-[19、JD_OCR（行驶证识别 驾驶证识别  车牌识别）](https://github.com/iFLYTEK-OP/websdk-java/blob/master/JD_OCR.md)
+[19、JD_OCR（行驶证识别 驾驶证识别  车牌识别）](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ocr/JD_OCR.md)
 
-[20、拍照速算识别和公式识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ITR.md)
+[20、拍照速算识别和公式识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ocr/ITR.md)
 
-[21、静默活体检测](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ANTI_SPOOF.md)
+[21、静默活体检测](https://github.com/iFLYTEK-OP/websdk-java/blob/master/face/ANTI_SPOOF.md)
 
-[22、人脸比对](https://github.com/iFLYTEK-OP/websdk-java/blob/master/FACE_COMPARE.md)
+[22、人脸比对](https://github.com/iFLYTEK-OP/websdk-java/blob/master/face/FACE_COMPARE.md)
 
-[23、人脸检测和属性分析](https://github.com/iFLYTEK-OP/websdk-java/blob/master/FACE_DETECT.md)
+[23、人脸检测和属性分析](https://github.com/iFLYTEK-OP/websdk-java/blob/master/face/FACE_DETECT.md)
 
-[24、配合式活体检测](https://github.com/iFLYTEK-OP/websdk-java/blob/master/FACE_STATUS.md)
+[24、配合式活体检测](https://github.com/iFLYTEK-OP/websdk-java/blob/master/face/FACE_STATUS.md)
 
-[25、人脸比对sensetime](https://github.com/iFLYTEK-OP/websdk-java/blob/master/FACE_VER.md)
+[25、人脸比对sensetime](https://github.com/iFLYTEK-OP/websdk-java/blob/master/face/FACE_VER.md)
 
-[26、活体检查sensetime](https://github.com/iFLYTEK-OP/websdk-java/blob/master/SILENT_DETECTION.md)
+[26、活体检查sensetime](https://github.com/iFLYTEK-OP/websdk-java/blob/master/face/SILENT_DETECTION.md)
 
-[27、人脸特征分析年龄(性别 年龄 表情 颜值)](https://github.com/iFLYTEK-OP/websdk-java/blob/master/TUP_API.md)
+[27、人脸特征分析年龄(性别 年龄 表情 颜值)](https://github.com/iFLYTEK-OP/websdk-java/blob/master/face/TUP_API.md)
 
-[28、人脸水印照比对](https://github.com/iFLYTEK-OP/websdk-java/blob/master/WATER_MARK.md)
+[28、人脸水印照比对](https://github.com/iFLYTEK-OP/websdk-java/blob/master/face/WATER_MARK.md)
 
 [29、客服能力中间件](https://github.com/iFLYTEK-OP/websdk-java/blob/master/TELROBOT.md)
