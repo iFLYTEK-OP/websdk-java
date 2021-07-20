@@ -17,6 +17,7 @@ import java.io.*;
 import java.security.SignatureException;
 import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -39,45 +40,62 @@ public class RtasrClientTest {
 
 	@Test
 	public void defaultParamTest() {
-		RtasrClient rtasrClient = new RtasrClient
-				.Builder(appId, apiKey)
-				.build();
+		RtasrClient rtasrClient = new RtasrClient.Builder().signature(appId, apiKey).build();;
 		Assert.assertEquals(rtasrClient.getAppId(), appId);
 		Assert.assertEquals(rtasrClient.getApiKey(), apiKey);
+
+		Assert.assertTrue(rtasrClient.getOriginHostUrl().contains("rtasr.xfyun.cn/v1/ws"));
 		Assert.assertTrue(rtasrClient.getHostUrl().contains("rtasr.xfyun.cn/v1/ws"));
 	}
 
 	@Test
 	public void testParamBuild() {
-		RtasrClient rtasrClient = new RtasrClient.Builder(appId, apiKey)
+		RtasrClient rtasrClient = new RtasrClient.Builder()
 				.hostUrl("http://www.iflytek.com")
-				.punc()
-				.pd("edu")
-				.callTimeout(1)
-				.connectTimeout(2)
-				.readTimeout(3)
-				.writeTimeout(4)
-				.pingInterval(5)
+				.addPunc()
+				.addPd("edu")
+				.callTimeout(2000, TimeUnit.MILLISECONDS)
+				.connectTimeout(2000, TimeUnit.MILLISECONDS)
+				.readTimeout(2000, TimeUnit.MILLISECONDS)
+				.writeTimeout(2000, TimeUnit.MILLISECONDS)
+				.pingInterval(10, TimeUnit.MILLISECONDS)
 				.retryOnConnectionFailure(false)
-				.build();
+				.signature(appId, apiKey).build();
 		Assert.assertTrue(rtasrClient.getHostUrl().contains("http://www.iflytek.com"));
-		Assert.assertEquals(rtasrClient.getPd(), "edu");
-		Assert.assertEquals(rtasrClient.getPunc(), "0");
-		Assert.assertEquals(rtasrClient.getCallTimeout(), 1);
-		Assert.assertEquals(rtasrClient.getConnectTimeout(), 2);
-		Assert.assertEquals(rtasrClient.getReadTimeout(), 3);
-		Assert.assertEquals(rtasrClient.getWriteTimeout(), 4);
-		Assert.assertEquals(rtasrClient.getPingInterval(), 5);
+		Assert.assertEquals(rtasrClient.getCallTimeout(), 2000);
+		Assert.assertEquals(rtasrClient.getReadTimeout(), 2000);
+		Assert.assertEquals(rtasrClient.getWriteTimeout(), 2000);
+		Assert.assertEquals(rtasrClient.getPingInterval(), 10);
 		Assert.assertFalse(rtasrClient.isRetryOnConnectionFailure());
 	}
 
 
+//	@Test
+//	public void testSignature() throws IOException, SignatureException, NoSuchAlgorithmException, InvalidKeyException {
+//		RtasrClient rtasrClient = new RtasrClient.Builder().signature(appId, apiKey).build();
+//		String appId = rtasrClient.getAppId();
+//		String apiKey = rtasrClient.getApiKey();
+//		String ts = rtasrClient.getSignature().getTs();
+//		byte[] data = apiKey.getBytes("UTF-8");
+//		SecretKeySpec secretKey = new SecretKeySpec(data, "HmacSHA1");
+//		Mac mac = Mac.getInstance("HmacSHA1");
+//		mac.init(secretKey);
+//		byte[] text = CryptTools.md5Encrypt(appId + ts).getBytes("UTF-8");
+//		byte[] rawHmac = mac.doFinal(text);
+//		String oauth = "?appid=" + appId + "&ts=" + ts + "&signa=" + URLEncoder.encode(new String(Base64.encodeBase64(rawHmac)), "UTF-8");
+//		Assert.assertEquals(oauth, rtasrClient.getSignature().getSigna());
+//		Assert.assertTrue(rtasrClient.getRequest().url().toString().contains("rtasr.xfyun.cn/v1/ws"));
+//
+//		AbstractSignature signature = rtasrClient.getSignature();
+//		Assert.assertNotNull(signature);
+//		Assert.assertEquals(signature.getId(), appId);
+//		Assert.assertEquals(signature.getKey(), apiKey);
+//	}
+
 	@Test
-	public void testSuccess() throws FileNotFoundException, InterruptedException {
-		RtasrClient rtasrClient = new RtasrClient
-				.Builder(appId, apiKey)
-				.build();
-		String AUDIO_FILE_PATH = resourcePath + "/audio/rtasr.pcm";
+	public void testSuccess() throws SignatureException, FileNotFoundException, InterruptedException {
+		RtasrClient rtasrClient = new RtasrClient.Builder().signature(appId, apiKey).build();
+		String AUDIO_FILE_PATH = RtasrClientTest.class.getResource("/").getPath() + "/audio/rtasr.pcm";
 		FileInputStream inputStream = new FileInputStream(AUDIO_FILE_PATH);
 		CountDownLatch latch = new CountDownLatch(1);
 		rtasrClient.send(inputStream, new AbstractRtasrWebSocketListener() {
@@ -105,20 +123,19 @@ public class RtasrClientTest {
 		});
 
 		latch.await();
-
 	}
 
 
 
 	@Test
 	public void testSendByte() throws SignatureException, IOException, InterruptedException {
-		RtasrClient rtasrClient = new RtasrClient.Builder(appId, apiKey).build();
+		RtasrClient rtasrClient = new RtasrClient.Builder().signature(appId, apiKey).build();
 		File file = new File(resourcePath + filePath);
 		FileInputStream inputStream = new FileInputStream(file);
 		byte[] buffer = new byte[1024000];
 		CountDownLatch latch = new CountDownLatch(1);
 		inputStream.read(buffer);
-		rtasrClient.send(buffer, new AbstractRtasrWebSocketListener() {
+		rtasrClient.send(buffer, null, new AbstractRtasrWebSocketListener() {
 			@Override
 			public void onSuccess(WebSocket webSocket, String text) {
 				System.out.println(text);
@@ -147,11 +164,8 @@ public class RtasrClientTest {
 
 	@Test
 	public void testSendCustom() throws InterruptedException {
-		RtasrClient rtasrClient = new RtasrClient
-				.Builder(appId, apiKey)
-				.build();
+		RtasrClient rtasrClient = new RtasrClient.Builder().signature(appId, apiKey).build();
 		CountDownLatch latch = new CountDownLatch(1);
-
 		WebSocket webSocket = rtasrClient.newWebSocket(new AbstractRtasrWebSocketListener() {
 			@Override
 			public void onSuccess(WebSocket webSocket, String text) {
@@ -179,7 +193,7 @@ public class RtasrClientTest {
 
 		try {
 			byte[] bytes = new byte[1280];
-			String AUDIO_FILE_PATH = resourcePath + "/audio/rtasr.pcm";
+			String AUDIO_FILE_PATH = RtasrClientTest.class.getResource("/").getPath() + "/audio/rtasr.pcm";
 			RandomAccessFile raf = new RandomAccessFile(AUDIO_FILE_PATH, "r");
 			int len = -1;
 			long lastTs = 0;

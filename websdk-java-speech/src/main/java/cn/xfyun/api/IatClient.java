@@ -1,15 +1,20 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.WebSocketBuilder;
 import cn.xfyun.base.webscoket.WebSocketClient;
 import cn.xfyun.service.iat.IatSendTask;
+import cn.xfyun.model.sign.AbstractSignature;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
+import okhttp3.internal.Util;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <ydwang16@iflytek.com>
@@ -144,7 +149,11 @@ public class IatClient extends WebSocketClient {
     private Integer frameSize;
 
     public IatClient(Builder builder) {
-        super(builder);
+        this.okHttpClient = new OkHttpClient().newBuilder().build();
+        this.originHostUrl = builder.hostUrl;
+        this.appId = builder.appId;
+        this.apiKey = builder.apiKey;
+        this.apiSecret = builder.apiSecret;
         this.language = builder.language;
         this.domain = builder.domain;
         this.accent = builder.accent;
@@ -161,6 +170,13 @@ public class IatClient extends WebSocketClient {
         this.nbest = builder.nbest;
         this.wbest = builder.wbest;
         this.frameSize = builder.frameSize;
+
+        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
+        this.callTimeout = builder.callTimeout;
+        this.connectTimeout = builder.connectTimeout;
+        this.readTimeout = builder.readTimeout;
+        this.writeTimeout = builder.writeTimeout;
+        this.pingInterval = builder.pingInterval;
     }
 
     /**
@@ -218,6 +234,26 @@ public class IatClient extends WebSocketClient {
                 .build(iatSendTask);
 
         executorService.submit(iatSendTask);
+    }
+
+    public String getHostUrl() {
+        return originHostUrl;
+    }
+
+    public String getOriginHostUrl() {
+        return originHostUrl;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public String getApiSecret() {
+        return apiSecret;
+    }
+
+    public String getApiKey() {
+        return apiKey;
     }
 
     public String getLanguage() {
@@ -284,55 +320,90 @@ public class IatClient extends WebSocketClient {
         return frameSize;
     }
 
-    @Override
-    public String getSignature() {
-        return null;
+    public AbstractSignature getSignature() {
+        return signature;
     }
 
+    public Request getRequest() {
+        return request;
+    }
 
-    public static final class Builder extends WebSocketBuilder<Builder> {
+    public OkHttpClient getOkHttpClient() {
+        return okHttpClient;
+    }
 
-        private static final String HOST_URL = "http://iat-api.xfyun.cn/v2/iat";
+    @Override
+    public WebSocket getWebSocket() {
+        return webSocket;
+    }
 
+    public boolean isRetryOnConnectionFailure() {
+        return retryOnConnectionFailure;
+    }
+
+    public int getCallTimeout() {
+        return callTimeout;
+    }
+
+    public int getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    public int getWriteTimeout() {
+        return writeTimeout;
+    }
+
+    public int getPingInterval() {
+        return pingInterval;
+    }
+
+    public static class Builder {
+        // websocket相关
+        boolean retryOnConnectionFailure = true;
+        int callTimeout = 0;
+        int connectTimeout = 10000;
+        int readTimeout = 10000;
+        int writeTimeout = 10000;
+        int pingInterval = 0;
+        private String hostUrl = "http://iat-api.xfyun.cn/v2/iat";
+        private String appId;
+        private String apiKey;
+        private String apiSecret;
         private String language = "zh_cn";
-
         private String domain = "iat";
-
         private String accent = "mandarin";
-
         private String format = "audio/L16;rate=16000";
-
         private String encoding = "raw";
-
         private int vad_eos = 2000;
-
         private String dwa;
-
         private String pd;
-
         private int ptt = 1;
-
         private String rlang = "zh-cn";
-
         private int vinfo = 0;
-
         private int nunum = 1;
-
         private Integer speex_size = 2;
-
         private Integer nbest;
-
         private Integer wbest;
-
         private Integer frameSize = 1280;
 
-        public Builder(String appId, String apiKey, String apiSecret) {
-            super(HOST_URL, appId, apiKey, apiSecret);
-        }
-
-        @Override
         public IatClient build() {
             return new IatClient(this);
+        }
+
+        public IatClient.Builder signature(String appId, String apiKey, String apiSecret) {
+            this.appId = appId;
+            this.apiKey = apiKey;
+            this.apiSecret = apiSecret;
+            return this;
+        }
+
+        public IatClient.Builder hostUrl(String hostUrl) {
+            this.hostUrl = hostUrl;
+            return this;
         }
 
         public IatClient.Builder language(String language) {
@@ -423,5 +494,36 @@ public class IatClient extends WebSocketClient {
             this.frameSize = frameSize;
             return this;
         }
+
+        public IatClient.Builder callTimeout(long timeout, TimeUnit unit) {
+            this.callTimeout = Util.checkDuration("timeout", timeout, unit);
+            return this;
+        }
+
+        public IatClient.Builder connectTimeout(long timeout, TimeUnit unit) {
+            this.connectTimeout = Util.checkDuration("timeout", timeout, unit);
+            return this;
+        }
+
+        public IatClient.Builder readTimeout(long timeout, TimeUnit unit) {
+            this.readTimeout = Util.checkDuration("timeout", timeout, unit);
+            return this;
+        }
+
+        public IatClient.Builder writeTimeout(long timeout, TimeUnit unit) {
+            this.writeTimeout = Util.checkDuration("timeout", timeout, unit);
+            return this;
+        }
+
+        public IatClient.Builder pingInterval(long interval, TimeUnit unit) {
+            this.pingInterval = Util.checkDuration("interval", interval, unit);
+            return this;
+        }
+
+        public IatClient.Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
+            this.retryOnConnectionFailure = retryOnConnectionFailure;
+            return this;
+        }
+
     }
 }

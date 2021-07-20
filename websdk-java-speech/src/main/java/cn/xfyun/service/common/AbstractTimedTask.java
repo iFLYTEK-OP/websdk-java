@@ -1,13 +1,11 @@
 package cn.xfyun.service.common;
 
+import cn.xfyun.base.webscoket.WebSocketClient;
 import cn.xfyun.util.IOCloseUtil;
-import okhttp3.WebSocket;
-import okio.ByteString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
 
@@ -19,35 +17,74 @@ import java.util.Arrays;
 public abstract class AbstractTimedTask implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(AbstractTimedTask.class);
+    protected WebSocketClient webSocketClient;
+    /**
+     * 间隔时间
+     */
+    private Integer waitMillis = 40;
+    private byte[] bytes;
 
-    protected WebSocket webSocket;
+    private InputStream inputStream;
 
-    protected Integer waitMillis;
+    private Closeable closeable;
 
-    protected byte[] bytes;
+    private Integer frameSize = 1280;
 
-    protected InputStream inputStream;
+    /**
+     * 是否为数据的最后一块
+     */
+    private boolean isDataEnd = false;
 
-    protected Closeable closeable;
-
-    protected Integer frameSize;
-
-    public AbstractTimedTask(AbstractTaskBuilder builder) {
+    public AbstractTimedTask build(Builder builder) {
         this.waitMillis = builder.waitMillis;
         this.bytes = builder.bytes;
         this.closeable = builder.closeable;
         this.inputStream = builder.inputStream;
         this.frameSize = builder.frameSize;
-        this.webSocket = builder.webSocket;
+        this.webSocketClient = builder.webSocketClient;
+
+        return this;
     }
 
     @Override
     public void run() {
         try {
+            byte[] buffer = new byte[frameSize];
+
+            // 流操作
             if (inputStream != null) {
-                sendByInputStream(inputStream);
+                do {
+                    int readLength = inputStream.read(buffer);
+                    if (readLength == -1) {
+                        isDataEnd = true;
+                    }
+
+                    String data = businessDataProcess(isDataEnd ? null : Arrays.copyOf(buffer, readLength), isDataEnd);
+                    webSocketClient.getWebSocket().send(data);
+
+                    Thread.sleep(waitMillis);
+                } while (!isDataEnd);
             } else {
-                sendByBytes(bytes);
+                // 针对于byte数组的操作
+                if (bytes != null && bytes.length > 0) {
+                    int byteLen = bytes.length;
+
+                    for (int startIndex = 0; ; startIndex += frameSize) {
+                        if (startIndex + frameSize < byteLen) {
+                            byte[] contents = Arrays.copyOfRange(bytes, startIndex, startIndex + frameSize);
+                            String data = businessDataProcess(contents, false);
+                            webSocketClient.getWebSocket().send(data);
+                        } else {
+                            byte[] contents = Arrays.copyOfRange(bytes, startIndex, byteLen);
+                            String data = businessDataProcess(contents, true);
+                            webSocketClient.getWebSocket().send(data);
+                            logger.info("数据发送完毕!");
+                            break;
+                        }
+                        Thread.sleep(waitMillis);
+                    }
+
+                }
             }
         } catch (Exception e) {
             logger.error("处理数据异常", e);
@@ -57,30 +94,56 @@ public abstract class AbstractTimedTask implements Runnable {
         }
     }
 
-    private void sendByBytes(byte[] bytes) throws InterruptedException {
-        // 针对于byte数组的操作
-        if (bytes != null && bytes.length > 0) {
-            for (int i = 0; i < bytes.length; i += frameSize) {
-                int len = Math.min(i + frameSize, bytes.length);
-                byte[] cur = Arrays.copyOfRange(bytes, i, len);
-                webSocket.send(ByteString.of(cur));
-                Thread.sleep(waitMillis);
-            }
-        }
-    }
+    /**
+     * 处理业务数据，这里需要每个需要的能力去重写
+     *
+     * @param contents
+     * @param isEnd
+     * @return
+     * @throws InterruptedException
+     */
+    public abstract String businessDataProcess(byte[] contents, boolean isEnd) throws InterruptedException;
 
-    private void sendByInputStream(InputStream inputStream) throws IOException, InterruptedException {
-        byte[] buffer = new byte[frameSize];
-        if (inputStream != null) {
-            int len = 0;
-            while ((len = inputStream.read(buffer)) != -1) {
-                if (len < frameSize) {
-                    webSocket.send(ByteString.of(Arrays.copyOfRange(buffer, 0, len)));
-                    break;
-                }
-                webSocket.send(ByteString.of(buffer));
-                Thread.sleep(waitMillis);
-            }
+    public static final class Builder {
+        private Integer waitMillis = 40;
+        private WebSocketClient webSocketClient;
+        private byte[] bytes;
+        private Closeable closeable;
+        private InputStream inputStream;
+        private Integer frameSize = 1280;
+
+        public AbstractTimedTask.Builder waitMillis(Integer waitMills) {
+            this.waitMillis = waitMills;
+            return this;
+        }
+
+        public AbstractTimedTask.Builder webSocketClient(WebSocketClient webSocketClient) {
+            this.webSocketClient = webSocketClient;
+            return this;
+        }
+
+        public AbstractTimedTask.Builder bytes(byte[] bytes) {
+            this.bytes = bytes;
+            return this;
+        }
+
+        public AbstractTimedTask.Builder inputStream(InputStream inputStream) {
+            this.inputStream = inputStream;
+            return this;
+        }
+
+        public AbstractTimedTask.Builder closeable(Closeable closeable) {
+            this.closeable = closeable;
+            return this;
+        }
+
+        public AbstractTimedTask.Builder frameSize(Integer frameSize) {
+            this.frameSize = frameSize;
+            return this;
+        }
+
+        public void build(AbstractTimedTask task) {
+            task.build(this);
         }
     }
 }

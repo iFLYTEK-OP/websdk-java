@@ -1,14 +1,16 @@
 package cn.xfyun.base.webscoket;
 
 import cn.xfyun.base.Client;
+import cn.xfyun.model.sign.AbstractSignature;
+import cn.xfyun.model.sign.Hmac256Signature;
+import cn.xfyun.util.AuthUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 
-import java.io.Closeable;
-import java.io.InputStream;
-import java.util.concurrent.TimeUnit;
+import java.net.MalformedURLException;
+import java.security.SignatureException;
 
 /**
  * @author <ydwang16@iflytek.com>
@@ -17,77 +19,66 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class WebSocketClient extends Client {
 
-        protected Request request;
+    protected String originHostUrl;
 
-        protected OkHttpClient okHttpClient;
+    protected AbstractSignature signature;
 
-        protected WebSocket webSocket;
+    /**
+     * websocket相关配置
+     */
+    protected Request request;
 
-        protected Integer waitMillis;
+    protected OkHttpClient okHttpClient;
 
-        protected byte[] bytes;
+    protected WebSocket webSocket;
 
-        protected InputStream inputStream;
 
-        protected Closeable closeable;
+    /**
+     * webSocket超时时间相关
+     */
+    protected boolean retryOnConnectionFailure;
+    protected int callTimeout;
+    protected int connectTimeout;
+    protected int readTimeout;
+    protected int writeTimeout;
+    protected int pingInterval;
 
-        protected Integer frameSize;
-
-    public WebSocketClient(WebSocketBuilder builder) {
-        this.hostUrl = builder.hostUrl;
-        this.appId = builder.appId;
-        this.apiKey = builder.apiKey;
-        this.apiSecret = builder.apiSecret;
-        this.okHttpClient = new OkHttpClient
-                .Builder()
-                .callTimeout(builder.callTimeout, TimeUnit.SECONDS)
-                .connectTimeout(builder.connectTimeout, TimeUnit.SECONDS)
-                .readTimeout(builder.readTimeout, TimeUnit.SECONDS)
-                .writeTimeout(builder.writeTimeout, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                .pingInterval(builder.pingInterval, TimeUnit.SECONDS)
-                .build();
-        this.waitMillis = builder.waitMillis;
-        this.bytes = builder.bytes;
-        this.inputStream = builder.inputStream;
-        this.closeable = builder.closeable;
-        this.frameSize = builder.frameSize;
+    public WebSocket getWebSocket() {
+        return webSocket;
     }
 
-    protected void createWebSocketConnect(WebSocketListener webSocketListener) {
-        this.request = new Request.Builder().url(getSignature()).build();
-        this.webSocket = okHttpClient.newWebSocket(request, webSocketListener);
+    /**
+     * 生成鉴权对象，并建立websocket连接
+     *
+     * @return
+     * @throws MalformedURLException
+     * @throws SignatureException
+     */
+    protected void createWebSocketConnect(WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+        this.signature = new Hmac256Signature(apiKey, apiSecret, originHostUrl);
+        String url = AuthUtil.generateRequestUrl(signature);
+        this.hostUrl = url.replace("http://", "ws://").replace("https://", "wss://");
+        this.request = new Request.Builder().url(this.hostUrl).build();
+
+        // 创建websocket连接
+        newWebSocket(webSocketListener);
     }
 
+    /**
+     * 为语音听写client新建webSocket
+     *
+     * @param listener
+     * @return
+     */
+    protected void newWebSocket(WebSocketListener listener) {
+        this.webSocket = okHttpClient.newWebSocket(request, listener);
+    }
+
+    /**
+     * 关闭websocket连接
+     */
     public void closeWebsocket() {
         this.webSocket.close(1000, null);
         okHttpClient.connectionPool().evictAll();
     }
-
-    public abstract String getSignature();
-
-    public boolean isRetryOnConnectionFailure() {
-        return okHttpClient.retryOnConnectionFailure();
-    }
-
-    public int getCallTimeout() {
-        return okHttpClient.callTimeoutMillis() / 1000;
-    }
-
-    public int getConnectTimeout() {
-        return okHttpClient.connectTimeoutMillis() / 1000;
-    }
-
-    public int getReadTimeout() {
-        return okHttpClient.readTimeoutMillis() / 1000;
-    }
-
-    public int getWriteTimeout() {
-        return okHttpClient.writeTimeoutMillis() / 1000;
-    }
-
-    public int getPingInterval() {
-        return okHttpClient.pingIntervalMillis() / 1000;
-    }
-
 }

@@ -3,8 +3,7 @@ package cn.xfyun.service.iat;
 import cn.xfyun.model.request.iat.IatBusiness;
 import cn.xfyun.model.request.iat.IatRequest;
 import cn.xfyun.model.request.iat.IatRequestData;
-import cn.xfyun.service.common.AbstractTask;
-import cn.xfyun.service.lfasr.task.AbstractTask;
+import cn.xfyun.service.common.AbstractTimedTask;
 import com.google.gson.JsonObject;
 import cn.xfyun.api.IatClient;
 import cn.xfyun.util.StringUtils;
@@ -16,7 +15,7 @@ import java.util.Base64;
  * @description 语音听写发送任务
  * @date 2021/3/27
  */
-public class IatSendTask extends AbstractTask {
+public class IatSendTask extends AbstractTimedTask {
 
     /**
      * 发送状态，0代表第一帧，1代表中间数据，2代表最后一帧
