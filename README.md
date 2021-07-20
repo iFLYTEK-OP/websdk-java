@@ -52,6 +52,6 @@
 
 [18、INTSIG_OCR(身份证识别 营业执照识别 增值税发票识别 印刷文字识别（多语种））](https://github.com/iFLYTEK-OP/websdk-java/blob/master/INTSIG_OCR.md)
 
-[19、JD_OCR（行驶证识别 驾驶证识别  车牌识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/JD_OCR.md)
+[19、JD_OCR（行驶证识别 驾驶证识别  车牌识别）](https://github.com/iFLYTEK-OP/websdk-java/blob/master/JD_OCR.md)
 
 [20、拍照速算识别和公式识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/ITR.md)
