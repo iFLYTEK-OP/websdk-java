@@ -3,9 +3,6 @@
 **示例代码**
 
 ```java
-import cn.xfyun.api.QbhClient;
-
-// 设置歌曲识别参数,这里的appid,apiKey是在开放平台控制台获得
 QbhClient qbhClient = new QbhClient.Builder(appId，apiKey)
                 //... 这里可以继续设置评测相关参数，参数见下面表格
                 .build();
