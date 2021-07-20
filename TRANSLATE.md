@@ -3,11 +3,8 @@
 **示例代码**
 
 ```java
-import cn.xfyun.api.TransClient;
 
-// 设置听写参数,这里的appid,apiKey,apiSecret是在开放平台控制台获得
-TransClient client = new TransClient.Builder()
-                .signature(appId, apiKey, apiSecret)
+TransClient client = new TransClient.Builder(appId, apiKey, apiSecret)
                 //... 这里可以继续设置翻译相关参数，参数见下面表格
                 .build();
 
