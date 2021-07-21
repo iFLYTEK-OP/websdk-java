@@ -6,7 +6,7 @@
     <packaging>jar</packaging>
     <artifactId>wehsdk-java-ocr</artifactId>
     <parent>
-        <artifactId>websdk-java</artifactId>
+        <artifactId>websdk-java-parent</artifactId>
         <groupId>cn.xfyun</groupId>
         <version>1.0.4</version>
         <relativePath>../websdk-java-parent/pom.xml</relativePath>
@@ -23,30 +23,6 @@
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.13</version>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>RELEASE</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-core</artifactId>
-            <version>2.0.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.powermock</groupId>
-            <artifactId>powermock-module-junit4</artifactId>
-            <version>2.0.2</version>
-            <scope>test</scope>
         </dependency>
     </dependencies>
 
