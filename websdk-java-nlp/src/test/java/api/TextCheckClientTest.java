@@ -40,7 +40,6 @@ public class TextCheckClientTest {
 	public void testParamBuild() {
 		TextCheckClient client = new TextCheckClient
 				.Builder(appId, apiKey, apiSecret)
-				.serviceId("12323")
 				.compress("gzip")
 				.format("plain")
 				.encoding("base64")
