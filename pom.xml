@@ -6,7 +6,7 @@
     <artifactId>websdk-java</artifactId>
     <name>websdk-java</name>
     <packaging>pom</packaging>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
     <url>https://github.com/iFLYTEK-OP</url>
     <description>xfyun SDK</description>
 
@@ -16,7 +16,7 @@
         <module>websdk-java-core</module>
         <module>websdk-java-nlp</module>
         <module>websdk-java-face-detector</module>
-        <module>wehsdk-java-ocr</module>
+        <module>websdk-java-ocr</module>
     </modules>
 
     <scm>
