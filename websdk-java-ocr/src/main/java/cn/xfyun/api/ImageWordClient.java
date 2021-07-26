@@ -49,8 +49,7 @@ public class ImageWordClient extends PlatformHttpClient {
         if (imageWordEnum.equals(ImageWordEnum.PRINTED_WORD)) {
             service.addProperty("category", "mix0");
 
-            // 不是身份证识别 也不是印刷文字多语种识别
-        } else if (!imageWordEnum.equals(ImageWordEnum.IDCARD)) {
+        } else {
             service.addProperty("template_list", imageWordEnum.getTemplateList());
         }
         parameter.add(serviceId, service);
