@@ -30,7 +30,7 @@ public enum ImageWordEnum {
     /**
      *   身份证识别
      */
-    IDCARD("s5ccecfce", null, "s5ccecfce_data_1"),
+    IDCARD("s5ccecfce", "id_card", "s5ccecfce_data_1"),
 
     /**
      *   多语种文字识别
