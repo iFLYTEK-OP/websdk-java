@@ -2,7 +2,6 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
-import cn.xfyun.exception.HttpException;
 import cn.xfyun.model.sign.Signature;
 import com.google.gson.JsonObject;
 

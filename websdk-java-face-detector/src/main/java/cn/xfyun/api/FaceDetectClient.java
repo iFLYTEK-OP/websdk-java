@@ -53,7 +53,7 @@ public class FaceDetectClient extends PlatformHttpClient {
         return sendPost(signUrl, JSON, null, bodyParam(imageBase641, encoding));
     }
 
-    public String bodyParam(String imageBase641, String imageEncoding1) {
+    private String bodyParam(String imageBase641, String imageEncoding1) {
         JsonObject jso = new JsonObject();
         jso.add("header", buildHeader());
         /** parameter **/
