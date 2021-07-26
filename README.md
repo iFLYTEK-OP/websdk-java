@@ -68,7 +68,7 @@
 
 [26、活体检查sensetime](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/face/SILENT_DETECTION.md)
 
-[27、人脸特征分析年龄(性别 年龄 表情 颜值)](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/face/TUP_API.md)
+[27、人脸特征分析(性别 年龄 表情 颜值)](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/face/TUP_API.md)
 
 [28、人脸水印照比对](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/face/WATER_MARK.md)
 
