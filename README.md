@@ -4,7 +4,7 @@
 
 提供各种语音能力的JAVASDK。
 
-### maven依赖
+### 语音相关能力
 ```xml
 <dependency>
     <groupId>cn.xfyun</groupId>
@@ -13,7 +13,6 @@
     <version>2.0.0</version>
 </dependency>
 ```
-### 使用
 [1、非实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/LFASR.md)
 
 [2、实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/RTASR.md)
@@ -32,6 +31,7 @@
 
 [9、客服能力中间件](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/TELROBOT.md)
 
+### 自然语言处理
 ```xml
 <dependency>
     <groupId>cn.xfyun</groupId>
@@ -40,7 +40,6 @@
     <version>2.0.0</version>
 </dependency>
 ```
-### 使用
 
 [1、自然语言处理文档](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/nlp/LTP.md)
 
@@ -50,6 +49,8 @@
 
 [4、小牛翻译及自研机器翻译](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/nlp/TRANSLATE.md)
 
+
+### 图片文字识别
 ```xml
 <dependency>
     <groupId>cn.xfyun</groupId>
@@ -58,7 +59,6 @@
     <version>2.0.0</version>
 </dependency>
 ```
-### 使用
 
 [1、银行卡识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/ocr/BANK_CARD.md)
 
@@ -76,6 +76,7 @@
 
 [8、拍照速算识别和公式识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/ocr/ITR.md)
 
+### 人脸处理能力
 ```xml
 <dependency>
     <groupId>cn.xfyun</groupId>
@@ -84,8 +85,6 @@
     <version>2.0.0</version>
 </dependency>
 ```
-
-### 使用
 
 [1、静默活体检测](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/face/ANTI_SPOOF.md)
 
