@@ -59,8 +59,8 @@ public class ImageWordClient extends PlatformHttpClient {
         /** payload **/
         JsonObject payload = new JsonObject();
         JsonObject inputImage1 = new JsonObject();
-        inputImage1.addProperty("encoding", imageBase64);
-        inputImage1.addProperty("image", encoding);
+        inputImage1.addProperty("encoding", encoding);
+        inputImage1.addProperty("image", imageBase64);
         inputImage1.addProperty("status",status);
         payload.add(imageWordEnum.getPayload(), inputImage1);
         jso.add("payload", payload);

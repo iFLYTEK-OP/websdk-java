@@ -64,7 +64,7 @@ public class BusinessCardClientTest {
         BusinessCardClient client = new BusinessCardClient
                 .Builder(appId, apiKey)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/1.jpg");
+        byte[] imageByteArray = read(resourcePath + "/image/print.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.businessCard(imageBase64));
     }

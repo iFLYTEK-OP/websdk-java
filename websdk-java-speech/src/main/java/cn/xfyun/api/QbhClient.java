@@ -72,6 +72,9 @@ public class QbhClient extends HttpClient {
 
         public Builder(String appId, String apiKey) {
             super(HOST_URL, appId, apiKey, null);
+            this.connectTimeout(10);
+            this.readTimeout(10);
+            this.writeTimeout(10);
         }
 
 

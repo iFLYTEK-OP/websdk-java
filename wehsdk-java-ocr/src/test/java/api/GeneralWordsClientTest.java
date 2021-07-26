@@ -77,7 +77,7 @@ public class GeneralWordsClientTest {
         GeneralWordsClient client = new GeneralWordsClient
                 .Builder(appId, apiKey, OcrWordsEnum.HANDWRITING)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/1.jpg");
+        byte[] imageByteArray = read(resourcePath + "/image/print.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.generalWords(imageBase64));
     }

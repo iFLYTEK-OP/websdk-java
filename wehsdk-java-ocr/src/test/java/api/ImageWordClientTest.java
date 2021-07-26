@@ -1,9 +1,7 @@
 package api;
 
 import cn.xfyun.api.ImageWordClient;
-import cn.xfyun.api.JDOcrClient;
 import cn.xfyun.config.ImageWordEnum;
-import cn.xfyun.config.JDRecgEnum;
 import config.PropertiesConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -12,10 +10,9 @@ import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Base64;
 
 /**
@@ -68,7 +65,8 @@ public class ImageWordClientTest {
         ImageWordClient client = new ImageWordClient
                 .Builder(appId, apiKey, apiSecret, ImageWordEnum.IDCARD)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
+        File file = new File(resourcePath + "/image/car.jpg");
+        byte[] imageByteArray = Files.readAllBytes(Paths.get(file.getPath()));
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.imageWord(imageBase64, "jpg"));
     }
@@ -78,7 +76,8 @@ public class ImageWordClientTest {
         ImageWordClient client = new ImageWordClient
                 .Builder(appId, apiKey, apiSecret, ImageWordEnum.PRINTED_WORD)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
+        File file = new File(resourcePath + "/image/print.jpg");
+        byte[] imageByteArray = Files.readAllBytes(Paths.get(file.getPath()));
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.imageWord(imageBase64, "jpg"));
     }
@@ -88,7 +87,8 @@ public class ImageWordClientTest {
         ImageWordClient client = new ImageWordClient
                 .Builder(appId, apiKey, apiSecret, ImageWordEnum.BUSINESS_LICENSE)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
+        File file = new File(resourcePath + "/image/car.jpg");
+        byte[] imageByteArray = Files.readAllBytes(Paths.get(file.getPath()));
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.imageWord(imageBase64, "jpg"));
     }
@@ -98,7 +98,8 @@ public class ImageWordClientTest {
         ImageWordClient client = new ImageWordClient
                 .Builder(appId, apiKey, apiSecret, ImageWordEnum.INVOICE)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
+        File file = new File(resourcePath + "/image/car.jpg");
+        byte[] imageByteArray = Files.readAllBytes(Paths.get(file.getPath()));
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.imageWord(imageBase64, "jpg"));
     }
@@ -108,7 +109,8 @@ public class ImageWordClientTest {
         ImageWordClient client = new ImageWordClient
                 .Builder(appId, apiKey, apiSecret, ImageWordEnum.TAXI_INVOICE)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
+        File file = new File(resourcePath + "/image/car.jpg");
+        byte[] imageByteArray = Files.readAllBytes(Paths.get(file.getPath()));
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.imageWord(imageBase64, "jpg"));
     }
@@ -118,32 +120,11 @@ public class ImageWordClientTest {
         ImageWordClient client = new ImageWordClient
                 .Builder(appId, apiKey, apiSecret, ImageWordEnum.TRAIN_TICKET)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
+        File file = new File(resourcePath + "/image/car.jpg");
+        byte[] imageByteArray = Files.readAllBytes(Paths.get(file.getPath()));
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.imageWord(imageBase64, "jpg"));
     }
 
-    /**
-     * 流转二进制数组
-     *
-     * @param in
-     * @return
-     * @throws IOException
-     */
-    private static byte[] inputStream2ByteArray(InputStream in) throws IOException {
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
-        byte[] buffer = new byte[1024 * 4];
-        int n = 0;
-        while ((n = in.read(buffer)) != -1) {
-            out.write(buffer, 0, n);
-        }
-        return out.toByteArray();
-    }
 
-    private static byte[] read(String filePath) throws IOException {
-        InputStream in = new FileInputStream(filePath);
-        byte[] data = inputStream2ByteArray(in);
-        in.close();
-        return data;
-    }
 }

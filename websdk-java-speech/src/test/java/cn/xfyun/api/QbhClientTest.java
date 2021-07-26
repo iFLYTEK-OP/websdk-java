@@ -8,8 +8,11 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import sun.misc.IOUtils;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * @author: <flhong2@iflytek.com>
@@ -24,7 +27,7 @@ public class QbhClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getApiKey();
-    String filePath = "src/test/resources/audio/cn/read_sentence_cn.pcm";
+    String filePath = "src/test/resources/audio/audio_qbh.wav";
 
     @Test
     public void defaultParamTest() {
@@ -56,14 +59,12 @@ public class QbhClientTest {
     }
 
     @Test
-    public void testSuccessByBytes() throws IOException, HttpException {
+    public void testSuccessByBytes() throws IOException {
         QbhClient qbhClient = new QbhClient
                 .Builder(appId, apiKey)
                 .build();
-
-        InputStream inputStream = new FileInputStream(new File(filePath));
-        byte[] buffer = new byte[102400];
-        inputStream.read(buffer);
+        File file = new File(filePath);
+        byte[] buffer = Files.readAllBytes(Paths.get(file.getPath()));
         String result = qbhClient.send(buffer);
         System.out.println("返回结果: " + result);
     }
