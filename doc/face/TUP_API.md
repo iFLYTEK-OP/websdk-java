@@ -4,12 +4,17 @@
 
 **示例代码**
 ```java
-AntiSpoofClient client = new AntiSpoofClient
-                .Builder(appId, apiKey, apiSecret)
+        TupApiClient client = new TupApiClient
+                // 年龄      TupApiEnum.AGE
+                // 性别      TupApiEnum.SEX
+                // 表情      TupApiEnum.EXPRESSION
+                // 颜值      TupApiEnum.FACE_SCORE
+                .Builder(appId, apiKey, TupApiEnum.AGE)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/daiye2.jpg");
-        String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.faceContrast(imageBase64, "jpg"));
+        InputStream inputStream = new FileInputStream(new File(resourcePath + filePath));
+        byte[] bytes = IOUtils.readFully(inputStream, -1, true);
+        System.out.println("请求地址：" + client.getHostUrl());
+        System.out.println(client.recognition("测试", bytes));
 ```
 
 更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/AntiSpoofClientApp.java)
