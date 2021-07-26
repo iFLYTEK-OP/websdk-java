@@ -23,7 +23,7 @@ public class SaClient extends HttpClient {
 
 
 	public String send(String text) throws IOException {
-		return sendPost(hostUrl, FORM, Signature.signHttpHeaderCheckSum(appId, apiKey,TYPE), text);
+		return sendPost(hostUrl, FORM, Signature.signHttpHeaderCheckSum(appId, apiKey,TYPE), "text=" + text);
 	}
 
 
