@@ -7,7 +7,8 @@
         PlaceRecClient client = new PlaceRecClient
                 .Builder(appId, apiKey, apiSecret)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
+        InputStream inputStream = new FileInputStream(new File(resourcePath + filePath));
+        byte[] imageByteArray = IOUtils.readFully(inputStream, -1, true);
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.send(imageBase64, "jpg"));
 ```
