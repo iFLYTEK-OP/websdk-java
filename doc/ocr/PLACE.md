@@ -20,3 +20,5 @@
 |---|---|---|---|---|
 |imageBase64|String|是|图片的base64编码|无|
 |type|String|是|图片的格式|"jpg"|
+
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/image/place-recg/API.html)

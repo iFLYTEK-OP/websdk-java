@@ -18,3 +18,5 @@ ItrClient client = new ItrClient
 |参数名|类型|必传|描述|示例|
 |---|---|---|---|---|
 |itrEntEnum|ItrEntEnum|是|识别类型。<br>MATH_ARITH:拍照速算识别 <br>TEACH_PHOTO_PRINT:公式识别|ItrEntEnum.TEACH_PHOTO_PRINT|
+
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/words/photo-calculate-recg/API.html)

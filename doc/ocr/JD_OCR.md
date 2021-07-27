@@ -18,3 +18,5 @@
 |参数名|类型|必传|描述|示例|
 |---|---|---|---|---|
 |jDRecgEnum|JDRecgEnum|是|识别类型。<br>JD_OCR_VEHICLE:行驶证识别 <br>JD_OCR_DRIVER:驾驶证识别 <br>JD_OCR_CAR:车牌识别|JDRecgEnum.JD_OCR_VEHICLE|
+
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/words/vehicleRecg/API.html)

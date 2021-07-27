@@ -17,3 +17,5 @@
 |参数名|类型|必传|描述|示例|
 |---|---|---|---|---|
 |imageRecEnum|ImageRecEnum|是|识别类别。<br>SCENE:场景识别 <br>CURRENCY:物体识别 | ImageRecEnum.SCENE|
+
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/image/scene-recg/API.html)

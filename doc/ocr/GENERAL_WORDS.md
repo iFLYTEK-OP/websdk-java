@@ -19,3 +19,5 @@
 |ocrTypeEnum|OcrWordsEnum|是|文字识别类别。取值PRINT（印刷文字识别）HANDWRITING（手写文字识别）|OcrWordsEnum.HANDWRITING|
 |language|LanguageEnum|否|识别语言。EN（英文）或者CN（中英文混合）|LanguageEnum.CN|
 |location|LocationEnum|否|返回文本位置信息。ON返回或者OFF不返回|LocationEnum.ON|
+
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/words/wordRecg/API.html)

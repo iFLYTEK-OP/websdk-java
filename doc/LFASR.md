@@ -72,3 +72,5 @@ public class LfasrClientApp {
 |connTimeout|int|否|连接超时时间|10000(单位：毫秒)|
 |soTimeout|int|否|响应超时时间|30000(单位：毫秒)|
 
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/asr/lfasr/API.html)
+

@@ -20,5 +20,7 @@ LtpClient ltpClient = new LtpClient
 |func|enum|是|能力标识 中文分词(cws);词性标注(pos);命名实体识别(ner);依存句法分析(dp);语义角色标注(srl);语义依存 (依存树) 分析(sdp);语义依存 (依存图) 分析(sdgp);关键词提取(ke)|ke|
 |text|string|是|待分析文本(中文简体)，长度限制为30000字节|"我来自北方"|
 
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/nlp/dependencyParsing/API.html)
+
 
 

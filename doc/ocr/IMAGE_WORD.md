@@ -18,3 +18,5 @@
 |参数名|类型|必传|描述|示例|
 |---|---|---|---|---|
 |imageWordEnum|ImageWordEnum|是|识别类别。<br>BUSINESS_LICENSE:营业执照识别 <br>TAXI_INVOICE:出租车发票识别 <br>TRAIN_TICKET:火车票识别 <br>INVOICE:增值税发票识别 <br>IDCARD:身份证识别 <br>PRINTED_WORD:多语种文字识别|ImageWordEnum.PRINTED_WORD|
+
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/words/id_card/API.html)

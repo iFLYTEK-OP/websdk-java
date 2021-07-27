@@ -23,3 +23,5 @@
 |参数名|类型|必传|描述|示例|
 |---|---|---|---|---|
 |tupApiEnum|TupApiEnum|是|EXPRESSION:表情 <br>SEX:性别 <br>AGE:年龄 <br>FACE_SCORE:颜值|TupApiEnum.AGE|
+
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/face/face-feature-analysis/ageAPI.html)
