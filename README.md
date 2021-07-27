@@ -2,7 +2,7 @@
 
 [![Build Status](https://www.travis-ci.com/iFLYTEK-OP/websdk-java.svg?branch=feature-ci)](https://www.travis-ci.com/iFLYTEK-OP/websdk-java)[![codecov](https://codecov.io/gh/iFLYTEK-OP/websdk-java/branch/feature-ci/graph/badge.svg?token=KQRe0Igv9b)](https://codecov.io/gh/iFLYTEK-OP/websdk-java)
 
-提供各种语音能力的JAVASDK。
+提供各种讯飞开放平台能力的JAVASDK。
 
 ### 语音相关能力
 ```xml
