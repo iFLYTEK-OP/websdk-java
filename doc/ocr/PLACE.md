@@ -9,7 +9,7 @@
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.send( imageBase64, "jpg"));
+        System.out.println(client.send(imageBase64, "jpg"));
 ```
 
 更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/PlaceRecClientApp.java)
