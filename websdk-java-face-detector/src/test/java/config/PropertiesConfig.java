@@ -35,19 +35,19 @@ public class PropertiesConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        appId = properties.getProperty("appId");
-        antiSpoofClientApiKey = properties.getProperty("antiSpoofClientApiKey");
-        antiSpoofClientApiSecret = properties.getProperty("antiSpoofClientApiSecret");
-        faceCompareClientApiKey = properties.getProperty("faceCompareClientApiKey");
-        faceCompareClientApiSecret = properties.getProperty("faceCompareClientApiSecret");
-        faceDetectClientApiKey = properties.getProperty("faceDetectClientApiKey");
-        faceDetectClientApiSecret = properties.getProperty("faceDetectClientApiSecret");
-        faceStatusClientApiKey = properties.getProperty("faceStatusClientApiKey");
-        faceStatusClientApiSecret = properties.getProperty("faceStatusClientApiSecret");
-        faceVerificationClientApiKey = properties.getProperty("faceVerificationClientApiKey");
-        silentDetectionClientApiKey = properties.getProperty("silentDetectionClientApiKey");
-        tupApiClientApiKey = properties.getProperty("tupApiClientApiKey");
-        watermarkVerificationApiKey = properties.getProperty("watermarkVerificationApiKey");
+        appId = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getenv("appId") : properties.getProperty("appId");
+        antiSpoofClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("antiSpoofClientApiKey")) ? System.getenv("antiSpoofClientApiKey") : properties.getProperty("antiSpoofClientApiKey");
+        antiSpoofClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("antiSpoofClientApiSecret")) ? System.getenv("antiSpoofClientApiSecret") : properties.getProperty("antiSpoofClientApiSecret");
+        faceCompareClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("faceCompareClientApiKey")) ? System.getenv("faceCompareClientApiKey") : properties.getProperty("faceCompareClientApiKey");
+        faceCompareClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("faceCompareClientApiSecret")) ? System.getenv("faceCompareClientApiSecret") : properties.getProperty("faceCompareClientApiSecret");
+        faceDetectClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("faceDetectClientApiKey")) ? System.getenv("faceDetectClientApiKey") : properties.getProperty("faceDetectClientApiKey");
+        faceDetectClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("faceDetectClientApiSecret")) ? System.getenv("faceDetectClientApiSecret") : properties.getProperty("faceDetectClientApiSecret");
+        faceStatusClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("faceStatusClientApiKey")) ? System.getenv("faceStatusClientApiKey") : properties.getProperty("faceStatusClientApiKey");
+        faceStatusClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("faceStatusClientApiSecret")) ? System.getenv("faceStatusClientApiSecret") : properties.getProperty("faceStatusClientApiSecret");
+        faceVerificationClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("faceVerificationClientApiKey")) ? System.getenv("faceVerificationClientApiKey") : properties.getProperty("faceVerificationClientApiKey");
+        silentDetectionClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("silentDetectionClientApiKey")) ? System.getenv("silentDetectionClientApiKey") : properties.getProperty("silentDetectionClientApiKey");
+        tupApiClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("tupApiClientApiKey")) ? System.getenv("tupApiClientApiKey") : properties.getProperty("tupApiClientApiKey");
+        watermarkVerificationApiKey = StringUtils.isNullOrEmpty(properties.getProperty("watermarkVerificationApiKey")) ? System.getenv("watermarkVerificationApiKey") : properties.getProperty("watermarkVerificationApiKey");
     }
 
     public static String getAppId() {
