@@ -10,7 +10,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-speech</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.0</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 [1、非实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/LFASR.md)
@@ -37,7 +37,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-nlp</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.0</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 
@@ -56,7 +56,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-ocr</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.0</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 
@@ -86,7 +86,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-face-detector</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.0</version>
+    <version>2.0.1</version>
 </dependency>
 ```
 
