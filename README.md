@@ -76,6 +76,10 @@
 
 [8、拍照速算识别和公式识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/ocr/ITR.md)
 
+[9、场景识别和物体识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/ocr/IMAGE_REC.md)
+
+[10、场所识别](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/ocr/PLACE.md)
+
 ### 人脸处理能力
 ```xml
 <dependency>
