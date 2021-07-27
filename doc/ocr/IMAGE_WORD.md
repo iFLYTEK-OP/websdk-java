@@ -7,7 +7,8 @@
         ImageWordClient client = new ImageWordClient
                 .Builder(appId, apiKey, apiSecret, ImageWordEnum.IDCARD)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
+        InputStream inputStream = new FileInputStream(new File(resourcePath + "/image/car.jpg"));
+        byte[] imageByteArray = IOUtils.readFully(inputStream, -1, true);
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.imageWord(imageBase64, "jpg"));
 ```
