@@ -42,8 +42,8 @@ public class IseClientTest {
     final static Base64.Encoder encoder = Base64.getEncoder();//编码
     final static Base64.Decoder decoder = Base64.getDecoder();//解码
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getIseClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getIseClientApiSecret();
     String filePath = "src/test/resources/audio/cn/read_sentence_cn.mp3";
 
     @Test

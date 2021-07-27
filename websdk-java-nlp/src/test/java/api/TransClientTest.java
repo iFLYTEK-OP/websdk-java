@@ -22,8 +22,8 @@ import static org.junit.Assert.*;
 public class TransClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getTransClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getTransClientApiSecret();
 
     @Test
     public void testParams() {

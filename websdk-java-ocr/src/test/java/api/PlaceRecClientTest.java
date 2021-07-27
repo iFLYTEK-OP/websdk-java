@@ -28,8 +28,8 @@ import java.util.Base64;
 public class PlaceRecClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getPlaceRecClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getPlaceRecClientApiSecret();
 
     private String resourcePath = this.getClass().getResource("/").getPath();
 

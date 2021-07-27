@@ -30,7 +30,7 @@ import java.util.Base64;
 public class GeneralWordsClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
+    private static final String apiKey = PropertiesConfig.getGeneralWordsClientApiKey();
 
     private String resourcePath = this.getClass().getResource("/").getPath();
 

@@ -14,11 +14,18 @@ import java.util.Properties;
  */
 public class PropertiesConfig {
     private static final String appId;
-    private static final String apiKey;
-    private static final String apiSecret;
+    private static final String iatClientApiKey;
+    private static final String iatClientApiSecret;
+    private static final String igrClientApiKey;
+    private static final String igrClientApiSecret;
+    private static final String  iseClientApiKey;
+    private static final String  iseClientApiSecret;
+    private static final String iseHttpClientApiKey;
     private static final String secretKey;
-    private static final String lfasrAppId;
-    private static final String ltpKey;
+    private static final String qbhClientApiKey;
+    private static final String rtasrClientApiKey;
+    private static final String ttsClientApiKey;
+    private static final String ttsClientApiSecret;
     private static final String telerobotAPPKey;
     private static final String telerobotAPPSecret;
 
@@ -30,41 +37,73 @@ public class PropertiesConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        appId = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getenv("appId") : properties.getProperty("appId");
-        apiSecret = StringUtils.isNullOrEmpty(properties.getProperty("apiSecret")) ? System.getenv("apiSecret") : properties.getProperty("apiSecret");
-        apiKey = StringUtils.isNullOrEmpty(properties.getProperty("apiKey")) ? System.getenv("apiKey") : properties.getProperty("apiKey");
-
-        lfasrAppId = StringUtils.isNullOrEmpty(properties.getProperty("lfasrAppId")) ? System.getenv("lfasrAppId") : properties.getProperty("lfasrAppId");
-        secretKey = StringUtils.isNullOrEmpty(properties.getProperty("secretKey")) ? System.getenv("secretKey") : properties.getProperty("secretKey");
-        ltpKey = StringUtils.isNullOrEmpty(properties.getProperty("ltpKey")) ? System.getenv("ltpKey") : properties.getProperty("ltpKey");
-
-        telerobotAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("telerobotAPPKey")) ? System.getenv("telerobotAPPKey") : properties.getProperty("telerobotAPPKey");
-        telerobotAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("telerobotAPPSecret")) ? System.getenv("telerobotAPPSecret") : properties.getProperty("telerobotAPPSecret");
-
+        appId = properties.getProperty("appId");
+        iatClientApiKey = properties.getProperty("iatClientApiKey");
+        iatClientApiSecret = properties.getProperty("iatClientApiSecret");
+        igrClientApiKey = properties.getProperty("igrClientApiKey");
+        igrClientApiSecret = properties.getProperty("igrClientApiSecret");
+        iseClientApiKey = properties.getProperty("iseClientApiKey");
+        iseClientApiSecret = properties.getProperty("iseClientApiSecret");
+        iseHttpClientApiKey = properties.getProperty("iseHttpClientApiKey");
+        secretKey = properties.getProperty("secretKey");
+        qbhClientApiKey = properties.getProperty("qbhClientApiKey");
+        rtasrClientApiKey = properties.getProperty("rtasrClientApiKey");
+        ttsClientApiKey = properties.getProperty("ttsClientApiKey");
+        ttsClientApiSecret = properties.getProperty("ttsClientApiSecret");
+        telerobotAPPKey = properties.getProperty("telerobotAPPKey");
+        telerobotAPPSecret = properties.getProperty("telerobotAPPSecret");
     }
 
     public static String getAppId() {
         return appId;
     }
 
+    public static String getIatClientApiKey() {
+        return iatClientApiKey;
+    }
+
+    public static String getIatClientApiSecret() {
+        return iatClientApiSecret;
+    }
+
+    public static String getIgrClientApiKey() {
+        return igrClientApiKey;
+    }
+
+    public static String getIgrClientApiSecret() {
+        return igrClientApiSecret;
+    }
+
+    public static String getIseClientApiKey() {
+        return iseClientApiKey;
+    }
+
+    public static String getIseClientApiSecret() {
+        return iseClientApiSecret;
+    }
+
+    public static String getIseHttpClientApiKey() {
+        return iseHttpClientApiKey;
+    }
+
     public static String getSecretKey() {
         return secretKey;
     }
 
-    public static String getLfasrAppId() {
-        return lfasrAppId;
+    public static String getQbhClientApiKey() {
+        return qbhClientApiKey;
     }
 
-    public static String getApiKey() {
-        return apiKey;
+    public static String getRtasrClientApiKey() {
+        return rtasrClientApiKey;
     }
 
-    public static String getApiSecret() {
-        return apiSecret;
+    public static String getTtsClientApiKey() {
+        return ttsClientApiKey;
     }
 
-    public static String getLtpKey() {
-        return ltpKey;
+    public static String getTtsClientApiSecret() {
+        return ttsClientApiSecret;
     }
 
     public static String getTelerobotAPPKey() {

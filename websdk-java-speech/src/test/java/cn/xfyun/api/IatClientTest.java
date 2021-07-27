@@ -44,8 +44,8 @@ import java.util.concurrent.TimeUnit;
 public class IatClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getIatClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getIatClientApiSecret();
 
     private String filePath = "audio/20210330141636536.pcm";
     private String resourcePath = this.getClass().getResource("/").getPath();

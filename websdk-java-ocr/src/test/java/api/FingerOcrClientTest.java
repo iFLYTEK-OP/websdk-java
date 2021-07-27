@@ -29,8 +29,8 @@ import java.util.Base64;
 public class FingerOcrClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getFingerOcrClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getFingerOcrClientApiSecret();
 
     private String resourcePath = this.getClass().getResource("/").getPath();
 

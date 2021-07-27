@@ -19,7 +19,7 @@ import static org.junit.Assert.assertEquals;
 public class LtpClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getLtpKey();
+    private static final String apiKey = PropertiesConfig.getLtpClientApiKey();
 
     /**
      * 测试参数设置

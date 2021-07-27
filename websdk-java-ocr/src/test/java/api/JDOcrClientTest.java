@@ -28,8 +28,8 @@ import java.util.Base64;
 public class JDOcrClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getjDOcrClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getjDOcrClientApiSecret();
 
     private String resourcePath = this.getClass().getResource("/").getPath();
 

@@ -40,8 +40,8 @@ import java.util.concurrent.TimeUnit;
 public class IgrClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getIgrClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getIgrClientApiSecret();
     String filePath = "src/test/resources/audio/cn/read_sentence_cn.pcm";
 
     @Test

@@ -26,7 +26,7 @@ import java.util.Base64;
 public class BankcardClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
+    private static final String apiKey = PropertiesConfig.getBankcardClientApiKey();
 
     private String resourcePath = this.getClass().getResource("/").getPath();
 

@@ -23,8 +23,8 @@ import java.io.*;
 public class QbhClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    String filePath = "src/test/resources/audio/cn/read_sentence_cn.pcm";
+    private static final String apiKey = PropertiesConfig.getQbhClientApiKey();
+    String filePath = "src/test/resources/audio/audio_qbh.wav";
 
     @Test
     public void defaultParamTest() {

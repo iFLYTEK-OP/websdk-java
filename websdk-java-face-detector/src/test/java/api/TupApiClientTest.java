@@ -26,7 +26,7 @@ import java.io.InputStream;
 public class TupApiClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
+    private static final String apiKey = PropertiesConfig.getTupApiClientApiKey();
 
     private String resourcePath = this.getClass().getResource("/").getPath();
 

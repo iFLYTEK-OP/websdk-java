@@ -14,11 +14,12 @@ import java.util.Properties;
  */
 public class PropertiesConfig {
     private static final String appId;
-    private static final String apiKey;
-    private static final String apiSecret;
-    private static final String secretKey;
-    private static final String lfasrAppId;
-    private static final String ltpKey;
+    private static final String ltpClientApiKey;
+    private static final String saClientApiKey;
+    private static final String textCheckClientApiKey;
+    private static final String textCheckClientApiSecret;
+    private static final String transClientApiKey;
+    private static final String transClientApiSecret;
 
     static {
         Properties properties = new Properties();
@@ -29,35 +30,39 @@ public class PropertiesConfig {
             e.printStackTrace();
         }
         appId = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getenv("appId") : properties.getProperty("appId");
-        apiSecret = StringUtils.isNullOrEmpty(properties.getProperty("apiSecret")) ? System.getenv("apiSecret") : properties.getProperty("apiSecret");
-        apiKey = StringUtils.isNullOrEmpty(properties.getProperty("apiKey")) ? System.getenv("apiKey") : properties.getProperty("apiKey");
-
-        lfasrAppId = StringUtils.isNullOrEmpty(properties.getProperty("lfasrAppId")) ? System.getenv("lfasrAppId") : properties.getProperty("lfasrAppId");
-        secretKey = StringUtils.isNullOrEmpty(properties.getProperty("secretKey")) ? System.getenv("secretKey") : properties.getProperty("secretKey");
-        ltpKey = StringUtils.isNullOrEmpty(properties.getProperty("ltpKey")) ? System.getenv("ltpKey") : properties.getProperty("ltpKey");
+        ltpClientApiKey =  properties.getProperty("ltpClientApiKey");
+        saClientApiKey =  properties.getProperty("saClientApiKey");
+        textCheckClientApiKey =  properties.getProperty("textCheckClientApiKey");
+        textCheckClientApiSecret =  properties.getProperty("textCheckClientApiSecret");
+        transClientApiKey =  properties.getProperty("transClientApiKey");
+        transClientApiSecret =  properties.getProperty("transClientApiSecret");
     }
 
     public static String getAppId() {
         return appId;
     }
 
-    public static String getSecretKey() {
-        return secretKey;
+    public static String getLtpClientApiKey() {
+        return ltpClientApiKey;
     }
 
-    public static String getLfasrAppId() {
-        return lfasrAppId;
+    public static String getSaClientApiKey() {
+        return saClientApiKey;
     }
 
-    public static String getApiKey() {
-        return apiKey;
+    public static String getTextCheckClientApiKey() {
+        return textCheckClientApiKey;
     }
 
-    public static String getApiSecret() {
-        return apiSecret;
+    public static String getTextCheckClientApiSecret() {
+        return textCheckClientApiSecret;
     }
 
-    public static String getLtpKey() {
-        return ltpKey;
+    public static String getTransClientApiKey() {
+        return transClientApiKey;
+    }
+
+    public static String getTransClientApiSecret() {
+        return transClientApiSecret;
     }
 }

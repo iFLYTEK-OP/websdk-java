@@ -29,8 +29,8 @@ import java.util.Base64;
 public class ImageWordClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getImageWordClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getImageWordClientApiSecret();
 
     private String resourcePath = this.getClass().getResource("/").getPath();
 
