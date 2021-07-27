@@ -7,8 +7,9 @@
         GeneralWordsClient client = new GeneralWordsClient
                 .Builder(appId, apiKey, OcrWordsEnum.HANDWRITING)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/1.jpg");
-        String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
+        InputStream inputStream = new FileInputStream(new File(resourcePath + "/image/1.jpg"));
+        byte[] imageByteArray = IOUtils.readFully(inputStream, -1, true);
+        String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);        
         System.out.println(client.generalWords(imageBase64));
 ```
 更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/GeneralWordsClientApp.java)
