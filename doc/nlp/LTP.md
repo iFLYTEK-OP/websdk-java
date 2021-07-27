@@ -5,7 +5,7 @@
 #### 自然语言处理
 ##### 示例代码
 ```java
-LtpClient ltpClient = new LtpClient
+        LtpClient ltpClient = new LtpClient
                 .Builder(appId, apiKey, LtpFunctionEnum.NER)
                 .build();
         String response = ltpClient.send("我来自北方");

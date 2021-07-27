@@ -4,10 +4,11 @@
 
 **示例代码**
 ```java
-FaceDetectClient client = new FaceDetectClient
+        FaceDetectClient client = new FaceDetectClient
                 .Builder(appId, apiKey, apiSecret)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/daiye2.jpg");
+        InputStream inputStream = new FileInputStream(new File(resourcePath + filePath));
+        byte[] imageByteArray = IOUtils.readFully(inputStream, -1, true);
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.faceContrast(imageBase64, "jpg"));
 ```

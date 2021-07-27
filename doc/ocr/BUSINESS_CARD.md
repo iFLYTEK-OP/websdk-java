@@ -4,7 +4,7 @@
 
 **示例代码**
 ```java
-BusinessCard client = new BusinessCard
+        BusinessCard client = new BusinessCard
                 .Builder(appId, apiKey)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/1.jpg");

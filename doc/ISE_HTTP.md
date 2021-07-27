@@ -3,14 +3,13 @@
 **示例代码**
 
 ```java
- IseHttpClient client = new IseHttpClient
+           IseHttpClient client = new IseHttpClient
                  .Builder(appId, apiKey, IseAueEnum.RAW, IseLanguageEnum.ZH_CN, IseCategoryEnum.READ_SENTENCE)
-                 .build();
- //... 这里可以继续设置评测相关参数，参数见下面表格
+          //... 这里可以继续设置评测相关参数，参数见下面表格
                 .build();
 
- // 进行数据处理，处理方法可见demo
- String result = client.send(new File(filePath));
+        // 进行数据处理，处理方法可见demo
+           String result = client.send(new File(filePath));
 
 ```
 

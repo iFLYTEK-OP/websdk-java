@@ -7,7 +7,8 @@
         FaceCompareClient client = new FaceCompareClient
                 .Builder(appId, apiKey, apiSecret)
                 .build();
-        byte[] imageByteArray = read(resourcePath + "/image/daiye2.jpg");
+        InputStream inputStream = new FileInputStream(new File(resourcePath + filePath));
+        byte[] imageByteArray = IOUtils.readFully(inputStream, -1, true);
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.faceCompare(imageBase64, "jpg", imageBase64, "jpg"));
 ```

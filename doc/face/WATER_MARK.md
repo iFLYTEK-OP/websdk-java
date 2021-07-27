@@ -4,7 +4,7 @@
 
 **示例代码**
 ```java
- WatermarkVerificationClient client = new WatermarkVerificationClient
+        WatermarkVerificationClient client = new WatermarkVerificationClient
                 .Builder(appId, apiKey)
                 .build();
         byte[] imageByteArray1 = read(resourcePath + "/image/1.jpg");
