@@ -4,8 +4,10 @@
 
 
 ```java
-SaClinet saClinet = new SaClinet.Builder(appId, apiKey).build();
-System.out.println(saClinet.send("你好啊"));
+       SaClinet saClinet = new SaClinet
+           .Builder(appId, apiKey)
+           .build();
+       System.out.println(saClinet.send("你好啊"));
 ```
 
 更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/SaClientApp.java)

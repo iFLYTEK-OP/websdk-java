@@ -3,11 +3,11 @@
 **示例代码**
 
 ```java
-TextCheckClient client = new TextCheckClient
-				.Builder(appId, apiSecret, apiKey)
-				.build();
-		String result = client.send("画蛇天足");
-		System.out.println("返回结果: " + result);
+        TextCheckClient client = new TextCheckClient
+			.Builder(appId, apiSecret, apiKey)
+			.build();
+        String result = client.send("画蛇天足");
+	System.out.println("返回结果: " + result);
 ```
 
 更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/TextCheckClientApp.java)

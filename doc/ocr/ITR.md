@@ -4,7 +4,7 @@
 
 **示例代码**
 ```java
-ItrClient client = new ItrClient
+        ItrClient client = new ItrClient
                 .Builder(appId, apiKey, apiSecret, ItrEntEnum.MATH_ARITH)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/itr.jpg");

@@ -4,7 +4,7 @@
 
 **示例代码**
 ```java
-BankcardClient client = new BankcardClient
+        BankcardClient client = new BankcardClient
                 .Builder(appId, apiKey)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/backcard.jpg");
