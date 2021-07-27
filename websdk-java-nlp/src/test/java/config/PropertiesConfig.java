@@ -30,12 +30,12 @@ public class PropertiesConfig {
             e.printStackTrace();
         }
         appId = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getenv("appId") : properties.getProperty("appId");
-        ltpClientApiKey =  properties.getProperty("ltpClientApiKey");
-        saClientApiKey =  properties.getProperty("saClientApiKey");
-        textCheckClientApiKey =  properties.getProperty("textCheckClientApiKey");
-        textCheckClientApiSecret =  properties.getProperty("textCheckClientApiSecret");
-        transClientApiKey =  properties.getProperty("transClientApiKey");
-        transClientApiSecret =  properties.getProperty("transClientApiSecret");
+        ltpClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("ltpClientApiKey")) ? System.getenv("ltpClientApiKey") : properties.getProperty("ltpClientApiKey");
+        saClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("saClientApiKey")) ? System.getenv("saClientApiKey") : properties.getProperty("saClientApiKey");
+        textCheckClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("textCheckClientApiKey")) ? System.getenv("textCheckClientApiKey") : properties.getProperty("textCheckClientApiKey");
+        textCheckClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("textCheckClientApiSecret")) ? System.getenv("textCheckClientApiSecret") : properties.getProperty("textCheckClientApiSecret");
+        transClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("transClientApiKey")) ? System.getenv("transClientApiKey") : properties.getProperty("transClientApiKey");
+        transClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("transClientApiSecret")) ? System.getenv("transClientApiSecret") : properties.getProperty("transClientApiSecret");
     }
 
     public static String getAppId() {

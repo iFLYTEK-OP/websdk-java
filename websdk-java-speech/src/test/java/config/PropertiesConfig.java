@@ -37,21 +37,22 @@ public class PropertiesConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        appId = properties.getProperty("appId");
-        iatClientApiKey = properties.getProperty("iatClientApiKey");
-        iatClientApiSecret = properties.getProperty("iatClientApiSecret");
-        igrClientApiKey = properties.getProperty("igrClientApiKey");
-        igrClientApiSecret = properties.getProperty("igrClientApiSecret");
-        iseClientApiKey = properties.getProperty("iseClientApiKey");
-        iseClientApiSecret = properties.getProperty("iseClientApiSecret");
-        iseHttpClientApiKey = properties.getProperty("iseHttpClientApiKey");
-        secretKey = properties.getProperty("secretKey");
-        qbhClientApiKey = properties.getProperty("qbhClientApiKey");
-        rtasrClientApiKey = properties.getProperty("rtasrClientApiKey");
-        ttsClientApiKey = properties.getProperty("ttsClientApiKey");
-        ttsClientApiSecret = properties.getProperty("ttsClientApiSecret");
-        telerobotAPPKey = properties.getProperty("telerobotAPPKey");
-        telerobotAPPSecret = properties.getProperty("telerobotAPPSecret");
+
+        appId = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getenv("appId") : properties.getProperty("appId");
+        iatClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("iatClientApiKey")) ? System.getenv("iatClientApiKey") : properties.getProperty("iatClientApiKey");
+        iatClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("iatClientApiSecret")) ? System.getenv("iatClientApiSecret") : properties.getProperty("iatClientApiSecret");
+        igrClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("igrClientApiKey")) ? System.getenv("igrClientApiKey") : properties.getProperty("igrClientApiKey");
+        igrClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("igrClientApiSecret")) ? System.getenv("igrClientApiSecret") : properties.getProperty("igrClientApiSecret");
+        iseClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("iseClientApiKey")) ? System.getenv("iseClientApiKey") : properties.getProperty("iseClientApiKey");
+        iseClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("iseClientApiSecret")) ? System.getenv("iseClientApiSecret") : properties.getProperty("iseClientApiSecret");
+        iseHttpClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("iseHttpClientApiKey")) ? System.getenv("iseHttpClientApiKey") : properties.getProperty("iseHttpClientApiKey");
+        secretKey = StringUtils.isNullOrEmpty(properties.getProperty("secretKey")) ? System.getenv("secretKey") : properties.getProperty("secretKey");
+        qbhClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("qbhClientApiKey")) ? System.getenv("qbhClientApiKey") : properties.getProperty("qbhClientApiKey");
+        rtasrClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("rtasrClientApiKey")) ? System.getenv("rtasrClientApiKey") : properties.getProperty("rtasrClientApiKey");
+        ttsClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("ttsClientApiKey")) ? System.getenv("ttsClientApiKey") : properties.getProperty("ttsClientApiKey");
+        ttsClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("ttsClientApiSecret")) ? System.getenv("ttsClientApiSecret") : properties.getProperty("ttsClientApiSecret");
+        telerobotAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getenv("telerobotAPPKey") : properties.getProperty("telerobotAPPKey");
+        telerobotAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("telerobotAPPSecret")) ? System.getenv("telerobotAPPSecret") : properties.getProperty("telerobotAPPSecret");
     }
 
     public static String getAppId() {
