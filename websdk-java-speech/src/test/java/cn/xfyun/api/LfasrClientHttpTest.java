@@ -21,7 +21,7 @@ import static org.junit.Assert.assertNotNull;
  */
 public class LfasrClientHttpTest {
 
-    private static final String appId = PropertiesConfig.getLfasrAppId();
+    private static final String appId = PropertiesConfig.getAppId();
     private static final String secretKey = PropertiesConfig.getSecretKey();
     private static final String AUDIO_FILE_PATH = LfasrClientHttpTest.class.getResource("/").getPath() + "/audio/lfasr.wav";
 

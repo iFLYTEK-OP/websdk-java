@@ -23,15 +23,13 @@ import java.io.*;
 public class QbhClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    String filePath = "src/test/resources/audio/cn/read_sentence_cn.pcm";
+    private static final String apiKey = PropertiesConfig.getQbhClientApiKey();
+    String filePath = "src/test/resources/audio/audio_qbh.wav";
 
     @Test
     public void defaultParamTest() {
-        QbhClient qbhClient = new QbhClient.Builder()
-                .appId(appId).apiKey(apiKey)
+        QbhClient qbhClient = new QbhClient.Builder(appId, apiKey)
                 .build();
-
         Assert.assertEquals(qbhClient.getAppId(), appId);
         Assert.assertEquals(qbhClient.getApiKey(), apiKey);
         Assert.assertEquals(qbhClient.getAue(), "raw");
@@ -42,9 +40,11 @@ public class QbhClientTest {
 
     @Test
     public void testParamBuild() {
-        QbhClient qbhClient = new QbhClient.Builder()
-                .appId(appId).apiKey(apiKey).maxConnections(100).connTimeout(800).retryCount(3)
-                .aue("aac").engineType("afs").sampleRate("8000")
+        QbhClient qbhClient = new QbhClient
+                .Builder(appId, apiKey)
+                .aue("aac")
+                .engineType("afs")
+                .sampleRate("8000")
                 .build();
 
         Assert.assertEquals(qbhClient.getAppId(), appId);
@@ -56,82 +56,16 @@ public class QbhClientTest {
     }
 
     @Test
-    public void testSuccessByFile() throws IOException, HttpException {
-        QbhClient qbhClient = new QbhClient.Builder()
-                .appId(appId).apiKey(apiKey)
-                .aue("raw").engineType("afs").sampleRate("16000")
-                .build();
-        String result = qbhClient.send(new File(filePath));
-        System.out.println("返回结果: " + result);
-    }
-
-    @Test
-    public void testSuccessByAudioUrl() throws IOException, HttpException {
-        QbhClient qbhClient = new QbhClient.Builder()
-                .appId(appId).apiKey(apiKey)
-                .aue("raw").engineType("afs").sampleRate("16000").audioUrl("http://iat-hotwords.cn-bj.ufileos.com/9.wav")
-                .build();
-        String result = qbhClient.send();
-        System.out.println("返回结果: " + result);
-    }
-
-    @Test
-    public void testSuccessByStream() throws IOException, HttpException {
-        QbhClient qbhClient = new QbhClient.Builder()
-                .appId(appId).apiKey(apiKey)
-                .aue("raw").engineType("afs").sampleRate("16000")
-                .build();
-        InputStream inputStream = new FileInputStream(new File(filePath));
-        String result = qbhClient.send(inputStream);
-        System.out.println("返回结果: " + result);
-    }
-
-    @Test
-    public void testSuccessByString() throws IOException, HttpException {
-        QbhClient qbhClient = new QbhClient.Builder()
-                .appId(appId).apiKey(apiKey)
-                .aue("raw").engineType("afs").sampleRate("16000")
-                .build();
-        InputStream inputStream = new FileInputStream(new File(filePath));
-
-        String datas = "";
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        int i = -1;
-        try {
-            while ((i = inputStream.read()) != -1) {
-                baos.write(i);
-            }
-            datas = baos.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        String result = qbhClient.send(datas);
-        System.out.println("返回结果: " + result);
-    }
-
-    @Test
     public void testSuccessByBytes() throws IOException, HttpException {
-        QbhClient qbhClient = new QbhClient.Builder()
-                .appId(appId).apiKey(apiKey)
-                .aue("raw").engineType("afs").sampleRate("16000")
+        QbhClient qbhClient = new QbhClient
+                .Builder(appId, apiKey)
                 .build();
 
         InputStream inputStream = new FileInputStream(new File(filePath));
         byte[] buffer = new byte[102400];
-        int len = inputStream.read(buffer);
-        System.out.println("len:" + len);
+        inputStream.read(buffer);
         String result = qbhClient.send(buffer);
         System.out.println("返回结果: " + result);
     }
 
-    @Test
-    public void testSendNull() throws IOException, HttpException {
-        QbhClient qbhClient = new QbhClient.Builder()
-                .appId(appId).apiKey(apiKey)
-                .aue("raw").engineType("afs").sampleRate("16000")
-                .build();
-
-        String result = qbhClient.send("");
-        System.out.println("返回结果: " + result);
-    }
 }

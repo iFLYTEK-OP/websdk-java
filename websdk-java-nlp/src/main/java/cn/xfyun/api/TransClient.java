@@ -1,44 +1,48 @@
 package cn.xfyun.api;
 
-import cn.xfyun.config.Client;
+import cn.xfyun.base.http.HttpBuilder;
+import cn.xfyun.base.http.HttpClient;
 import cn.xfyun.exception.HttpException;
-import cn.xfyun.model.response.trans.TransResponse;
-import cn.xfyun.model.sign.TranSignatrue;
-import cn.xfyun.util.AuthUtil;
-import cn.xfyun.util.CryptTools;
-import cn.xfyun.util.HttpConnector;
-import com.google.gson.Gson;
+import cn.xfyun.model.sign.Signature;
 import com.google.gson.JsonObject;
-import org.apache.commons.codec.digest.DigestUtils;
 
 import java.io.IOException;
-import java.net.URL;
+import java.io.UnsupportedEncodingException;
 import java.security.SignatureException;
-import java.util.HashMap;
+import java.util.Base64;
 import java.util.Map;
 
 /**
+ *      机器翻译，基于讯飞自主研发的机器翻译引擎，
+ *      已经支持包括英、日、法、西、俄等70多种语言(其中维语、藏语需申请开通)，效果更优质，
+ *      已在讯飞翻译机上应用并取得优异成绩，详细请参照 语种列表 。通过调用该接口，将源语种文字转化为目标语种文字
+ *
+ *
+ *      niuTrans机器翻译2.0，基于小牛翻译自主研发的多语种机器翻译引擎，
+ *      已经支持包括英、日、韩、法、西、俄等100多种语言
+ *
  * @author <ydwang16@iflytek.com>
  * @description 翻译客户端
  * @date 2021/6/15
  */
-public class TransClient extends Client {
+public class TransClient extends HttpClient {
 
     /**
-     * 自研机器翻译服务端地址
+     *   源语种
      */
-    private static final String ITS_SERVER_URL = "https://itrans.xfyun.cn/v2/its";
+    private String from;
 
     /**
-     * 小牛翻译服务端地址
+     *  目标语种
      */
-    private static final String NIUTRANS_SERVER_URL = "https://ntrans.xfyun.cn/v2/ots";
+    private String to;
 
-    private HttpConnector connector;
+    public String getFrom() {
+        return from;
+    }
 
-
-    public String getHostUrl() {
-        return hostUrl;
+    public String getTo() {
+        return to;
     }
 
     /**
@@ -50,14 +54,8 @@ public class TransClient extends Client {
      * @throws IOException
      * @throws HttpException
      */
-    public TransResponse sendIst(String text, String to) throws SignatureException, IOException {
-        this.hostUrl = ITS_SERVER_URL;
-        return sendIst(text, "cn", to);
-    }
-
-    public TransResponse sendIst(String text, String from, String to) throws SignatureException, IOException {
-        this.hostUrl = ITS_SERVER_URL;
-        return translate(text, from, to);
+    public String sendIst(String text) throws Exception {
+       return send(Builder.ITS_SERVER_URL, text);
     }
 
     /**
@@ -69,54 +67,20 @@ public class TransClient extends Client {
      * @throws IOException
      * @throws HttpException
      */
-    public TransResponse sendNiuTrans(String text, String to) throws SignatureException, IOException {
-        this.hostUrl = NIUTRANS_SERVER_URL;
-        return sendNiuTrans(text, "auto", to);
+    public String sendNiuTrans(String text) throws Exception {
+       return send(Builder.NIUTRANS_SERVER_URL, text);
     }
 
-    public TransResponse sendNiuTrans(String text, String from, String to) throws SignatureException, IOException {
-        this.hostUrl = NIUTRANS_SERVER_URL;
-        return translate(text, from, to);
+    private String send(String url, String text) throws Exception {
+        String body = buildHttpBody(text);
+        Map<String, String> header = Signature.signHttpHeaderDigest(url, "POST", apiKey, apiSecret, body);
+        return sendPost(url, JSON, header, body);
     }
-
-    /**
-     * 翻译
-     *
-     * @param text
-     * @param from 源语种
-     * @param to   目标语种
-     * @return
-     * @throws SignatureException
-     * @throws IOException
-     */
-    private TransResponse translate(String text, String from, String to) throws SignatureException, IOException {
-        String body = buildHttpBody(text, from, to);
-        this.signature = new TranSignatrue(apiKey, apiSecret, hostUrl, true).setHttpBody(body);
-
-        URL url = new URL(hostUrl);
-        // 请求头
-        Map<String, String> header = new HashMap<String, String>(8);
-        header.put("Authorization", AuthUtil.generateTransAuthorization(signature, "hmac-sha256"));
-        header.put("Content-Type", "application/json");
-        header.put("Accept", "application/json,version=1.0");
-        header.put("Host", url.getHost());
-        header.put("Date", signature.getTs());
-
-
-        // 对body进行sha256签名,生成digest头部，POST请求必须对body验证
-        String digestBase64 = "SHA-256=" + CryptTools.base64Encode(DigestUtils.sha256Hex(body));
-        header.put("Digest", digestBase64);
-
-        String result = connector.postByBytes(hostUrl, header, body.getBytes());
-        Gson gson = new Gson();
-        return gson.fromJson(result, TransResponse.class);
-    }
-
 
     /**
      * 组装http请求体
      */
-    private String buildHttpBody(String text, String from, String to) {
+    private String buildHttpBody(String text) throws UnsupportedEncodingException {
         JsonObject body = new JsonObject();
         JsonObject business = new JsonObject();
         JsonObject common = new JsonObject();
@@ -126,9 +90,9 @@ public class TransClient extends Client {
         //填充business
         business.addProperty("from", from);
         business.addProperty("to", to);
-
         //填充data
-        data.addProperty("text", CryptTools.base64Encode(text));
+        byte[] textByte = text.getBytes("UTF-8");
+        data.addProperty("text", Base64.getEncoder().encodeToString(textByte));
         //填充body
         body.add("common", common);
         body.add("business", business);
@@ -137,77 +101,49 @@ public class TransClient extends Client {
     }
 
     public TransClient(Builder builder) {
-        this.appId = builder.appId;
-        this.apiKey = builder.apiKey;
-        this.apiSecret = builder.apiSecret;
-        this.hostUrl = builder.hostUrl;
-        this.connector = builder.connector;
+        super(builder);
+        this.from = builder.from;
+        this.to = builder.to;
     }
 
-    public static class Builder {
-        private String appId;
-        private String apiKey;
-        private String apiSecret;
-
-        private String hostUrl;
+    public static final class Builder extends HttpBuilder<Builder> {
+        /**
+         * 自研机器翻译服务端地址
+         */
+        private static final String ITS_SERVER_URL = "https://itrans.xfyun.cn/v2/its";
 
         /**
-         * 最大连接数
+         * 小牛翻译服务端地址
          */
-        private Integer maxConnections = 50;
+        private static final String NIUTRANS_SERVER_URL = "https://ntrans.xfyun.cn/v2/ots";
 
-        /**
-         * 建立连接的超时时间
-         */
-        private Integer connTimeout = 10000;
+        private String from = "cn";
 
-        /**
-         * 读数据包的超时时间
-         */
-        private Integer soTimeout = 30000;
+        private String to = "en";
 
-        /**
-         * 重试次数
-         */
-        private Integer retryCount = 3;
+        public Builder(String appId, String apiKey, String apiSecret) {
+            super(ITS_SERVER_URL, appId, apiKey, apiSecret);
+        }
 
-        private HttpConnector connector;
+        public Builder from(String from) {
+            this.from = from;
+            return this;
+        }
 
+        public Builder to(String to) {
+            this.to = to;
+            return this;
+        }
+
+        @Deprecated
+        @Override
+        public Builder hostUrl(String hostUrl) {
+            return super.hostUrl(hostUrl);
+        }
+
+        @Override
         public TransClient build() {
-            this.connector = HttpConnector.build(maxConnections, connTimeout, soTimeout, retryCount);
             return new TransClient(this);
-        }
-
-        public TransClient.Builder signature(String appId, String apiKey, String apiSecret) {
-            this.appId = appId;
-            this.apiKey = apiKey;
-            this.apiSecret = apiSecret;
-            return this;
-        }
-
-        public TransClient.Builder hostUrl(String hostUrl) {
-            this.hostUrl = hostUrl;
-            return this;
-        }
-
-        public TransClient.Builder maxConnections(Integer maxConnections) {
-            this.maxConnections = maxConnections;
-            return this;
-        }
-
-        public TransClient.Builder connTimeout(Integer connTimeout) {
-            this.connTimeout = connTimeout;
-            return this;
-        }
-
-        public TransClient.Builder soTimeout(Integer soTimeout) {
-            this.soTimeout = soTimeout;
-            return this;
-        }
-
-        public TransClient.Builder retryCount(Integer retryCount) {
-            this.retryCount = retryCount;
-            return this;
         }
     }
 }

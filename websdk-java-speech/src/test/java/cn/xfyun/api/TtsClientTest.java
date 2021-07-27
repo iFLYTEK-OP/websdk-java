@@ -25,8 +25,8 @@ import static org.junit.Assert.assertNull;
 public class TtsClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getTtsClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getTtsClientApiSecret();
 
     @Test
     public void defaultParamTest() throws MalformedURLException, SignatureException {
@@ -266,7 +266,7 @@ public class TtsClientTest {
              */
             @Override
             public void onBusinessFail(WebSocket webSocket, TtsResponse response) {
-                
+
             }
         });
         try {

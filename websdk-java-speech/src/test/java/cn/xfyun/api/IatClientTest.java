@@ -1,5 +1,8 @@
 package cn.xfyun.api;
 
+import cn.xfyun.model.response.iat.IatData;
+import cn.xfyun.model.response.iat.Text;
+import com.google.gson.JsonObject;
 import config.PropertiesConfig;
 import cn.xfyun.model.response.iat.IatResponse;
 import cn.xfyun.model.response.iat.IatResult;
@@ -41,8 +44,8 @@ import java.util.concurrent.TimeUnit;
 public class IatClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getIatClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getIatClientApiSecret();
 
     private String filePath = "audio/20210330141636536.pcm";
     private String resourcePath = this.getClass().getResource("/").getPath();
@@ -348,5 +351,47 @@ public class IatClientTest {
         };
         iatClient.send(buffer, inputStream, iatWebSocketListener);
         Thread.sleep(15000);
+    }
+
+    @Test
+    public void testSetGet(){
+        Text text = new Text();
+        IatResult result = new IatResult();
+        IatData data = new IatData();
+        IatResponse response = new IatResponse();
+
+        text.toString();
+        result.setBg(1);
+        result.setEd(1);
+        result.setLs(false);
+        result.setPgs("123");
+        result.setRg(new int[]{1});
+        result.setSn(1);
+        result.setVad(new JsonObject());
+        result.setWs(new IatResult.Ws[]{});
+
+        result.getBg();
+        result.getEd();
+        result.getText();
+        result.getWs();
+        result.getSn();
+        result.getVad();
+        result.getPgs();
+        result.getRg();
+
+        data.setResult(result);
+        data.setStatus(1);
+        data.getResult();
+        data.getStatus();
+
+        response.setCode(0);
+        response.setData(data);
+        response.setMessage("test");
+        response.setSid("123");
+
+        response.getCode();
+        response.getData();
+        response.getMessage();
+        response.getSid();
     }
 }

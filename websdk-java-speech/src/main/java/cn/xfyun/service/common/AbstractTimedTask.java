@@ -1,6 +1,6 @@
 package cn.xfyun.service.common;
 
-import cn.xfyun.api.WebSocketClient;
+import cn.xfyun.base.webscoket.WebSocketClient;
 import cn.xfyun.util.IOCloseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

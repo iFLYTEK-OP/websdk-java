@@ -33,7 +33,7 @@ import java.util.concurrent.TimeUnit;
 public class RtasrClientTest {
 
 	private static final String appId = PropertiesConfig.getAppId();
-	private static final String apiKey = PropertiesConfig.getApiKey();
+	private static final String apiKey = PropertiesConfig.getRtasrClientApiKey();
 
 	private String filePath = "audio/rtasr.pcm";
 	private String resourcePath = this.getClass().getResource("/").getPath();
