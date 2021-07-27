@@ -26,8 +26,8 @@ import java.util.Base64;
 public class AntiSpoofClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getAntiSpoofClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getAntiSpoofClientApiSecret();
 
     private String resourcePath = this.getClass().getResource("/").getPath();
 

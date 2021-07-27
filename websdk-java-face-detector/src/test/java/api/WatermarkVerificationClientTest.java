@@ -33,7 +33,7 @@ import java.util.Map;
 public class WatermarkVerificationClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
+    private static final String apiKey = PropertiesConfig.getWatermarkVerificationApiKey();
 
     private String resourcePath = this.getClass().getResource("/").getPath();
 

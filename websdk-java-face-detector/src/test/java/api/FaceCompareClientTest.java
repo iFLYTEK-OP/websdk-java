@@ -27,8 +27,8 @@ import java.util.Base64;
 public class FaceCompareClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
+    private static final String apiKey = PropertiesConfig.getFaceCompareClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getFaceCompareClientApiSecret();
 
     private String resourcePath = this.getClass().getResource("/").getPath();
 

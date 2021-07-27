@@ -26,7 +26,7 @@ import java.util.Base64;
 public class BusinessCardClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
+    private static final String apiKey = PropertiesConfig.getBusinessCardClientApiKey();
 
     private String resourcePath = this.getClass().getResource("/").getPath();
 

@@ -13,14 +13,33 @@ import java.util.Properties;
  * @date : 2021年04月02日
  */
 public class PropertiesConfig {
+
     private static final String appId;
-    private static final String apiKey;
-    private static final String apiSecret;
-    private static final String secretKey;
-    private static final String lfasrAppId;
-    private static final String ltpKey;
-    private static final String telerobotAPPKey;
-    private static final String telerobotAPPSecret;
+
+    private static final String bankcardClientApiKey;
+
+    private static final String businessCardClientApiKey;
+
+    private static final String fingerOcrClientApiKey;
+    private static final String fingerOcrClientApiSecret;
+
+    private static final String generalWordsClientApiKey;
+
+    private static final String imageRecClientApiKey;
+
+    private static final String imageWordClientApiKey;
+    private static final String imageWordClientApiSecret;
+
+    private static final String intsigOcrClientApiKey;
+
+    private static final String itrClientApiKey;
+    private static final String itrClientApiSecret;
+
+    private static final String jDOcrClientApiKey;
+    private static final String jDOcrClientApiSecret;
+
+    private static final String placeRecClientApiKey;
+    private static final String placeRecClientApiSecret;
 
     static {
         Properties properties = new Properties();
@@ -30,48 +49,86 @@ public class PropertiesConfig {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        appId = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getenv("appId") : properties.getProperty("appId");
-        apiSecret = StringUtils.isNullOrEmpty(properties.getProperty("apiSecret")) ? System.getenv("apiSecret") : properties.getProperty("apiSecret");
-        apiKey = StringUtils.isNullOrEmpty(properties.getProperty("apiKey")) ? System.getenv("apiKey") : properties.getProperty("apiKey");
-
-        lfasrAppId = StringUtils.isNullOrEmpty(properties.getProperty("lfasrAppId")) ? System.getenv("lfasrAppId") : properties.getProperty("lfasrAppId");
-        secretKey = StringUtils.isNullOrEmpty(properties.getProperty("secretKey")) ? System.getenv("secretKey") : properties.getProperty("secretKey");
-        ltpKey = StringUtils.isNullOrEmpty(properties.getProperty("ltpKey")) ? System.getenv("ltpKey") : properties.getProperty("ltpKey");
-
-        telerobotAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("telerobotAPPKey")) ? System.getenv("telerobotAPPKey") : properties.getProperty("telerobotAPPKey");
-        telerobotAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("telerobotAPPSecret")) ? System.getenv("telerobotAPPSecret") : properties.getProperty("telerobotAPPSecret");
-
+        appId = properties.getProperty("appId");
+        bankcardClientApiKey = properties.getProperty("bankcardClientApiKey");
+        businessCardClientApiKey = properties.getProperty("businessCardClientApiKey");
+        fingerOcrClientApiKey = properties.getProperty("fingerOcrClientApiKey");
+        fingerOcrClientApiSecret = properties.getProperty("fingerOcrClientApiSecret");
+        generalWordsClientApiKey = properties.getProperty("generalWordsClientApiKey");
+        imageRecClientApiKey = properties.getProperty("imageRecClientApiKey");
+        imageWordClientApiKey = properties.getProperty("imageWordClientApiKey");
+        imageWordClientApiSecret = properties.getProperty("imageWordClientApiSecret");
+        intsigOcrClientApiKey = properties.getProperty("intsigOcrClientApiKey");
+        itrClientApiKey = properties.getProperty("itrClientApiKey");
+        itrClientApiSecret = properties.getProperty("itrClientApiSecret");
+        jDOcrClientApiKey = properties.getProperty("jDOcrClientApiKey");
+        jDOcrClientApiSecret = properties.getProperty("jDOcrClientApiSecret");
+        placeRecClientApiKey = properties.getProperty("placeRecClientApiKey");
+        placeRecClientApiSecret = properties.getProperty("placeRecClientApiSecret");
     }
 
     public static String getAppId() {
         return appId;
     }
 
-    public static String getSecretKey() {
-        return secretKey;
+    public static String getBankcardClientApiKey() {
+        return bankcardClientApiKey;
     }
 
-    public static String getLfasrAppId() {
-        return lfasrAppId;
+    public static String getBusinessCardClientApiKey() {
+        return businessCardClientApiKey;
     }
 
-    public static String getApiKey() {
-        return apiKey;
+    public static String getFingerOcrClientApiKey() {
+        return fingerOcrClientApiKey;
     }
 
-    public static String getApiSecret() {
-        return apiSecret;
+    public static String getFingerOcrClientApiSecret() {
+        return fingerOcrClientApiSecret;
     }
 
-    public static String getLtpKey() {
-        return ltpKey;
+    public static String getGeneralWordsClientApiKey() {
+        return generalWordsClientApiKey;
     }
 
-    public static String getTelerobotAPPKey() {
-        return telerobotAPPKey;
+    public static String getImageRecClientApiKey() {
+        return imageRecClientApiKey;
     }
 
-    public static String getTelerobotAPPSecret() {
-        return telerobotAPPSecret;
+    public static String getImageWordClientApiKey() {
+        return imageWordClientApiKey;
+    }
+
+    public static String getImageWordClientApiSecret() {
+        return imageWordClientApiSecret;
+    }
+
+    public static String getIntsigOcrClientApiKey() {
+        return intsigOcrClientApiKey;
+    }
+
+
+    public static String getItrClientApiKey() {
+        return itrClientApiKey;
+    }
+
+    public static String getItrClientApiSecret() {
+        return itrClientApiSecret;
+    }
+
+    public static String getjDOcrClientApiKey() {
+        return jDOcrClientApiKey;
+    }
+
+    public static String getjDOcrClientApiSecret() {
+        return jDOcrClientApiSecret;
+    }
+
+    public static String getPlaceRecClientApiKey() {
+        return placeRecClientApiKey;
+    }
+
+    public static String getPlaceRecClientApiSecret() {
+        return placeRecClientApiSecret;
     }
 }

@@ -6,6 +6,7 @@ import cn.xfyun.service.lfasr.LfasrExecutorService;
 import cn.xfyun.service.lfasr.task.MergeTask;
 import cn.xfyun.service.lfasr.task.PrepareTask;
 import cn.xfyun.service.lfasr.task.UploadTask;
+import config.PropertiesConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
@@ -34,8 +35,8 @@ import static org.junit.Assert.assertTrue;
 @PrepareForTest({LfasrClient.class, LfasrExecutorService.class, PrepareTask.class})
 @PowerMockIgnore("cn.xfyun.util.HttpConnector")
 public class LfasrClientTest {
-    private String appId = "appid_1234";
-    private String secretKey = "secretKey_11343";
+    private String appId = PropertiesConfig.getAppId();
+    private String secretKey = PropertiesConfig.getSecretKey();
 
     @Test
     public void lfasrClientTest() {

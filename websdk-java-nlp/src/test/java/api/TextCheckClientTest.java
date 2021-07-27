@@ -21,8 +21,8 @@ import org.powermock.modules.junit4.PowerMockRunner;
 public class TextCheckClientTest {
 
 	private static final String appId = PropertiesConfig.getAppId();
-	private static final String apiKey = PropertiesConfig.getApiKey();
-	private static final String apiSecret = PropertiesConfig.getApiSecret();
+	private static final String apiKey = PropertiesConfig.getTextCheckClientApiKey();
+	private static final String apiSecret = PropertiesConfig.getTextCheckClientApiSecret();
 
 	@Test
 	public void defaultParamTest() {

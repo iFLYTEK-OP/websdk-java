@@ -58,7 +58,7 @@ public class LtpClient extends HttpClient {
     public String send(String text) throws IOException {
         String param = "{\"type\":\"" + type +"\"}";
         Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, param);
-        return sendPost(hostUrl + func, FORM, header, "text=" + text);
+        return sendPost(hostUrl + func.getValue(), FORM, header, "text=" + text);
     }
 
     public static final class Builder extends HttpBuilder<Builder> {

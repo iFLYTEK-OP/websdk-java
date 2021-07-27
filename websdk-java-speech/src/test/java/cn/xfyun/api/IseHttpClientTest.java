@@ -32,7 +32,7 @@ import java.util.Base64;
 public class IseHttpClientTest {
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
+    private static final String apiKey = PropertiesConfig.getIseHttpClientApiKey();
     String filePath = "src/test/resources/audio/cn/read_sentence_cn.pcm";
 
     @Test
