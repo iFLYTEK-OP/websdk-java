@@ -21,3 +21,5 @@
 |---|---|---|---|---|
 |imageBase641|string|是|第一张人脸图片base64编码|无|
 |imageBase642|string|是|第二张人脸图片base64编码|无|
+
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/face/faceWaterPhotoComparisonRecg/API.html)

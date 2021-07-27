@@ -24,3 +24,5 @@
 |encoding|string|否|返回值文本编码，可选值：utf8（默认值）|utf8|
 |compress|string|否|返回值文本压缩格式，可选值：raw（默认值）|raw|
 |format|string|否|返回值文本格式，可选值：json（默认值）|json|
+
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/face/xffaceComparisonRecg/API.html)

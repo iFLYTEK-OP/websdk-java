@@ -77,3 +77,5 @@
 |---|---|---|---|---|
 |punc|string|否|标点过滤控制，默认返回标点。<br>0:返回标点（默认值） <br>1:不返回标点|punc="0"|
 |pd|string|否|垂直领域个性化参数:<br>法院: court <br>教育: edu <br>金融:finance <br> 医疗:medical<br> 科技: tech|设置示例：pd="edu" <br>参数pd为非必须设置，不设置参数默认为通用|
+
+*注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/asr/rtasr/API.html)

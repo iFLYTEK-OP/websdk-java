@@ -18,3 +18,5 @@
 |参数名|类型|必传|描述|示例|
 |---|---|---|---|---|
 |intsigRecgEnum|IntsigRecgEnum|是|识别类型。<br>IDCARD:身份证识别 <br>BUSINESS_LICENSE:营业执照识别 <br>INVOICE:增值税发票识别 <br>RECOGNIZE_DOCUMENT:印刷文字识别（多语种）|IntsigRecgEnum.IDCARD|
+
+ *注：详细的参数可以参见[业务参数](https://www.xfyun.cn/doc/words/printed-word-recognition/API.html)
