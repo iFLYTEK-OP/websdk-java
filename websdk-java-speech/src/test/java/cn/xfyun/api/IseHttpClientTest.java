@@ -80,7 +80,7 @@ public class IseHttpClientTest {
     @Test
     public void testSuccessByString() throws IOException, HttpException {
         IseHttpClient client = new IseHttpClient
-                .Builder(appId, apiKey, IseAueEnum.RAW, IseLanguageEnum.ZH_CN, IseCategoryEnum.READ_SENTENCE)
+                .Builder(appId, apiKey, IseAueEnum.RAW, IseLanguageEnum.ZH_CN, IseCategoryEnum.READ_SENTENCE).connectTimeout(30).readTimeout(30).writeTimeout(30)
                 .build();
         InputStream inputStream = new FileInputStream(new File(filePath));
         byte[] bytes = IOUtils.readFully(inputStream, -1, true);
