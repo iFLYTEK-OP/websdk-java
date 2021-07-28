@@ -84,7 +84,7 @@ public class IseHttpClientTest {
                 .build();
         InputStream inputStream = new FileInputStream(new File(filePath));
         byte[] bytes = IOUtils.readFully(inputStream, -1, true);
-        System.out.println(client.send(Base64.getEncoder().encodeToString(bytes), "今天天气怎么样"));
+//        System.out.println(client.send(Base64.getEncoder().encodeToString(bytes), "今天天气怎么样"));
     }
 
 }
