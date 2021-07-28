@@ -73,7 +73,7 @@ public class SaClientTest {
 				.writeTimeout(2)
 				.readTimeout(1)
 				.build();
-		System.out.println(saClient.send("websdk java"));
+//		System.out.println(saClient.send("websdk java"));
 	}
 
 
