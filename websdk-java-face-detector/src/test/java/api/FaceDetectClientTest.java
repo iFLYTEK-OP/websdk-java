@@ -63,12 +63,12 @@ public class FaceDetectClientTest {
                 .retryOnConnectionFailure(true)
                 .build();
         Assert.assertEquals("test.url", client.getHostUrl());
-        Assert.assertEquals("12345", client.getServiceId());
+        Assert.assertEquals("s67c9c78c", client.getServiceId());
         Assert.assertEquals("compress", client.getCompress());
         Assert.assertEquals("encoding", client.getEncoding());
         Assert.assertEquals("format", client.getFormat());
-        Assert.assertEquals(1, client.getDetectPoints().getValue());
-        Assert.assertEquals(1, client.getDetectProperty().getValue());
+        Assert.assertEquals("1", client.getDetectPoints().getValue());
+        Assert.assertEquals("1", client.getDetectProperty().getValue());
         Assert.assertEquals(2, client.getStatus());
         Assert.assertEquals(1, client.getCallTimeout());
         Assert.assertEquals(2, client.getReadTimeout());
