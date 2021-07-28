@@ -1,6 +1,7 @@
 package api;
 
 import cn.xfyun.api.TextCheckClient;
+import cn.xfyun.exception.BusinessException;
 import config.PropertiesConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -45,7 +46,7 @@ public class TextCheckClientTest {
 				.encoding("base64")
 				.status(2)
 				.build();
-		Assert.assertEquals(client.getServiceId(), "12323");
+		Assert.assertEquals(client.getServiceId(), "s9a87e3ec");
 		Assert.assertEquals(client.getCompress(), "gzip");
 		Assert.assertEquals(client.getFormat(), "plain");
 		Assert.assertEquals(client.getEncoding(), "base64");
@@ -67,9 +68,13 @@ public class TextCheckClientTest {
 		TextCheckClient correctionClient = new TextCheckClient
 				.Builder(appId, apiKey, apiSecret)
 				.build();
+        try {
+	        String result = correctionClient.send("");
+	        System.out.println("返回结果: " + result);
+        } catch (BusinessException e) {
+	        System.out.println(e);
+        }
 
-		String result = correctionClient.send("");
-		System.out.println("返回结果: " + result);
 	}
 
 }

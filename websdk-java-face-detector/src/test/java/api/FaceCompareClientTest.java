@@ -61,7 +61,7 @@ public class FaceCompareClientTest {
                 .retryOnConnectionFailure(true)
                 .build();
         Assert.assertEquals("test.url", client.getHostUrl());
-        Assert.assertEquals("12345", client.getServiceId());
+        Assert.assertEquals("s67c9c78c", client.getServiceId());
         Assert.assertEquals("compress", client.getCompress());
         Assert.assertEquals("encoding", client.getEncoding());
         Assert.assertEquals("format", client.getFormat());

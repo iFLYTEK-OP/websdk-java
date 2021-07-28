@@ -47,7 +47,7 @@ public class WatermarkVerificationClientTest {
                 .build();
         Assert.assertEquals(appId, client.getAppId());
         Assert.assertEquals(apiKey, client.getApiKey());
-        Assert.assertEquals("https://api.xfyun.cn/v1/service/v1/image_identify/face_verification", client.getHostUrl());
+        Assert.assertEquals("https://api.xfyun.cn/v1/service/v1/image_identify/watermark_verification", client.getHostUrl());
     }
 
     @Test
