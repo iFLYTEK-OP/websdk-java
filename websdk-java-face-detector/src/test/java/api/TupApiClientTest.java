@@ -24,7 +24,6 @@ import java.io.InputStream;
 @PrepareForTest({TupApiClientTest.class})
 @PowerMockIgnore({"javax.crypto.*", "javax.net.ssl.*"})
 public class TupApiClientTest {
-
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getTupApiClientApiKey();
 
@@ -62,7 +61,7 @@ public class TupApiClientTest {
         Assert.assertEquals(2, client.getReadTimeout());
         Assert.assertEquals(3, client.getWriteTimeout());
         Assert.assertEquals(4, client.getConnectTimeout());
-        Assert.assertEquals(true, client.getRetryOnConnectionFailure());
+        Assert.assertTrue(client.getRetryOnConnectionFailure());
     }
 
     @Test
@@ -71,7 +70,7 @@ public class TupApiClientTest {
                 .Builder(appId, apiKey, TupApiEnum.AGE)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/12.jpg");
-        System.out.println(client.recognition("12.jpg", imageByteArray));
+        Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
     }
 
     @Test
@@ -80,7 +79,7 @@ public class TupApiClientTest {
                 .Builder(appId, apiKey, TupApiEnum.SEX)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/12.jpg");
-        System.out.println(client.recognition("12.jpg", imageByteArray));
+        Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
     }
 
     @Test
@@ -89,7 +88,7 @@ public class TupApiClientTest {
                 .Builder(appId, apiKey, TupApiEnum.FACE_SCORE)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/12.jpg");
-        System.out.println(client.recognition("12.jpg", imageByteArray));
+        Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
     }
 
     @Test
@@ -98,7 +97,7 @@ public class TupApiClientTest {
                 .Builder(appId, apiKey, TupApiEnum.EXPRESSION)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/12.jpg");
-        System.out.println(client.recognition("12.jpg", imageByteArray));
+        Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
     }
 
     /**
@@ -119,11 +118,9 @@ public class TupApiClientTest {
     }
 
     private static byte[] read(String filePath) throws IOException {
-
         InputStream in = new FileInputStream(filePath);
         byte[] data = inputStream2ByteArray(in);
         in.close();
-
         return data;
     }
 }

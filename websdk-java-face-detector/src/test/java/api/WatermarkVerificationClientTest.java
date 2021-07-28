@@ -1,11 +1,7 @@
 package api;
 
-import cn.xfyun.api.SilentDetectionClient;
 import cn.xfyun.api.WatermarkVerificationClient;
-import cn.xfyun.model.sign.Signature;
-import com.google.gson.JsonObject;
 import config.PropertiesConfig;
-import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,13 +10,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
-import java.net.URLEncoder;
 import java.util.Base64;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author mqgao
@@ -31,7 +21,6 @@ import java.util.Map;
 @PrepareForTest({WatermarkVerificationClientTest.class})
 @PowerMockIgnore({"javax.crypto.*", "javax.net.ssl.*"})
 public class WatermarkVerificationClientTest {
-
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getWatermarkVerificationApiKey();
 
@@ -66,7 +55,7 @@ public class WatermarkVerificationClientTest {
         Assert.assertEquals(2, client.getReadTimeout());
         Assert.assertEquals(3, client.getWriteTimeout());
         Assert.assertEquals(4, client.getConnectTimeout());
-        Assert.assertEquals(true, client.getRetryOnConnectionFailure());
+        Assert.assertTrue(client.getRetryOnConnectionFailure());
     }
 
     @Test
@@ -78,7 +67,7 @@ public class WatermarkVerificationClientTest {
         String imageBase641 = Base64.getEncoder().encodeToString(imageByteArray1);
         byte[] imageByteArray2 = read(resourcePath + "/image/2.png");
         String imageBase642 = Base64.getEncoder().encodeToString(imageByteArray2);
-        System.out.println(client.compare(imageBase641, imageBase642));
+        Assert.assertNotNull(client.compare(imageBase641, imageBase642));
 
     }
     /**
@@ -99,14 +88,9 @@ public class WatermarkVerificationClientTest {
     }
 
     private static byte[] read(String filePath) throws IOException {
-
         InputStream in = new FileInputStream(filePath);
         byte[] data = inputStream2ByteArray(in);
         in.close();
-
         return data;
     }
-
-
-
 }

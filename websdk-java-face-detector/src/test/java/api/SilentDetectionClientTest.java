@@ -24,10 +24,8 @@ import java.util.Base64;
 @PrepareForTest({SilentDetectionClientTest.class})
 @PowerMockIgnore({"javax.crypto.*", "javax.net.ssl.*"})
 public class SilentDetectionClientTest {
-
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getSilentDetectionClientApiKey();
-
     private String resourcePath = this.getClass().getResource("/").getPath();
 
     /**
@@ -59,7 +57,7 @@ public class SilentDetectionClientTest {
         Assert.assertEquals(2, client.getReadTimeout());
         Assert.assertEquals(3, client.getWriteTimeout());
         Assert.assertEquals(4, client.getConnectTimeout());
-        Assert.assertEquals(true, client.getRetryOnConnectionFailure());
+        Assert.assertTrue(client.getRetryOnConnectionFailure());
     }
 
     @Test
@@ -69,7 +67,7 @@ public class SilentDetectionClientTest {
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/12.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.silentDetection(imageBase64));
+        Assert.assertNotNull(client.silentDetection(imageBase64));
     }
 
     /**
@@ -90,11 +88,9 @@ public class SilentDetectionClientTest {
     }
 
     private static byte[] read(String filePath) throws IOException {
-
         InputStream in = new FileInputStream(filePath);
         byte[] data = inputStream2ByteArray(in);
         in.close();
-
         return data;
     }
 }

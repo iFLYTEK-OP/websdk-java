@@ -1,6 +1,5 @@
 package api;
 
-import cn.xfyun.api.AntiSpoofClient;
 import cn.xfyun.api.FaceCompareClient;
 import config.PropertiesConfig;
 import org.junit.Assert;
@@ -25,7 +24,6 @@ import java.util.Base64;
 @PrepareForTest({FaceCompareClientTest.class})
 @PowerMockIgnore({"javax.crypto.*", "javax.net.ssl.*"})
 public class FaceCompareClientTest {
-
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getFaceCompareClientApiKey();
     private static final String apiSecret = PropertiesConfig.getFaceCompareClientApiSecret();
@@ -70,7 +68,7 @@ public class FaceCompareClientTest {
         Assert.assertEquals(2, client.getReadTimeout());
         Assert.assertEquals(3, client.getWriteTimeout());
         Assert.assertEquals(4, client.getConnectTimeout());
-        Assert.assertEquals(true, client.getRetryOnConnectionFailure());
+        Assert.assertTrue(client.getRetryOnConnectionFailure());
     }
 
     @Test
@@ -80,7 +78,7 @@ public class FaceCompareClientTest {
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/daiye2.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.faceCompare(imageBase64, "jpg", imageBase64, "jpg"));
+        Assert.assertNotNull(client.faceCompare(imageBase64, "jpg", imageBase64, "jpg"));
     }
 
 
@@ -102,12 +100,9 @@ public class FaceCompareClientTest {
     }
 
     private static byte[] read(String filePath) throws IOException {
-
         InputStream in = new FileInputStream(filePath);
         byte[] data = inputStream2ByteArray(in);
         in.close();
-
         return data;
     }
-
 }

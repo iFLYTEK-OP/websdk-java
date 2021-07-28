@@ -24,7 +24,6 @@ import java.util.Base64;
 @PrepareForTest({AntiSpoofClientTest.class})
 @PowerMockIgnore({"javax.crypto.*", "javax.net.ssl.*"})
 public class AntiSpoofClientTest {
-
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getAntiSpoofClientApiKey();
     private static final String apiSecret = PropertiesConfig.getAntiSpoofClientApiSecret();
@@ -69,7 +68,7 @@ public class AntiSpoofClientTest {
         Assert.assertEquals(2, client.getReadTimeout());
         Assert.assertEquals(3, client.getWriteTimeout());
         Assert.assertEquals(4, client.getConnectTimeout());
-        Assert.assertEquals(true, client.getRetryOnConnectionFailure());
+        Assert.assertTrue(client.getRetryOnConnectionFailure());
     }
 
 
@@ -80,7 +79,7 @@ public class AntiSpoofClientTest {
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/daiye2.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.faceContrast(imageBase64, "jpg"));
+        Assert.assertNotNull(client.faceContrast(imageBase64, "jpg"));
     }
 
     /**
@@ -101,13 +100,9 @@ public class AntiSpoofClientTest {
     }
 
     private static byte[] read(String filePath) throws IOException {
-
         InputStream in = new FileInputStream(filePath);
         byte[] data = inputStream2ByteArray(in);
         in.close();
-
         return data;
     }
-
-
 }

@@ -24,7 +24,6 @@ import java.util.Base64;
 @PrepareForTest({FaceVerificationClientTest.class})
 @PowerMockIgnore({"javax.crypto.*", "javax.net.ssl.*"})
 public class FaceVerificationClientTest {
-
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getFaceVerificationClientApiKey();
 
@@ -41,7 +40,7 @@ public class FaceVerificationClientTest {
         Assert.assertEquals(appId, client.getAppId());
         Assert.assertEquals(apiKey, client.getApiKey());
         Assert.assertEquals("https://api.xfyun.cn/v1/service/v1/image_identify/face_verification", client.getHostUrl());
-        Assert.assertEquals(false, client.isAutoRotate());
+        Assert.assertFalse(client.isAutoRotate());
     }
 
     @Test
@@ -57,12 +56,12 @@ public class FaceVerificationClientTest {
                 .retryOnConnectionFailure(true)
                 .build();
         Assert.assertEquals("test.url", client.getHostUrl());
-        Assert.assertEquals(true, client.isAutoRotate());
+        Assert.assertTrue(client.isAutoRotate());
         Assert.assertEquals(1, client.getCallTimeout());
         Assert.assertEquals(2, client.getReadTimeout());
         Assert.assertEquals(3, client.getWriteTimeout());
         Assert.assertEquals(4, client.getConnectTimeout());
-        Assert.assertEquals(true, client.getRetryOnConnectionFailure());
+        Assert.assertTrue(client.getRetryOnConnectionFailure());
     }
 
     @Test
@@ -72,7 +71,7 @@ public class FaceVerificationClientTest {
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/12.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.compareFace(imageBase64, imageBase64));
+        Assert.assertNotNull(client.compareFace(imageBase64, imageBase64));
     }
 
     /**
@@ -93,13 +92,9 @@ public class FaceVerificationClientTest {
     }
 
     private static byte[] read(String filePath) throws IOException {
-
         InputStream in = new FileInputStream(filePath);
         byte[] data = inputStream2ByteArray(in);
         in.close();
-
         return data;
     }
-
-
 }

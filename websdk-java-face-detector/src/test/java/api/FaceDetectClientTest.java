@@ -25,7 +25,6 @@ import java.util.Base64;
 @PrepareForTest({FaceDetectClientTest.class})
 @PowerMockIgnore({"javax.crypto.*", "javax.net.ssl.*"})
 public class FaceDetectClientTest {
-
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getFaceDetectClientApiKey();
     private static final String apiSecret = PropertiesConfig.getFaceDetectClientApiSecret();
@@ -74,7 +73,7 @@ public class FaceDetectClientTest {
         Assert.assertEquals(2, client.getReadTimeout());
         Assert.assertEquals(3, client.getWriteTimeout());
         Assert.assertEquals(4, client.getConnectTimeout());
-        Assert.assertEquals(true, client.getRetryOnConnectionFailure());
+        Assert.assertTrue(client.getRetryOnConnectionFailure());
     }
 
 
@@ -85,7 +84,7 @@ public class FaceDetectClientTest {
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/daiye2.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.faceContrast(imageBase64, "jpg"));
+        Assert.assertNotNull(client.faceContrast(imageBase64, "jpg"));
     }
 
     @Test
@@ -97,7 +96,7 @@ public class FaceDetectClientTest {
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/daiye2.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.faceContrast(imageBase64, "jpg"));
+        Assert.assertNotNull(client.faceContrast(imageBase64, "jpg"));
     }
 
     /**
@@ -118,13 +117,9 @@ public class FaceDetectClientTest {
     }
 
     private static byte[] read(String filePath) throws IOException {
-
         InputStream in = new FileInputStream(filePath);
         byte[] data = inputStream2ByteArray(in);
         in.close();
-
         return data;
     }
-
-
 }
