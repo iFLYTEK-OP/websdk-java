@@ -47,27 +47,13 @@ public class LtpClientTest {
                 .writeTimeout(4)
                 .build();
 
-        assertEquals("func", ltpClient.getFunc());
+        assertEquals("ke", ltpClient.getFunc());
         assertEquals("type", ltpClient.getType());
         Assert.assertEquals(3, ltpClient.getReadTimeout());
         Assert.assertEquals(4, ltpClient.getWriteTimeout());
         Assert.assertEquals(2, ltpClient.getConnectTimeout());
     }
 
-
-    /**
-     * 测试异常情况
-     */
-    @Test
-    public void testException(){
-        try{
-            LtpClient ltpClient = new LtpClient.Builder(appId, apiKey, null)
-                    .build();
-            ltpClient.send("123");
-        }catch (Exception e){
-            assertEquals("func参数错误", e.getMessage());
-        }
-    }
 
     /**
      * 测试中文分词功能

@@ -34,7 +34,7 @@ public class TransClientTest {
         assertEquals(appId, transClient.getAppId());
         assertEquals(apiKey, transClient.getApiKey());
         assertEquals(apiSecret, transClient.getApiSecret());
-        assertEquals("auto", transClient.getFrom());
+        assertEquals("cn", transClient.getFrom());
         assertEquals("en", transClient.getTo());
     }
 
