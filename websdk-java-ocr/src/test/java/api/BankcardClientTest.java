@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.util.Base64;
 
 /**
@@ -66,7 +67,11 @@ public class BankcardClientTest {
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/backcard.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.bankcard(imageBase64));
+        try {
+            System.out.println(client.bankcard(imageBase64));
+        } catch (SocketTimeoutException e){
+            System.out.println("SocketTimeoutException!");
+        }
     }
 
     @Test
@@ -77,7 +82,11 @@ public class BankcardClientTest {
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/backcard.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.bankcard(imageBase64));
+        try {
+            System.out.println(client.bankcard(imageBase64));
+        } catch (SocketTimeoutException e){
+            System.out.println("SocketTimeoutException!");
+        }
     }
 
 

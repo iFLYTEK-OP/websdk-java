@@ -16,6 +16,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 import java.util.Base64;
 
 /**
@@ -81,7 +82,11 @@ public class FingerOcrClientTest {
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/finger.jpg");
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.fingerOcr(imageBase64));
+        try {
+            System.out.println(client.fingerOcr(imageBase64));
+        } catch (SocketTimeoutException e){
+            System.out.println("SocketTimeoutException!");
+        }
     }
 
     private static byte[] inputStream2ByteArray(InputStream in) throws IOException {
@@ -100,5 +105,4 @@ public class FingerOcrClientTest {
         in.close();
         return data;
     }
-
 }

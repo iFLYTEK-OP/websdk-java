@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 
 /**
  * @author mqgao
@@ -65,7 +66,11 @@ public class ImageRecClientTest {
                 .Builder(appId, apiKey, ImageRecEnum.SCENE)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
-        System.out.println(client.send( "测试", imageByteArray));
+        try {
+            System.out.println(client.send( "测试", imageByteArray));
+        } catch (SocketTimeoutException e){
+            System.out.println("SocketTimeoutException!");
+        }
     }
 
     @Test
@@ -74,7 +79,11 @@ public class ImageRecClientTest {
                 .Builder(appId, apiKey, ImageRecEnum.CURRENCY)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/car.jpg");
-        System.out.println(client.send( "测试", imageByteArray));
+        try {
+            System.out.println(client.send( "测试", imageByteArray));
+        } catch (SocketTimeoutException e){
+            System.out.println("SocketTimeoutException!");
+        }
     }
 
     private static byte[] inputStream2ByteArray(InputStream in) throws IOException {
@@ -93,5 +102,4 @@ public class ImageRecClientTest {
         in.close();
         return data;
     }
-
 }
