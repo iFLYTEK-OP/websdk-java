@@ -14,6 +14,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.SocketTimeoutException;
 
 /**
  * @author mqgao
@@ -70,7 +71,11 @@ public class TupApiClientTest {
                 .Builder(appId, apiKey, TupApiEnum.AGE)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/12.jpg");
-        Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
+        try {
+            Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
+        } catch (SocketTimeoutException e) {
+            System.out.println("SocketTimeoutException!");
+        }
     }
 
     @Test
@@ -79,7 +84,11 @@ public class TupApiClientTest {
                 .Builder(appId, apiKey, TupApiEnum.SEX)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/12.jpg");
-        Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
+        try {
+            Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
+        } catch (SocketTimeoutException e) {
+            System.out.println("SocketTimeoutException!");
+        }
     }
 
     @Test
@@ -88,7 +97,11 @@ public class TupApiClientTest {
                 .Builder(appId, apiKey, TupApiEnum.FACE_SCORE)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/12.jpg");
-        Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
+        try {
+            Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
+        } catch (SocketTimeoutException e) {
+            System.out.println("SocketTimeoutException!");
+        }
     }
 
     @Test
@@ -97,7 +110,11 @@ public class TupApiClientTest {
                 .Builder(appId, apiKey, TupApiEnum.EXPRESSION)
                 .build();
         byte[] imageByteArray = read(resourcePath + "/image/12.jpg");
-        Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
+        try {
+            Assert.assertNotNull(client.recognition("12.jpg", imageByteArray));
+        } catch (SocketTimeoutException e) {
+            System.out.println("SocketTimeoutException!");
+        }
     }
 
     /**
