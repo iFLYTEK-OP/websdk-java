@@ -10,7 +10,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-speech</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.1</version>
+    <version>2.0.3</version>
 </dependency>
 ```
 [1、非实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/LFASR.md)
@@ -37,7 +37,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-nlp</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.1</version>
+    <version>2.0.3</version>
 </dependency>
 ```
 
@@ -56,7 +56,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-ocr</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.1</version>
+    <version>2.0.3</version>
 </dependency>
 ```
 
@@ -86,7 +86,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-face-detector</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.1</version>
+    <version>2.0.3</version>
 </dependency>
 ```
 
@@ -105,3 +105,16 @@
 [7、人脸特征分析(性别 年龄 表情 颜值)](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/face/TUP_API.md)
 
 [8、人脸水印照比对](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/face/WATER_MARK.md)
+
+
+### 星火大模型相关
+```xml
+<dependency>
+    <groupId>cn.xfyun</groupId>
+    <artifactId>websdk-java-spark</artifactId>
+    <!--请替换成最新稳定版本-->
+    <version>2.0.3</version>
+</dependency>
+```
+
+[1、讯飞智文PPT-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/pptapi.md)
