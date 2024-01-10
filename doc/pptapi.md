@@ -11,6 +11,18 @@
 ### 实例代码
 
 ##### 示例代码
+
+1、添加maven依赖
+```xml
+<dependency>
+    <groupId>cn.xfyun</groupId>
+    <artifactId>websdk-java-spark</artifactId>
+    <!--请替换成最新稳定版本-->
+    <version>2.0.3</version>
+</dependency>
+```
+
+2、Java代码
 ```java
 import cn.hutool.json.JSONUtil;
 import cn.xfyun.api.AIPPTClient;
