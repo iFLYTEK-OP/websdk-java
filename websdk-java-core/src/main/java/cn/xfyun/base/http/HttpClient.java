@@ -69,6 +69,23 @@ public abstract class HttpClient extends Client {
         }
     }
 
+
+    public String sendGet(String url, Map<String, String> header) throws IOException {
+        Request.Builder builder = new Request
+                .Builder()
+                .url(url)
+                .get();
+        if (Objects.nonNull(header)) {
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                builder.addHeader(entry.getKey(), entry.getValue());
+            }
+        }
+        request = builder.build();
+        try (Response response = okHttpClient.newCall(request).execute()) {
+            return response.body().string();
+        }
+    }
+
     public HttpClient(HttpBuilder builder) {
         this.hostUrl = builder.getHostUrl();
         this.appId = builder.getAppId();

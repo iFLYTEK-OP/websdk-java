@@ -12,6 +12,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
+import java.security.SignatureException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -161,5 +162,17 @@ public class Signature {
             e.printStackTrace();
         }
         return "";
+    }
+
+    /**
+     *
+     * @throws SignatureException
+     */
+    public static String generateSignature(String appId, Long timestamp, String apiSecret){
+        try {
+            return  CryptTools.hmacEncrypt(CryptTools.HMAC_SHA1, CryptTools.md5Encrypt(appId + timestamp), apiSecret);
+        } catch (SignatureException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
