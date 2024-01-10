@@ -4,6 +4,18 @@
 
 提供各种讯飞开放平台能力的JAVASDK。
 
+### 星火大模型相关
+```xml
+<dependency>
+    <groupId>cn.xfyun</groupId>
+    <artifactId>websdk-java-spark</artifactId>
+    <!--请替换成最新稳定版本-->
+    <version>2.0.3</version>
+</dependency>
+```
+
+[1、讯飞智文PPT-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/pptapi.md)
+
 ### 语音相关能力
 ```xml
 <dependency>
@@ -105,16 +117,3 @@
 [7、人脸特征分析(性别 年龄 表情 颜值)](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/face/TUP_API.md)
 
 [8、人脸水印照比对](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/face/WATER_MARK.md)
-
-
-### 星火大模型相关
-```xml
-<dependency>
-    <groupId>cn.xfyun</groupId>
-    <artifactId>websdk-java-spark</artifactId>
-    <!--请替换成最新稳定版本-->
-    <version>2.0.3</version>
-</dependency>
-```
-
-[1、讯飞智文PPT-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/pptapi.md)
