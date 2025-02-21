@@ -5,6 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>websdk-java-spark</artifactId>
     <packaging>jar</packaging>
+    <version>2.0.4-SNAPSHOT</version>
     <parent>
         <artifactId>websdk-java-parent</artifactId>
         <groupId>cn.xfyun</groupId>
@@ -16,7 +17,7 @@
         <dependency>
             <groupId>cn.xfyun</groupId>
             <artifactId>websdk-java-core</artifactId>
-           <version>2.0.3</version>
+           <version>2.0.4-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.jetbrains</groupId>
