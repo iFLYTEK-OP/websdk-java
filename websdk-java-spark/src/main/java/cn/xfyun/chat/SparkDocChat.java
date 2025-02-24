@@ -1,12 +1,12 @@
 package cn.xfyun.chat;
 
-
 import cn.xfyun.basic.ConvertOperation;
-import cn.xfyun.eum.SparkModelEum;
+import cn.xfyun.basic.EasyOperation;
+import cn.xfyun.basic.RestOperation;
+import cn.xfyun.basic.TimeOperation;
 import cn.xfyun.function.WebsocketListener;
 import cn.xfyun.model.RoleMessage;
-import cn.xfyun.model.SparkChatResponse;
-import cn.xfyun.request.WsChatRequest;
+import cn.xfyun.request.WsChatDocRequest;
 import cn.xfyun.util.SignatureHelper;
 import okhttp3.*;
 import okio.ByteString;
@@ -19,116 +19,79 @@ import java.util.function.Consumer;
 
 /**
  * @author: rblu2
- * @desc: websocket 星火对话
- * @create: 2025-02-20 13:59
+ * @desc: 上传星火知识库文档
+ * @create: 2025-02-24 10:34
  **/
-public class WsSparkChat {
-
+public class SparkDocChat {
     private static final OkHttpClient client = new OkHttpClient.Builder().pingInterval(30, TimeUnit.SECONDS).build();
-    private SparkModelEum modelEum;
-    private String url;
-    private String apiKey;
+    private String url = "wss://chatdoc.xfyun.cn/openapi/chat";
+    private String appId;
     private String apiSecret;
-    private WsChatRequest chatRequest;
+    private WsChatDocRequest chatRequest;
     private Runnable onOpen;
     private Consumer<String> onMessage;
     private Runnable onMessageEnding;
     private WebsocketListener onClosed;
     private Consumer<Response> onFailure;
-
     private long startTime;
 
-    
-    public static WsSparkChat prepare(SparkModelEum modelEum, String appId, String apiKey, String apiSecret) {
-        WsSparkChat sparkChat = new WsSparkChat();
-        sparkChat.modelEum = modelEum;
-        sparkChat.apiKey = apiKey;
+    public static SparkDocChat prepare(String appId, String apiSecret) {
+        SparkDocChat sparkChat = new SparkDocChat();
+        sparkChat.appId = appId;
         sparkChat.apiSecret = apiSecret;
-        sparkChat.chatRequest = WsChatRequest.create(appId, modelEum.getCode());
+        sparkChat.chatRequest = new WsChatDocRequest();
         return sparkChat.prefect();
     }
-    
-    public WsSparkChat prefect() {
-        String httpUrl = modelEum.getWsUrl().replace("ws://", "http://").replace("wss://", "https://");
-        this.url = SignatureHelper.getAuthUrl(httpUrl, apiKey, apiSecret);
+
+    public SparkDocChat prefect() {
+        long timestamp = TimeOperation.time() / 1000;
+        String signature = SignatureHelper.getSignature(appId, apiSecret, timestamp);
+        this.url += RestOperation.buildParams(EasyOperation.map().put("appId", appId).put("timestamp", timestamp).put("signature", signature).get());
         return this;
     }
 
-    public WsSparkChat append(RoleMessage roleMessage) {
-        this.chatRequest.getPayload().getMessage().getText().add(roleMessage);
+    public SparkDocChat addFileId(String fileId) {
+        this.chatRequest.getFileIds().add(fileId);
         return this;
     }
 
-    public WsSparkChat onOpen(Runnable onOpen) {
+    public SparkDocChat append(RoleMessage roleMessage) {
+        this.chatRequest.getMessages().add(roleMessage);
+        return this;
+    }
+
+    public SparkDocChat onOpen(Runnable onOpen) {
         this.onOpen = onOpen;
         return this;
     }
-    
-    public WsSparkChat temperature(float temperature) {
-        this.chatRequest.getParameter().getChat().temperature(temperature);
-        return this;
-    }
 
-    public WsSparkChat max_tokens(int max_tokens){
-        if(modelEum == SparkModelEum.LITE || modelEum == SparkModelEum.PRO_128K) {
-            if(max_tokens < 1 || max_tokens > 4096) {
-                throw new IllegalArgumentException("max_tokens must be in range [1,4096]");
-            }
-        }
-
-        if(modelEum == SparkModelEum.MAX_32K || modelEum == SparkModelEum.V4_ULTRA) {
-            if(max_tokens < 1 || max_tokens > 8192) {
-                throw new IllegalArgumentException("max_tokens must be in range [1,8192]");
-            }
-        }
-
-        this.chatRequest.getParameter().getChat().max_tokens(max_tokens);
-        return this;
-    }
-
-    public WsSparkChat top_k(int top_k){
-        if(top_k < 1 || top_k > 6) {
-            throw new IllegalArgumentException("top_k must be in range [1,6]");
-        }
-        this.chatRequest.getParameter().getChat().top_k(top_k);
-        return this;
-    }
-
-    public WsSparkChat webSearch() {
-        if(modelEum != SparkModelEum.MAX_32K && modelEum != SparkModelEum.GENERAL_V35 && modelEum != SparkModelEum.V4_ULTRA) {
-            throw new IllegalArgumentException("At present,webSearch support by spark as " + SparkModelEum.MAX_32K.getCode() + ", " + SparkModelEum.GENERAL_V35.getCode() + ", " + SparkModelEum.V4_ULTRA.getCode());
-        }
-        this.chatRequest.getParameter().getChat().show_ref_label(true);
-        return this;
-    }
-
-
-    public WsSparkChat onMessage(Consumer<String> onMessage) {
+    public SparkDocChat onMessage(Consumer<String> onMessage) {
         this.onMessage = onMessage;
         return this;
     }
 
-    public WsSparkChat onMessageEnding(Runnable onMessageEnding) {
+    public SparkDocChat onMessageEnding(Runnable onMessageEnding) {
         this.onMessageEnding = onMessageEnding;
         return this;
     }
 
-    public WsSparkChat onClosed(WebsocketListener onClosed) {
+    public SparkDocChat onClosed(WebsocketListener onClosed) {
         this.onClosed = onClosed;
         return this;
     }
 
-    public WsSparkChat onFailure(Consumer<Response> onFailure) {
+    public SparkDocChat onFailure(Consumer<Response> onFailure) {
         this.onFailure = onFailure;
         return this;
     }
-    
+
     public void execute() {
         System.out.printf(
                 "请求详情: " +
                         "\n" + "URI          : %s " +
                         "\n" + "Param        : %s " +
-                        "\n", url, ConvertOperation.toJson(chatRequest));
+                        "\n"
+                , url, ConvertOperation.toJson(chatRequest));
         Request request = new Request.Builder().url(url).build();
         startTime = System.currentTimeMillis();
         client.newWebSocket(request, socketListener());
@@ -166,7 +129,7 @@ public class WsSparkChat {
 
             @Override
             public void onClosing(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-                System.out.println("WebSocket 正在关闭: code: " + code + " reason: " + reason);
+                System.out.println("WebSocket 正在关闭: " + code + " " + reason);
             }
 
             @Override
@@ -180,6 +143,7 @@ public class WsSparkChat {
             @Override
             public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
                 System.err.println("WebSocket 连接失败: " + t.getMessage());
+                t.printStackTrace();
                 if(response != null) {
                     if(onFailure == null) {
                         onFailure = defaultOnFailure();
@@ -208,11 +172,11 @@ public class WsSparkChat {
     private Runnable defaultOnMessageEnding() {
         return () -> System.out.println("所有消息接收完毕... cost " + (System.currentTimeMillis() - startTime) + "ms");
     }
-    
+
     private WebsocketListener defaultOnClosed() {
         return (webSocket, code, reason) -> System.out.println("WebSocket 连接已关闭 code: " + code + " reason: " + reason);
     }
-    
+
     private Consumer<Response> defaultOnFailure() {
         return response -> {
             int responseCode = response.code();
@@ -231,6 +195,24 @@ public class WsSparkChat {
     }
 
     private boolean endFlag(String text) {
-        return ConvertOperation.parseObject(text, SparkChatResponse.class).getHeader().getStatus() == 2;
+        return ConvertOperation.parseObject(text, ResponseData.class).getStatus() == 2;
+    }
+
+    public static class ResponseData {
+        private String code;
+        private Integer status;
+        private String sid;
+
+        public String getCode() {
+            return code;
+        }
+
+        public Integer getStatus() {
+            return status;
+        }
+
+        public String getSid() {
+            return sid;
+        }
     }
 }

@@ -35,8 +35,8 @@ public class SparkTest {
     @Test
     public void test3() throws InterruptedException {
         WsSparkChat.prepare(SparkModelEum.GENERAL_V35, "6057995a", "28bb4b72196174bb290e8d60876a1013", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
-                .onMessage(this::print)
                 .append(SystemMessage.crate("你现在扮演李白")).append(UserMessage.crate("你喝醉过吗"))
+                .onMessage(this::print)
                 .execute();
         // 保持主线程运行，防止程序退出
         Thread.sleep(Long.MAX_VALUE);
