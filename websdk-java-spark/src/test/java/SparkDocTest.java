@@ -15,7 +15,7 @@ public class SparkDocTest {
     //上传文档，投喂知识
     @Test
     public void test1() {
-        RestResult data = SparkDoc.prepare("6057995a", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
+        RestResult data = SparkDoc.prepare("xx", "xx")
                 .file("D:\\draft\\250224\\背影.txt")
                 .upload();
         print(data.getBody());
@@ -24,8 +24,8 @@ public class SparkDocTest {
     //上传文档，投喂知识,查询文档训练状态,fieldId值，在test1上传文档后的返回里结果里获取
     @Test
     public void test2() {
-        RestResult data = SparkDoc.prepare("6057995a", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
-                .addFileId("de62193c7ce34a83ad68c0a786d9a4b7")
+        RestResult data = SparkDoc.prepare("xx", "xx")
+                .addFileId("xx")
                 .status();
         print(data.getBody());
 
@@ -34,8 +34,8 @@ public class SparkDocTest {
     //对话问答，（训练状态fileStatus为vectored时）
     @Test
     public void test3() throws InterruptedException {
-        SparkDocChat.prepare("6057995a", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
-                .addFileId("253fc5ccaa554007be7eec22bfbf1b1b")
+        SparkDocChat.prepare("xx", "xx")
+                .addFileId("xx")
                 .append(UserMessage.crate("本文的中心思想是什么"))
                 .onMessage(this::print)
                 .execute();
@@ -46,8 +46,8 @@ public class SparkDocTest {
     //提交萃取任务，即对训练完成的文档生成QA对
     @Test
     public void test4() {
-        RestResult data = SparkDoc.prepare("6057995a", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
-                .extract("253fc5ccaa554007be7eec22bfbf1b1b");
+        RestResult data = SparkDoc.prepare("xx", "xx")
+                .extract("xx");
         print(data.getBody());
 
     }
