@@ -55,6 +55,19 @@ public class SparkDocChat {
         return this;
     }
 
+    public SparkDocChat sparkFlag(boolean spark) {
+        this.chatRequest.getChatExtends().spark(spark);
+        return this;
+    }
+
+    public SparkDocChat temperature(float temperature) {
+        if(temperature <= 0f || temperature > 1f) {
+            throw new RuntimeException("temperature must be in range (0,1]");
+        }
+        this.chatRequest.getChatExtends().temperature(temperature);
+        return this;
+    }
+
     public SparkDocChat append(RoleMessage roleMessage) {
         this.chatRequest.getMessages().add(roleMessage);
         return this;

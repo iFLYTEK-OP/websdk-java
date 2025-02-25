@@ -2,12 +2,16 @@ package cn.xfyun.basic;
 
 
 import okhttp3.*;
+import okio.BufferedSource;
+import okio.Okio;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * Created: Renbing.Lu
@@ -17,7 +21,7 @@ import java.util.Objects;
 public class RestOperation {
     private static final OkHttpClient httpClient = new OkHttpClient();
 
-    public static RestResult form(String url, Map<String, String> header, Map<String, String> param, File file) {
+    public static String form(String url, Map<String, String> header, Map<String, String> param, File file) {
         try {
             MultipartBody.Builder bodyBuilder = body(param);
             if(Objects.nonNull(file)) {
@@ -31,8 +35,58 @@ public class RestOperation {
                     "\nResponseStatus   : %s " +
                     "\nResponseBody     : %s " +
                     "\nResponseMessage   : %s " +
-                    "\n", url, request.method(), request.headers(), data.getCode(), data.getBody(), data.getMessage());
-            return data;
+                    "\n", url, request.method(), request.headers(), data.getCode(), data.bodyString(), data.getMessage());
+            return data.bodyString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <REQUEST> String post(String url, Map<String, String> header, REQUEST req) {
+        try {
+            long current = TimeOperation.time();
+            String json = ConvertOperation.toJson(req);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+            Request request = request(url, header, requestBody).build();
+            Response response = httpClient.newCall(request).execute();
+            RestResult data = RestResult.from(response);
+            System.out.printf("\nURI          : %s " +
+                            "\nMethod       : %s " +
+                            "\nHeaders      : %s " +
+                            "\nRequestBody   : %s " +
+                            "\nResponseStatus   : %s " +
+                            "\nResponseBody     : %s " +
+                            "\nResponseMessage   : %s " +
+                            "\nCost   : %s" +
+                            "\n", url, request.method(), request.headers(), json, data.getCode(),
+                    data.bodyString(), data.getMessage(), TimeOperation.time() - current + "ms");
+            return data.bodyString();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <REQUEST> void stream(String url, Map<String, String> header, REQUEST req, Consumer<String> consumer) {
+
+        try {
+            long current = TimeOperation.time();
+            String json = ConvertOperation.toJson(req);
+            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
+            Request request = request(url, header, requestBody).build();
+            System.out.printf(
+                    "\n" +
+                            "URI          : %s \n" +
+                            "Method       : %s \n" +
+                            "Headers      : %s \n" +
+                            "Param        : %s \n",
+                    url, request.method(), request.headers(), json);
+
+            Response response = httpClient.newCall(request).execute();
+            RestResult data = RestResult.from(response);
+            System.out.printf("\n" + "ResponseStatus   : %s \n" + "ResponseMessage   : %s \n", data.code, data.message);
+
+            data.stream(consumer);
+            System.out.println("Total cost: " + (TimeOperation.time() - current) + "ms");
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -46,7 +100,6 @@ public class RestOperation {
         return builder;
     }
 
-
     public static Request.Builder request(String url, Map<String, String> header, RequestBody body) {
         Request.Builder builder = new Request.Builder();
         builder.url(url).post(body);
@@ -56,33 +109,55 @@ public class RestOperation {
         return builder;
     }
 
-
     public static String buildParams(Map<String, Object> params) {
         List<String> list = new ArrayList<>(10);
         params.forEach((k ,v) -> list.add(k + "=" + v));
         return "?" + EasyOperation.joiner(list, "&").get();
     }
 
+    public static class RestResult {
+        private Integer code;
+        private String message;
+        public ResponseBody responseBody;
 
-    public static <REQUEST> RestResult post(String url, Map<String, String> header, REQUEST req) {
-
-        try {
-            String json = ConvertOperation.toJson(req);
-            RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
-            Request request = request(url, header, requestBody).build();
-            Response response = httpClient.newCall(request).execute();
-            RestResult data = RestResult.from(response);
-            System.out.printf("\nURI          : %s " +
-                    "\nMethod       : %s " +
-                    "\nHeaders      : %s " +
-                    "\nRequestBody   : %s " +
-                    "\nResponseStatus   : %s " +
-                    "\nResponseBody     : %s " +
-                    "\nResponseMessage   : %s " +
-                    "\n", url, request.method(), request.headers(), json, data.getCode(), data.getBody(), data.getMessage());
+        public static RestResult from(Response response) {
+            RestResult data = new RestResult();
+            data.code = response.code();
+            data.message = response.message();
+            data.responseBody = response.body();
             return data;
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        }
+
+        public Integer getCode() {
+            return code;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+
+        public ResponseBody getResponseBody() {
+            return responseBody;
+        }
+
+        public String bodyString() {
+            try {
+                return Objects.nonNull(responseBody) ? responseBody.string() : "";
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+        // 使用 BufferedSource 逐行读取 SSE 事件流
+        public void stream(Consumer<String> consumer) throws IOException {
+            BufferedSource bufferedSource = Okio.buffer(responseBody.source());
+            while (!bufferedSource.exhausted()) {
+                String line = bufferedSource.readUtf8Line();
+                if (Objects.nonNull(line) && !line.isEmpty()) {
+                    consumer.accept(line);
+                }
+            }
+            bufferedSource.close();
         }
     }
 

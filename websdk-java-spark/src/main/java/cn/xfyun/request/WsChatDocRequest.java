@@ -18,9 +18,12 @@ public class WsChatDocRequest {
     private List<String> fileIds;
     private List<RoleMessage> messages;
 
+    private ChatExtends chatExtends;
+
     public WsChatDocRequest() {
         this.fileIds = new ArrayList<>();
         this.messages  = new ArrayList<>();
+        this.chatExtends = new ChatExtends();
     }
 
     public String getRepoId() {
@@ -48,5 +51,37 @@ public class WsChatDocRequest {
     public WsChatDocRequest messages(List<RoleMessage> messages) {
         this.messages = messages;
         return this;
+    }
+
+    public ChatExtends getChatExtends() {
+        return chatExtends;
+    }
+
+    public WsChatDocRequest chatExtends(ChatExtends chatExtends) {
+        this.chatExtends = chatExtends;
+        return this;
+    }
+
+    public static class ChatExtends {
+        private Boolean spark;
+        private Float temperature;
+
+        public Boolean getSpark() {
+            return spark;
+        }
+
+        public ChatExtends spark(Boolean spark) {
+            this.spark = spark;
+            return this;
+        }
+
+        public Float getTemperature() {
+            return temperature;
+        }
+
+        public ChatExtends temperature(Float temperature) {
+            this.temperature = temperature;
+            return this;
+        }
     }
 }
