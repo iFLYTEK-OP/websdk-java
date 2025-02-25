@@ -257,5 +257,13 @@ public class EasyOperation {
         return null;
     }
 
+    public static boolean isEmpty(String str) {
+        return Objects.isNull(str) || str.isEmpty();
+    }
+
+    public static boolean isNotEmpty(String str) {
+        return !isEmpty(str);
+    }
+
 
 }

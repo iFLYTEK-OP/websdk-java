@@ -66,6 +66,11 @@ public class WsChatDocRequest {
         private Boolean spark;
         private Float temperature;
 
+        public ChatExtends() {
+            this.spark = true;
+            this.temperature = 0.5f;
+        }
+
         public Boolean getSpark() {
             return spark;
         }

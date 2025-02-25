@@ -119,6 +119,7 @@ public class RestOperation {
         private Integer code;
         private String message;
         public ResponseBody responseBody;
+        public String bodyString;
 
         public static RestResult from(Response response) {
             RestResult data = new RestResult();
@@ -140,12 +141,15 @@ public class RestOperation {
             return responseBody;
         }
 
-        public String bodyString() {
-            try {
-                return Objects.nonNull(responseBody) ? responseBody.string() : "";
-            } catch (Exception e) {
-                throw new RuntimeException(e);
+        public synchronized String bodyString() {
+            if(EasyOperation.isEmpty(bodyString)) {
+                try {
+                    bodyString =  Objects.nonNull(responseBody) ? responseBody.string() : "";
+                } catch (Exception e) {
+                    throw new RuntimeException(e);
+                }
             }
+            return bodyString;
         }
 
         // 使用 BufferedSource 逐行读取 SSE 事件流
