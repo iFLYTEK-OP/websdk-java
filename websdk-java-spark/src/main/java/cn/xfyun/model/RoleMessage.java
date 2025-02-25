@@ -8,9 +8,9 @@ package cn.xfyun.model;
 
 public abstract class RoleMessage {
 
-    String role;
+    public String role;
 
-    String content;
+    public String content;
 
     protected RoleMessage(String role, String content) {
         this.role = role;

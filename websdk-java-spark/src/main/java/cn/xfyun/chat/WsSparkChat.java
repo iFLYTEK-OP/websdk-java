@@ -9,7 +9,6 @@ import cn.xfyun.model.SparkChatResponse;
 import cn.xfyun.request.WsChatRequest;
 import cn.xfyun.util.SignatureHelper;
 import okhttp3.*;
-import okio.ByteString;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -157,16 +156,6 @@ public class WsSparkChat {
                     onEnd();
                     webSocket.close(1000, "正常关闭");
                 }
-            }
-
-            @Override
-            public void onMessage(@NotNull WebSocket webSocket, @NotNull ByteString bytes) {
-                System.out.println("接收到二进制消息: " + bytes.hex());
-            }
-
-            @Override
-            public void onClosing(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-                System.out.println("WebSocket 正在关闭: code: " + code + " reason: " + reason);
             }
 
             @Override
