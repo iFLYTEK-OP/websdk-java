@@ -4,6 +4,8 @@
 
 提供各种讯飞开放平台能力的JAVASDK。
 
+
+
 ### 星火大模型相关
 ```xml
 <dependency>
