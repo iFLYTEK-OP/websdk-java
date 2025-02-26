@@ -12,7 +12,7 @@ public class SystemMessage extends RoleMessage {
         super("system", content);
     }
 
-    public static SystemMessage crate(String content) {
+    public static SystemMessage create(String content) {
         return new SystemMessage(content);
     }
 

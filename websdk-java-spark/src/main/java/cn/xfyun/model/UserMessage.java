@@ -12,7 +12,7 @@ public class UserMessage extends RoleMessage {
         super("user", content);
     }
 
-    public static UserMessage crate(String content) {
+    public static UserMessage create(String content) {
         return new UserMessage(content);
     }
 

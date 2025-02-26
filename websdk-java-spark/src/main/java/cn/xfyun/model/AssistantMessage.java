@@ -12,7 +12,7 @@ public class AssistantMessage extends RoleMessage {
         super("assistant", content);
     }
 
-    public static AssistantMessage crate(String content) {
+    public static AssistantMessage create(String content) {
         return new AssistantMessage(content);
     }
 

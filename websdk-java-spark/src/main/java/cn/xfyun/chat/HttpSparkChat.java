@@ -1,12 +1,12 @@
 package cn.xfyun.chat;
 
-
 import cn.xfyun.basic.EasyOperation;
 import cn.xfyun.basic.RestOperation;
 import cn.xfyun.eum.SparkModelEum;
 import cn.xfyun.model.RoleMessage;
 import cn.xfyun.request.HttpChatRequest;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -64,6 +64,11 @@ public class HttpSparkChat {
     
     public HttpSparkChat append(RoleMessage roleMessage) {
         this.chatRequest.getMessages().add(roleMessage);
+        return this;
+    }
+
+    public HttpSparkChat append(List<RoleMessage> roleMessages) {
+        this.chatRequest.getMessages().addAll(roleMessages);
         return this;
     }
 

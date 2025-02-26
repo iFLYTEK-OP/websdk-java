@@ -13,14 +13,14 @@ public class SparkDocTest {
     //上传文档，投喂知识
     @Test
     public void test1() {
-        String result = SparkDoc.prepare("6057995a", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
+        String result = SparkDoc.prepare("xx", "xx")
                 .uploadFile("D:\\draft\\250224\\背影.txt");
         print(result);
     }
     //上传文档，投喂知识
     @Test
     public void test2() {
-        String result = SparkDoc.prepare("6057995a", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
+        String result = SparkDoc.prepare("xx", "xx")
                 .uploadUrl("https://openres.xfyun.cn/xfyundoc/2025-02-25/51087fc6-ecb2-4fa4-820b-6a3326f06cab/1740447798025/背影.txt", "背影.txt");
         print(result);
     }
@@ -28,7 +28,7 @@ public class SparkDocTest {
     //上传文档，投喂知识,查询文档训练状态,fieldId值，在test1上传文档后的返回里结果里获取
     @Test
     public void test3() {
-        String result = SparkDoc.prepare("6057995a", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
+        String result = SparkDoc.prepare("xx", "xx")
                 .addFileId("633e74f5f1d44d638f14a2c0a7f8beca")
                 .status();
         print(result);
@@ -38,11 +38,9 @@ public class SparkDocTest {
     //对话问答，（训练状态fileStatus为vectored时）
     @Test
     public void test4() throws InterruptedException {
-        SparkDocChat.prepare("6057995a", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
+        SparkDocChat.prepare("xx", "xx")
                 .addFileId("633e74f5f1d44d638f14a2c0a7f8beca")
-                .sparkFlag(true)
-                .temperature(0.99f)
-                .append(UserMessage.crate("本文的中心思想是什么"))
+                .append(UserMessage.create("本文的中心思想是什么"))
                 .onMessage(this::print)
                 .execute();
         // 保持主线程运行，防止程序退出
@@ -52,7 +50,7 @@ public class SparkDocTest {
     //提交萃取任务，即对训练完成的文档生成QA对
     @Test
     public void test5() {
-        String result = SparkDoc.prepare("6057995a", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
+        String result = SparkDoc.prepare("xx", "xx")
                 .extract("253fc5ccaa554007be7eec22bfbf1b1b");
         print(result);
 

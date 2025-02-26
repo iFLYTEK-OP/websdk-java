@@ -4,6 +4,8 @@ package cn.xfyun.basic;
 import okhttp3.*;
 import okio.BufferedSource;
 import okio.Okio;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -19,6 +21,8 @@ import java.util.function.Consumer;
  */
 
 public class RestOperation {
+
+    private static final Logger log = LoggerFactory.getLogger(RestOperation.class);
     private static final OkHttpClient httpClient = new OkHttpClient();
 
     public static String form(String url, Map<String, String> header, Map<String, String> param, File file) {
@@ -29,13 +33,16 @@ public class RestOperation {
             }
             Request request = request(url, header, bodyBuilder.build()).build();
             RestResult data = RestResult.from(httpClient.newCall(request).execute());
-            System.out.printf("\nURI          : %s " +
-                    "\nMethod       : %s " +
-                    "\nHeaders      : %s " +
-                    "\nResponseStatus   : %s " +
-                    "\nResponseBody     : %s " +
-                    "\nResponseMessage   : %s " +
-                    "\n", url, request.method(), request.headers(), data.getCode(), data.bodyString(), data.getMessage());
+            if(log.isDebugEnabled()) {
+                log.debug("\nURI          : {} " +
+                        "\nMethod       : {} " +
+                        "\nHeaders      : {} " +
+                        "\nResponseStatus   : {} " +
+                        "\nResponseBody     : {} " +
+                        "\nResponseMessage   : {} " +
+                        "\n", url, request.method(), request.headers(),
+                        data.getCode(), data.bodyString(), data.getMessage());
+            }
             return data.bodyString();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -50,16 +57,19 @@ public class RestOperation {
             Request request = request(url, header, requestBody).build();
             Response response = httpClient.newCall(request).execute();
             RestResult data = RestResult.from(response);
-            System.out.printf("\nURI          : %s " +
-                            "\nMethod       : %s " +
-                            "\nHeaders      : %s " +
-                            "\nRequestBody   : %s " +
-                            "\nResponseStatus   : %s " +
-                            "\nResponseBody     : %s " +
-                            "\nResponseMessage   : %s " +
-                            "\nCost   : %s" +
+
+            debug(() -> log.debug("\nURI          : {} " +
+                            "\nMethod       : {} " +
+                            "\nHeaders      : {} " +
+                            "\nRequestBody   : {} " +
+                            "\nResponseStatus   : {} " +
+                            "\nResponseBody     : {} " +
+                            "\nResponseMessage   : {} " +
+                            "\nCost   : {}" +
                             "\n", url, request.method(), request.headers(), json, data.getCode(),
-                    data.bodyString(), data.getMessage(), TimeOperation.time() - current + "ms");
+                    data.bodyString(), data.getMessage(), TimeOperation.time() - current + "ms"));
+
+
             return data.bodyString();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -73,20 +83,17 @@ public class RestOperation {
             String json = ConvertOperation.toJson(req);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
             Request request = request(url, header, requestBody).build();
-            System.out.printf(
-                    "\n" +
-                            "URI          : %s \n" +
-                            "Method       : %s \n" +
-                            "Headers      : %s \n" +
-                            "Param        : %s \n",
-                    url, request.method(), request.headers(), json);
+            debug(() -> log.debug("\n" + "URI          : {} \n" + "Method       : {} \n"
+                            + "Headers      : {} \n" + "Param        : {} \n",
+                        url, request.method(), request.headers(), json));
 
             Response response = httpClient.newCall(request).execute();
             RestResult data = RestResult.from(response);
-            System.out.printf("\n" + "ResponseStatus   : %s \n" + "ResponseMessage   : %s \n", data.code, data.message);
 
+            debug(() -> log.debug("\n" + "ResponseStatus   : {} \n" + "ResponseMessage   : {} \n", data.code, data.message));
             data.stream(consumer);
-            System.out.println("Total cost: " + (TimeOperation.time() - current) + "ms");
+
+            debug(() ->  log.debug("Total cost: {}ms", TimeOperation.time() - current));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -162,6 +169,12 @@ public class RestOperation {
                 }
             }
             bufferedSource.close();
+        }
+    }
+
+    private static void debug(Runnable runnable) {
+        if(log.isDebugEnabled()) {
+            runnable.run();
         }
     }
 
