@@ -1,4 +1,4 @@
-package cn.xfyun.basic;
+package cn.xfyun.util;
 
 
 import okhttp3.*;
@@ -17,6 +17,7 @@ import java.util.function.Consumer;
 
 /**
  * Created: Renbing.Lu
+ * dsc: 三方接口调用通用类
  * Time: 2025/2/24 16:52
  */
 
@@ -33,16 +34,15 @@ public class RestOperation {
             }
             Request request = request(url, header, bodyBuilder.build()).build();
             RestResult data = RestResult.from(httpClient.newCall(request).execute());
-            if(log.isDebugEnabled()) {
-                log.debug("\nURI          : {} " +
-                        "\nMethod       : {} " +
-                        "\nHeaders      : {} " +
-                        "\nResponseStatus   : {} " +
-                        "\nResponseBody     : {} " +
-                        "\nResponseMessage   : {} " +
-                        "\n", url, request.method(), request.headers(),
-                        data.getCode(), data.bodyString(), data.getMessage());
-            }
+            debug(() -> log.debug("\nURI          : {} " +
+                            "\nMethod       : {} " +
+                            "\nHeaders      : {} " +
+                            "\nResponseStatus   : {} " +
+                            "\nResponseBody     : {} " +
+                            "\nResponseMessage   : {} " +
+                            "\n", url, request.method(), request.headers(),
+                    data.getCode(), data.bodyString(), data.getMessage()));
+
             return data.bodyString();
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -51,8 +51,8 @@ public class RestOperation {
 
     public static <REQUEST> String post(String url, Map<String, String> header, REQUEST req) {
         try {
-            long current = TimeOperation.time();
-            String json = ConvertOperation.toJson(req);
+            long from = current();
+            String json = EasyOperation.toJson(req);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
             Request request = request(url, header, requestBody).build();
             Response response = httpClient.newCall(request).execute();
@@ -67,8 +67,7 @@ public class RestOperation {
                             "\nResponseMessage   : {} " +
                             "\nCost   : {}" +
                             "\n", url, request.method(), request.headers(), json, data.getCode(),
-                    data.bodyString(), data.getMessage(), TimeOperation.time() - current + "ms"));
-
+                    data.bodyString(), data.getMessage(), current() - from + "ms"));
 
             return data.bodyString();
         } catch (Exception e) {
@@ -79,8 +78,8 @@ public class RestOperation {
     public static <REQUEST> void stream(String url, Map<String, String> header, REQUEST req, Consumer<String> consumer) {
 
         try {
-            long current = TimeOperation.time();
-            String json = ConvertOperation.toJson(req);
+            long from = current();
+            String json = EasyOperation.toJson(req);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
             Request request = request(url, header, requestBody).build();
             debug(() -> log.debug("\n" + "URI          : {} \n" + "Method       : {} \n"
@@ -93,7 +92,7 @@ public class RestOperation {
             debug(() -> log.debug("\n" + "ResponseStatus   : {} \n" + "ResponseMessage   : {} \n", data.code, data.message));
             data.stream(consumer);
 
-            debug(() ->  log.debug("Total cost: {}ms", TimeOperation.time() - current));
+            debug(() ->  log.debug("Total cost: {}ms", current() - from));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -176,6 +175,10 @@ public class RestOperation {
         if(log.isDebugEnabled()) {
             runnable.run();
         }
+    }
+    
+    private static long current() {
+        return System.currentTimeMillis();
     }
 
 }
