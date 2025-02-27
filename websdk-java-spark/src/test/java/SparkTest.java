@@ -1,6 +1,6 @@
 
-import cn.xfyun.chat.HttpSparkChat;
-import cn.xfyun.chat.WsSparkChat;
+import cn.xfyun.domain.HttpSparkChat;
+import cn.xfyun.domain.WsSparkChat;
 import cn.xfyun.eum.SparkModelEum;
 import cn.xfyun.model.SystemMessage;
 import cn.xfyun.model.UserMessage;

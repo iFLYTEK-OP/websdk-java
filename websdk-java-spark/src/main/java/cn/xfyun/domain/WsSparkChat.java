@@ -1,4 +1,4 @@
-package cn.xfyun.chat;
+package cn.xfyun.domain;
 
 
 import cn.xfyun.basic.ConvertOperation;

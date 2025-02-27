@@ -1,4 +1,4 @@
-package cn.xfyun.chat;
+package cn.xfyun.domain;
 
 import cn.xfyun.basic.ConvertOperation;
 import cn.xfyun.basic.EasyOperation;
@@ -156,7 +156,6 @@ public class SparkDocChat {
             @Override
             public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
                 System.err.println("WebSocket 连接失败: " + t.getMessage());
-                t.printStackTrace();
                 if(response != null) {
                     if(onFailure == null) {
                         onFailure = defaultOnFailure();
