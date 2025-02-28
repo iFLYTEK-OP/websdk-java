@@ -38,7 +38,7 @@ public class SparkDocTest {
     //对话问答，（训练状态fileStatus为vectored时）
     @Test
     public void test4() throws InterruptedException {
-        SparkDocChat.prepare("xx", "xx")
+        SparkDocChat.prepare("6057995a", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
                 .addFileId("633e74f5f1d44d638f14a2c0a7f8beca")
                 .append(UserMessage.create("本文的中心思想是什么"))
                 .onMessage(this::print)

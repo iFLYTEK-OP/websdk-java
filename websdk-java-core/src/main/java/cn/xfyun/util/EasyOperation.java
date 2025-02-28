@@ -4,8 +4,12 @@ package cn.xfyun.util;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -24,7 +28,7 @@ public class EasyOperation {
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     }
 
-    public static ObjectMapper instance() {
+    public static ObjectMapper objectMapper() {
         return objectMapper;
     }
     
@@ -192,6 +196,34 @@ public class EasyOperation {
             return true;
         } catch (Throwable ignored) {
             return false;
+        }
+    }
+
+    public static void sleep(int time, TimeUnit unit) {
+        try {
+            unit.sleep(time);
+        } catch (Exception var2) {
+            Thread.currentThread().interrupt();
+        }
+    }
+
+    public static <T> EasyLog<T> log(Class<T> clazz) {
+        return new EasyLog<>(clazz);
+    }
+    
+    public static class EasyLog<T> {
+        private final Logger logger;
+        public EasyLog(Class<?> clazz) {
+            this.logger = LoggerFactory.getLogger(clazz);
+        }
+
+        public void trace(Consumer<Logger> consumer) {
+            if(logger.isDebugEnabled()) {
+                consumer.accept(this.logger);
+            }
+        }
+        public Logger logger() {
+            return logger;
         }
     }
 

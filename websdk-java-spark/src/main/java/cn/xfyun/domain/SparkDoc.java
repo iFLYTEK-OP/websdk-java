@@ -1,9 +1,7 @@
 package cn.xfyun.domain;
 
-
-import cn.xfyun.basic.EasyOperation;
-import cn.xfyun.basic.RestOperation;
-import cn.xfyun.basic.TimeOperation;
+import cn.xfyun.util.EasyOperation;
+import cn.xfyun.util.RestOperation;
 import cn.xfyun.util.SignatureHelper;
 
 import java.io.File;
@@ -92,7 +90,7 @@ public class SparkDoc {
     }
 
     private Map<String, String> header() {
-        long timestamp = TimeOperation.time() / 1000;
+        long timestamp = System.currentTimeMillis() / 1000;
         String signature = SignatureHelper.getSignature(appId, apiSecret, timestamp);
         return EasyOperation.map(String.class).put("appId", appId).put("timestamp", String.valueOf(timestamp)).put("signature", signature).get();
     }

@@ -1,10 +1,10 @@
 package cn.xfyun.domain;
 
-import cn.xfyun.basic.EasyOperation;
-import cn.xfyun.basic.RestOperation;
-import cn.xfyun.eum.SparkModelEum;
+import cn.xfyun.config.SparkModelEum;
 import cn.xfyun.model.RoleMessage;
 import cn.xfyun.request.HttpChatRequest;
+import cn.xfyun.util.EasyOperation;
+import cn.xfyun.util.RestOperation;
 
 import java.util.List;
 import java.util.Map;

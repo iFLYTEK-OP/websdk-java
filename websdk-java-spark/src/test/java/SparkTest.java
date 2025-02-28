@@ -1,7 +1,7 @@
 
+import cn.xfyun.config.SparkModelEum;
 import cn.xfyun.domain.HttpSparkChat;
 import cn.xfyun.domain.WsSparkChat;
-import cn.xfyun.eum.SparkModelEum;
 import cn.xfyun.model.SystemMessage;
 import cn.xfyun.model.UserMessage;
 import org.junit.Test;
@@ -34,7 +34,7 @@ public class SparkTest {
     //WEBSOCKET调用
     @Test
     public void test3() throws InterruptedException {
-        WsSparkChat.prepare(SparkModelEum.GENERAL_V35, "xx", "xx", "xx")
+        WsSparkChat.prepare(SparkModelEum.GENERAL_V35, "6057995a", "28bb4b72196174bb290e8d60876a1013", "YjRkOTBlODAxM2U2NzIyZmMzMDhmMTdk")
                 .append(SystemMessage.create("你现在扮演李白")).append(UserMessage.create("你喝醉过吗"))
                 .onMessage(this::print)
                 .onMessageEnding(() -> print("receive data finished"))

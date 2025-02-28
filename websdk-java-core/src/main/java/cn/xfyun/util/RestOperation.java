@@ -4,9 +4,6 @@ package cn.xfyun.util;
 import okhttp3.*;
 import okio.BufferedSource;
 import okio.Okio;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -23,7 +20,7 @@ import java.util.function.Consumer;
 
 public class RestOperation {
 
-    private static final Logger log = LoggerFactory.getLogger(RestOperation.class);
+    private static final EasyOperation.EasyLog<RestOperation> easyLog = EasyOperation.log(RestOperation.class);
     private static final OkHttpClient httpClient = new OkHttpClient();
 
     public static String form(String url, Map<String, String> header, Map<String, String> param, File file) {
@@ -34,13 +31,14 @@ public class RestOperation {
             }
             Request request = request(url, header, bodyBuilder.build()).build();
             RestResult data = RestResult.from(httpClient.newCall(request).execute());
-            debug(() -> log.debug("\nURI          : {} " +
-                            "\nMethod       : {} " +
-                            "\nHeaders      : {} " +
-                            "\nResponseStatus   : {} " +
-                            "\nResponseBody     : {} " +
-                            "\nResponseMessage   : {} " +
-                            "\n", url, request.method(), request.headers(),
+            easyLog.trace(log -> log.debug("\nURI          : {} "
+                                    + "\nMethod       : {} "
+                                    + "\nHeaders      : {} "
+                                    + "\nResponseStatus   : {} "
+                                    + "\nResponseBody     : {} "
+                                    + "\nResponseMessage   : {} "
+                                    + "\n",
+                            url, request.method(), request.headers(),
                     data.getCode(), data.bodyString(), data.getMessage()));
 
             return data.bodyString();
@@ -58,7 +56,7 @@ public class RestOperation {
             Response response = httpClient.newCall(request).execute();
             RestResult data = RestResult.from(response);
 
-            debug(() -> log.debug("\nURI          : {} " +
+            easyLog.trace(log -> log.debug("\nURI          : {} " +
                             "\nMethod       : {} " +
                             "\nHeaders      : {} " +
                             "\nRequestBody   : {} " +
@@ -82,17 +80,17 @@ public class RestOperation {
             String json = EasyOperation.toJson(req);
             RequestBody requestBody = RequestBody.create(MediaType.parse("application/json; charset=utf-8"), json);
             Request request = request(url, header, requestBody).build();
-            debug(() -> log.debug("\n" + "URI          : {} \n" + "Method       : {} \n"
+            easyLog.trace(log -> log.debug("\n" + "URI          : {} \n" + "Method       : {} \n"
                             + "Headers      : {} \n" + "Param        : {} \n",
                         url, request.method(), request.headers(), json));
 
             Response response = httpClient.newCall(request).execute();
             RestResult data = RestResult.from(response);
 
-            debug(() -> log.debug("\n" + "ResponseStatus   : {} \n" + "ResponseMessage   : {} \n", data.code, data.message));
+            easyLog.trace(log -> log.debug("\n" + "ResponseStatus   : {} \n" + "ResponseMessage   : {} \n", data.code, data.message));
             data.stream(consumer);
 
-            debug(() ->  log.debug("Total cost: {}ms", current() - from));
+            easyLog.trace(log ->  log.debug("Total cost: {}ms", current() - from));
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -124,8 +122,8 @@ public class RestOperation {
     public static class RestResult {
         private Integer code;
         private String message;
-        public ResponseBody responseBody;
-        public String bodyString;
+        private ResponseBody responseBody;
+        private String bodyString;
 
         public static RestResult from(Response response) {
             RestResult data = new RestResult();
@@ -171,12 +169,6 @@ public class RestOperation {
         }
     }
 
-    private static void debug(Runnable runnable) {
-        if(log.isDebugEnabled()) {
-            runnable.run();
-        }
-    }
-    
     private static long current() {
         return System.currentTimeMillis();
     }

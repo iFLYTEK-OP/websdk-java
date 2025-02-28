@@ -1,4 +1,4 @@
-package cn.xfyun.eum;
+package cn.xfyun.config;
 
 /**
  * @author: rblu2
