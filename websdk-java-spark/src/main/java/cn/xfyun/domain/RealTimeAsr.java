@@ -84,6 +84,11 @@ public class RealTimeAsr extends WebsocketTemplate<RealTimeAsr> {
         return this;
     }
 
+    public RealTimeAsr onError(Consumer<String> onError) {
+        this.onError = onError;
+        return this;
+    }
+
     public void send(byte[] buffer) {
         if(unprepared()) {
             throw new RuntimeException("not ready handshake yet...");
@@ -163,32 +168,34 @@ public class RealTimeAsr extends WebsocketTemplate<RealTimeAsr> {
     }
 
     @Override
-    public void pointOnMessage(WebSocket socket, String text) {
+    public boolean pointOnMessage(WebSocket socket, String text) {
         ResponseData data = EasyOperation.parseObject(text, ResponseData.class);
         if(data.isStarted()) {
             easyLog.logger().info("握手成功，进入实时通信阶段... ");
             state = ACTION_STARTED;
             webSocket = socket;
             handshake.countDown();
+            startTime = System.currentTimeMillis();
         }
 
         if(data.isResult()) {
             state = ACTION_RESULT;
-            if(Objects.isNull(onResult)) {
-                onResult = defaultOnResult();
-            }
-            onResult.accept(data.data);
+            EasyOperation.getOrDefault(onResult, this::defaultOnResult).accept(data.getData());
         }
 
         if(data.isError()) {
             state = ACTION_ERROR;
-            if(Objects.isNull(onError)) {
-                onError = defaultOnError();
-            }
-            onError.accept(text);
+            EasyOperation.getOrDefault(onError, this::defaultOnError).accept(text);
             handshake.countDown();
             webSocket.close(1000, "正常关闭");
         }
+
+        return data.isResult() && endFlag(data.data);
+    }
+
+
+    public boolean endFlag(String text) {
+        return EasyOperation.readTree(text).path("ls").asBoolean(false);
     }
 
     @Override

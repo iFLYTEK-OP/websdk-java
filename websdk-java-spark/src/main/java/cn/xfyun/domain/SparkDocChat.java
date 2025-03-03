@@ -8,8 +8,6 @@ import cn.xfyun.util.SignatureHelper;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 
-import java.util.Objects;
-
 /**
  * @author: rblu2
  * @desc: 上传星火知识库文档
@@ -22,8 +20,6 @@ public class SparkDocChat extends WebsocketTemplate<SparkDocChat> {
     private String appId;
     private String apiSecret;
     private WsChatDocRequest chatRequest;
-    private Runnable onMessageEnding;
-    private long startTime;
 
     public static SparkDocChat prepare(String appId, String apiSecret) {
         SparkDocChat sparkChat = new SparkDocChat();
@@ -90,22 +86,12 @@ public class SparkDocChat extends WebsocketTemplate<SparkDocChat> {
     }
 
     @Override
-    public void pointOnMessage(WebSocket webSocket, String text) {
-        //结束标志
-        if(endFlag(text)) {
-            if(Objects.isNull(onMessageEnding)) {
-                onMessageEnding = defaultOnMessageEnding();
-            }
-            onMessageEnding.run();
-            webSocket.close(1000, "正常关闭");
-        }
+    public boolean pointOnMessage(WebSocket webSocket, String text) {
+        return endFlag(text);
     }
 
-    private Runnable defaultOnMessageEnding() {
-        return () -> easyLog.trace(logger -> logger.debug("所有消息接收完毕... cost {}ms", System.currentTimeMillis() - startTime));
-    }
 
-    private boolean endFlag(String text) {
+    public boolean endFlag(String text) {
         return EasyOperation.parseObject(text, ResponseData.class).getStatus() == 2;
     }
 

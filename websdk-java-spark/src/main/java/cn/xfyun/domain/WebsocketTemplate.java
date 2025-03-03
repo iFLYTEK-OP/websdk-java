@@ -25,6 +25,8 @@ public abstract class WebsocketTemplate<T extends WebsocketTemplate<T>> {
     public Consumer<String> onMessage;
     public WebsocketListener onClosed;
     public Consumer<Response> onFailure;
+    public Runnable onMessageEnding;
+    public long startTime = System.currentTimeMillis();
 
     public abstract EasyOperation.EasyLog<T> easyLog();
 
@@ -39,46 +41,59 @@ public abstract class WebsocketTemplate<T extends WebsocketTemplate<T>> {
     }
 
     private WebSocketListener socketListener() {
-        // 创建 WebSocket 监听器
+
         return new WebSocketListener() {
             @Override
             public void onOpen(@NotNull WebSocket webSocket, @NotNull Response response) {
-                if(Objects.isNull(onOpen)) {
-                    onOpen = defaultOnOpen();
-                }
-                onOpen.run();
+                selfOnOpen();
                 pointOnOpen(webSocket, response);
             }
 
             @Override
             public void onMessage(@NotNull WebSocket webSocket, @NotNull String text) {
-                if(Objects.isNull(onMessage)) {
-                    onMessage = defaultOnMessage();
+                selfOnMessage(text);
+                boolean finished = pointOnMessage(webSocket, text);
+                if(finished) {
+                    endOnMessage(webSocket);
                 }
-                onMessage.accept(text);
-                pointOnMessage(webSocket, text);
             }
 
             @Override
             public void onClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
-                if(Objects.isNull(onClosed)) {
-                    onClosed = defaultOnClosed();
-                }
+                selfOnClosed(webSocket, code, reason);
                 pointOnClosed(webSocket, code, reason);
             }
 
             @Override
             public void onFailure(@NotNull WebSocket webSocket, @NotNull Throwable t, @Nullable Response response) {
-                easyLog().logger().error("WebSocket 连接失败: ", t);
-                if(Objects.nonNull(response)) {
-                    if(Objects.isNull(onFailure)) {
-                        onFailure = defaultOnFailure();
-                    }
-                    onFailure.accept(response);
-                }
+                selfOnFailure(t, response);
                 pointOnFailure(webSocket, t, response);
             }
         };
+    }
+
+    private void selfOnFailure(@NotNull Throwable t, @Nullable Response response) {
+        easyLog().logger().error("WebSocket 连接失败: ", t);
+        if(Objects.nonNull(response)) {
+            EasyOperation.getOrDefault(onFailure, this::defaultOnFailure).accept(response);
+        }
+    }
+
+    private void selfOnClosed(@NotNull WebSocket webSocket, int code, @NotNull String reason) {
+        EasyOperation.getOrDefault(onClosed, this::defaultOnClosed).listen(webSocket, code, reason);
+    }
+
+    private void selfOnOpen() {
+        EasyOperation.getOrDefault(onOpen, this::defaultOnOpen).run();
+    }
+
+    public void endOnMessage(@NotNull WebSocket webSocket) {
+        EasyOperation.getOrDefault(onMessageEnding, this::defaultOnMessageEnding).run();
+        webSocket.close(1000, "正常关闭");
+    }
+
+    private void selfOnMessage(@NotNull String text) {
+        EasyOperation.getOrDefault(onMessage, this::defaultOnMessage).accept(text);
     }
 
     private Runnable defaultOnOpen() {
@@ -100,13 +115,15 @@ public abstract class WebsocketTemplate<T extends WebsocketTemplate<T>> {
         };
     }
 
+    private Runnable defaultOnMessageEnding() {
+        return () -> easyLog().logger().info("所有消息接收完毕... cost {}ms", System.currentTimeMillis() - startTime);
+    }
+
     public void preExecute() {}
 
     public void afterExecute() {}
-
     public void pointOnOpen(WebSocket webSocket, Response response) {}
-
-    public void pointOnMessage(WebSocket webSocket, String text) {}
+    public abstract boolean pointOnMessage(WebSocket webSocket, String text);
     public void pointOnClosed(WebSocket webSocket, int code, String reason) {}
     public void pointOnFailure( WebSocket webSocket, Throwable t, Response response) {}
 
@@ -129,7 +146,6 @@ public abstract class WebsocketTemplate<T extends WebsocketTemplate<T>> {
         this.onFailure = onFailure;
         return self();
     }
-
 
 
 }

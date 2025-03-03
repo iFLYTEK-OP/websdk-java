@@ -8,8 +8,6 @@ import cn.xfyun.util.SignatureHelper;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 
-import java.util.Objects;
-
 /**
  * @author: rblu2
  * @desc: websocket 星火对话
@@ -23,8 +21,6 @@ public class WsSparkChat extends WebsocketTemplate<WsSparkChat> {
     private String apiKey;
     private String apiSecret;
     private WsChatRequest chatRequest;
-    private Runnable onMessageEnding;
-    private long startTime;
 
     public static WsSparkChat prepare(SparkModelEum modelEum, String appId, String apiKey, String apiSecret) {
         WsSparkChat sparkChat = new WsSparkChat();
@@ -89,10 +85,6 @@ public class WsSparkChat extends WebsocketTemplate<WsSparkChat> {
         return this;
     }
 
-    private Runnable defaultOnMessageEnding() {
-        return () -> easyLog.trace(logger -> logger.debug("所有消息接收完毕... cost {}ms", System.currentTimeMillis() - startTime));
-    }
-
 
     @Override
     public EasyOperation.EasyLog<WsSparkChat> easyLog() {
@@ -115,15 +107,8 @@ public class WsSparkChat extends WebsocketTemplate<WsSparkChat> {
     }
 
     @Override
-    public void pointOnMessage(WebSocket webSocket, String text) {
-        //结束标志
-        if(endFlag(text)) {
-            if(Objects.isNull(onMessageEnding)) {
-                onMessageEnding = defaultOnMessageEnding();
-            }
-            onMessageEnding.run();
-            webSocket.close(1000, "正常关闭");
-        }
+    public boolean pointOnMessage(WebSocket webSocket, String text) {
+        return endFlag(text);
     }
 
     @Override
@@ -132,7 +117,7 @@ public class WsSparkChat extends WebsocketTemplate<WsSparkChat> {
         startTime = System.currentTimeMillis();
     }
 
-    private boolean endFlag(String text) {
+    public boolean endFlag(String text) {
         return EasyOperation.parseObject(text, SparkChatResponse.class).getHeader().getStatus() == 2;
     }
 

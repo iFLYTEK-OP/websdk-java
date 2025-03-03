@@ -2,6 +2,7 @@ package cn.xfyun.util;
 
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.slf4j.Logger;
@@ -199,6 +200,14 @@ public class EasyOperation {
         }
     }
 
+    public static JsonNode readTree(String json) {
+        try {
+            return objectMapper.readTree(json);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     public static void sleep(int time, TimeUnit unit) {
         try {
             unit.sleep(time);
@@ -225,6 +234,13 @@ public class EasyOperation {
         public Logger logger() {
             return logger;
         }
+    }
+
+    public static <R> R getOrDefault(R r, Supplier<R> supplier) {
+        if(Objects.isNull(r)) {
+            r = supplier.get();
+        }
+        return r;
     }
 
 }
