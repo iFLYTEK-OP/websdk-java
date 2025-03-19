@@ -31,28 +31,28 @@ public class LfasrClient {
      * 应用ID（必填）
      */
     private String appId;
-    
+
     /**
      * 应用密钥（必填）
      */
     private String secretKey;
-    
+
     /**
      * 转写执行服务
      */
     private volatile LfasrExecutorService lfasrExecutorService;
-    
+
     /**
      * 音频文件名称，最好携带音频真实的后缀名，避免影响转码（必填）
      */
     private String fileName;
-    
+
     /**
      * 音频文件大小（字节数）（必填）
      * 当前只针对本地文件流方式校验，使用url外链方式不校验，可随机传一个数字
      */
     private Long fileSize;
-    
+
     /**
      * 音频真实时长，当前未验证，可随机传一个数字（必填）
      */
@@ -79,41 +79,41 @@ public class LfasrClient {
      * it:意大利语
      */
     private String language;
-    
+
     /**
      * 回调地址（非必填）
      * 订单完成时回调该地址通知完成支持get请求，长度限制512
      * 参数：orderId为订单号、status为订单状态: 1(转写识别成功)、-1(转写识别失败)
      */
     private String callbackUrl;
-    
+
     /**
      * 热词，用以提升专业词汇的识别率（非必填）
      * 格式：热词1|热词2|热词3
      * 单个热词长度：[2,16]，热词个数限制200个
      */
     private String hotWord;
-    
+
     /**
      * 多候选开关（非必填）
      * 0：关闭(默认)
      * 1：打开
      */
     private Short candidate;
-    
+
     /**
      * 是否开启角色分离（非必填）
      * 0：不开启角色分离(默认)
      * 1：通用角色分离
      */
     private Short roleType;
-    
+
     /**
      * 说话人数，取值范围0-10，默认为0进行盲分（非必填）
      * 注：该字段只有在开通了角色分离功能的前提下才会生效
      */
     private Short roleNum;
-    
+
     /**
      * 领域个性化参数（非必填）
      * court：法律
@@ -134,28 +134,28 @@ public class LfasrClient {
      * car：汽车
      */
     private String pd;
-    
+
     /**
      * 转写音频上传方式（非必填）
      * fileStream：文件流(默认)
      * urlLink：音频url外链
      */
     private String audioMode;
-    
+
     /**
      * 音频url外链地址（非必填，audioMode为urlLink时必填）
      * 当audioMode为urlLink时该值必传
      * 如果url中包含特殊字符，audioUrl需要UrlEncode，长度限制512
      */
     private String audioUrl;
-    
+
     /**
      * 是否标准pcm/wav(16k/16bit/单声道)（非必填）
      * 0：非标准wav(默认)
      * 1：标准pcm/wav
      */
     private Integer standardWav;
-    
+
     /**
      * 语言识别模式选择（非必填）
      * language为cn时：
@@ -164,7 +164,7 @@ public class LfasrClient {
      * 4：纯中文模式（不包含英文）
      */
     private Integer languageType;
-    
+
     /**
      * 按声道分轨转写模式（支持语种：cn、en）（非必填）
      * 1：不分轨模式(默认)
@@ -172,12 +172,12 @@ public class LfasrClient {
      * 备注：如果转写任务使用双声道分轨模式，角色分离(roleType)功能失效
      */
     private Short trackMode;
-    
+
     /**
      * 需要翻译的语种(转写语种和翻译语种不能相同)（非必填）
      */
     private String transLanguage;
-    
+
     /**
      * 翻译模式（默认2：按段落进行翻译，目前只支持按段落进行翻译）（非必填）
      * 1：按VAD进行翻译
@@ -185,51 +185,51 @@ public class LfasrClient {
      * 3：按整篇进行翻译
      */
     private Short transMode;
-    
+
     /**
      * 控制分段的最大字数，取值范围[0-500]，不传使用引擎默认值（非必填）
      */
     private Integer engSegMax;
-    
+
     /**
      * 控制分段的最小字数，取值范围[0-50]，不传使用引擎默认值（非必填）
      */
     private Integer engSegMin;
-    
+
     /**
      * 控制分段字数的权重，权重比越高，表示引擎分段逻辑采用字数控制分段的比重越高（非必填）
      * 取值(0-0.05)不传即不采用字数控制分段，采用引擎默认分段逻辑
      */
     private Float engSegWeight;
-    
+
     /**
      * 顺滑开关（非必填）
      * true：表示开启(默认)
      * false：表示关闭
      */
     private Boolean engSmoothproc;
-    
+
     /**
      * 口语规整开关，口语规整是顺滑的升级版本（非必填）
      * true：表示开启
      * false：表示关闭(默认)
      */
     private Boolean engColloqproc;
-    
+
     /**
      * 远近场模式（非必填）
      * 1：远场模式(默认)
      * 2：近场模式
      */
     private Integer engVadMdn;
-    
+
     /**
      * 首尾是否带静音信息（非必填）
      * 0：不显示
      * 1：显示(默认)
      */
     private Integer engVadMargin;
-    
+
     /**
      * 针对粤语转写后的字体转换（非必填）
      * 0：输出简体
@@ -243,7 +243,6 @@ public class LfasrClient {
      * @param builder 构建器
      */
     public LfasrClient(LfasrClient.Builder builder) {
-
 
 
         this.appId = builder.appId;
@@ -277,10 +276,10 @@ public class LfasrClient {
 
     /**
      * 本地音频文件上传接口
-     * 
+     *
      * @param audioFilePath 音频文件路径
      * @return 调用成功时返回orderId（转写任务的唯一标识），是后续接口的必传参数。
-     * @throws LfasrException 转写异常
+     * @throws LfasrException     转写异常
      * @throws SignatureException 签名异常
      */
     public LfasrResponse uploadFile(String audioFilePath) throws LfasrException, SignatureException {
@@ -288,7 +287,7 @@ public class LfasrClient {
         if (StringUtils.isNullOrEmpty(audioFilePath)) {
             throw new LfasrException("音频文件地址为空!");
         }
-        
+
         // 文件存在性和大小校验
         File audioFile = new File(audioFilePath);
         if (!audioFile.exists()) {
@@ -297,21 +296,21 @@ public class LfasrClient {
         if (audioFile.length() > FILE_UPLOAD_MAXSIZE) {
             throw new LfasrException(audioFilePath + " 文件过大! (500M)");
         }
-        
+
         // 构建参数
         Map<String, String> param = new HashMap<>(32);
         paramHandler(param, audioFile, null);
-        
+
         // 执行文件任务
         return this.lfasrExecutorService.exec(new UploadFileTask(new LfasrSignature(appId, secretKey), param, audioFile));
     }
 
     /**
      * 音频URL上传接口
-     * 
+     *
      * @param audioUrl 音频链接
      * @return 调用成功时返回orderId（转写任务的唯一标识），是后续接口的必传参数。
-     * @throws LfasrException 转写异常
+     * @throws LfasrException     转写异常
      * @throws SignatureException 签名异常
      */
     public LfasrResponse uploadUrl(String audioUrl) throws LfasrException, SignatureException {
@@ -319,7 +318,7 @@ public class LfasrClient {
         if (StringUtils.isNullOrEmpty(audioUrl)) {
             throw new LfasrException("音频链接为空!");
         }
-        
+
         // 构建参数
         this.audioMode = "urlLink";
         this.audioUrl = audioUrl;
@@ -327,7 +326,7 @@ public class LfasrClient {
         this.fileSize = this.fileSize != null ? this.fileSize : 1L;
         Map<String, String> param = new HashMap<>(32);
         paramHandler(param, null, audioUrl);
-        
+
         // 执行文件任务
         return this.lfasrExecutorService.exec(new UploadUrlTask(new LfasrSignature(appId, secretKey), param, audioUrl));
     }
@@ -346,14 +345,14 @@ public class LfasrClient {
     /**
      * 获取结果接口
      *
-     * @param orderId 转写订单ID
+     * @param orderId    转写订单ID
      * @param resultType 查询结果类型
-     * - 转写结果：transfer（默认）
-     * - 翻译结果：translate
-     * - 质检结果：predict
-     * - 组合结果查询：多个类型结果使用”,”隔开，目前只支持转写和质检结果一起返回，不支持转写和翻译结果一起返回（如果任务有失败则只返回处理成功的结果）
-     * - 转写和质检结果组合返回：transfer,predict
-     * - 注：使用质检功能请先在控制台开启
+     *                   - 转写结果：transfer（默认）
+     *                   - 翻译结果：translate
+     *                   - 质检结果：predict
+     *                   - 组合结果查询：多个类型结果使用”,”隔开，目前只支持转写和质检结果一起返回，不支持转写和翻译结果一起返回（如果任务有失败则只返回处理成功的结果）
+     *                   - 转写和质检结果组合返回：transfer,predict
+     *                   - 注：使用质检功能请先在控制台开启
      * @return 转写结果
      * @throws SignatureException 签名异常
      */
@@ -365,9 +364,9 @@ public class LfasrClient {
      * 接口参数处理
      * 处理所有请求参数并添加到参数Map中
      *
-     * @param param 参数Map
+     * @param param  参数Map
      * @param length 文件长度
-     * @param audio 音频文件
+     * @param audio  音频文件
      */
     private void paramHandler(Map<String, String> param, File audioFile, String audioUrl) {
         // 必填参数设置
@@ -391,11 +390,11 @@ public class LfasrClient {
         if (!StringUtils.isNullOrEmpty(this.language)) {
             param.put("language", this.language);
         }
-        
+
         if (!StringUtils.isNullOrEmpty(this.callbackUrl)) {
             param.put("callbackUrl", this.callbackUrl);
         }
-       
+
         if (!StringUtils.isNullOrEmpty(this.hotWord)) {
             param.put("hot_word", this.hotWord);
         }
@@ -403,7 +402,7 @@ public class LfasrClient {
         if (this.candidate != null) {
             param.put("candidate", this.candidate + "");
         }
-        
+
         if (this.roleType != null) {
             param.put("roleType", this.roleType + "");
         }
@@ -415,7 +414,7 @@ public class LfasrClient {
         if (!StringUtils.isNullOrEmpty(this.pd)) {
             param.put("pd", this.pd);
         }
-   
+
         if (!StringUtils.isNullOrEmpty(this.audioMode)) {
             param.put("audioMode", this.audioMode);
         }
@@ -427,51 +426,51 @@ public class LfasrClient {
         if (this.standardWav != null) {
             param.put("standardWav", this.standardWav + "");
         }
-        
+
         if (this.languageType != null) {
             param.put("languageType", this.languageType + "");
         }
-        
+
         if (this.trackMode != null) {
             param.put("trackMode", this.trackMode + "");
         }
-        
+
         if (!StringUtils.isNullOrEmpty(this.transLanguage)) {
             param.put("transLanguage", this.transLanguage);
         }
-        
+
         if (this.transMode != null) {
             param.put("transMode", this.transMode + "");
         }
-        
+
         if (this.engSegMax != null) {
             param.put("eng_seg_max", this.engSegMax + "");
         }
-        
+
         if (this.engSegMin != null) {
             param.put("eng_seg_min", this.engSegMin + "");
         }
-        
+
         if (this.engSegWeight != null) {
             param.put("eng_seg_weight", this.engSegWeight + "");
         }
-        
+
         if (this.engSmoothproc != null) {
             param.put("eng_smoothproc", this.engSmoothproc ? "true" : "false");
         }
-        
+
         if (this.engColloqproc != null) {
             param.put("eng_colloqproc", this.engColloqproc ? "true" : "false");
         }
-        
+
         if (this.engVadMdn != null) {
             param.put("eng_vad_mdn", this.engVadMdn + "");
         }
-        
+
         if (this.engVadMargin != null) {
             param.put("eng_vad_margin", this.engVadMargin + "");
         }
-        
+
         if (this.engRlang != null) {
             param.put("eng_rlang", this.engRlang + "");
         }

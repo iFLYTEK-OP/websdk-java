@@ -16,7 +16,7 @@ import java.util.Map;
  * @date : 2021年03月15日
  */
 public abstract class AbstractTask implements Task {
-    
+
     protected Map<String, String> param = new HashMap<>();
 
     protected HttpConnector connector;
@@ -41,5 +41,5 @@ public abstract class AbstractTask implements Task {
         Gson gson = new Gson();
         return gson.fromJson(res, LfasrResponse.class);
     }
-    
+
 }

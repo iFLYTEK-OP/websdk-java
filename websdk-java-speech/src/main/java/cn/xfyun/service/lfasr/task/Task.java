@@ -1,6 +1,5 @@
 package cn.xfyun.service.lfasr.task;
 
-
 import cn.xfyun.model.response.lfasr.LfasrResponse;
 import cn.xfyun.util.HttpConnector;
 
@@ -31,4 +30,5 @@ public interface Task extends Callable<LfasrResponse> {
      * @return task信息，eg:taskId
      */
     String getIntro();
+
 }

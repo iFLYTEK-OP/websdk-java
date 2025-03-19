@@ -1,7 +1,7 @@
 package cn.xfyun.config;
 
 /**
- * 语音转写任务失败类型枚举
+ * 语音转写任务异常类型枚举
  */
 public enum LfasrFailTypeEnum {
     
@@ -94,4 +94,5 @@ public enum LfasrFailTypeEnum {
         }
         return OTHER_ERROR;
     }
+
 }

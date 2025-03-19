@@ -10,6 +10,7 @@ import java.util.Arrays;
  * @date 2021/3/24
  */
 public class Text {
+
     int sn;
     int bg;
     int ed;
@@ -19,21 +20,6 @@ public class Text {
     boolean deleted;
     boolean ls;
     JsonObject vad;
-
-    @Override
-    public String toString() {
-        return "Text{" +
-                "bg=" + bg +
-                ", ed=" + ed +
-                ", ls=" + ls +
-                ", sn=" + sn +
-                ", text='" + text + '\'' +
-                ", pgs=" + pgs +
-                ", rg=" + Arrays.toString(rg) +
-                ", deleted=" + deleted +
-                ", vad=" + (vad == null ? "null" : vad.getAsJsonArray("ws").toString()) +
-                '}';
-    }
 
     public int getSn() {
         return sn;
@@ -105,6 +91,21 @@ public class Text {
 
     public void setVad(JsonObject vad) {
         this.vad = vad;
+    }
+
+    @Override
+    public String toString() {
+        return "Text{" +
+                "bg=" + bg +
+                ", ed=" + ed +
+                ", ls=" + ls +
+                ", sn=" + sn +
+                ", text='" + text + '\'' +
+                ", pgs=" + pgs +
+                ", rg=" + Arrays.toString(rg) +
+                ", deleted=" + deleted +
+                ", vad=" + (vad == null ? "null" : vad.getAsJsonArray("ws").toString()) +
+                '}';
     }
 
 }

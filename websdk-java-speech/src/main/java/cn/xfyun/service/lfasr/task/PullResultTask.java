@@ -51,4 +51,5 @@ public class PullResultTask extends AbstractTask {
     public String getIntro() {
         return "查询转写结果接口地址：" + serverUrl + "，订单ID: " + this.orderId + ", 结果类型: " + this.resultType;
     }
+
 }

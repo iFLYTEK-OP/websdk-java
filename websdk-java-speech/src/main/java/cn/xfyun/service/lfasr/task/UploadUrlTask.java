@@ -3,14 +3,11 @@ package cn.xfyun.service.lfasr.task;
 import cn.xfyun.model.response.lfasr.LfasrResponse;
 import cn.xfyun.model.sign.LfasrSignature;
 
-import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
 import java.io.IOException;
 import java.security.SignatureException;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -47,6 +44,7 @@ public class UploadUrlTask extends AbstractTask {
 
     @Override
     public String getIntro() {
-        return "上传文件接口地址: " + serverUrl + "，文件链接："  + audioUrl;
+        return "上传文件接口地址: " + serverUrl + "，文件链接：" + audioUrl;
     }
+
 }
