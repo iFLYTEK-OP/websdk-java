@@ -21,7 +21,7 @@ import java.util.Map;
  * @author : iflytek
  * @date : 2021年03月15日
  */
-public class UploadFileTask extends AbstractTaskV2 {
+public class UploadFileTask extends AbstractTask {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadFileTask.class);
 
@@ -29,10 +29,10 @@ public class UploadFileTask extends AbstractTaskV2 {
 
     private final File audioFile;
 
-    public UploadFileTask(LfasrSignature signature, Map<String, String> queryParam, File audioFile) throws SignatureException {
+    public UploadFileTask(LfasrSignature signature, Map<String, String> param, File audioFile) throws SignatureException {
         super(signature);
         this.audioFile = audioFile;
-        this.param.putAll(queryParam);
+        this.param.putAll(param);
     }
 
     @Override
@@ -48,10 +48,10 @@ public class UploadFileTask extends AbstractTaskV2 {
             }
             String finalUrl = uriBuilder.build().toString();
             byte[] fileBytes = FileUtil.readFileToByteArray(audioFile);
-            response = resolveMessage(this.connector.postByBytes(finalUrl, header, fileBytes));
+            response = resolveResponse(this.connector.postByBytes(finalUrl, header, fileBytes));
         } catch (IOException e) {
-            logger.warn(getIntro() + " 处理失败", e);
-            response = LfasrResponse.error("上传失败");
+            logger.warn("音频文件上传失败，详细信息：【{}】", getIntro(), e);
+            response = LfasrResponse.error("音频文件上传失败");
         } catch (URISyntaxException e) {
             logger.error("构建URL失败", e);
             response = LfasrResponse.error("构建请求URL失败");
@@ -61,6 +61,6 @@ public class UploadFileTask extends AbstractTaskV2 {
 
     @Override
     public String getIntro() {
-        return "upload url: " + serverUrl;
+        return "上传文件接口地址: " + serverUrl + "，文件名：" + audioFile.getName();
     }
 }

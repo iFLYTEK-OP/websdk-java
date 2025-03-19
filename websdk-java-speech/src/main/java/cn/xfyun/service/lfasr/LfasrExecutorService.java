@@ -1,7 +1,7 @@
 package cn.xfyun.service.lfasr;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-import cn.xfyun.model.response.lfasr.LfasrMessage;
+import cn.xfyun.model.response.lfasr.LfasrResponse;
 import cn.xfyun.service.lfasr.task.Task;
 import cn.xfyun.util.HttpConnector;
 import org.slf4j.Logger;
@@ -17,6 +17,7 @@ import java.util.concurrent.*;
  * @date : 2021年03月15日
  */
 public class LfasrExecutorService {
+
     private static final Logger logger = LoggerFactory.getLogger(LfasrExecutorService.class);
 
     private ExecutorService executor;
@@ -41,31 +42,32 @@ public class LfasrExecutorService {
         return processor;
     }
 
-    public LfasrMessage exec(Task task) {
+    public LfasrResponse exec(Task task) {
         task.setConnector(this.connector);
-        Future<LfasrMessage> future = this.executor.submit(task);
+        Future<LfasrResponse> future = this.executor.submit(task);
         return getFuture(future, task);
     }
 
-    private LfasrMessage getFuture(Future<LfasrMessage> future, Task task) {
-        LfasrMessage message;
+    private LfasrResponse getFuture(Future<LfasrResponse> future, Task task) {
+        LfasrResponse response;
         try {
-            message = future.get(this.thresholdTimeout, TimeUnit.MILLISECONDS);
+            response = future.get(this.thresholdTimeout, TimeUnit.MILLISECONDS);
         } catch (ExecutionException e) {
-            logger.warn(task.getIntro() + ", " + e.getMessage());
-            message = new LfasrMessage("服务调用异常");
+            logger.warn(task.getIntro(), e);
+            response = LfasrResponse.error("服务调用异常");
         } catch (TimeoutException e) {
-            logger.warn(task.getIntro() + ", " + e.getMessage());
-            message = new LfasrMessage("连接超时! 请检查您的网络");
+            logger.warn(task.getIntro(), e);
+            response = LfasrResponse.error("连接超时! 请检查您的网络");
         } catch (InterruptedException e) {
-            logger.warn(task.getIntro() + ", " + e.getMessage());
-            message = new LfasrMessage("服务调用异常");
+            logger.warn(task.getIntro(), e);
+            response = LfasrResponse.error("服务调用异常");
             Thread.currentThread().interrupt();
         }
-        return message;
+        return response;
     }
 
     private static class ProcessorBuilder {
         private static final LfasrExecutorService PROCESSOR = new LfasrExecutorService();
     }
+
 }

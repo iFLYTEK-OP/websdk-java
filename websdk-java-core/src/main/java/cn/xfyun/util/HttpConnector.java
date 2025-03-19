@@ -35,12 +35,14 @@ import java.util.*;
  * @date : 2021年03月15日
  */
 public class HttpConnector {
+
     private static final Logger log = LoggerFactory.getLogger(HttpConnector.class);
+
     private final PoolingHttpClientConnectionManager pool = new PoolingHttpClientConnectionManager();
+    
     private CloseableHttpClient httpClient;
 
-    private HttpConnector() {
-    }
+    private HttpConnector() {}
 
     public static HttpConnector build(int maxConnections, int connTimeout, int soTimeout, int retryCount) {
         HttpConnector connector = ConnectorBuilder.CONNECTOR;

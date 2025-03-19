@@ -3,6 +3,9 @@ package cn.xfyun.model.response.lfasr;
 import java.io.Serializable;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
@@ -11,6 +14,8 @@ import com.google.gson.annotations.SerializedName;
  * 语音转写订单结果
  */
 public class LfasrOrderResult implements Serializable {
+
+    private static final Logger logger = LoggerFactory.getLogger(LfasrOrderResult.class);
     
     private static final long serialVersionUID = 1L;
     
@@ -58,33 +63,11 @@ public class LfasrOrderResult implements Serializable {
         private static final long serialVersionUID = 1L;
         
         /**
-         * 单个VAD的结果的json内容
+         * 单个VAD的结果的内容（lattice中返回的是字符串，lattice2中返回的是Json对象）
          */
         @SerializedName("json_1best")
         private Object json1BestRaw;
-        
-        public Json1Best getJson1Best() {
-            if (json1BestRaw == null) {
-                return null;
-            }
-            
-            Gson gson = new Gson();
-            try {
-                if (json1BestRaw instanceof String) {
-                    // 如果是字符串，需要解析
-                    return gson.fromJson((String) json1BestRaw, Json1Best.class);
-                } else if (json1BestRaw instanceof com.google.gson.JsonObject) {
-                    // 如果是JsonObject，转换为Json1Best
-                    return gson.fromJson(json1BestRaw.toString(), Json1Best.class);
-                } else {
-                    // 其他情况，尝试直接转换
-                    return gson.fromJson(gson.toJson(json1BestRaw), Json1Best.class);
-                }
-            } catch (Exception e) {
-                return null;
-            }
-        }
-        
+
         public void setJson1BestRaw(Object json1BestRaw) {
             this.json1BestRaw = json1BestRaw;
         }
@@ -92,49 +75,28 @@ public class LfasrOrderResult implements Serializable {
         public Object getJson1BestRaw() {
             return json1BestRaw;
         }
-    }
-    
-    /**
-     * 单个VAD的结果
-     */
-    // public static class Lattice implements Serializable {
-        
-    //     private static final long serialVersionUID = 1L;
-        
-    //     /**
-    //      * 单个VAD的结果的json内容
-    //      */
-    //     @SerializedName("json_1best")
-    //     private String json1BestStr;
-        
-    //     public String getJson1BestStr() {
-    //         return json1BestStr;
-    //     }
-        
-    //     public void setJson1Best(String json1BestStr) {
-    //         this.json1BestStr = json1BestStr;
-    //     }
-    // }
-
-    /**
-     * 单个VAD的结果
-     */
-    public static class Lattice2 implements Serializable {
-        
-        private static final long serialVersionUID = 1L;
-        
-        /**
-         * 单个VAD的结果的json内容
-         */
-        @SerializedName("json_1best")
-        private Json1Best json1Best;
         
         public Json1Best getJson1Best() {
-            return json1Best;
-        }
-        
-        public void setJson1Best(Json1Best json1Best) {
-            this.json1Best = json1Best;
+            if (json1BestRaw == null) {
+                return null;
+            }
+            
+            try {
+                Gson gson = new Gson();
+                if (json1BestRaw instanceof String) {
+                    // 直接解析JSON字符串
+                    return gson.fromJson((String) json1BestRaw, Json1Best.class);
+                } else if (json1BestRaw instanceof JsonObject) {
+                    // JsonObject转换为目标对象
+                    return gson.fromJson(json1BestRaw.toString(), Json1Best.class);
+                } else {
+                    // 其他类型先转JSON字符串再解析
+                    return gson.fromJson(gson.toJson(json1BestRaw), Json1Best.class);
+                }
+            } catch (Exception e) {
+                logger.error("解析json1Best失败, 原生数据: {}", json1BestRaw, e);
+                return null;
+            }
         }
     }
     

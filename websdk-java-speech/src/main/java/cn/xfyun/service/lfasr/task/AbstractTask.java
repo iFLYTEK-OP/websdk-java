@@ -1,7 +1,7 @@
 package cn.xfyun.service.lfasr.task;
 
 import com.google.gson.Gson;
-import cn.xfyun.model.response.lfasr.LfasrMessage;
+import cn.xfyun.model.response.lfasr.LfasrResponse;
 import cn.xfyun.model.sign.LfasrSignature;
 import cn.xfyun.util.HttpConnector;
 
@@ -16,12 +16,13 @@ import java.util.Map;
  * @date : 2021年03月15日
  */
 public abstract class AbstractTask implements Task {
+    
     protected Map<String, String> param = new HashMap<>();
 
     protected HttpConnector connector;
 
     protected AbstractTask(LfasrSignature signature) throws SignatureException {
-        this.param.put("app_id", signature.getId());
+        this.param.put("appId", signature.getId());
         this.param.put("signa", signature.getSigna());
         this.param.put("ts", signature.getTs());
     }
@@ -36,8 +37,9 @@ public abstract class AbstractTask implements Task {
         this.connector = connector;
     }
 
-    protected LfasrMessage resolveMessage(String res) {
+    protected LfasrResponse resolveResponse(String res) {
         Gson gson = new Gson();
-        return gson.fromJson(res, LfasrMessage.class);
+        return gson.fromJson(res, LfasrResponse.class);
     }
+    
 }

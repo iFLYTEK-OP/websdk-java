@@ -2,6 +2,8 @@ package cn.xfyun.service.lfasr.task;
 
 import cn.xfyun.model.response.lfasr.LfasrResponse;
 import cn.xfyun.model.sign.LfasrSignature;
+
+import org.apache.http.client.utils.URIBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,31 +19,25 @@ import java.util.Map;
  * @author : iflytek
  * @date : 2021年03月15日
  */
-public class UploadUrlTask extends AbstractTaskV2 {
+public class UploadUrlTask extends AbstractTask {
 
     private static final Logger logger = LoggerFactory.getLogger(UploadUrlTask.class);
 
     private static final String serverUrl = "https://raasr.xfyun.cn/v2/api/upload";
 
-    private final String ContentType;
+    private final String audioUrl;
 
-    private final File audioFile;
-
-    public UploadUrlTask(LfasrSignature signature, Map<String, String> queryParam, String ContentType, File audioFile) throws SignatureException {
+    public UploadUrlTask(LfasrSignature signature, Map<String, String> param, String audioUrl) throws SignatureException {
         super(signature);
-        this.ContentType = ContentType;
-        this.audioFile = audioFile;
-        this.param.putAll(queryParam);
+        this.audioUrl = audioUrl;
+        this.param.putAll(param);
     }
 
     @Override
     public LfasrResponse call() {
         LfasrResponse response;
-        Map<String, String> header = new HashMap<>();
-        header.put("Content-Type", "application/json;charset=UTF-8");
-        header.put("Chunked", "false");
         try {
-            response = resolveMessage(this.connector.post(serverUrl, header, this.param));
+            response = resolveResponse(this.connector.post(serverUrl, this.param));
         } catch (IOException e) {
             logger.warn(getIntro() + " 处理失败", e);
             response = LfasrResponse.error("上传失败");
@@ -51,6 +47,6 @@ public class UploadUrlTask extends AbstractTaskV2 {
 
     @Override
     public String getIntro() {
-        return "upload url: " + serverUrl;
+        return "上传文件接口地址: " + serverUrl + "，文件链接："  + audioUrl;
     }
 }

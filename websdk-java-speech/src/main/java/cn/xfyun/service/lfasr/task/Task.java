@@ -1,7 +1,7 @@
 package cn.xfyun.service.lfasr.task;
 
 
-import cn.xfyun.model.response.lfasr.LfasrMessage;
+import cn.xfyun.model.response.lfasr.LfasrResponse;
 import cn.xfyun.util.HttpConnector;
 
 import java.util.concurrent.Callable;
@@ -9,7 +9,7 @@ import java.util.concurrent.Callable;
 /**
  * @author iflytek
  */
-public interface Task extends Callable<LfasrMessage> {
+public interface Task extends Callable<LfasrResponse> {
 
     /**
      * 获取HttpConnector
