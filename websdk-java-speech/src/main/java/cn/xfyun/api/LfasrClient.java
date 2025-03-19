@@ -243,8 +243,6 @@ public class LfasrClient {
      * @param builder 构建器
      */
     public LfasrClient(LfasrClient.Builder builder) {
-
-
         this.appId = builder.appId;
         this.secretKey = builder.secretKey;
         this.fileName = builder.fileName;
@@ -299,7 +297,7 @@ public class LfasrClient {
 
         // 构建参数
         Map<String, String> param = new HashMap<>(32);
-        paramHandler(param, audioFile, null);
+        paramHandler(param, audioFile);
 
         // 执行文件任务
         return this.lfasrExecutorService.exec(new UploadFileTask(new LfasrSignature(appId, secretKey), param, audioFile));
@@ -325,7 +323,7 @@ public class LfasrClient {
         this.fileName = StringUtils.isNullOrEmpty(this.fileName) ? audioUrl.substring(audioUrl.lastIndexOf("/") + 1) : this.fileName;
         this.fileSize = this.fileSize != null ? this.fileSize : 1L;
         Map<String, String> param = new HashMap<>(32);
-        paramHandler(param, null, audioUrl);
+        paramHandler(param, null);
 
         // 执行文件任务
         return this.lfasrExecutorService.exec(new UploadUrlTask(new LfasrSignature(appId, secretKey), param, audioUrl));
@@ -365,14 +363,12 @@ public class LfasrClient {
      * 处理所有请求参数并添加到参数Map中
      *
      * @param param  参数Map
-     * @param length 文件长度
-     * @param audio  音频文件
      */
-    private void paramHandler(Map<String, String> param, File audioFile, String audioUrl) {
+    private void paramHandler(Map<String, String> param, File audioFile) {
         // 必填参数设置
         param.put("fileName", StringUtils.isNullOrEmpty(this.fileName) ? audioFile.getName() : this.fileName);
         param.put("fileSize", this.fileSize == null ? audioFile.length() + "" : this.fileSize + "");
-        param.put("duration", this.duration != null ? this.duration + "" : "1");
+        param.put("duration", this.duration == null ? "1" : this.duration + "");
 
         if ("urlLink".equals(this.audioMode)) {
             if (StringUtils.isNullOrEmpty(this.audioUrl)) {
