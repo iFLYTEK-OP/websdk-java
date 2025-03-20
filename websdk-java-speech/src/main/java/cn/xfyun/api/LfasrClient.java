@@ -1,10 +1,8 @@
 package cn.xfyun.api;
 
-import cn.xfyun.service.lfasr.task.*;
 import cn.xfyun.exception.LfasrException;
 import cn.xfyun.model.response.lfasr.LfasrResponse;
-import cn.xfyun.model.sign.LfasrSignature;
-import cn.xfyun.service.lfasr.LfasrExecutorService;
+import cn.xfyun.service.lfasr.LfasrService;
 import cn.xfyun.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +21,11 @@ public class LfasrClient {
     private static final Logger logger = LoggerFactory.getLogger(LfasrClient.class);
 
     /**
+     * 转写执行服务V2
+     */
+    private volatile LfasrService lfasrService;
+
+    /**
      * 文件限制最大500M
      */
     private static final int FILE_UPLOAD_MAXSIZE = 524288000;
@@ -36,11 +39,6 @@ public class LfasrClient {
      * 应用密钥（必填）
      */
     private String secretKey;
-
-    /**
-     * 转写执行服务
-     */
-    private volatile LfasrExecutorService lfasrExecutorService;
 
     /**
      * 音频文件名称，最好携带音频真实的后缀名，避免影响转码（必填）
@@ -300,7 +298,7 @@ public class LfasrClient {
         paramHandler(param, audioFile);
 
         // 执行文件任务
-        return this.lfasrExecutorService.exec(new UploadFileTask(new LfasrSignature(appId, secretKey), param, audioFile));
+        return this.lfasrService.uploadFile(param, audioFile);
     }
 
     /**
@@ -326,7 +324,7 @@ public class LfasrClient {
         paramHandler(param, null);
 
         // 执行文件任务
-        return this.lfasrExecutorService.exec(new UploadUrlTask(new LfasrSignature(appId, secretKey), param, audioUrl));
+        return this.lfasrService.uploadUrl(param, audioUrl);
     }
 
     /**
@@ -355,7 +353,7 @@ public class LfasrClient {
      * @throws SignatureException 签名异常
      */
     public LfasrResponse getResult(String orderId, String resultType) throws SignatureException {
-        return this.lfasrExecutorService.exec(new PullResultTask(new LfasrSignature(appId, secretKey), orderId, resultType));
+        return this.lfasrService.getResult(orderId, resultType);
     }
 
     /**
@@ -476,8 +474,6 @@ public class LfasrClient {
 
         private final String appId;
         private final String secretKey;
-        private Integer coreThreads = 10;
-        private Integer maxThreads = 50;
         private Integer maxConnections = 50;
         private Integer connTimeout = 10000;
         private Integer soTimeout = 30000;
@@ -511,16 +507,6 @@ public class LfasrClient {
         public Builder(String appId, String secretKey) {
             this.appId = appId;
             this.secretKey = secretKey;
-        }
-
-        public LfasrClient.Builder coreThreads(Integer coreThreads) {
-            this.coreThreads = coreThreads;
-            return this;
-        }
-
-        public LfasrClient.Builder maxThreads(Integer maxThreads) {
-            this.maxThreads = maxThreads;
-            return this;
         }
 
         public LfasrClient.Builder maxConnections(Integer maxConnections) {
@@ -663,18 +649,19 @@ public class LfasrClient {
             return this;
         }
 
-        public LfasrClient build() {
+        public LfasrClient build() throws SignatureException {
             LfasrClient lfasrClient = new LfasrClient(this);
 
-            if (lfasrClient.lfasrExecutorService != null) {
-                logger.info("lfasrExecutorService is exist");
+            if (lfasrClient.lfasrService != null) {
+                logger.info("lfasrService is exist");
             }
 
             synchronized (LfasrClient.class) {
-                if (lfasrClient.lfasrExecutorService == null) {
-                    lfasrClient.lfasrExecutorService = LfasrExecutorService.build(coreThreads, maxThreads, maxConnections, connTimeout, soTimeout);
+                if (lfasrClient.lfasrService == null) {
+                    lfasrClient.lfasrService = LfasrService.build(this.appId, this.secretKey, maxConnections, connTimeout, soTimeout);
                 }
             }
+
             return lfasrClient;
         }
 
