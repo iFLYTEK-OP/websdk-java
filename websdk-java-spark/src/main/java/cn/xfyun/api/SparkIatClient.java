@@ -197,7 +197,14 @@ public class SparkIatClient extends WebSocketClient {
     private String textFormat;
 
     public SparkIatClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient().newBuilder().build();
+        this.okHttpClient = new OkHttpClient
+                .Builder()
+                .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                .connectTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                .build();
         this.originHostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
