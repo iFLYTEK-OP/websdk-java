@@ -20,9 +20,11 @@ import java.util.Map;
 /**
  * 语音转写服务类
  * 提供语音文件上传、URL上传和获取转写结果等功能
+ *
+ * @author kaili23
  */
 public class LfasrService {
-    
+
     private static final Logger logger = LoggerFactory.getLogger(LfasrService.class);
 
     // 语音文件上传接口地址
@@ -30,16 +32,16 @@ public class LfasrService {
 
     // 获取转写结果接口地址
     private static final String GET_RESULT_URL = "https://raasr.xfyun.cn/v2/api/getResult";
-    
+
     // HTTP连接器，用于发送请求
     private final HttpConnector connector;
 
     // 签名参数，包含appId、签名和时间戳
-    private Map<String, String> signatureParam = new HashMap<>();
-    
+    private final Map<String, String> signatureParam = new HashMap<>();
+
     /**
      * 私有构造方法，初始化HTTP连接器和签名参数
-     * 
+     *
      * @param connector HTTP连接器
      * @param signature 签名对象
      * @throws SignatureException 签名异常
@@ -50,15 +52,15 @@ public class LfasrService {
         this.signatureParam.put("signa", signature.getSigna());
         this.signatureParam.put("ts", signature.getTs());
     }
-    
+
     /**
      * 构建LfasrService实例
-     * 
-     * @param appId 应用ID
-     * @param secretKey 密钥
+     *
+     * @param appId          应用ID
+     * @param secretKey      密钥
      * @param maxConnections 最大连接数
-     * @param connTimeout 连接超时时间(毫秒)
-     * @param soTimeout Socket超时时间(毫秒)
+     * @param connTimeout    连接超时时间(毫秒)
+     * @param soTimeout      Socket超时时间(毫秒)
      * @return LfasrService实例
      * @throws SignatureException 签名异常
      */
@@ -67,11 +69,11 @@ public class LfasrService {
         LfasrSignature signature = new LfasrSignature(appId, secretKey);
         return new LfasrService(connector, signature);
     }
-    
+
     /**
      * 上传本地音频文件进行转写
-     * 
-     * @param param 请求参数，包含文件名、语种等信息
+     *
+     * @param param     请求参数，包含文件名、语种等信息
      * @param audioFile 音频文件对象
      * @return 转写响应结果
      * @throws SignatureException 签名异常
@@ -103,16 +105,15 @@ public class LfasrService {
             return LfasrResponse.error("构建请求URL失败");
         }
     }
-    
+
     /**
      * 上传音频URL进行转写
-     * 
+     *
      * @param param 请求参数
-     * @param audioUrl 音频URL地址
      * @return 转写响应结果
      * @throws SignatureException 签名异常
      */
-    public LfasrResponse uploadUrl(Map<String, String> param, String audioUrl) throws SignatureException {
+    public LfasrResponse uploadUrl(Map<String, String> param) throws SignatureException {
         param.putAll(this.signatureParam);
         try {
             String response = connector.post(UPLOAD_URL, param);
@@ -122,11 +123,11 @@ public class LfasrService {
             return LfasrResponse.error("URL上传失败: " + e.getMessage());
         }
     }
-    
+
     /**
      * 获取转写结果
-     * 
-     * @param orderId 订单ID，上传接口返回
+     *
+     * @param orderId    订单ID，上传接口返回
      * @param resultType 结果类型，默认为transfer
      * @return 转写结果响应
      * @throws SignatureException 签名异常
@@ -145,6 +146,6 @@ public class LfasrService {
             logger.error("获取转写结果失败", e);
             return LfasrResponse.error("获取结果失败: " + e.getMessage());
         }
-        
+
     }
 }

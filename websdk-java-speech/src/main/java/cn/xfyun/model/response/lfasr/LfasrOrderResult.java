@@ -12,6 +12,8 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * 语音转写结果
+ *
+ * @author kaili23
  */
 public class LfasrOrderResult implements Serializable {
 

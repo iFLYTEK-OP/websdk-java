@@ -33,12 +33,12 @@ public class LfasrClient {
     /**
      * 应用ID（必填）
      */
-    private String appId;
+    private final String appId;
 
     /**
      * 应用密钥（必填）
      */
-    private String secretKey;
+    private final String secretKey;
 
     /**
      * 音频文件名称，最好携带音频真实的后缀名，避免影响转码（必填）
@@ -54,7 +54,7 @@ public class LfasrClient {
     /**
      * 音频真实时长，当前未验证，可随机传一个数字（必填）
      */
-    private Long duration;
+    private final Long duration;
 
     /**
      * 语种类型（非必填）
@@ -76,41 +76,41 @@ public class LfasrClient {
      * de:德语
      * it:意大利语
      */
-    private String language;
+    private final String language;
 
     /**
      * 回调地址（非必填）
      * 订单完成时回调该地址通知完成支持get请求，长度限制512
      * 参数：orderId为订单号、status为订单状态: 1(转写识别成功)、-1(转写识别失败)
      */
-    private String callbackUrl;
+    private final String callbackUrl;
 
     /**
      * 热词，用以提升专业词汇的识别率（非必填）
      * 格式：热词1|热词2|热词3
      * 单个热词长度：[2,16]，热词个数限制200个
      */
-    private String hotWord;
+    private final String hotWord;
 
     /**
      * 多候选开关（非必填）
      * 0：关闭(默认)
      * 1：打开
      */
-    private Short candidate;
+    private final Short candidate;
 
     /**
      * 是否开启角色分离（非必填）
      * 0：不开启角色分离(默认)
      * 1：通用角色分离
      */
-    private Short roleType;
+    private final Short roleType;
 
     /**
      * 说话人数，取值范围0-10，默认为0进行盲分（非必填）
      * 注：该字段只有在开通了角色分离功能的前提下才会生效
      */
-    private Short roleNum;
+    private final Short roleNum;
 
     /**
      * 领域个性化参数（非必填）
@@ -131,7 +131,7 @@ public class LfasrClient {
      * ent：娱乐
      * car：汽车
      */
-    private String pd;
+    private final String pd;
 
     /**
      * 转写音频上传方式（非必填）
@@ -152,7 +152,7 @@ public class LfasrClient {
      * 0：非标准wav(默认)
      * 1：标准pcm/wav
      */
-    private Integer standardWav;
+    private final Integer standardWav;
 
     /**
      * 语言识别模式选择（非必填）
@@ -161,7 +161,7 @@ public class LfasrClient {
      * 2：中文模式（可能包含少量英文）
      * 4：纯中文模式（不包含英文）
      */
-    private Integer languageType;
+    private final Integer languageType;
 
     /**
      * 按声道分轨转写模式（支持语种：cn、en）（非必填）
@@ -169,12 +169,12 @@ public class LfasrClient {
      * 2：双声道分轨模式
      * 备注：如果转写任务使用双声道分轨模式，角色分离(roleType)功能失效
      */
-    private Short trackMode;
+    private final Short trackMode;
 
     /**
      * 需要翻译的语种(转写语种和翻译语种不能相同)（非必填）
      */
-    private String transLanguage;
+    private final String transLanguage;
 
     /**
      * 翻译模式（默认2：按段落进行翻译，目前只支持按段落进行翻译）（非必填）
@@ -182,58 +182,58 @@ public class LfasrClient {
      * 2：按段落进行翻译
      * 3：按整篇进行翻译
      */
-    private Short transMode;
+    private final Short transMode;
 
     /**
      * 控制分段的最大字数，取值范围[0-500]，不传使用引擎默认值（非必填）
      */
-    private Integer engSegMax;
+    private final Integer engSegMax;
 
     /**
      * 控制分段的最小字数，取值范围[0-50]，不传使用引擎默认值（非必填）
      */
-    private Integer engSegMin;
+    private final Integer engSegMin;
 
     /**
      * 控制分段字数的权重，权重比越高，表示引擎分段逻辑采用字数控制分段的比重越高（非必填）
      * 取值(0-0.05)不传即不采用字数控制分段，采用引擎默认分段逻辑
      */
-    private Float engSegWeight;
+    private final Float engSegWeight;
 
     /**
      * 顺滑开关（非必填）
      * true：表示开启(默认)
      * false：表示关闭
      */
-    private Boolean engSmoothproc;
+    private final Boolean engSmoothproc;
 
     /**
      * 口语规整开关，口语规整是顺滑的升级版本（非必填）
      * true：表示开启
      * false：表示关闭(默认)
      */
-    private Boolean engColloqproc;
+    private final Boolean engColloqproc;
 
     /**
      * 远近场模式（非必填）
      * 1：远场模式(默认)
      * 2：近场模式
      */
-    private Integer engVadMdn;
+    private final Integer engVadMdn;
 
     /**
      * 首尾是否带静音信息（非必填）
      * 0：不显示
      * 1：显示(默认)
      */
-    private Integer engVadMargin;
+    private final Integer engVadMargin;
 
     /**
      * 针对粤语转写后的字体转换（非必填）
      * 0：输出简体
      * 1：输出繁体(默认)
      */
-    private Integer engRlang;
+    private final Integer engRlang;
 
     /**
      * 通过Builder构建LfasrClient实例
@@ -324,7 +324,7 @@ public class LfasrClient {
         paramHandler(param, null);
 
         // 执行文件任务
-        return this.lfasrService.uploadUrl(param, audioUrl);
+        return this.lfasrService.uploadUrl(param);
     }
 
     /**
@@ -505,6 +505,13 @@ public class LfasrClient {
         private Integer engRlang;
 
         public Builder(String appId, String secretKey) {
+            // 必填参数校验
+            if (StringUtils.isNullOrEmpty(appId)) {
+                throw new IllegalArgumentException("appId不能为空");
+            }
+            if (StringUtils.isNullOrEmpty(secretKey)) {
+                throw new IllegalArgumentException("secretKey不能为空");
+            }
             this.appId = appId;
             this.secretKey = secretKey;
         }
@@ -650,19 +657,45 @@ public class LfasrClient {
         }
 
         public LfasrClient build() throws SignatureException {
+            // 参数校验
+            validateParameters();
+                    
+            // 创建实例
             LfasrClient lfasrClient = new LfasrClient(this);
-
-            if (lfasrClient.lfasrService != null) {
-                logger.info("lfasrService is exist");
-            }
-
-            synchronized (LfasrClient.class) {
-                if (lfasrClient.lfasrService == null) {
-                    lfasrClient.lfasrService = LfasrService.build(this.appId, this.secretKey, maxConnections, connTimeout, soTimeout);
+            
+            if (lfasrClient.lfasrService == null) {
+                synchronized (LfasrClient.class) {
+                    if (lfasrClient.lfasrService == null) {
+                        lfasrClient.lfasrService = LfasrService.build(
+                            this.appId, 
+                            this.secretKey, 
+                            maxConnections, 
+                            connTimeout, 
+                            soTimeout
+                        );
+                    }
                 }
             }
 
             return lfasrClient;
+        }
+
+        private void validateParameters() {
+            // 验证连接参数
+            if (maxConnections <= 0) {
+                throw new IllegalArgumentException("maxConnections必须大于0");
+            }
+            if (connTimeout <= 0) {
+                throw new IllegalArgumentException("connTimeout必须大于0");
+            }
+            if (soTimeout <= 0) {
+                throw new IllegalArgumentException("soTimeout必须大于0");
+            }
+            
+            // 验证音频相关参数
+            if ("urlLink".equals(audioMode) && StringUtils.isNullOrEmpty(audioUrl)) {
+                throw new IllegalArgumentException("当audioMode为urlLink时，audioUrl不能为空");
+            }
         }
 
     }

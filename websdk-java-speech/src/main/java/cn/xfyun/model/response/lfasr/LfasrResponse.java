@@ -2,7 +2,11 @@ package cn.xfyun.model.response.lfasr;
 
 import java.io.Serializable;
 
-
+/**
+ * 录音文件转写响应体
+ *
+ * @author kaili23
+ */
 public class LfasrResponse implements Serializable {
 
     private static final long serialVersionUID = 1L;

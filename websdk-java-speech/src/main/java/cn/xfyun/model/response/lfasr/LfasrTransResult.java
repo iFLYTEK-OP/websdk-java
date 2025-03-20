@@ -5,6 +5,8 @@ import java.util.List;
 
 /**
  * 翻译结果实体类
+ *
+ * @author kaili23
  */
 public class LfasrTransResult implements Serializable {
 

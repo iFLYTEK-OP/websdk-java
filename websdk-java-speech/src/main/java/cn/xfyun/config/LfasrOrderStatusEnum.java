@@ -2,6 +2,8 @@ package cn.xfyun.config;
 
 /**
  * 语音转写订单状态枚举
+ *
+ * @author kaili23
  */
 public enum LfasrOrderStatusEnum {
 
