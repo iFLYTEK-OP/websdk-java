@@ -149,7 +149,14 @@ public class IatClient extends WebSocketClient {
     private Integer frameSize;
 
     public IatClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient().newBuilder().build();
+        this.okHttpClient = new OkHttpClient
+                .Builder()
+                .callTimeout(builder.callTimeout, TimeUnit.SECONDS)
+                .connectTimeout(builder.callTimeout, TimeUnit.SECONDS)
+                .readTimeout(builder.readTimeout, TimeUnit.SECONDS)
+                .writeTimeout(builder.writeTimeout, TimeUnit.SECONDS)
+                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                .build();
         this.originHostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;

@@ -53,6 +53,33 @@ public abstract class HttpClient extends Client {
         return sendPost(url, header, formBuilder.build());
     }
 
+    protected String sendBodyPost(String url, Map<String, String> header, RequestBody requestBody) throws IOException {
+        return sendPost(url, header, requestBody);
+    }
+
+    protected String sendPost(String url, MediaType mediaType, Map<String, String> header, String body, Map<String, String> parameter) throws IOException {
+        // 构建完整的URL
+        HttpUrl.Builder urlBuilder = HttpUrl.parse(url).newBuilder();
+        if (Objects.nonNull(parameter)) {
+            for (Map.Entry<String, String> entry : parameter.entrySet()) {
+                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        Request.Builder builder = new Request
+                .Builder()
+                .url(urlBuilder.build().toString())
+                .post(RequestBody.create(mediaType, body));
+        if (Objects.nonNull(header)) {
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                builder.addHeader(entry.getKey(), entry.getValue());
+            }
+        }
+        request = builder.build();
+        try (Response response = okHttpClient.newCall(request).execute()) {
+            return response.body().string();
+        }
+    }
+
     private String sendPost(String url, Map<String, String> header, RequestBody requestBody) throws IOException {
         Request.Builder builder = new Request
                 .Builder()

@@ -1,11 +1,14 @@
 package cn.xfyun.util;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
 
 /**
  * String工具类
@@ -17,6 +20,7 @@ public class StringUtils {
     public static final String COMMA_SEPARATOR = ",";
     public static final Charset UTF8 = StandardCharsets.UTF_8;
     public static final Gson gson = new Gson();
+    public static final ObjectMapper objectMapper = new ObjectMapper();
     private static final String DEFAULT_ENCODING = "UTF-8";
 
     public static Integer toInteger(StringBuilder value) {
@@ -109,6 +113,15 @@ public class StringUtils {
             return true;
         }
         return value.isEmpty();
+    }
+
+    public static String toJson(Map<String, Object> map) {
+        try {
+            return objectMapper.writeValueAsString(map);
+        } catch (JsonProcessingException e) {
+            System.out.println("JSON转换出错：" + e.getMessage());
+            return "{}";
+        }
     }
 
     public static byte[] unitByteArray(byte[] byte1, byte[] byte2) {
