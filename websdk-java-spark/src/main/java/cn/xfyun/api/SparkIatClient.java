@@ -31,48 +31,48 @@ public class SparkIatClient extends WebSocketClient {
     /**
      * 大模型中文语音识别能力，将中文短音频(≤60秒)精准识别成文字，实时返回文字结果，真实还原语音内容
      */
-    private static final String CN_LANGUAGE = "https://iat.xf-yun.com/v1";
+    private static final String CN_LANGUAGE_API = "https://iat.xf-yun.com/v1";
 
     /**
      * 方言大模型，支持普通话，简单英语和202种方言全免切，无需显示指定语种
      * 或
      * 模型多语种语音识别能力，将多语种短音频(≤60秒)精准识别成文字，实时返回文字结果，真实还原语音内容
      */
-    private static final String MULTI_LANGUAGE = "https://iat.cn-huabei-1.xf-yun.com/v1";
+    private static final String MULTI_LANGUAGE_API = "https://iat.cn-huabei-1.xf-yun.com/v1";
 
-    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     /**
      * 语种类型
      * SparkIatModelEnum
      */
-    private Integer langType;
+    private final Integer langType;
 
     /**
      * 语种
      * zh_cn：中文或者方言
      * mul_cn：多语种
      */
-    private String language;
+    private final String language;
     /**
      * 应用领域
      * 固定slm
      */
-    private String domain;
+    private final String domain;
     /**
      * 方言，当language为zh_cn中文时，支持普通话mandarin和方言mulacc选择。
      * mandarin：中文普通话、其他语种
      * mulacc：中文方言
      * 其他方言：可到控制台-语音听写（流式版）-方言/语种处添加试用或购买，添加后会显示该方言参数值；方言若未授权无法使用会报错11200。
      */
-    private String accent;
+    private final String accent;
     /**
      * 用于设置端点检测的静默时间，单位是毫秒[600,60000]。
      * 即静默多长时间后引擎认为音频结束。
      * 方言大模型 默认1800
      * 不设置该参数默认为未开启VAD
      */
-    private int eos;
+    private final int eos;
     /**
      * 返回子句结果对应的起始和结束的端点帧偏移值。端点帧偏移值表示从音频开头起已过去的帧长度。
      * 0：关闭（默认值）
@@ -80,54 +80,54 @@ public class SparkIatClient extends WebSocketClient {
      * 开启后返回的结果中会增加data.result.vad字段，详见下方返回结果。
      * 注：若开通并使用了动态修正功能，则该功能无法使用。
      */
-    private int vinfo;
+    private final int vinfo;
     /**
      * （仅中文普通话支持）动态修正
      * wpgs：开启流式结果返回功能
      * 注：该扩展功能若未授权无法使用，可到控制台-语音听写（流式版）-高级功能处免费开通；若未授权状态下设置该参数并不会报错，但不会生效。
      */
-    private String dwa;
+    private final String dwa;
     /**
      * 取值范围[1,5]，通过设置此参数，获取在发音相似时的句子多侯选结果。设置多候选会影响性能，响应时间延迟200ms左右。
      * 注：该扩展功能若未授权无法使用，可到控制台-语音听写（流式版）-高级功能处免费开通；若未授权状态下设置该参数并不会报错，但不会生效。
      */
-    private Integer nbest;
+    private final Integer nbest;
     /**
      * 取值范围[1,5]，通过设置此参数，获取在发音相似时的词语多侯选结果。设置多候选会影响性能，响应时间延迟200ms左右。
      * 注：该扩展功能若未授权无法使用，可到控制台-语音听写（流式版）-高级功能处免费开通；若未授权状态下设置该参数并不会报错，但不会生效。
      */
-    private Integer wbest;
+    private final Integer wbest;
     /**
      * （仅中文支持）标点预测：在语音识别结果中增加标点符号
      * 1：开启（默认值）
      * 0：关闭
      */
-    private Integer ptt;
+    private final Integer ptt;
     /**
      * （仅中文支持）顺滑功能：将语音识别结果中的顺滑词（语气词、叠词）进行标记，业务侧通过标记过滤语气词最终展现识别结果
      * 1：开启
      * 0：关闭（默认值）
      */
-    private Integer smth;
+    private final Integer smth;
     /**
      * （仅中文支持）数字规整：将语音识别结果中的原始文字串转为相应的阿拉伯数字或者符号
      * 1：开启（默认值）
      * 0：关闭
      */
-    private Integer nunum;
+    private final Integer nunum;
     /**
      * 0:json格式输出，不带属性,
      * 1:文本格式输出，不带属性,
      * 2:json格式输出，带文字属性"wp":"n"和标点符号属性"wp":"p"
      */
-    private Integer opt;
+    private final Integer opt;
     /**
      * 会话热词，支持utf-8和gb2312；
      * 取值样例：“dhw=db2312;你好|大家”（对应gb2312编码）；
      * “dhw=utf-8;你好|大家”（对应utf-8编码）
      * [0,1024]
      */
-    private String dhw;
+    private final String dhw;
     /**
      * （仅中文支持）字体
      * zh-cn :简体中文（默认值）
@@ -136,12 +136,12 @@ public class SparkIatClient extends WebSocketClient {
      * zh-tw :台湾
      * 注：该繁体功能若未授权无法使用，可到控制台-语音听写（流式版）-高级功能处免费开通；若未授权状态下设置为繁体并不会报错，但不会生效。
      */
-    private String rlang;
+    private final String rlang;
     /**
      * （仅中文支持）是否进行中英文筛选
      * 1:不进行筛选, 2:只出中文, 3:只出英文
      */
-    private Integer ltc;
+    private final Integer ltc;
     /**
      * 音频数据格式
      * 中文大模型   raw或lame
@@ -153,21 +153,21 @@ public class SparkIatClient extends WebSocketClient {
      * 请注意压缩前也必须是采样率16k或8k单声道的pcm。
      * lame：mp3格式（仅中文普通话和英文支持，方言及小语种暂不支持）
      */
-    private String encoding;
+    private final String encoding;
     /**
      * 音频的采样率支持16k和8k
      * 16k音频：audio/L16;rate=16000
      * 8k音频：audio/L16;rate=8000
      */
-    private Integer sampleRate;
+    private final Integer sampleRate;
     /**
      * 声道数1,2
      */
-    private Integer channels;
+    private final Integer channels;
     /**
      * 位深 16,8
      */
-    private Integer bitDepth;
+    private final Integer bitDepth;
     /**
      * 请注意不同音频格式一帧大小的字节数不同，我们建议：
      * <p>
@@ -175,26 +175,26 @@ public class SparkIatClient extends WebSocketClient {
      * 2.讯飞定制speex格式，每次发送音频间隔40ms，假如16k的压缩等级为7，则每次发送61B的整数倍；
      * 3.标准开源speex格式，每次发送音频间隔40ms，假如16k的压缩等级为7，则每次发送60B的整数倍；
      */
-    private Integer frameSize;
+    private final Integer frameSize;
     /**
      * 文本编码
      * utf8 （默认值）
      * gb2312
      */
-    private String textEncoding;
+    private final String textEncoding;
     /**
      * 文本编码
      * raw（默认值）
      * gzip
      */
-    private String textCompress;
+    private final String textCompress;
     /**
      * 文本编码
      * plain
      * json（默认值）
      * xml
      */
-    private String textFormat;
+    private final String textFormat;
 
     public SparkIatClient(Builder builder) {
         this.okHttpClient = new OkHttpClient
@@ -242,81 +242,12 @@ public class SparkIatClient extends WebSocketClient {
         this.pingInterval = builder.pingInterval;
     }
 
-
-    /**
-     * 发送文件给语音听写服务端
-     *
-     * @param file 发送的文件
-     * @throws FileNotFoundException
-     */
-    public void send(File file, WebSocketListener webSocketListener) throws FileNotFoundException, MalformedURLException, SignatureException {
-        createWebSocketConnect(webSocketListener);
-        FileInputStream fileInputStream = new FileInputStream(file);
-        send(fileInputStream, webSocketListener);
-    }
-
-    /**
-     * 发送文件流给服务端
-     *
-     * @param inputStream 需要发送的流
-     */
-    public void send(InputStream inputStream, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
-        // 创建webSocket连接
-        createWebSocketConnect(webSocketListener);
-        if (inputStream == null) {
-            webSocket.close(1000, null);
-            return;
-        }
-
-        // 大模型语音听写数据发送任务
-        SparkIatSendTask sparkIatSendTask = new SparkIatSendTask();
-        new SparkIatSendTask.Builder()
-                .inputStream(inputStream)
-                .webSocketClient(this)
-                .build(sparkIatSendTask);
-
-        executorService.submit(sparkIatSendTask);
-    }
-
-    /**
-     * @param bytes
-     * @param closeable 需要关闭的流，可为空
-     */
-    public void send(byte[] bytes, Closeable closeable, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
-        createWebSocketConnect(webSocketListener);
-        if (bytes == null || bytes.length == 0) {
-            webSocket.close(1000, null);
-            return;
-        }
-
-        SparkIatSendTask sparkIatSendTask = new SparkIatSendTask();
-        new SparkIatSendTask.Builder()
-                .bytes(bytes)
-                .webSocketClient(this)
-                .closeable(closeable)
-                .build(sparkIatSendTask);
-
-        executorService.submit(sparkIatSendTask);
-    }
-
     public String getHostUrl() {
         return originHostUrl;
     }
 
     public String getOriginHostUrl() {
         return originHostUrl;
-    }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public String getApiSecret() {
-        return apiSecret;
-    }
-
-    public String getApiKey() {
-        return apiKey;
     }
 
     public String getLanguage() {
@@ -427,11 +358,6 @@ public class SparkIatClient extends WebSocketClient {
         return okHttpClient;
     }
 
-    @Override
-    public WebSocket getWebSocket() {
-        return webSocket;
-    }
-
     public boolean isRetryOnConnectionFailure() {
         return retryOnConnectionFailure;
     }
@@ -456,15 +382,71 @@ public class SparkIatClient extends WebSocketClient {
         return pingInterval;
     }
 
+
+    /**
+     * 发送文件给语音听写服务端
+     *
+     * @param file 发送的文件
+     */
+    public void send(File file, WebSocketListener webSocketListener) throws FileNotFoundException, MalformedURLException, SignatureException {
+        FileInputStream fileInputStream = new FileInputStream(file);
+        send(fileInputStream, webSocketListener);
+    }
+
+    /**
+     * 发送文件流给服务端
+     *
+     * @param inputStream 需要发送的流
+     */
+    public void send(InputStream inputStream, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+        if (inputStream == null) {
+            return;
+        }
+
+        // 创建webSocket连接
+        createWebSocketConnect(webSocketListener);
+
+        // 大模型语音听写数据发送任务
+        SparkIatSendTask sparkIatSendTask = new SparkIatSendTask();
+        new SparkIatSendTask.Builder()
+                .inputStream(inputStream)
+                .webSocketClient(this)
+                .build(sparkIatSendTask);
+
+        executorService.submit(sparkIatSendTask);
+    }
+
+    /**
+     * @param bytes     字节数据
+     * @param closeable 需要关闭的流，可为空
+     */
+    public void send(byte[] bytes, Closeable closeable, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+        if (bytes == null || bytes.length == 0) {
+            return;
+        }
+
+        // 创建webSocket连接
+        createWebSocketConnect(webSocketListener);
+
+        SparkIatSendTask sparkIatSendTask = new SparkIatSendTask();
+        new SparkIatSendTask.Builder()
+                .bytes(bytes)
+                .webSocketClient(this)
+                .closeable(closeable)
+                .build(sparkIatSendTask);
+
+        executorService.submit(sparkIatSendTask);
+    }
+
     public static class Builder {
         // websocket相关
-        boolean retryOnConnectionFailure = true;
-        int callTimeout = 0;
-        int connectTimeout = 10000;
-        int readTimeout = 10000;
-        int writeTimeout = 10000;
-        int pingInterval = 0;
-        private String hostUrl = CN_LANGUAGE;
+        private boolean retryOnConnectionFailure = true;
+        private int callTimeout = 0;
+        private int connectTimeout = 10000;
+        private int readTimeout = 30000;
+        private int writeTimeout = 30000;
+        private int pingInterval = 0;
+        private String hostUrl = CN_LANGUAGE_API;
         private String appId;
         private String apiKey;
         private String apiSecret;
@@ -498,36 +480,29 @@ public class SparkIatClient extends WebSocketClient {
             return new SparkIatClient(this);
         }
 
-        public Builder signature(String appId, String apiKey, String apiSecret) {
+        /**
+         * 1-中文大模型   2-方言大模型    3-多语种大模型
+         *
+         * @param langType 语言类型
+         */
+        public Builder signature(String appId, String apiKey, String apiSecret, Integer langType) {
             this.appId = appId;
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
+            if (SparkIatModelEnum.ZH_CN_MULACC.codeEquals(langType)) {
+                this.hostUrl = MULTI_LANGUAGE_API;
+                this.accent = "mulacc";
+                this.langType = langType;
+            } else if (SparkIatModelEnum.MUL_CN_MANDARIN.codeEquals(langType)) {
+                this.hostUrl = MULTI_LANGUAGE_API;
+                this.language = "mul_cn";
+                this.langType = langType;
+            }
             return this;
         }
 
         public Builder hostUrl(String hostUrl) {
             this.hostUrl = hostUrl;
-            return this;
-        }
-
-        /**
-         * 1-中文大模型   2-方言大模型    3-多语种大模型
-         *
-         * @param mullLanguage
-         * @return
-         */
-        public Builder mulLanguage(Integer mullLanguage) {
-            if (SparkIatModelEnum.ZH_CN_MULACC.codeEquals(mullLanguage)) {
-                this.hostUrl = MULTI_LANGUAGE;
-                this.accent = "mulacc";
-                this.langType = mullLanguage;
-            } else if (SparkIatModelEnum.MUL_CN_MANDARIN.codeEquals(mullLanguage)) {
-                this.hostUrl = MULTI_LANGUAGE;
-                this.language = "mul_cn";
-                this.langType = mullLanguage;
-            } else {
-//                this.dwa = "wpgs";
-            }
             return this;
         }
 

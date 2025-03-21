@@ -2,7 +2,7 @@ package cn.xfyun.api;
 
 import cn.xfyun.config.SparkIatModelEnum;
 import cn.xfyun.model.sign.AbstractSignature;
-import cn.xfyun.model.sparkiat.SparkIatResponse;
+import cn.xfyun.model.sparkiat.response.SparkIatResponse;
 import cn.xfyun.service.sparkiat.AbstractSparkIatWebSocketListener;
 import cn.xfyun.util.AuthUtil;
 import cn.xfyun.util.StringUtils;

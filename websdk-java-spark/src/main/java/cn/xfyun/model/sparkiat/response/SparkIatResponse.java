@@ -1,4 +1,4 @@
-package cn.xfyun.model.sparkiat;
+package cn.xfyun.model.sparkiat.response;
 
 import java.util.List;
 

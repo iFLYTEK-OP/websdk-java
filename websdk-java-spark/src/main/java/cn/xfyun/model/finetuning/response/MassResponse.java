@@ -8,7 +8,7 @@ import java.util.List;
  * @author: zyding6
  * @create: 2025/3/17 16:12
  **/
-public class FTTResponse {
+public class MassResponse {
 
 
     /**
@@ -19,7 +19,7 @@ public class FTTResponse {
     private Header header;
     private Payload payload;
 
-    public FTTResponse(int code, String message) {
+    public MassResponse(int code, String message) {
         this.header = new Header();
         this.header.code = code;
         this.header.message = message;

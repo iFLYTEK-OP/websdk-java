@@ -3,8 +3,8 @@ package cn.xfyun.api;
 import cn.xfyun.base.webscoket.WebSocketClient;
 import cn.xfyun.model.RoleContent;
 import cn.xfyun.model.finetuning.request.FTTHttpRequest;
-import cn.xfyun.model.finetuning.request.FTTReqeust;
-import cn.xfyun.service.finetuning.AbstractFTTWebSocketListener;
+import cn.xfyun.model.finetuning.request.MassReqeust;
+import cn.xfyun.service.finetuning.AbstractMassWebSocketListener;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 import okhttp3.*;
@@ -26,9 +26,9 @@ import java.util.concurrent.TimeUnit;
  * @description: 精调文本大模型
  * @create: 2025-03-17
  **/
-public class FTTClient extends WebSocketClient {
+public class MassClient extends WebSocketClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(FTTClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(MassClient.class);
 
     /**
      * 调用微调大模型时必传,否则不传。对应为模型服务卡片上的resourceId
@@ -85,7 +85,7 @@ public class FTTClient extends WebSocketClient {
      */
     private boolean stream;
 
-    public FTTClient(Builder builder) {
+    public MassClient(Builder builder) {
         this.okHttpClient = new OkHttpClient
                 .Builder()
                 .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
@@ -192,35 +192,35 @@ public class FTTClient extends WebSocketClient {
      * @param webSocketListener ftt抽象监听类
      * @throws UnsupportedEncodingException 编码异常
      */
-    public void send(List<RoleContent> text, AbstractFTTWebSocketListener webSocketListener) throws UnsupportedEncodingException, MalformedURLException, SignatureException {
-        //参数校验
+    public void send(List<RoleContent> text, AbstractMassWebSocketListener webSocketListener) throws UnsupportedEncodingException, MalformedURLException, SignatureException {
+        // 参数校验
         if (text == null || text.isEmpty()) {
             throw new RuntimeException("文本内容不能为空");
         } else if (text.size() > 12000) {
-            //历史记录最大上线1.2W左右，需要判断是能能加入历史
+            // 历史记录最大上线1.2W左右，需要判断是能能加入历史
             int startIndex = text.size() - 12000 + 5;
             text = text.subList(startIndex, text.size());
             logger.warn("历史记录长度已截取：{}-{}", startIndex, text.size());
         }
-        //初始化链接client
+        // 初始化链接client
         createWebSocketConnect(webSocketListener);
 
         try {
-            //发送数据,求数据均为json字符串
-            FTTReqeust request = new FTTReqeust();
-            //请求头
-            FTTReqeust.Header header = new FTTReqeust.Header();
+            // 发送数据,求数据均为json字符串
+            MassReqeust request = new MassReqeust();
+            // 请求头
+            MassReqeust.Header header = new MassReqeust.Header();
             header.setApp_id(appId);
             header.setUid(UUID.randomUUID().toString().substring(0, 10));
             header.setPatch_id(patchId);
             request.setHeader(header);
 
-            //请求参数
-            FTTReqeust.Parameter parameter = new FTTReqeust.Parameter(this);
+            // 请求参数
+            MassReqeust.Parameter parameter = new MassReqeust.Parameter(this);
             request.setParameter(parameter);
 
-            //请求体
-            FTTReqeust.Payload payload = new FTTReqeust.Payload();
+            // 请求体
+            MassReqeust.Payload payload = new MassReqeust.Payload();
             payload.getMessage().setText(text);
             request.setPayload(payload);
             String jsonStr = StringUtils.gson.toJson(request);
@@ -311,8 +311,8 @@ public class FTTClient extends WebSocketClient {
         private String auditing = "default";
         private boolean stream = false;
 
-        public FTTClient build() throws MalformedURLException, SignatureException {
-            return new FTTClient(this);
+        public MassClient build() throws MalformedURLException, SignatureException {
+            return new MassClient(this);
         }
 
         public Builder signatureWs(String resourceId, String serviceId, String appId, String apiKey, String apiSecret) {

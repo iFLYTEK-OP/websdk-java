@@ -8,15 +8,16 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <ydwang16@iflytek.com>
  * @description websocket间断发送Task
  * @date 2021/3/27
  */
-public abstract class AbstractTimedTask implements Runnable {
+public abstract class AbstractTask implements Runnable {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractTimedTask.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractTask.class);
     protected WebSocketClient webSocketClient;
     /**
      * 间隔时间
@@ -35,7 +36,7 @@ public abstract class AbstractTimedTask implements Runnable {
      */
     private boolean isDataEnd = false;
 
-    public AbstractTimedTask build(Builder builder) {
+    public AbstractTask build(Builder builder) {
         this.waitMillis = builder.waitMillis;
         this.bytes = builder.bytes;
         this.closeable = builder.closeable;
@@ -53,6 +54,7 @@ public abstract class AbstractTimedTask implements Runnable {
 
             // 流操作
             if (inputStream != null) {
+                // 文件块编号
                 int seq = 0;
                 do {
                     seq++;
@@ -63,14 +65,14 @@ public abstract class AbstractTimedTask implements Runnable {
 
                     String data = businessDataProcess(isDataEnd ? null : Arrays.copyOf(buffer, readLength), isDataEnd, seq);
                     webSocketClient.getWebSocket().send(data);
-
-                    Thread.sleep(waitMillis);
+                    // 间隔发送
+                    TimeUnit.MILLISECONDS.sleep(waitMillis);
                 } while (!isDataEnd);
             } else {
                 // 针对于byte数组的操作
                 if (bytes != null && bytes.length > 0) {
                     int byteLen = bytes.length;
-
+                    // 文件块编号
                     int seq = 0;
                     for (int startIndex = 0; ; startIndex += frameSize) {
                         seq++;
@@ -85,9 +87,9 @@ public abstract class AbstractTimedTask implements Runnable {
                             logger.info("数据发送完毕!");
                             break;
                         }
-                        Thread.sleep(waitMillis);
+                        // 间隔发送
+                        TimeUnit.MILLISECONDS.sleep(waitMillis);
                     }
-
                 }
             }
         } catch (Exception e) {
@@ -146,7 +148,7 @@ public abstract class AbstractTimedTask implements Runnable {
             return this;
         }
 
-        public void build(AbstractTimedTask task) {
+        public void build(AbstractTask task) {
             task.build(this);
         }
     }

@@ -1,6 +1,6 @@
 package cn.xfyun.model.finetuning.request;
 
-import cn.xfyun.api.FTTClient;
+import cn.xfyun.api.MassClient;
 import cn.xfyun.model.RoleContent;
 
 import java.util.List;
@@ -10,7 +10,7 @@ import java.util.List;
  * @author: zyding6
  * @create: 2025/3/17 15:56
  **/
-public class FTTReqeust {
+public class MassReqeust {
 
 
     /**
@@ -90,7 +90,7 @@ public class FTTReqeust {
 
         private Chat chat;
         
-        public Parameter(FTTClient chat) {
+        public Parameter(MassClient chat) {
             this.chat = new Chat();
             this.chat.domain = chat.getDomain();
             this.chat.temperature = chat.getTemperature();

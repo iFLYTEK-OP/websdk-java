@@ -1,6 +1,6 @@
 package cn.xfyun.service.finetuning;
 
-import cn.xfyun.model.finetuning.response.FTTResponse;
+import cn.xfyun.model.finetuning.response.MassResponse;
 import cn.xfyun.util.StringUtils;
 import okhttp3.Response;
 import okhttp3.WebSocket;
@@ -18,14 +18,14 @@ import javax.annotation.Nullable;
  * @version 1.0
  * @date 2021/3/17 11:19
  */
-public abstract class AbstractFTTWebSocketListener extends WebSocketListener {
+public abstract class AbstractMassWebSocketListener extends WebSocketListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractFTTWebSocketListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractMassWebSocketListener.class);
 
     /**
      * construction method
      */
-    public AbstractFTTWebSocketListener() {
+    public AbstractMassWebSocketListener() {
     }
 
     /**
@@ -34,7 +34,7 @@ public abstract class AbstractFTTWebSocketListener extends WebSocketListener {
      * @param webSocket
      * @param iatResponse
      */
-    public abstract void onSuccess(WebSocket webSocket, FTTResponse iatResponse);
+    public abstract void onSuccess(WebSocket webSocket, MassResponse iatResponse);
 
     /**
      * websocket返回失败时，需要用户重写的方法
@@ -57,12 +57,12 @@ public abstract class AbstractFTTWebSocketListener extends WebSocketListener {
         super.onMessage(webSocket, text);
         try {
             if (text != null) {
-                FTTResponse iatResponse = StringUtils.gson.fromJson(text, FTTResponse.class);
+                MassResponse iatResponse = StringUtils.gson.fromJson(text, MassResponse.class);
 
                 if (iatResponse != null) {
                     onSuccess(webSocket, iatResponse);
                 } else {
-                    onSuccess(webSocket, new FTTResponse(-1, "ftt response error"));
+                    onSuccess(webSocket, new MassResponse(-1, "ftt response error"));
                 }
             }
         } catch (Exception e) {

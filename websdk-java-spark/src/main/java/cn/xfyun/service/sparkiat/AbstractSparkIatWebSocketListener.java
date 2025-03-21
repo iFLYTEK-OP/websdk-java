@@ -1,6 +1,6 @@
 package cn.xfyun.service.sparkiat;
 
-import cn.xfyun.model.sparkiat.SparkIatResponse;
+import cn.xfyun.model.sparkiat.response.SparkIatResponse;
 import cn.xfyun.util.StringUtils;
 import okhttp3.Response;
 import okhttp3.WebSocket;
@@ -30,25 +30,34 @@ public abstract class AbstractSparkIatWebSocketListener extends WebSocketListene
     /**
      * websocket返回成功时，需要用户重写的方法
      *
-     * @param webSocket
-     * @param iatResponse
+     * @param webSocket   websocket
+     * @param iatResponse 返回结果
      */
     public abstract void onSuccess(WebSocket webSocket, SparkIatResponse iatResponse);
 
     /**
      * websocket返回失败时，需要用户重写的方法
      *
-     * @param webSocket
-     * @param t
-     * @param response
+     * @param webSocket websocket
+     * @param t         异常信息
+     * @param response  返回结果
      */
     public abstract void onFail(WebSocket webSocket, Throwable t, Response response);
+
+    /**
+     * websocket关闭时返回，需要用户重写的方法
+     *
+     * @param webSocket websocket
+     * @param code      关闭编码
+     * @param reason    关闭原因
+     */
+    public abstract void onClose(WebSocket webSocket, int code, String reason);
 
 
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
         super.onOpen(webSocket, response);
-
+        logger.info("webSocket is open");
     }
 
     @Override
@@ -84,6 +93,7 @@ public abstract class AbstractSparkIatWebSocketListener extends WebSocketListene
     public void onClosed(WebSocket webSocket, int code, String reason) {
         super.onClosed(webSocket, code, reason);
         logger.warn("webSocket is closed ,code is {} , reason is [{}]", code, reason);
+        onClose(webSocket, code, reason);
     }
 
     @Override
