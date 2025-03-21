@@ -28,6 +28,10 @@ public class PropertiesConfig {
     private static final String voiceCloneAPPSecret;
     private static final String sparkIatAPPKey;
     private static final String sparkIatAPPSecret;
+    private static final String imageGenAPPKey;
+    private static final String imageGenAPPSecret;
+    private static final String imageGenHidreamAPPKey;
+    private static final String imageGenHidreamAPPSecret;
 
     static {
         Properties properties = new Properties();
@@ -52,6 +56,11 @@ public class PropertiesConfig {
         voiceCloneAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("voiceCloneAPPSecret")) ? System.getenv("voiceCloneAPPSecret") : properties.getProperty("voiceCloneAPPSecret");
         sparkIatAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("sparkIatAPPKey")) ? System.getenv("sparkIatAPPKey") : properties.getProperty("sparkIatAPPKey");
         sparkIatAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("sparkIatAPPSecret")) ? System.getenv("sparkIatAPPSecret") : properties.getProperty("sparkIatAPPSecret");
+        imageGenAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("imageGenAPPKey")) ? System.getenv("imageGenAPPKey") : properties.getProperty("imageGenAPPKey");
+        imageGenAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("imageGenAPPSecret")) ? System.getenv("imageGenAPPSecret") : properties.getProperty("imageGenAPPSecret");
+        imageGenHidreamAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("imageGenHidreamAPPKey")) ? System.getenv("imageGenHidreamAPPKey") : properties.getProperty("imageGenHidreamAPPKey");
+        imageGenHidreamAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("imageGenHidreamAPPSecret")) ? System.getenv("imageGenHidreamAPPSecret") : properties.getProperty("imageGenHidreamAPPSecret");
+
     }
 
     public static String getAppId() {
@@ -112,5 +121,21 @@ public class PropertiesConfig {
 
     public static String getSparkIatAPPSecret() {
         return sparkIatAPPSecret;
+    }
+
+    public static String getImageGenAPPKey() {
+        return imageGenAPPKey;
+    }
+
+    public static String getImageGenAPPSecret() {
+        return imageGenAPPSecret;
+    }
+
+    public static String getImageGenHidreamAPPKey() {
+        return imageGenHidreamAPPKey;
+    }
+
+    public static String getImageGenHidreamAPPSecret() {
+        return imageGenHidreamAPPSecret;
     }
 }
