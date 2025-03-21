@@ -15,7 +15,7 @@ import java.io.*;
 
 /**
  * @author <zyding6@iflytek.com>
- * @description 大模型语音听写
+ * @description 语音训练
  * @date 2025/3/12
  */
 @RunWith(PowerMockRunner.class)

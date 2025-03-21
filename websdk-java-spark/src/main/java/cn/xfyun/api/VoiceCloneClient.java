@@ -239,6 +239,7 @@ public class VoiceCloneClient extends WebSocketClient {
 
         VoiceCloneRequest.Parameter parameter = new VoiceCloneRequest.Parameter(this);
         parameter.getTts().setVcn("x5_clone");
+        parameter.getTts().setPybuffer(1);
         request.setParameter(parameter);
 
         VoiceCloneRequest.Payload payload = new VoiceCloneRequest.Payload();

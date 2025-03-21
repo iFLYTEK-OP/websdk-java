@@ -57,11 +57,11 @@ public class VoiceCloneClientTest {
     @Test
     public void test() throws MalformedURLException, SignatureException, FileNotFoundException, UnsupportedEncodingException {
         String filePath = "src/test/resources/audio/voiceclone_" + UUID.randomUUID() + ".mp3";
-        String text = "检查签名的各个参数是否有缺失是否正确，特别确认下复制的api_key是否正确";
+        String text = "欢迎使用本语音合成测试文本，本测试旨在全面检验语音合成系统在准确性、流畅性以及自然度等多方面的性能表现。";
         // 正常流程默认参数
         VoiceCloneClient voiceCloneClient1 = new VoiceCloneClient.Builder()
                 .signature(appId, apiKey, apiSecret)
-                .resId("123456").languageId(0)
+                .resId("e5b0686_ttsclone-807526e8-azzys").languageId(0)
                 .build();
         // 正常流程全部参数
         VoiceCloneClient voiceCloneClient2 = new VoiceCloneClient.Builder()

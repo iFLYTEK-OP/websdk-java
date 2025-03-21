@@ -93,7 +93,7 @@ public class VoiceCloneRequest {
         public static class Tts {
             private String vcn;
             @SerializedName("LanguageID")
-            private String languageId;
+            private Integer languageId;
             private Integer speed;
             private Integer volume;
             private Integer pitch;
@@ -101,12 +101,14 @@ public class VoiceCloneRequest {
             private Integer reg;
             private Integer rdn;
             private Integer rhy;
+            private Integer pybuffer;
             private Audio audio;
 
             public Tts(VoiceCloneClient client) {
                 this.speed = client.getSpeed();
                 this.volume = client.getVolume();
                 this.pitch = client.getPitch();
+                this.languageId = client.getLanguageId();
                 this.bgs = client.getBgs();
                 this.reg = client.getReg();
                 this.rdn = client.getRdn();
@@ -115,6 +117,14 @@ public class VoiceCloneRequest {
             }
 
             public Tts() {
+            }
+
+            public Integer getPybuffer() {
+                return pybuffer;
+            }
+
+            public void setPybuffer(Integer pybuffer) {
+                this.pybuffer = pybuffer;
             }
 
             public String getVcn() {
@@ -181,11 +191,11 @@ public class VoiceCloneRequest {
                 this.rhy = rhy;
             }
 
-            public String getLanguageId() {
+            public Integer getLanguageId() {
                 return languageId;
             }
 
-            public void setLanguageId(String languageId) {
+            public void setLanguageId(Integer languageId) {
                 this.languageId = languageId;
             }
 

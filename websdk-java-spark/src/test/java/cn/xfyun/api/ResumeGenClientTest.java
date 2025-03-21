@@ -16,7 +16,7 @@ import java.util.Base64;
 
 /**
  * @author <zyding6@iflytek.com>
- * @description 大模型语音听写
+ * @description 简历生成
  * @date 2025/3/12
  */
 @RunWith(PowerMockRunner.class)
@@ -32,7 +32,7 @@ public class ResumeGenClientTest {
     public void testSuccess() throws Exception {
         ResumeGenClient client = new ResumeGenClient
                 .Builder(appId, apiKey, apiSecret)
-                .connectTimeout(60000)
+                .connectTimeout(70000)
                 .readTimeout(10000)
                 .build();
 

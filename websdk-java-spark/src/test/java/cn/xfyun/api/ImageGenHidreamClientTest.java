@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author <zyding6@iflytek.com>
- * @description 图片生成
+ * @description 图片生成（hidream）
  * @date 2025/3/12
  */
 @RunWith(PowerMockRunner.class)
