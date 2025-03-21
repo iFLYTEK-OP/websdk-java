@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -27,9 +29,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -41,7 +41,7 @@ import java.util.concurrent.TimeUnit;
 @PrepareForTest({SparkIatClient.class})
 @PowerMockIgnore({"cn.xfyun.util.HttpConnector", "javax.crypto.*", "javax.net.ssl.*"})
 public class SparkIatClientTest {
-
+    private static final Logger logger = LoggerFactory.getLogger(SparkIatClientTest.class);
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getSparkIatAPPKey();
     private static final String apiSecret = PropertiesConfig.getSparkIatAPPSecret();
@@ -54,8 +54,7 @@ public class SparkIatClientTest {
     @Test
     public void defaultParamTest() {
         SparkIatClient sparkIatClient = new SparkIatClient.Builder()
-                .signature(appId, apiKey, apiSecret)
-                .mulLanguage(SparkIatModelEnum.ZH_CN_MANDARIN.getCode())
+                .signature(appId, apiKey, apiSecret, SparkIatModelEnum.ZH_CN_MANDARIN.getCode())
                 .build();
 
         Assert.assertEquals(sparkIatClient.getAppId(), appId);
@@ -86,8 +85,7 @@ public class SparkIatClientTest {
     @Test
     public void testParamBuild() {
         SparkIatClient sparkIatClient = new SparkIatClient.Builder()
-                .signature(appId, apiKey, apiSecret)
-                .mulLanguage(SparkIatModelEnum.ZH_CN_MULACC.getCode())
+                .signature(appId, apiKey, apiSecret, SparkIatModelEnum.ZH_CN_MANDARIN.getCode())
                 .hostUrl("http://www.iflytek.com")
                 .eos(3000)
                 .dwa("wpgs1")
@@ -135,8 +133,7 @@ public class SparkIatClientTest {
     @Test
     public void testSignature() throws MalformedURLException, SignatureException, NoSuchAlgorithmException, InvalidKeyException {
         SparkIatClient sparkIatClient = new SparkIatClient.Builder()
-                .mulLanguage(SparkIatModelEnum.ZH_CN_MULACC.getCode())
-                .signature(appId, apiKey, apiSecret)
+                .signature(appId, apiKey, apiSecret, SparkIatModelEnum.ZH_CN_MULACC.getCode())
                 .build();
         sparkIatClient.send(null, null, new AbstractSparkIatWebSocketListener() {
             @Override
@@ -145,6 +142,11 @@ public class SparkIatClientTest {
 
             @Override
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
+            }
+
+            @Override
+            public void onClose(WebSocket webSocket, int code, String reason) {
+
             }
         });
 
@@ -180,8 +182,7 @@ public class SparkIatClientTest {
     @Test
     public void testErrorSignature() throws MalformedURLException, SignatureException, FileNotFoundException {
         SparkIatClient sparkIatClient = new SparkIatClient.Builder()
-                .mulLanguage(SparkIatModelEnum.ZH_CN_MULACC.getCode())
-                .signature("123456", apiKey, apiSecret)
+                .signature("123456", apiKey, apiSecret, SparkIatModelEnum.ZH_CN_MULACC.getCode())
                 .build();
         File file = new File(resourcePath + filePath);
         sparkIatClient.send(file, new AbstractSparkIatWebSocketListener() {
@@ -198,86 +199,134 @@ public class SparkIatClientTest {
             @Override
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
+
+            @Override
+            public void onClose(WebSocket webSocket, int code, String reason) {
+
+            }
         });
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
-            System.out.println(e.getMessage());
+            logger.error(e.getMessage(), e);
         }
     }
 
     @Test
     public void testSuccess() throws FileNotFoundException, InterruptedException, MalformedURLException, SignatureException {
         SparkIatClient sparkIatClient = new SparkIatClient.Builder()
-                .mulLanguage(SparkIatModelEnum.ZH_CN_MANDARIN.getCode())
+                .signature(appId, apiKey, apiSecret, SparkIatModelEnum.ZH_CN_MANDARIN.getCode())
+                // 流式实时返回撰写结果
                 .dwa("wpgs")
-                .signature(appId, apiKey, apiSecret)
                 .build();
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
         Date dateBegin = new Date();
 
         File file = new File(resourcePath + filePath);
+        StringBuffer finalResult = new StringBuffer();
+
+        // 存储流式返回结果的Map sn -> content
+        Map<Integer, String> contentMap = new TreeMap<>();
         sparkIatClient.send(file, new AbstractSparkIatWebSocketListener() {
             @Override
             public void onSuccess(WebSocket webSocket, SparkIatResponse resp) {
-                Assert.assertNotNull(resp);
-                Assert.assertNotNull(resp.getHeader().getMessage());
-//                System.out.println(StringUtils.gson.toJson(resp));
+                // logger.debug("{}", StringUtils.gson.toJson(resp));
                 if (resp.getHeader().getCode() != 0) {
-                    System.out.println("code=>" + resp.getHeader().getCode() + " error=>" + resp.getHeader().getMessage() + " sid=" + resp.getHeader().getSid());
-                    System.out.println("错误码查询链接：https://www.xfyun.cn/document/error-code");
+                    logger.error("code=>{}，error=>{}，sid=>{}", resp.getHeader().getCode(), resp.getHeader().getMessage(), resp.getHeader().getSid());
+                    logger.warn("错误码查询链接：https://www.xfyun.cn/document/error-code");
                     return;
                 }
-                if (null != resp.getPayload()) {
+
+                if (resp.getPayload() != null) {
+                    // 非流式实时返回结果处理方式
+                    /*if (resp.getPayload().getResult() != null) {
+                        String tansTxt = resp.getPayload().getResult().getText();
+                        if (null != tansTxt) {
+                            // 解码转写结果
+                            byte[] decodedBytes = Base64.getDecoder().decode(resp.getPayload().getResult().getText());
+                            String decodeRes = new String(decodedBytes, StandardCharsets.UTF_8);
+                            SparkIatResponse.JsonParseText jsonParseText = StringUtils.gson.fromJson(decodeRes, SparkIatResponse.JsonParseText.class);
+
+                            StringBuilder text = new StringBuilder();
+                            for (SparkIatResponse.Ws ws : jsonParseText.getWs()) {
+                                List<SparkIatResponse.Cw> cwList = ws.getCw();
+                                for (SparkIatResponse.Cw cw : cwList) {
+                                    text.append(cw.getW());
+                                }
+                            }
+
+                            finalResult.append(text);
+                            logger.info("中间识别结果 ==>{}", text);
+                        }
+                    }*/
+
+                    // 流式实时返回结果处理方式
                     if (null != resp.getPayload().getResult().getText()) {
                         byte[] decodedBytes = Base64.getDecoder().decode(resp.getPayload().getResult().getText());
                         String decodeRes = new String(decodedBytes, StandardCharsets.UTF_8);
-//                        System.out.println("中间识别结果 ==》" + decodeRes);
+                        // logger.info("中间识别结果 ==>{}", decodeRes);
                         SparkIatResponse.JsonParseText jsonParseText = StringUtils.gson.fromJson(decodeRes, SparkIatResponse.JsonParseText.class);
-
-                        String mark = "";
+                        // 拼接单句ws的内容
+                        StringBuilder reqResult = getWsContent(jsonParseText);
+                        // 根据pgs参数判断是拼接还是替换
                         if (jsonParseText.getPgs().equals("apd")) {
-                            mark = "结果追加到上面结果";
+                            // 直接添加
+                            contentMap.put(jsonParseText.getSn(), reqResult.toString());
+                            logger.info("中间识别结果 【{}】 拼接后结果==> {}", reqResult, getLastResult(contentMap));
                         } else if (jsonParseText.getPgs().equals("rpl")) {
-                            mark = "结果替换前面" + jsonParseText.getRg().get(0) + "到" + jsonParseText.getRg().get(1);
-                        }
-                        System.out.print("中间识别结果 【" + mark + "】==》");
-
-                        List<SparkIatResponse.Ws> wsList = jsonParseText.getWs();
-                        for (SparkIatResponse.Ws ws : wsList) {
-                            List<SparkIatResponse.Cw> cwList = ws.getCw();
-                            for (SparkIatResponse.Cw cw : cwList) {
-                                System.out.print(cw.getW());
+                            List<Integer> rg = jsonParseText.getRg();
+                            int startIndex = rg.get(0);
+                            int endIndex = rg.get(1);
+                            // 替换 rg 范围内的内容
+                            for (int i = startIndex; i <= endIndex; i++) {
+                                contentMap.remove(i);
                             }
+                            contentMap.put(jsonParseText.getSn(), reqResult.toString());
+                            logger.info("中间识别结果 【{}】 替换后结果==> {}", reqResult, getLastResult(contentMap));
                         }
                     }
-                    if (resp.getPayload().getResult().getStatus() == 2) { // 最终结果  说明数据全部返回完毕，可以关闭连接，释放资源
-                        System.out.println("session end ");
+
+                    if (resp.getPayload().getResult().getStatus() == 2) {
+                        // resp.data.status ==2 说明数据全部返回完毕，可以关闭连接，释放资源
+                        logger.info("session end");
                         Date dateEnd = new Date();
-                        System.out.println(sdf.format(dateBegin) + "开始");
-                        System.out.println(sdf.format(dateEnd) + "结束");
-                        System.out.println("耗时:" + (dateEnd.getTime() - dateBegin.getTime()) + "ms");
-//                         System.out.println("最终识别结果 ==》" + decodeRes);  // 按照规则替换与追加出最终识别结果
-                        System.out.println();
-                        System.out.println("本次识别sid ==》" + resp.getHeader().getSid());
-                        webSocket.close(1000, "");
+                        logger.info("{}开始", sdf.format(dateBegin));
+                        logger.info("{}结束", sdf.format(dateEnd));
+                        logger.info("耗时：{}ms", dateEnd.getTime() - dateBegin.getTime());
+                        if (!contentMap.isEmpty()) {
+                            // 获取最终拼接结果
+                            logger.info("最终识别结果 ==>{}", getLastResult(contentMap));
+                        } else {
+                            logger.info("最终识别结果 ==>{}", finalResult);
+                        }
+                        logger.info("本次识别sid ==>{}", resp.getHeader().getSid());
+                        sparkIatClient.closeWebsocket();
+                        System.exit(0);
                     }
                 }
             }
 
             @Override
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
+                logger.error("异常信息: {}", t.getMessage(), t);
+                System.exit(0);
+            }
+
+            @Override
+            public void onClose(WebSocket webSocket, int code, String reason) {
+                logger.info("关闭连接,code是{},reason:{}", code, reason);
+                System.exit(0);
             }
         });
-        Thread.sleep(60000);
+
+        TimeUnit.MILLISECONDS.sleep(30000);
     }
 
     @Test
     public void testSendNull() throws MalformedURLException, SignatureException, InterruptedException {
         SparkIatClient sparkIatClient = new SparkIatClient.Builder()
-                .mulLanguage(SparkIatModelEnum.ZH_CN_MULACC.getCode())
-                .signature(appId, apiKey, apiSecret)
+                .signature(appId, apiKey, apiSecret, SparkIatModelEnum.ZH_CN_MULACC.getCode())
                 .build();
 
         InputStream inputStream = null;
@@ -288,6 +337,11 @@ public class SparkIatClientTest {
 
             @Override
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
+            }
+
+            @Override
+            public void onClose(WebSocket webSocket, int code, String reason) {
+
             }
         });
 
@@ -300,6 +354,11 @@ public class SparkIatClientTest {
             @Override
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
+
+            @Override
+            public void onClose(WebSocket webSocket, int code, String reason) {
+
+            }
         });
         Thread.sleep(5000);
     }
@@ -307,8 +366,7 @@ public class SparkIatClientTest {
     @Test
     public void testSendBytes() throws IOException, InterruptedException, SignatureException {
         SparkIatClient sparkIatClient = new SparkIatClient.Builder()
-                .mulLanguage(SparkIatModelEnum.ZH_CN_MULACC.getCode())
-                .signature(appId, apiKey, apiSecret)
+                .signature(appId, apiKey, apiSecret, SparkIatModelEnum.ZH_CN_MULACC.getCode())
                 .build();
 
         File file = new File(resourcePath + filePath);
@@ -357,8 +415,34 @@ public class SparkIatClientTest {
             @Override
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
             }
+
+            @Override
+            public void onClose(WebSocket webSocket, int code, String reason) {
+
+            }
         };
         sparkIatClient.send(buffer, inputStream, iatWebSocketListener);
         Thread.sleep(60000);
+    }
+
+    private static String getLastResult(Map<Integer, String> contentMap) {
+        StringBuilder result = new StringBuilder();
+        for (String part : contentMap.values()) {
+            result.append(part);
+        }
+        return result.toString();
+    }
+
+    private static StringBuilder getWsContent(SparkIatResponse.JsonParseText jsonParseText) {
+        StringBuilder reqResult = new StringBuilder();
+        List<SparkIatResponse.Ws> wsList = jsonParseText.getWs();
+        for (SparkIatResponse.Ws ws : wsList) {
+            List<SparkIatResponse.Cw> cwList = ws.getCw();
+            for (SparkIatResponse.Cw cw : cwList) {
+                // logger.info(cw.getW());
+                reqResult.append(cw.getW());
+            }
+        }
+        return reqResult;
     }
 }
