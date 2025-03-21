@@ -657,9 +657,6 @@ public class LfasrClient {
         }
 
         public LfasrClient build() throws SignatureException {
-            // 参数校验
-            validateParameters();
-                    
             // 创建实例
             LfasrClient lfasrClient = new LfasrClient(this);
             
@@ -678,24 +675,6 @@ public class LfasrClient {
             }
 
             return lfasrClient;
-        }
-
-        private void validateParameters() {
-            // 验证连接参数
-            if (maxConnections <= 0) {
-                throw new IllegalArgumentException("maxConnections必须大于0");
-            }
-            if (connTimeout <= 0) {
-                throw new IllegalArgumentException("connTimeout必须大于0");
-            }
-            if (soTimeout <= 0) {
-                throw new IllegalArgumentException("soTimeout必须大于0");
-            }
-            
-            // 验证音频相关参数
-            if ("urlLink".equals(audioMode) && StringUtils.isNullOrEmpty(audioUrl)) {
-                throw new IllegalArgumentException("当audioMode为urlLink时，audioUrl不能为空");
-            }
         }
 
     }

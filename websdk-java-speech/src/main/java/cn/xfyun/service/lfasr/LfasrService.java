@@ -27,16 +27,24 @@ public class LfasrService {
 
     private static final Logger logger = LoggerFactory.getLogger(LfasrService.class);
 
-    // 语音文件上传接口地址
+    /**
+     * 语音文件上传接口地址
+     */
     private static final String UPLOAD_URL = "https://raasr.xfyun.cn/v2/api/upload";
 
-    // 获取转写结果接口地址
+    /**
+     * 获取转写结果接口地址
+     */
     private static final String GET_RESULT_URL = "https://raasr.xfyun.cn/v2/api/getResult";
 
-    // HTTP连接器，用于发送请求
+    /**
+     * HTTP连接器，用于发送请求
+     */
     private final HttpConnector connector;
 
-    // 签名参数，包含appId、签名和时间戳
+    /**
+     * 签名参数，包含appId、签名和时间戳
+     */
     private final Map<String, String> signatureParam = new HashMap<>();
 
     /**
@@ -76,9 +84,8 @@ public class LfasrService {
      * @param param     请求参数，包含文件名、语种等信息
      * @param audioFile 音频文件对象
      * @return 转写响应结果
-     * @throws SignatureException 签名异常
      */
-    public LfasrResponse uploadFile(Map<String, String> param, File audioFile) throws SignatureException {
+    public LfasrResponse uploadFile(Map<String, String> param, File audioFile) {
         // 添加签名参数
         param.putAll(this.signatureParam);
         // 设置请求头
@@ -92,7 +99,7 @@ public class LfasrService {
                 uriBuilder.addParameter(entry.getKey(), entry.getValue());
             }
             String finalUrl = uriBuilder.build().toString();
-            // 读取音频文件数据（使用FileUtil处理大文件）
+            // 读取音频文件数据
             byte[] audioData = FileUtil.readFileToByteArray(audioFile);
             // 发送请求并获取响应
             String response = connector.postByBytes(finalUrl, header, audioData);
@@ -111,9 +118,8 @@ public class LfasrService {
      *
      * @param param 请求参数
      * @return 转写响应结果
-     * @throws SignatureException 签名异常
      */
-    public LfasrResponse uploadUrl(Map<String, String> param) throws SignatureException {
+    public LfasrResponse uploadUrl(Map<String, String> param) {
         param.putAll(this.signatureParam);
         try {
             String response = connector.post(UPLOAD_URL, param);
@@ -130,9 +136,8 @@ public class LfasrService {
      * @param orderId    订单ID，上传接口返回
      * @param resultType 结果类型，默认为transfer
      * @return 转写结果响应
-     * @throws SignatureException 签名异常
      */
-    public LfasrResponse getResult(String orderId, String resultType) throws SignatureException {
+    public LfasrResponse getResult(String orderId, String resultType) {
         Map<String, String> param = new HashMap<>();
         param.put("orderId", orderId);
         if (!StringUtils.isNullOrEmpty(resultType)) {
@@ -146,6 +151,6 @@ public class LfasrService {
             logger.error("获取转写结果失败", e);
             return LfasrResponse.error("获取结果失败: " + e.getMessage());
         }
-
     }
+
 }
