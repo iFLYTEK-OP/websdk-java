@@ -129,6 +129,11 @@ public class VoiceCloneClientTest {
             public void onClose(WebSocket webSocket, int code, String reason) {
 
             }
+
+            @Override
+            public void onPlay(byte[] bytes) {
+
+            }
         });
     }
 }

@@ -76,6 +76,13 @@ public abstract class AbstractOralWebSocketListener extends WebSocketListener {
      */
     public abstract void onBusinessFail(WebSocket webSocket, OralResponse response);
 
+    /**
+     * 生成后自动流式播放语音
+     *
+     * @param bytes 返回的音频流字节数组
+     */
+    public abstract void onPlay(byte[] bytes);
+
 
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
@@ -101,6 +108,7 @@ public abstract class AbstractOralWebSocketListener extends WebSocketListener {
                 if (result != null) {
                     byte[] audio = Base64.getDecoder().decode(result);
                     bytes = StringUtils.unitByteArray(bytes, audio);
+                    onPlay(audio);
                 }
 
                 if (payload.getAudio().getStatus() == END) {

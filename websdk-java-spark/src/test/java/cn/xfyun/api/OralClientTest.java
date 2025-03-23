@@ -129,6 +129,11 @@ public class OralClientTest {
             public void onBusinessFail(WebSocket webSocket, OralResponse response) {
 
             }
+
+            @Override
+            public void onPlay(byte[] bytes) {
+
+            }
         });
     }
 }

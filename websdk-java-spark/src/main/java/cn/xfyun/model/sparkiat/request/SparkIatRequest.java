@@ -130,6 +130,7 @@ public class SparkIatRequest {
             private String dhw;
             private String rlang;
             private Integer ltc;
+            private String ln;
             private Result result;
 
             public Iat(SparkIatClient client) {
@@ -150,10 +151,20 @@ public class SparkIatRequest {
                     this.dhw = client.getDhw();
                     this.rlang = client.getRlang();
                     this.ltc = client.getLtc();
+                } else if (SparkIatModelEnum.MUL_CN_MANDARIN.codeEquals(client.getLangType())) {
+                    this.ln = client.getLn();
                 }
             }
 
             public Iat() {
+            }
+
+            public String getLn() {
+                return ln;
+            }
+
+            public void setLn(String ln) {
+                this.ln = ln;
             }
 
             public void setEos(Integer eos) {

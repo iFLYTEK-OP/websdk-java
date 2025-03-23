@@ -195,6 +195,13 @@ public class SparkIatClient extends WebSocketClient {
      * xml
      */
     private final String textFormat;
+    /**
+     * 语种参数：
+     * 支持两种模式，
+     * 指定语种，如识别英文ln=en，可参考语种列表；
+     * 免切模式，不需要指定语种参数或传参ln=none
+     */
+    private final String ln;
 
     public SparkIatClient(Builder builder) {
         this.okHttpClient = new OkHttpClient
@@ -233,6 +240,7 @@ public class SparkIatClient extends WebSocketClient {
         this.textCompress = builder.textCompress;
         this.textFormat = builder.textFormat;
         this.langType = builder.langType;
+        this.ln = builder.ln;
 
         this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
         this.callTimeout = builder.callTimeout;
@@ -344,6 +352,10 @@ public class SparkIatClient extends WebSocketClient {
 
     public Integer getLangType() {
         return langType;
+    }
+
+    public String getLn() {
+        return ln;
     }
 
     public AbstractSignature getSignature() {
@@ -474,6 +486,7 @@ public class SparkIatClient extends WebSocketClient {
         private String textEncoding = "utf8";
         private String textCompress = "raw";
         private String textFormat = "json";
+        private String ln = "none";
 
 
         public SparkIatClient build() {
@@ -633,6 +646,11 @@ public class SparkIatClient extends WebSocketClient {
 
         public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
             this.retryOnConnectionFailure = retryOnConnectionFailure;
+            return this;
+        }
+
+        public Builder ln(String ln) {
+            this.ln = ln;
             return this;
         }
 
