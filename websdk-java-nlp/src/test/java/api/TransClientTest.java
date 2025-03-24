@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import static org.junit.Assert.*;
@@ -21,6 +23,7 @@ import static org.junit.Assert.*;
 @PowerMockIgnore({"javax.crypto.*", "javax.net.ssl.*"})
 public class TransClientTest {
 
+    private static final Logger logger = LoggerFactory.getLogger(TransClientTest.class);
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getTransClientApiKey();
     private static final String apiSecret = PropertiesConfig.getTransClientApiSecret();
@@ -65,18 +68,20 @@ public class TransClientTest {
         TransClient client = new TransClient.Builder(appId, apiKey, apiSecret).build();
         String niuResponse = client.sendNiuTrans("6月9日是科大讯飞司庆日。");
         String itsResponse = client.sendIst("6月9日是科大讯飞司庆日。");
-        System.out.println(niuResponse);
-        System.out.println(itsResponse);
+        String itsProResponse = client.sendIstPro("6月9日是科大讯飞司庆日。");
+        logger.info(niuResponse);
+        logger.info(itsResponse);
+        logger.info(itsProResponse);
 
         assertNotNull(niuResponse);
         assertNotNull(itsResponse);
-
+        assertNotNull(itsProResponse);
     }
 
     @Test
     public void testErrorSignature() throws Exception {
         TransClient client = new TransClient.Builder("123", apiKey, apiSecret).build();
         String niuResponse = client.sendNiuTrans("今天天气很好。");
-        System.out.println(niuResponse);
+        logger.info(niuResponse);
     }
 }

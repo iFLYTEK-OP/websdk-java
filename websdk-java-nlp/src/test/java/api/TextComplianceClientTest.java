@@ -1,6 +1,6 @@
 package api;
 
-import cn.xfyun.api.TextCheckClient;
+import cn.xfyun.api.TextComplianceClient;
 import cn.xfyun.exception.BusinessException;
 import config.PropertiesConfig;
 import org.junit.Assert;
@@ -12,26 +12,27 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 
 /**
- * @author mqgao
+ * @author zyding
  * @version 1.0
- * @date 2021/6/11 10:14
+ * @date 2025/3/13 10:14
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TextCheckClient.class})
+@PrepareForTest({TextComplianceClient.class})
 @PowerMockIgnore({"cn.xfyun.util.HttpConnector", "javax.crypto.*", "javax.net.ssl.*"})
-public class TextCheckClientTest {
+public class TextComplianceClientTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(TextCheckClientTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TextComplianceClientTest.class);
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getTextCheckClientApiKey();
-    private static final String apiSecret = PropertiesConfig.getTextCheckClientApiSecret();
+    private static final String apiKey = PropertiesConfig.getTextComplianceClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getTextComplianceClientApiSecret();
 
     @Test
     public void defaultParamTest() {
-        TextCheckClient client = new TextCheckClient
+        TextComplianceClient client = new TextComplianceClient
                 .Builder(appId, apiKey, apiSecret).build();
         Assert.assertEquals(client.getAppId(), appId);
         Assert.assertEquals(client.getApiKey(), apiKey);
@@ -43,42 +44,36 @@ public class TextCheckClientTest {
 
     @Test
     public void testParamBuild() {
-        TextCheckClient client = new TextCheckClient
+        TextComplianceClient client = new TextComplianceClient
                 .Builder(appId, apiKey, apiSecret)
-                .compress("gzip")
-                .format("plain")
-                .encoding("base64")
-                .status(2)
+                .isMatchAll(true)
+                .libIds(new ArrayList<>())
+                .categories(new ArrayList<>())
                 .build();
-        Assert.assertEquals(client.getServiceId(), "s9a87e3ec");
-        Assert.assertEquals(client.getCompress(), "gzip");
-        Assert.assertEquals(client.getFormat(), "plain");
-        Assert.assertEquals(client.getEncoding(), "base64");
-        Assert.assertEquals(client.getStatus(), 2);
+        Assert.assertTrue(client.isMatchAll());
     }
 
 
     @Test
     public void testSuccess() throws Exception {
-        TextCheckClient correctionClient = new TextCheckClient
+        TextComplianceClient correctionClient = new TextComplianceClient
                 .Builder(appId, apiKey, apiSecret)
                 .build();
-        String result = correctionClient.send("画蛇天足");
+        String result = correctionClient.send("塔利班组织联合东突组织欲图。");
         logger.info("返回结果: {}", result);
     }
 
     @Test
     public void testSendNull() throws Exception {
-        TextCheckClient correctionClient = new TextCheckClient
+        TextComplianceClient correctionClient = new TextComplianceClient
                 .Builder(appId, apiKey, apiSecret)
                 .build();
         try {
             String result = correctionClient.send("");
             logger.info("返回结果: {}", result);
         } catch (BusinessException e) {
-            logger.error("请求异常: {}", e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
-
     }
 
 }

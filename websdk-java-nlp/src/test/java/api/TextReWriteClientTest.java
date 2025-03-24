@@ -1,6 +1,6 @@
 package api;
 
-import cn.xfyun.api.TextCheckClient;
+import cn.xfyun.api.TextRewriteClient;
 import cn.xfyun.exception.BusinessException;
 import config.PropertiesConfig;
 import org.junit.Assert;
@@ -12,26 +12,23 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 /**
- * @author mqgao
+ * @author zyding
  * @version 1.0
- * @date 2021/6/11 10:14
+ * @date 2025/3/13 10:14
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TextCheckClient.class})
+@PrepareForTest({TextRewriteClient.class})
 @PowerMockIgnore({"cn.xfyun.util.HttpConnector", "javax.crypto.*", "javax.net.ssl.*"})
-public class TextCheckClientTest {
-
-    private static final Logger logger = LoggerFactory.getLogger(TextCheckClientTest.class);
-
+public class TextReWriteClientTest {
+    private static final Logger logger = LoggerFactory.getLogger(TextReWriteClientTest.class);
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getTextCheckClientApiKey();
-    private static final String apiSecret = PropertiesConfig.getTextCheckClientApiSecret();
+    private static final String apiKey = PropertiesConfig.getTextComplianceClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getTextComplianceClientApiSecret();
 
     @Test
     public void defaultParamTest() {
-        TextCheckClient client = new TextCheckClient
+        TextRewriteClient client = new TextRewriteClient
                 .Builder(appId, apiKey, apiSecret).build();
         Assert.assertEquals(client.getAppId(), appId);
         Assert.assertEquals(client.getApiKey(), apiKey);
@@ -43,40 +40,35 @@ public class TextCheckClientTest {
 
     @Test
     public void testParamBuild() {
-        TextCheckClient client = new TextCheckClient
+        TextRewriteClient client = new TextRewriteClient
                 .Builder(appId, apiKey, apiSecret)
-                .compress("gzip")
-                .format("plain")
-                .encoding("base64")
-                .status(2)
+                .level(1)
                 .build();
-        Assert.assertEquals(client.getServiceId(), "s9a87e3ec");
-        Assert.assertEquals(client.getCompress(), "gzip");
-        Assert.assertEquals(client.getFormat(), "plain");
-        Assert.assertEquals(client.getEncoding(), "base64");
-        Assert.assertEquals(client.getStatus(), 2);
+        Assert.assertEquals(1, client.getLevel());
     }
 
 
     @Test
     public void testSuccess() throws Exception {
-        TextCheckClient correctionClient = new TextCheckClient
+        TextRewriteClient correctionClient = new TextRewriteClient
                 .Builder(appId, apiKey, apiSecret)
                 .build();
-        String result = correctionClient.send("画蛇天足");
+        String result = correctionClient.send("随着我国城市化脚步的不断加快，园林工程建设的数量也在不断上升，城市对于园林工程的质量要求也随之上升，" +
+                "然而就当前我国园林工程管理的实践而言，就园林工程质量管理这一环节还存在许多不足之处，本文在探讨园林工程质量内涵的基础上，" +
+                "深入进行质量管理策略探讨，目的是保障我国园林工程施工质量和提升整体发展效率。", 6);
         logger.info("返回结果: {}", result);
     }
 
     @Test
     public void testSendNull() throws Exception {
-        TextCheckClient correctionClient = new TextCheckClient
+        TextRewriteClient correctionClient = new TextRewriteClient
                 .Builder(appId, apiKey, apiSecret)
                 .build();
         try {
             String result = correctionClient.send("");
             logger.info("返回结果: {}", result);
         } catch (BusinessException e) {
-            logger.error("请求异常: {}", e.getMessage(), e);
+            logger.error("请求失败", e);
         }
 
     }

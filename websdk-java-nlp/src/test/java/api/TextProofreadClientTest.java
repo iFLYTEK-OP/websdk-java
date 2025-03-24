@@ -1,6 +1,6 @@
 package api;
 
-import cn.xfyun.api.TextCheckClient;
+import cn.xfyun.api.TextProofreadClient;
 import cn.xfyun.exception.BusinessException;
 import config.PropertiesConfig;
 import org.junit.Assert;
@@ -14,24 +14,24 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * @author mqgao
+ * @author zyding
  * @version 1.0
- * @date 2021/6/11 10:14
+ * @date 2025/3/13 10:14
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TextCheckClient.class})
+@PrepareForTest({TextProofreadClient.class})
 @PowerMockIgnore({"cn.xfyun.util.HttpConnector", "javax.crypto.*", "javax.net.ssl.*"})
-public class TextCheckClientTest {
+public class TextProofreadClientTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(TextCheckClientTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TextProofreadClientTest.class);
 
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getTextCheckClientApiKey();
-    private static final String apiSecret = PropertiesConfig.getTextCheckClientApiSecret();
+    private static final String apiKey = PropertiesConfig.getTextProofClientApiKey();
+    private static final String apiSecret = PropertiesConfig.getTextProofClientApiSecret();
 
     @Test
     public void defaultParamTest() {
-        TextCheckClient client = new TextCheckClient
+        TextProofreadClient client = new TextProofreadClient
                 .Builder(appId, apiKey, apiSecret).build();
         Assert.assertEquals(client.getAppId(), appId);
         Assert.assertEquals(client.getApiKey(), apiKey);
@@ -43,7 +43,7 @@ public class TextCheckClientTest {
 
     @Test
     public void testParamBuild() {
-        TextCheckClient client = new TextCheckClient
+        TextProofreadClient client = new TextProofreadClient
                 .Builder(appId, apiKey, apiSecret)
                 .compress("gzip")
                 .format("plain")
@@ -60,25 +60,24 @@ public class TextCheckClientTest {
 
     @Test
     public void testSuccess() throws Exception {
-        TextCheckClient correctionClient = new TextCheckClient
+        TextProofreadClient correctionClient = new TextProofreadClient
                 .Builder(appId, apiKey, apiSecret)
                 .build();
-        String result = correctionClient.send("画蛇天足");
-        logger.info("返回结果: {}", result);
+        String result = correctionClient.send("第二个百年目标");
+        logger.info("返回结果：{}", result);
     }
 
     @Test
     public void testSendNull() throws Exception {
-        TextCheckClient correctionClient = new TextCheckClient
+        TextProofreadClient correctionClient = new TextProofreadClient
                 .Builder(appId, apiKey, apiSecret)
                 .build();
         try {
             String result = correctionClient.send("");
-            logger.info("返回结果: {}", result);
+            logger.info("返回结果：{}", result);
         } catch (BusinessException e) {
-            logger.error("请求异常: {}", e.getMessage(), e);
+            logger.error(e.getMessage(), e);
         }
-
     }
 
 }
