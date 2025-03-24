@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 /**
  * 文件工具类
  *
@@ -15,9 +12,9 @@ import org.slf4j.LoggerFactory;
  */
 public class FileUtil {
 
-    private static final Logger logger = LoggerFactory.getLogger(FileUtil.class);
-
-    // 默认缓冲区大小：8KB
+    /**
+     * 默认缓冲区大小：8KB
+     */
     private static final int DEFAULT_BUFFER_SIZE = 8192;
 
     /**
@@ -37,12 +34,10 @@ public class FileUtil {
         if (!file.isFile()) {
             throw new IOException("不是一个文件: " + file);
         }
-
         // 对于小文件，使用简单方法
         if (file.length() < DEFAULT_BUFFER_SIZE * 10) {
             return readSmallFile(file);
         }
-
         // 对于大文件，使用缓冲区分批读取
         return readLargeFile(file);
     }
@@ -56,12 +51,10 @@ public class FileUtil {
             fileInputStream = new FileInputStream(file);
             byte[] buffer = new byte[(int) file.length()];
             int bytesRead = fileInputStream.read(buffer);
-
             // 检查是否完整读取
             if (bytesRead != buffer.length) {
                 throw new IOException("无法完整读取文件，预期读取 " + buffer.length + " 字节，实际读取 " + bytesRead + " 字节");
             }
-
             return buffer;
         } finally {
             IOCloseUtil.close(fileInputStream);
@@ -74,19 +67,15 @@ public class FileUtil {
     private static byte[] readLargeFile(File file) throws IOException {
         FileInputStream fileInputStream = null;
         ByteArrayOutputStream outputStream = null;
-
         try {
             fileInputStream = new FileInputStream(file);
             outputStream = new ByteArrayOutputStream();
-
             byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             int bytesRead;
-
             // 分批读取文件内容
             while ((bytesRead = fileInputStream.read(buffer)) != -1) {
                 outputStream.write(buffer, 0, bytesRead);
             }
-
             return outputStream.toByteArray();
         } finally {
             IOCloseUtil.close(outputStream);
