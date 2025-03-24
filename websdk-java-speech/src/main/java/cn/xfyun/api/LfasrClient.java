@@ -4,8 +4,6 @@ import cn.xfyun.exception.LfasrException;
 import cn.xfyun.model.response.lfasr.LfasrResponse;
 import cn.xfyun.service.lfasr.LfasrService;
 import cn.xfyun.util.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.net.URLEncoder;
@@ -17,8 +15,6 @@ import java.util.Map;
  * 录音文件转写客户端
  */
 public class LfasrClient {
-
-    private static final Logger logger = LoggerFactory.getLogger(LfasrClient.class);
 
     /**
      * 转写执行服务V2
@@ -281,20 +277,21 @@ public class LfasrClient {
     public LfasrResponse uploadFile(String audioFilePath) throws LfasrException, SignatureException {
         // 业务校验
         if (StringUtils.isNullOrEmpty(audioFilePath)) {
-            throw new LfasrException("音频文件地址为空!");
+            throw new LfasrException("音频文件地址为空！");
         }
 
         // 文件存在性和大小校验
         File audioFile = new File(audioFilePath);
         if (!audioFile.exists()) {
-            throw new LfasrException(audioFilePath + "不存在!");
+            throw new LfasrException(audioFilePath + "文件不存在");
         }
         if (audioFile.length() > FILE_UPLOAD_MAXSIZE) {
-            throw new LfasrException(audioFilePath + " 文件过大! (500M)");
+            throw new LfasrException(audioFilePath + " 文件过大(500M)");
         }
 
         // 构建参数
         Map<String, String> param = new HashMap<>(32);
+        this.audioMode = "fileStream";
         paramHandler(param, audioFile);
 
         // 执行文件任务
@@ -312,7 +309,7 @@ public class LfasrClient {
     public LfasrResponse uploadUrl(String audioUrl) throws LfasrException, SignatureException {
 
         if (StringUtils.isNullOrEmpty(audioUrl)) {
-            throw new LfasrException("音频链接为空!");
+            throw new LfasrException("音频链接为空");
         }
 
         // 构建参数
@@ -335,6 +332,9 @@ public class LfasrClient {
      * @throws SignatureException 签名异常
      */
     public LfasrResponse getResult(String orderId) throws SignatureException {
+        if (StringUtils.isNullOrEmpty(orderId)) {
+            throw new LfasrException("orderId为空");
+        }
         return getResult(orderId, null);
     }
 
@@ -353,6 +353,9 @@ public class LfasrClient {
      * @throws SignatureException 签名异常
      */
     public LfasrResponse getResult(String orderId, String resultType) throws SignatureException {
+        if (StringUtils.isNullOrEmpty(orderId)) {
+            throw new LfasrException("orderId为空");
+        }
         return this.lfasrService.getResult(orderId, resultType);
     }
 
@@ -369,9 +372,6 @@ public class LfasrClient {
         param.put("duration", this.duration == null ? "1" : this.duration + "");
 
         if ("urlLink".equals(this.audioMode)) {
-            if (StringUtils.isNullOrEmpty(this.audioUrl)) {
-                throw new LfasrException("音频链接为空!");
-            }
             try {
                 String encodedUrl = URLEncoder.encode(this.audioUrl, "UTF-8");
                 param.put("audioUrl", encodedUrl);
@@ -450,11 +450,11 @@ public class LfasrClient {
         }
 
         if (this.engSmoothproc != null) {
-            param.put("eng_smoothproc", this.engSmoothproc ? "true" : "false");
+            param.put("eng_smoothproc", Boolean.toString(this.engSmoothproc));
         }
 
         if (this.engColloqproc != null) {
-            param.put("eng_colloqproc", this.engColloqproc ? "true" : "false");
+            param.put("eng_colloqproc", Boolean.toString(this.engColloqproc));
         }
 
         if (this.engVadMdn != null) {
@@ -673,7 +673,6 @@ public class LfasrClient {
                     }
                 }
             }
-
             return lfasrClient;
         }
 

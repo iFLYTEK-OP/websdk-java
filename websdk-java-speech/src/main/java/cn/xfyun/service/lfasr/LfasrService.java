@@ -109,7 +109,7 @@ public class LfasrService {
             return LfasrResponse.error("文件上传失败: " + e.getMessage());
         } catch (URISyntaxException e) {
             logger.error("构建URL失败", e);
-            return LfasrResponse.error("构建请求URL失败");
+            return LfasrResponse.error("构建请求URL失败" + e.getMessage());
         }
     }
 

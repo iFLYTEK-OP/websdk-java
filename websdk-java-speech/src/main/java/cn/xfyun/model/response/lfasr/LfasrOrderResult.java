@@ -3,10 +3,10 @@ package cn.xfyun.model.response.lfasr;
 import java.io.Serializable;
 import java.util.List;
 
+import cn.xfyun.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
@@ -17,9 +17,9 @@ import com.google.gson.annotations.SerializedName;
  */
 public class LfasrOrderResult implements Serializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(LfasrOrderResult.class);
-
     private static final long serialVersionUID = 1L;
+
+    private static final Logger logger = LoggerFactory.getLogger(LfasrOrderResult.class);
 
     /**
      * 做顺滑功能的识别结果
@@ -84,16 +84,15 @@ public class LfasrOrderResult implements Serializable {
             }
 
             try {
-                Gson gson = new Gson();
                 if (json1BestRaw instanceof String) {
                     // 直接解析JSON字符串
-                    return gson.fromJson((String) json1BestRaw, Json1Best.class);
+                    return StringUtils.gson.fromJson((String) json1BestRaw, Json1Best.class);
                 } else if (json1BestRaw instanceof JsonObject) {
                     // JsonObject转换为目标对象
-                    return gson.fromJson(json1BestRaw.toString(), Json1Best.class);
+                    return StringUtils.gson.fromJson(json1BestRaw.toString(), Json1Best.class);
                 } else {
                     // 其他类型先转JSON字符串再解析
-                    return gson.fromJson(gson.toJson(json1BestRaw), Json1Best.class);
+                    return StringUtils.gson.fromJson(StringUtils.gson.toJson(json1BestRaw), Json1Best.class);
                 }
             } catch (Exception e) {
                 logger.error("解析json1Best失败, 原生数据: {}", json1BestRaw, e);
