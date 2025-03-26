@@ -10,7 +10,7 @@
 	System.out.println("返回结果: " + result);
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/TextCheckClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/nlp/TextCheckClientApp.java)
 **文本纠错参数**
 
 | 参数名   | 类型   | 必传 | 描述                                                         | 示例    |

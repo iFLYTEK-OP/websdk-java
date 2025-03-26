@@ -13,7 +13,7 @@
         System.out.println(client.faceContrast(imageBase64, "jpg"));
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/FaceDetectClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/face/FaceDetectClientApp.java)
 
 ##### 人脸检测和属性分析参数
 |参数名|类型|必传|描述|示例|

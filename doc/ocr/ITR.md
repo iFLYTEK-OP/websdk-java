@@ -12,7 +12,7 @@
         System.out.println(client.itr(imageBase64));
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/ItrClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/ocr/ItrClientApp.java)
 
 ##### 识别参数
 |参数名|类型|必传|描述|示例|

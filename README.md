@@ -10,11 +10,11 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-spark</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.3</version>
+    <version>2.0.4</version>
 </dependency>
 ```
 
-[1、讯飞智文PPT-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/pptapi.md)
+[1、讯飞智文PPT-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/pptapi.md)
 
 ### 语音相关能力
 ```xml
@@ -22,26 +22,30 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-speech</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.3</version>
+    <version>3.0.0</version>
 </dependency>
 ```
-[1、非实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/LFASR.md)
+重要版本更新说明
+- 从 2.x 升级到 3.0.0 版本需注意，此次为不兼容升级
+- 主要变更：非实时语音转写服务升级，支持更丰富的参数配置
 
-[2、实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/RTASR.md)
+[1、非实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/speech/LFASR.md)
 
-[3、在线语音合成文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/TTS.md)
+[2、实时语音转写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/speech/RTASR.md)
 
-[4、语音听写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/IAT.md)
+[3、在线语音合成文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/speech/TTS.md)
 
-[5、语音评测文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/ISE.md)
+[4、语音听写文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/speech/IAT.md)
 
-[6、语音评测（普通版）](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/ISE_HTTP.md)
+[5、语音评测文档](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/speech/ISE.md)
 
-[7、性别年龄识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/IGR.md)
+[6、语音评测（普通版）](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/speech/ISE_HTTP.md)
 
-[8、歌曲识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/QBH.md)
+[7、性别年龄识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/speech/IGR.md)
 
-[9、客服能力中间件](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/TELROBOT.md)
+[8、歌曲识别](https://github.com/iFLYTEK-OP/websdk-java-speech/blob/master/doc/speech/QBH.md)
+
+[9、客服能力中间件](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/speech/TELROBOT.md)
 
 ### 自然语言处理
 ```xml
@@ -49,7 +53,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-nlp</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.3</version>
+    <version>2.0.4</version>
 </dependency>
 ```
 
@@ -68,7 +72,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-ocr</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.3</version>
+    <version>2.0.4</version>
 </dependency>
 ```
 
@@ -98,7 +102,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-face-detector</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.3</version>
+    <version>2.0.4</version>
 </dependency>
 ```
 
