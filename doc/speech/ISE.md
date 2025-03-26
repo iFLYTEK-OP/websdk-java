@@ -26,7 +26,7 @@ iseClient.send(file, new AbstractIseWebSocketListener() {
 
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/IseClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/speech/IseClientApp.java)
 
 **评测参数**
 

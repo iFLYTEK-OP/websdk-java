@@ -13,7 +13,7 @@
         System.out.println(client.intsigRecg(imageBase64));
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/IntsigOcrClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/ocr/IntsigOcrClientApp.java)
 
 ##### 识别参数
 |参数名|类型|必传|描述|示例|

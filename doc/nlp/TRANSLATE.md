@@ -21,7 +21,7 @@ System.out.println("小牛翻译接口返回结果为："+niuResponse);
 System.out.println("自研翻译接口返回结果为："+itsResponse);
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/TranslateApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/nlp/TranslateApp.java)
 
 **小牛翻译参数**
 

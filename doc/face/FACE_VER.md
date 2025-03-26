@@ -13,7 +13,7 @@
         System.out.println(client.compareFace(imageBase64, imageBase64));
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/FaceVerificationClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/face/FaceVerificationClientApp.java)
 
 ##### 人脸检测和属性分析参数
 |参数名|类型|必传|描述|示例|

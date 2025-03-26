@@ -65,7 +65,7 @@ public class AIPPTClientApp {
 }
 ```
 
-更详细请参见 [Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/AIPPTClientApp.java)
+更详细请参见 [Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/spark/AIPPTClientApp.java)
 
 
 ### 接口域名

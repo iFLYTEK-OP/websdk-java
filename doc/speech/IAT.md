@@ -26,7 +26,7 @@ iatClient.send(file, new AbstractIatWebSocketListener() {
 
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/IatClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/speech/IatClientApp.java)
 
 **听写参数**
 

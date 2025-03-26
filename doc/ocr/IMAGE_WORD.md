@@ -13,7 +13,7 @@
         System.out.println(client.imageWord(imageBase64, "jpg"));
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/ImageWordClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/ocr/ImageWordClientApp.java)
 
 ##### 图片类识别参数
 |参数名|类型|必传|描述|示例|

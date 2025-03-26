@@ -33,7 +33,7 @@ ttsClient.send("语音合成流式接口将文字信息转化为声音信息", n
             });
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/TtsClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/speech/TtsClientApp.java)
 
 **合成参数**
 

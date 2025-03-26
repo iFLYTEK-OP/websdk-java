@@ -10,7 +10,7 @@
         System.out.println(client.silentDetection(audioBase64));
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/SilentDetectionClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/face/SilentDetectionClientApp.java)
 
 ##### 人脸检测和属性分析参数
 |参数名|类型|必传|描述|示例|
