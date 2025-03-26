@@ -86,6 +86,10 @@ public abstract class HttpClient extends Client {
         }
     }
 
+    protected String sendBodyPost(String url, Map<String, String> header, RequestBody requestBody) throws IOException {
+        return sendPost(url, header, requestBody);
+    }
+
     public HttpClient(HttpBuilder builder) {
         this.hostUrl = builder.getHostUrl();
         this.appId = builder.getAppId();
@@ -99,6 +103,9 @@ public abstract class HttpClient extends Client {
                 .writeTimeout(builder.getWriteTimeout(), TimeUnit.SECONDS)
                 .retryOnConnectionFailure(builder.getRetryOnConnectionFailure())
                 .build();
+    }
+
+    public HttpClient() {
     }
 
     public boolean getRetryOnConnectionFailure() {

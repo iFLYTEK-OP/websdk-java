@@ -1,6 +1,8 @@
 package config;
 
 import cn.xfyun.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,6 +15,9 @@ import java.util.Properties;
  * @date : 2021年04月02日
  */
 public class PropertiesConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(PropertiesConfig.class);
+
     private static final String appId;
     private static final String ltpClientApiKey;
     private static final String saClientApiKey;
@@ -20,6 +25,23 @@ public class PropertiesConfig {
     private static final String textCheckClientApiSecret;
     private static final String transClientApiKey;
     private static final String transClientApiSecret;
+    private static final String aiPPTClientApiKey;
+    private static final String aiPPTClientApiSecret;
+    private static final String resumeGenClientApiKey;
+    private static final String resumeGenClientApiSecret;
+    private static final String oralAPPKey;
+    private static final String oralAPPSecret;
+    private static final String voiceCloneAPPKey;
+    private static final String voiceCloneAPPSecret;
+    private static final String sparkIatAPPKey;
+    private static final String sparkIatAPPSecret;
+    private static final String imageGenAPPKey;
+    private static final String imageGenAPPSecret;
+    private static final String imageGenHidreamAPPKey;
+    private static final String imageGenHidreamAPPSecret;
+    private static final String massAPPKey;
+    private static final String massAPPSecret;
+    private static final String massAPIKey;
 
     static {
         Properties properties = new Properties();
@@ -27,7 +49,7 @@ public class PropertiesConfig {
         try {
             properties.load(new FileInputStream(PropertiesConfig.class.getResource("/").getPath() + "test.properties"));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("load test.properties error", e);
         }
         appId = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getenv("appId") : properties.getProperty("appId");
         ltpClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("ltpClientApiKey")) ? System.getenv("ltpClientApiKey") : properties.getProperty("ltpClientApiKey");
@@ -36,6 +58,23 @@ public class PropertiesConfig {
         textCheckClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("textCheckClientApiSecret")) ? System.getenv("textCheckClientApiSecret") : properties.getProperty("textCheckClientApiSecret");
         transClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("transClientApiKey")) ? System.getenv("transClientApiKey") : properties.getProperty("transClientApiKey");
         transClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("transClientApiSecret")) ? System.getenv("transClientApiSecret") : properties.getProperty("transClientApiSecret");
+        resumeGenClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("resumeGenClientApiKey")) ? System.getenv("resumeGenClientApiKey") : properties.getProperty("resumeGenClientApiKey");
+        resumeGenClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("resumeGenClientApiSecret")) ? System.getenv("resumeGenClientApiSecret") : properties.getProperty("resumeGenClientApiSecret");
+        oralAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("oralAPPKey")) ? System.getenv("oralAPPKey") : properties.getProperty("oralAPPKey");
+        oralAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("oralAPPSecret")) ? System.getenv("oralAPPSecret") : properties.getProperty("oralAPPSecret");
+        voiceCloneAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("voiceCloneAPPKey")) ? System.getenv("voiceCloneAPPKey") : properties.getProperty("voiceCloneAPPKey");
+        voiceCloneAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("voiceCloneAPPSecret")) ? System.getenv("voiceCloneAPPSecret") : properties.getProperty("voiceCloneAPPSecret");
+        sparkIatAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("sparkIatAPPKey")) ? System.getenv("sparkIatAPPKey") : properties.getProperty("sparkIatAPPKey");
+        sparkIatAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("sparkIatAPPSecret")) ? System.getenv("sparkIatAPPSecret") : properties.getProperty("sparkIatAPPSecret");
+        imageGenAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("imageGenAPPKey")) ? System.getenv("imageGenAPPKey") : properties.getProperty("imageGenAPPKey");
+        imageGenAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("imageGenAPPSecret")) ? System.getenv("imageGenAPPSecret") : properties.getProperty("imageGenAPPSecret");
+        imageGenHidreamAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("imageGenHidreamAPPKey")) ? System.getenv("imageGenHidreamAPPKey") : properties.getProperty("imageGenHidreamAPPKey");
+        imageGenHidreamAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("imageGenHidreamAPPSecret")) ? System.getenv("imageGenHidreamAPPSecret") : properties.getProperty("imageGenHidreamAPPSecret");
+        massAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("massAPPKey")) ? System.getenv("massAPPKey") : properties.getProperty("massAPPKey");
+        massAPIKey = StringUtils.isNullOrEmpty(properties.getProperty("massAPIKey")) ? System.getenv("massAPIKey") : properties.getProperty("massAPIKey");
+        massAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("massAPPSecret")) ? System.getenv("massAPPSecret") : properties.getProperty("massAPPSecret");
+        aiPPTClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("aiPPTClientApiKey")) ? System.getenv("aiPPTClientApiKey") : properties.getProperty("aiPPTClientApiKey");
+        aiPPTClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("aiPPTClientApiSecret")) ? System.getenv("aiPPTClientApiSecret") : properties.getProperty("aiPPTClientApiSecret");
     }
 
     public static String getAppId() {
@@ -64,5 +103,73 @@ public class PropertiesConfig {
 
     public static String getTransClientApiSecret() {
         return transClientApiSecret;
+    }
+
+    public static String getAIPPTClientApiKey() {
+        return aiPPTClientApiKey;
+    }
+
+    public static String getAIPPTClientApiSecret() {
+        return aiPPTClientApiSecret;
+    }
+
+    public static String getResumeGenClientApiKey() {
+        return resumeGenClientApiKey;
+    }
+
+    public static String getResumeGenClientApiSecret() {
+        return resumeGenClientApiSecret;
+    }
+
+    public static String getOralAPPKey() {
+        return oralAPPKey;
+    }
+
+    public static String getOralAPPSecret() {
+        return oralAPPSecret;
+    }
+
+    public static String getVoiceCloneAPPSecret() {
+        return voiceCloneAPPSecret;
+    }
+
+    public static String getVoiceCloneAPPKey() {
+        return voiceCloneAPPKey;
+    }
+
+    public static String getSparkIatAPPKey() {
+        return sparkIatAPPKey;
+    }
+
+    public static String getSparkIatAPPSecret() {
+        return sparkIatAPPSecret;
+    }
+
+    public static String getImageGenAPPKey() {
+        return imageGenAPPKey;
+    }
+
+    public static String getImageGenAPPSecret() {
+        return imageGenAPPSecret;
+    }
+
+    public static String getImageGenHidreamAPPKey() {
+        return imageGenHidreamAPPKey;
+    }
+
+    public static String getImageGenHidreamAPPSecret() {
+        return imageGenHidreamAPPSecret;
+    }
+
+    public static String getMassAPPKey() {
+        return massAPPKey;
+    }
+
+    public static String getMassAPIKey() {
+        return massAPIKey;
+    }
+
+    public static String getMassAPPSecret() {
+        return massAPPSecret;
     }
 }
