@@ -11,7 +11,7 @@
         String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
         System.out.println(client.bankcard(imageBase64));
 ```
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/BankcardClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/ocr/BankcardClientApp.java)
 ##### 银行卡识别参数
 |参数名|类型|必传|描述|示例|
 |---|---|---|---|---|

@@ -11,7 +11,7 @@
         String response = ltpClient.send("我来自北方");
         System.out.println(response);
 ```
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/LtpClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/nlp/LtpClientApp.java)
 ##### 合成参数
 |参数名|类型|必传|描述|示例|
 |---|---|---|---|---|

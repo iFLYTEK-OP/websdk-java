@@ -13,7 +13,7 @@
         System.out.println(client.send(imageBase64, "jpg"));
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/PlaceRecClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/ocr/PlaceRecClientApp.java)
 
 ##### 名片识别参数
 |参数名|类型|必传|描述|示例|

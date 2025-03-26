@@ -10,7 +10,7 @@
        System.out.println(saClinet.send("你好啊"));
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/SaClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/nlp/SaClientApp.java)
 
 **情感分析参数**
 

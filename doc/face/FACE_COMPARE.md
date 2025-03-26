@@ -13,7 +13,7 @@
         System.out.println(client.faceCompare(imageBase64, "jpg", imageBase64, "jpg"));
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/FaceCompareClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/face/FaceCompareClientApp.java)
 
 ##### 人脸比对参数
 |参数名|类型|必传|描述|示例|

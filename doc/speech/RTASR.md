@@ -71,7 +71,7 @@
    		}
    		latch.await();
 ```
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/RtasrClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/speech/RtasrClientApp.java)
 ##### 实时语音转写参数
 |参数名|类型|必传|描述|示例|
 |---|---|---|---|---|

@@ -17,7 +17,7 @@
         System.out.println(client.recognition("测试", bytes));
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/AntiSpoofClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/face/AntiSpoofClientApp.java)
 
 ##### 人脸特征分析年龄参数
 |参数名|类型|必传|描述|示例|

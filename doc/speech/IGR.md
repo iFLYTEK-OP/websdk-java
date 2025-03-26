@@ -25,7 +25,7 @@ import cn.xfyun.api.IgrClient;
 
 ```
 
-更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/IgrClientApp.java)
+更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/speech/IgrClientApp.java)
 
 **评测参数**
 
