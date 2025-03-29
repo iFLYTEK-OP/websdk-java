@@ -4,10 +4,9 @@ import cn.xfyun.api.OralClient;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @program: websdk-java
- * @description:
- * @author: zyding6
- * @create: 2025/3/18 13:42
+ * 超拟人请求实体类
+ *
+ * @author zyding6
  **/
 public class OralRequest {
 

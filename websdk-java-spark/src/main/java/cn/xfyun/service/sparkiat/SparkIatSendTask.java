@@ -60,9 +60,7 @@ public class SparkIatSendTask extends AbstractTask {
                 // 发送完第一帧改变status 为 1
                 status = STATUS_CONTINUED_FRAME;
                 String first = StringUtils.gson.toJson(request);
-                if (client().getLogRequest()) {
-                    logger.info("发送第一帧数据：{}", first);
-                }
+                logger.debug("发送第一帧数据：{}", first);
                 return first;
 
             // 中间帧status = 1
@@ -74,9 +72,7 @@ public class SparkIatSendTask extends AbstractTask {
                 continuedPayload.getAudio().setStatus(STATUS_CONTINUED_FRAME);
                 request.setPayload(continuedPayload);
                 String continued = StringUtils.gson.toJson(request);
-                if (client().getLogRequest()) {
-                    logger.debug("发送中间帧数据：{}", continued);
-                }
+                logger.debug("发送中间帧数据：{}", continued);
                 return continued;
 
             // 最后一帧音频status = 2 ，标志音频发送结束
@@ -88,9 +84,7 @@ public class SparkIatSendTask extends AbstractTask {
                 lastPayload.getAudio().setStatus(STATUS_LAST_FRAME);
                 request.setPayload(lastPayload);
                 String last = StringUtils.gson.toJson(request);
-                if (client().getLogRequest()) {
-                    logger.debug("发送最后一帧数据：{}", last);
-                }
+                logger.debug("发送最后一帧数据：{}", last);
                 return last;
             default:
                 return null;

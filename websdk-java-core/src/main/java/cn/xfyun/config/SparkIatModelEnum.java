@@ -1,7 +1,7 @@
 package cn.xfyun.config;
 
 /**
- * 转写大模型类型实体类
+ * 转写大模型类型枚举类
  *
  * @author zyding6
  **/

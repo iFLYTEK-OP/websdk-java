@@ -5,9 +5,11 @@ import cn.xfyun.model.RoleContent;
 import cn.xfyun.model.finetuning.response.MassResponse;
 import cn.xfyun.service.finetuning.AbstractMassWebSocketListener;
 import cn.xfyun.util.StringUtils;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import config.PropertiesConfig;
-import okhttp3.Response;
-import okhttp3.WebSocket;
+import okhttp3.*;
+import okio.BufferedSource;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -54,13 +56,11 @@ public class MassClientTest {
                 .retryOnConnectionFailure(true)
                 .chatId("666")
                 .domain("1")
-                .logRequest(Boolean.TRUE)
                 .maxTokens(8960)
                 .pingInterval(0, TimeUnit.SECONDS)
                 .patchId(new ArrayList<>())
                 .topK(1)
                 .temperature(0.5F)
-                .stream(true)
                 .build();
 
         Assert.assertEquals(massClient.getAppId(), appId);
@@ -74,8 +74,6 @@ public class MassClientTest {
         Assert.assertEquals(massClient.getReadTimeout(), 10000);
         Assert.assertEquals(massClient.getPingInterval(), 0);
         Assert.assertTrue(massClient.isRetryOnConnectionFailure());
-        Assert.assertTrue(massClient.getLogRequest());
-        Assert.assertTrue(massClient.getStream());
         Assert.assertTrue(massClient.getPatchId().isEmpty());
         Assert.assertEquals(massClient.getChatId(), "666");
         Assert.assertEquals(massClient.getDomain(), "1");
@@ -92,12 +90,17 @@ public class MassClientTest {
                 .wsUrl("wss://maas-api.cn-huabei-1.xf-yun.com/v1.1/chat")
                 .build();
         try {
-            client.send(null);
+            client.sendWs(null, null);
         } catch (BusinessException e) {
             Assert.assertTrue(e.getMessage().contains("文本内容不能为空"));
         }
         try {
-            client.send(null, null);
+            client.sendPost(null);
+        } catch (BusinessException e) {
+            Assert.assertTrue(e.getMessage().contains("文本内容不能为空"));
+        }
+        try {
+            client.sendStream(null, null);
         } catch (BusinessException e) {
             Assert.assertTrue(e.getMessage().contains("文本内容不能为空"));
         }
@@ -108,38 +111,20 @@ public class MassClientTest {
         MassClient client = new MassClient.Builder()
                 .signatureWs("0", "xdeepseekv3", appId, apiKey, apiSecret)
                 .wsUrl("wss://maas-api.cn-huabei-1.xf-yun.com/v1.1/chat")
-                .logRequest(Boolean.TRUE)
                 .build();
 
         List<RoleContent> messages = new ArrayList<>();
         RoleContent roleContent = new RoleContent();
         roleContent.setRole("user");
-        roleContent.setContent("你好");
-        RoleContent roleContent1 = new RoleContent();
-        roleContent1.setRole("assistant");
-        roleContent1.setContent("你好！");
-        RoleContent roleContent2 = new RoleContent();
-        roleContent2.setRole("user");
-        roleContent2.setContent("你是谁");
-        RoleContent roleContent3 = new RoleContent();
-        roleContent3.setRole("assistant");
-        roleContent3.setContent("我是Spark API。");
-        RoleContent roleContent4 = new RoleContent();
-        roleContent4.setRole("user");
-        roleContent4.setContent("帮我讲一个笑话");
-
+        roleContent.setContent("帮我讲一个笑话");
         messages.add(roleContent);
-        messages.add(roleContent1);
-        messages.add(roleContent2);
-        messages.add(roleContent3);
-        messages.add(roleContent4);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
         Date dateBegin = new Date();
 
         StringBuffer finalResult = new StringBuffer();
         StringBuffer thingkingResult = new StringBuffer();
-        client.send(messages, new AbstractMassWebSocketListener() {
+        client.sendWs(messages, new AbstractMassWebSocketListener() {
             @Override
             public void onSuccess(WebSocket webSocket, MassResponse resp) {
                 logger.debug("中间返回json结果 ==>{}", StringUtils.gson.toJson(resp));
@@ -153,7 +138,7 @@ public class MassClientTest {
                     List<MassResponse.Payload.Choices.Text> text = resp.getPayload().getChoices().getText();
                     if (null != text && !text.isEmpty()) {
                         String content = resp.getPayload().getChoices().getText().get(0).getContent();
-                        String reasonContent = resp.getPayload().getChoices().getText().get(0).getReasoning_content();
+                        String reasonContent = resp.getPayload().getChoices().getText().get(0).getReasoningContent();
                         if (!StringUtils.isNullOrEmpty(reasonContent)) {
                             thingkingResult.append(reasonContent);
                             logger.info("思维链结果... ==> {}", reasonContent);
@@ -190,41 +175,137 @@ public class MassClientTest {
     }
 
     @Test
-    public void testPost() throws IOException, SignatureException {
+    public void testPost() throws IOException {
         MassClient client = new MassClient.Builder()
                 .signatureHttp("0", "xdeepseekv3", postKey)
-                .requestUrl("https://maas-api.cn-huabei-1.xf-yun.com/v1")
-                .logRequest(Boolean.TRUE)
+                .requestUrl("https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions")
                 .build();
 
         List<RoleContent> messages = new ArrayList<>();
         RoleContent roleContent = new RoleContent();
         roleContent.setRole("user");
-        roleContent.setContent("你好");
-        RoleContent roleContent1 = new RoleContent();
-        roleContent1.setRole("assistant");
-        roleContent1.setContent("你好！");
-        RoleContent roleContent2 = new RoleContent();
-        roleContent2.setRole("user");
-        roleContent2.setContent("你是谁");
-        RoleContent roleContent3 = new RoleContent();
-        roleContent3.setRole("assistant");
-        roleContent3.setContent("我是Spark API。");
-        RoleContent roleContent4 = new RoleContent();
-        roleContent4.setRole("user");
-        roleContent4.setContent("帮我讲一个笑话");
-
+        roleContent.setContent("讲一个笑话");
         messages.add(roleContent);
-        messages.add(roleContent1);
-        messages.add(roleContent2);
-        messages.add(roleContent3);
-        messages.add(roleContent4);
 
         // post方式
-        String result = client.send(messages);
+        String result = client.sendPost(messages);
         logger.info("{} 模型返回结果 ==>{}", client.getDomain(), result);
-        // JsonObject obj = StringUtils.gson.fromJson(result, JsonObject.class);
-        // String content = obj.getAsJsonArray("choices").get(0).getAsJsonObject().getAsJsonObject("message").get("content").getAsString();
-        // logger.info("{} 大模型回复内容 ==>{}", client.getDomain(), content);
+        JsonObject obj = StringUtils.gson.fromJson(result, JsonObject.class);
+        String content = obj.getAsJsonArray("choices").get(0).getAsJsonObject().getAsJsonObject("message").get("content").getAsString();
+        logger.info("{} 大模型回复内容 ==>{}", client.getDomain(), content);
+    }
+
+    @Test
+    public void testStream() {
+        MassClient client = new MassClient.Builder()
+                .signatureHttp("0", "xdeepseekv3", postKey)
+                .requestUrl("https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions")
+                .build();
+
+        List<RoleContent> messages = new ArrayList<>();
+        RoleContent roleContent = new RoleContent();
+        roleContent.setRole("user");
+        roleContent.setContent("帮我讲一个笑话");
+        messages.add(roleContent);
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
+        Date dateBegin = new Date();
+
+        StringBuilder finalResult = new StringBuilder();
+        StringBuilder thingkingResult = new StringBuilder();
+
+        // sse方式
+        client.sendStream(messages, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                logger.error("sse连接失败：{}", e.getMessage());
+                System.exit(0);
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) {
+                if (!response.isSuccessful()) {
+                    logger.error("请求失败，状态码：{}，原因：{}", response.code(), response.message());
+                    System.exit(0);
+                    return;
+                }
+                ResponseBody body = response.body();
+                if (body != null) {
+                    BufferedSource source = body.source();
+                    try {
+                        while (true) {
+                            String line = source.readUtf8Line();
+                            if (line == null) {
+                                break;
+                            }
+                            if (line.startsWith("data:")) {
+                                // 去掉前缀 "data: "
+                                String data = line.substring(5).trim();
+                                if (extractContent(data, finalResult, thingkingResult)) {
+                                    // 说明数据全部返回完毕，可以关闭连接，释放资源
+                                    logger.info("session end");
+                                    Date dateEnd = new Date();
+                                    logger.info("{}开始", sdf.format(dateBegin));
+                                    logger.info("{}结束", sdf.format(dateEnd));
+                                    logger.info("耗时：{}ms", dateEnd.getTime() - dateBegin.getTime());
+                                    logger.info("完整思维链结果 ==> {}", thingkingResult);
+                                    logger.info("最终识别结果 ==> {}", finalResult);
+                                    System.exit(0);
+                                }
+                            }
+                        }
+                    } catch (IOException e) {
+                        logger.error("读取sse返回内容发生异常", e);
+                    }
+                }
+            }
+        });
+    }
+
+    /**
+     * @param data            sse返回的数据
+     * @param finalResult     实时回复内容
+     * @param thingkingResult 实时思维链结果
+     * @return 是否结束
+     */
+    private static boolean extractContent(String data, StringBuilder finalResult, StringBuilder thingkingResult) {
+        logger.debug("sse返回数据 ==> {}", data);
+        try {
+            JsonObject obj = StringUtils.gson.fromJson(data, JsonObject.class);
+            JsonObject choice0 = obj.getAsJsonArray("choices").get(0).getAsJsonObject();
+            JsonObject delta = choice0.getAsJsonObject("delta");
+            // 结束原因
+            String finishReason = choice0.get("finish_reason").getAsString();
+            if (!StringUtils.isNullOrEmpty(finishReason)) {
+                if (finishReason.equals("stop")) {
+                    logger.info("本次识别sid ==> {}", obj.get("id").getAsString());
+                    return true;
+                }
+                throw new BusinessException("异常结束: " + finishReason);
+            }
+            // 回复
+            JsonElement content = delta.get("content");
+            if (null != content && StringUtils.isNullOrEmpty(content.getAsString())) {
+                logger.info("中间结果 ==> {}", content.getAsString());
+                finalResult.append(content.getAsString());
+            }
+            // 思维链
+            JsonElement reasonContent = delta.get("reasoning_content");
+            if (null != reasonContent && StringUtils.isNullOrEmpty(reasonContent.getAsString())) {
+                logger.info("思维链结果... ==> {}", reasonContent.getAsString());
+                thingkingResult.append(reasonContent.getAsString());
+            }
+            // 插件
+            JsonElement pluginContent = delta.get("plugins_content");
+            if (null != pluginContent && StringUtils.isNullOrEmpty(pluginContent.getAsString())) {
+                logger.info("插件信息 ==> {}", pluginContent.getAsString());
+            }
+        } catch (BusinessException bx) {
+            throw bx;
+        } catch (Exception e) {
+            logger.error("解析sse返回内容发生异常", e);
+            logger.info("异常数据 ==> {}", data);
+        }
+        return false;
     }
 }

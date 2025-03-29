@@ -5,10 +5,9 @@ import cn.xfyun.config.SparkIatModelEnum;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @program: websdk-java
- * @description:
- * @author: zyding6
- * @create: 2025/3/20 17:14
+ * 大模型转写请求实体类
+ *
+ * @author zyding
  **/
 public class SparkIatRequest {
 

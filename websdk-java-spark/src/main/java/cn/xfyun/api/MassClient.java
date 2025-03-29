@@ -82,17 +82,6 @@ public class MassClient extends WebSocketClient {
 
     private final String auditing;
 
-    /**
-     * 是否流式输出
-     * true-流式输出   false-非流式输出
-     */
-    private final boolean stream;
-
-    /**
-     * 是否打印日志
-     */
-    private final boolean logRequest;
-
     public MassClient(Builder builder) {
         this.okHttpClient = new OkHttpClient
                 .Builder()
@@ -109,7 +98,6 @@ public class MassClient extends WebSocketClient {
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
         this.apiSecret = builder.apiSecret;
-        this.logRequest = builder.logRequest;
 
         this.patchId = builder.patchId;
         this.domain = builder.domain;
@@ -118,7 +106,6 @@ public class MassClient extends WebSocketClient {
         this.maxTokens = builder.maxTokens;
         this.chatId = builder.chatId;
         this.auditing = builder.auditing;
-        this.stream = builder.stream;
 
         this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
         this.callTimeout = builder.callTimeout;
@@ -162,14 +149,6 @@ public class MassClient extends WebSocketClient {
 
     public String getRequestUrl() {
         return requestUrl;
-    }
-
-    public boolean getStream() {
-        return stream;
-    }
-
-    public boolean getLogRequest() {
-        return logRequest;
     }
 
     public OkHttpClient getClient() {
@@ -220,41 +199,16 @@ public class MassClient extends WebSocketClient {
      * @param webSocketListener ftt抽象监听类
      * @throws UnsupportedEncodingException 编码异常
      */
-    public void send(List<RoleContent> text, AbstractMassWebSocketListener webSocketListener) throws UnsupportedEncodingException, MalformedURLException, SignatureException {
+    public void sendWs(List<RoleContent> text, AbstractMassWebSocketListener webSocketListener) throws UnsupportedEncodingException, MalformedURLException, SignatureException {
         // 参数校验
-        if (text == null || text.isEmpty()) {
-            throw new BusinessException("文本内容不能为空");
-        } else if (text.size() > 12000) {
-            // 历史记录最大上线1.2W左右，需要判断是能能加入历史
-            int startIndex = text.size() - 12000 + 5;
-            text = text.subList(startIndex, text.size());
-            logger.warn("历史记录长度已截取：{}-{}", startIndex, text.size());
-        }
+        text = checkText(text);
+
         // 初始化链接client
         createWebSocketConnect(webSocketListener);
 
         try {
-            // 发送数据,求数据均为json字符串
-            MassReqeust request = new MassReqeust();
-            // 请求头
-            MassReqeust.Header header = new MassReqeust.Header();
-            header.setApp_id(appId);
-            header.setUid(UUID.randomUUID().toString().substring(0, 10));
-            header.setPatch_id(patchId);
-            request.setHeader(header);
-
-            // 请求参数
-            MassReqeust.Parameter parameter = new MassReqeust.Parameter(this);
-            request.setParameter(parameter);
-
-            // 请求体
-            MassReqeust.Payload payload = new MassReqeust.Payload();
-            payload.getMessage().setText(text);
-            request.setPayload(payload);
-            String jsonStr = StringUtils.gson.toJson(request);
-            if (this.logRequest) {
-                logger.info("精调文本大模型ws请求URL：{}，参数：{}", this.hostUrl, jsonStr);
-            }
+            String jsonStr = buildParam(text);
+            logger.debug("精调文本大模型ws请求URL：{}，参数：{}", this.hostUrl, jsonStr);
             // 发送合成文本
             webSocket.send(jsonStr);
         } catch (Exception e) {
@@ -267,42 +221,46 @@ public class MassClient extends WebSocketClient {
      *
      * @param messages 会话记录
      */
-    public String send(List<RoleContent> messages) throws IOException {
-        return send(messages, false);
+    public String sendPost(List<RoleContent> messages) throws IOException {
+        // 参数校验
+        messages = checkText(messages);
+
+        // 构建入参
+        String body = buildPostParam(messages, false);
+        logger.debug("精调文本大模型post请求URL：{}，参数：{}", this.requestUrl, body);
+
+        // 构建请求Request
+        Request requestUrl = getRequest(body);
+        try (Response response = okHttpClient.newCall(requestUrl).execute()) {
+            return Objects.requireNonNull(response.body(), "精调文本大模型post请求返回结果为空").string();
+        }
     }
 
     /**
-     * 精炼文本大模型post请求方式
+     * 精炼文本大模型sse请求方式
      *
      * @param messages 会话记录
-     * @param stream   是否流式输出 true-流式输出   false-非流式输出(默认)
+     * @param callback sse回调函数
      */
-    public String send(List<RoleContent> messages, boolean stream) throws IOException {
+    public void sendStream(List<RoleContent> messages, Callback callback) {
         // 参数校验
-        if (messages == null || messages.isEmpty()) {
-            throw new BusinessException("文本内容不能为空");
-        } else if (messages.size() > 12000) {
-            // 历史记录最大上线1.2W左右，需要判断是能能加入历史
-            int startIndex = messages.size() - 12000 + 5;
-            messages = messages.subList(startIndex, messages.size());
-            logger.warn("历史记录长度已截取：{}-{}", startIndex, messages.size());
-        }
-        // 构建完整的URL
-        FTTHttpRequest request = new FTTHttpRequest();
-        request.setModel(domain);
-        request.setMessages(messages);
-        request.setStream(stream);
-        request.setMax_tokens(maxTokens);
-        request.setTemperature(temperature);
-        request.setMax_tokens(maxTokens);
-        request.setExtra_headers(StringUtils.gson.fromJson("{\"lora_id\": \"0\"}", JsonObject.class));
-        request.setStream_options(StringUtils.gson.fromJson("{\"include_usage\": True}", JsonObject.class));
+        messages = checkText(messages);
 
-        String body = StringUtils.gson.toJson(request);
-        if (this.logRequest) {
-            logger.info("精调文本大模型post请求URL：{}，参数：{}", this.requestUrl, body);
-        }
+        // 构建入参
+        String body = buildPostParam(messages, true);
+        logger.debug("精调文本大模型sse请求URL：{}，参数：{}", this.requestUrl, body);
 
+        // 构建sse请求
+        Request sseRequest = getSseRequest(body);
+        okHttpClient.newCall(sseRequest).enqueue(callback);
+    }
+
+    /**
+     * 构建sse请求Request
+     *
+     * @return sseRequest
+     */
+    private Request getSseRequest(String body) {
         HttpUrl.Builder urlBuilder = Objects
                 .requireNonNull(HttpUrl.parse(this.requestUrl), "请求地址错误：" + this.requestUrl)
                 .newBuilder();
@@ -311,10 +269,90 @@ public class MassClient extends WebSocketClient {
                 .url(urlBuilder.build().toString())
                 .post(RequestBody.create(MediaType.get("application/json; charset=utf-8"), body));
         builder.addHeader("Authorization", "Bearer " + apiKey);
-        Request requestUrl = builder.build();
-        try (Response response = okHttpClient.newCall(requestUrl).execute()) {
-            return Objects.requireNonNull(response.body(), "精调文本大模型post请求返回结果为空").string();
+        builder.addHeader("Accept", "text/event-stream");
+        return builder.build();
+    }
+
+    /**
+     * 构建请求Request
+     *
+     * @param body 请求体
+     * @return Request
+     */
+    private Request getRequest(String body) {
+        HttpUrl.Builder urlBuilder = Objects
+                .requireNonNull(HttpUrl.parse(this.requestUrl), "请求地址错误：" + this.requestUrl)
+                .newBuilder();
+        Request.Builder builder = new Request
+                .Builder()
+                .url(urlBuilder.build().toString())
+                .post(RequestBody.create(MediaType.get("application/json; charset=utf-8"), body));
+        builder.addHeader("Authorization", "Bearer " + apiKey);
+        return builder.build();
+    }
+
+    /**
+     * 构建请求参数
+     *
+     * @param text 会话记录
+     */
+    private String buildParam(List<RoleContent> text) {
+        // 发送数据,求数据均为json字符串
+        MassReqeust request = new MassReqeust();
+        // 请求头
+        MassReqeust.Header header = new MassReqeust.Header();
+        header.setAppId(appId);
+        header.setUid(UUID.randomUUID().toString().substring(0, 10));
+        header.setPatchId(patchId);
+        request.setHeader(header);
+
+        // 请求参数
+        MassReqeust.Parameter parameter = new MassReqeust.Parameter(this);
+        request.setParameter(parameter);
+
+        // 请求体
+        MassReqeust.Payload payload = new MassReqeust.Payload();
+        payload.getMessage().setText(text);
+        request.setPayload(payload);
+        return StringUtils.gson.toJson(request);
+    }
+
+    /**
+     * 构建post请求的参数
+     *
+     * @param messages 会话记录
+     * @param stream   是否流式返回
+     * @return 流式返回
+     */
+    private String buildPostParam(List<RoleContent> messages, boolean stream) {
+        // 构建完整的URL
+        FTTHttpRequest request = new FTTHttpRequest();
+        request.setModel(domain);
+        request.setMessages(messages);
+        request.setStream(stream);
+        request.setMaxTokens(maxTokens);
+        request.setTemperature(temperature);
+        request.setExtraHeaders(StringUtils.gson.fromJson("{\"lora_id\": \"0\"}", JsonObject.class));
+        request.setStreamOptions(StringUtils.gson.fromJson("{\"include_usage\": true}", JsonObject.class));
+
+        return StringUtils.gson.toJson(request);
+    }
+
+    /**
+     * 会话记录参数校验
+     *
+     * @param text 会话记录
+     */
+    private static List<RoleContent> checkText(List<RoleContent> text) {
+        if (text == null || text.isEmpty()) {
+            throw new BusinessException("文本内容不能为空");
+        } else if (text.size() > 12000) {
+            // 历史记录最大上线1.2W左右，需要判断是能能加入历史
+            int startIndex = text.size() - 12000 + 5;
+            text = text.subList(startIndex, text.size());
+            logger.warn("历史记录长度已截取：{}-{}", startIndex, text.size());
         }
+        return text;
     }
 
     public static final class Builder {
@@ -349,10 +387,8 @@ public class MassClient extends WebSocketClient {
         private Integer maxTokens = 2048;
         private String chatId;
         private final String auditing = "default";
-        private boolean stream = false;
-        private boolean logRequest = false;
 
-        public MassClient build() throws MalformedURLException, SignatureException {
+        public MassClient build() {
             return new MassClient(this);
         }
 
@@ -439,16 +475,6 @@ public class MassClient extends WebSocketClient {
 
         public Builder requestUrl(String requestUrl) {
             this.requestUrl = requestUrl;
-            return this;
-        }
-
-        public Builder stream(boolean stream) {
-            this.stream = stream;
-            return this;
-        }
-
-        public Builder logRequest(boolean logRequest) {
-            this.logRequest = logRequest;
             return this;
         }
     }

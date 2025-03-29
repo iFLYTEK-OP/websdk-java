@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 /**
  * @author zyding
+ * <p>
  * 超拟人合成返回参数
  */
 public class OralResponse {
@@ -14,14 +15,8 @@ public class OralResponse {
      * payload : {"audio":{"encoding":"lame","sample_rate":24000,"channels":1,"bit_depth":16,"status":0,"seq":0,"frame_size":0,"audio":"xxxxx"},"pybuf":{"encoding":"utf8","compress":"raw","format":"plain","status":0,"seq":0,"text":"xxxxx"}}
      */
 
-    /**
-     * 协议头部，用于描述平台特性的参数
-     */
     private HeaderBean header;
 
-    /**
-     * 数据段，携带响应的数据。
-     */
     private PayloadBean payload;
 
     public OralResponse() {
@@ -59,19 +54,8 @@ public class OralResponse {
          * status : 1
          */
 
-        /**
-         * 返回码，0表示成功，其它表示异常
-         */
         private int code;
-
-        /**
-         * 返回信息，成功时为success，其它为失败原因
-         */
         private String message;
-
-        /**
-         * 本次会话的id
-         */
         private String sid;
         private int status;
 
@@ -114,14 +98,7 @@ public class OralResponse {
          * pybuf : {"encoding":"utf8","compress":"raw","format":"plain","status":0,"seq":0,"text":"xxxxx"}
          */
 
-        /**
-         * 音频数据段，包含音频内容
-         */
         private AudioBean audio;
-
-        /**
-         * pybuf, 当 rhy = 1 时返回
-         */
         private PybufBean pybuf;
 
         public AudioBean getAudio() {
@@ -152,47 +129,16 @@ public class OralResponse {
              * audio : xxxxx
              */
 
-            /**
-             * 音频编码  lame, raw
-             */
             private String encoding;
-
-            /**
-             * 文采样率  16000, 8000, 24000  默认 24000
-             */
             @SerializedName("sample_rate")
             private int sampleRate;
-
-            /**
-             * 声道数，单声道为1，双声道为2   默认 1
-             */
             private int channels;
-
-            /**
-             * 位深    16, 8  默认16
-             */
             @SerializedName("bit_depth")
             private int bitDepth;
-
-            /**
-             * 数据状态   0:开始, 1:中间, 2:结束
-             */
             private int status;
-
-            /**
-             * 数据序号   最小值:0, 最大值:9999999   默认 0
-             */
             private int seq;
-
-            /**
-             * 帧大小  最小值:0, 最大值:1024   默认 0
-             */
             @SerializedName("frame_size")
             private int frameSize;
-
-            /**
-             * base64编码后的音频数据  最小尺寸:0B, 最大尺寸:10485760B(音频大小：0-10M)
-             */
             private String audio;
 
             public String getEncoding() {
@@ -271,34 +217,11 @@ public class OralResponse {
              * text : xxxxx
              */
 
-            /**
-             * 文本编码   utf8   默认utf8
-             */
             private String encoding;
-
-            /**
-             * 文本压缩格式  raw   默认  raw
-             */
             private String compress;
-
-            /**
-             * 文本格式   plain, json    默认 plain
-             */
             private String format;
-
-            /**
-             * 数据状态   0:开始, 1:中间, 2:结束(一次性合成直接传2)
-             */
             private int status;
-
-            /**
-             * 数据序号   最小值:0, 最大值:9999999
-             */
             private int seq;
-
-            /**
-             * 最小尺寸:0B, 最大尺寸:1048576B(文本大小：0-1M)
-             */
             private String text;
 
             public String getEncoding() {

@@ -62,8 +62,9 @@ public abstract class AbstractMassWebSocketListener extends WebSocketListener {
     @Override
     public void onMessage(WebSocket webSocket, String text) {
         super.onMessage(webSocket, text);
+        logger.debug("onMessage: {}", text);
         try {
-            if (text != null) {
+            if (!StringUtils.isNullOrEmpty(text)) {
                 MassResponse iatResponse = StringUtils.gson.fromJson(text, MassResponse.class);
 
                 if (iatResponse != null) {

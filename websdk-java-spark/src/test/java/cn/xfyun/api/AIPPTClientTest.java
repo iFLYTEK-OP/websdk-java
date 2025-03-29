@@ -17,7 +17,7 @@ import org.slf4j.LoggerFactory;
 import java.util.UUID;
 
 /**
- * 图片生成Client单元测试
+ * 讯飞智文 Client单元测试
  *
  * @author zyding6
  */
@@ -32,7 +32,7 @@ public class AIPPTClientTest {
     @Test
     public void testSuccess() {
         AIPPTClient.Builder builder = new AIPPTClient.Builder(appId, apiSecret)
-                .readTimeout(10000).logRequest(Boolean.TRUE);
+                .readTimeout(10000);
         AIPPTClient client = builder.build();
         
         try {
@@ -74,7 +74,6 @@ public class AIPPTClientTest {
                 .appId("wewqe123")
                 .connectTimeout(10000)
                 .retryOnConnectionFailure(true)
-                .logRequest(Boolean.TRUE)
                 .build();
         Assert.assertEquals(10000, client.getReadTimeout());
         Assert.assertEquals("https://zwapi.xfyun.cn/", client.getHostUrl());
@@ -84,6 +83,5 @@ public class AIPPTClientTest {
         Assert.assertEquals("wewqe123", client.getAppId());
         Assert.assertEquals(10000, client.getConnectTimeout());
         Assert.assertTrue("wewqe123", client.getRetryOnConnectionFailure());
-        Assert.assertTrue(client.getLogRequest());
     }
 }

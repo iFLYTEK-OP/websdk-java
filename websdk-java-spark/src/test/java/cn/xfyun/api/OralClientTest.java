@@ -68,7 +68,6 @@ public class OralClientTest {
                 .bitDepth(24)
                 .frameSize(1280)
                 .textFormat("json")
-                .logRequest(Boolean.TRUE)
                 .build();
 
         Assert.assertEquals(client.getAppId(), appId);
@@ -99,7 +98,6 @@ public class OralClientTest {
         Assert.assertEquals(client.getBitDepth(), 24);
         Assert.assertEquals(client.getFrameSize(), 1280);
         Assert.assertEquals(client.getTextFormat(), "json");
-        Assert.assertTrue(client.getLogRequest());
     }
 
     @Test
@@ -109,31 +107,26 @@ public class OralClientTest {
         // 正常流程
         OralClient oralClient1 = new OralClient.Builder()
                 .signature(appId, apiKey, apiSecret)
-                .logRequest(Boolean.TRUE)
                 .vcn("x4_lingfeizhe_oral").speed(50).volume(50).pitch(50).bgs(0).rhy(0).reg(0).rdn(0)
                 .encoding("lame").sampleRate(24000).channels(1).bitDepth(16).frameSize(0)
                 .build();
         // 测试除了mp3以外的格式
         OralClient oralClient2 = new OralClient.Builder()
                 .signature(appId, apiKey, apiSecret)
-                .logRequest(Boolean.TRUE)
                 .encoding("raw")
                 .build();
         // 测试保存到相应文件的监听器构造方法
         OralClient oralClient3 = new OralClient.Builder()
                 .signature(appId, apiKey, apiSecret)
-                .logRequest(Boolean.TRUE)
                 .build();
         // 测试请求参数非法的情况
         OralClient oralClient4 = new OralClient.Builder()
                 .signature(appId, apiKey, apiSecret)
-                .logRequest(Boolean.TRUE)
                 .sampleRate(100000)
                 .build();
         // 测试鉴权失败的情况
         OralClient oralClient5 = new OralClient.Builder()
                 .signature(appId, "123", apiSecret)
-                .logRequest(Boolean.TRUE)
                 .build();
 
 

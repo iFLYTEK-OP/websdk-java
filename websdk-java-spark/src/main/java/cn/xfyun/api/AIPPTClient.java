@@ -21,15 +21,23 @@ public class AIPPTClient extends HttpClient {
 
     private static final Logger logger = LoggerFactory.getLogger(AIPPTClient.class);
 
-    private final boolean logRequest;
+    /**
+     * 创建PPT接口
+     */
+    private static final String CREATE_URL = "api/ppt/v2/create";
+
+    /**
+     * 查询接口
+     */
+    private static final String PROGRESS_URL = "api/aippt/progress?sid=%s";
+
+    /**
+     * PPT主题列表查询接口
+     */
+    private static final String THEME_URL = "api/aippt/themeList";
 
     public AIPPTClient(Builder builder) {
         super(builder);
-        this.logRequest = builder.logRequest;
-    }
-
-    public boolean getLogRequest() {
-        return logRequest;
     }
 
     /**
@@ -42,12 +50,11 @@ public class AIPPTClient extends HttpClient {
         header.put("signature", signature);
         header.put("appId", appId);
         header.put("timestamp", String.valueOf(timestamp));
-        //参数
+        // 参数
         String json = StringUtils.gson.toJson(createParam);
-        if (this.logRequest) {
-            logger.info("智能ppt生成请求参数: {}, signature: {}", json, signature);
-        }
-        return sendPost(hostUrl + "api/ppt/v2/create", JSON, header, json);
+        logger.debug("智能ppt生成请求参数: {}, signature: {}", json, signature);
+
+        return sendPost(hostUrl + CREATE_URL, JSON, header, json);
     }
 
     /**
@@ -62,10 +69,9 @@ public class AIPPTClient extends HttpClient {
         header.put("signature", signature);
         header.put("appId", appId);
         header.put("timestamp", String.valueOf(timestamp));
-        if (this.logRequest) {
-            logger.info("智能ppt生成进度查询请求sid: {}, signature: {}", sid, signature);
-        }
-        return sendGet(hostUrl + "api/aippt/progress?sid=" + sid, header);
+        logger.debug("智能ppt生成进度查询请求sid: {}, signature: {}", sid, signature);
+
+        return sendGet(hostUrl + String.format(PROGRESS_URL, sid), header);
     }
 
     /**
@@ -78,24 +84,16 @@ public class AIPPTClient extends HttpClient {
         header.put("signature", signature);
         header.put("appId", appId);
         header.put("timestamp", String.valueOf(timestamp));
-        if (this.logRequest) {
-            logger.info("智能ppt主题列表查询 signature: {}", signature);
-        }
-        return sendGet(hostUrl + "api/aippt/themeList", header);
+        logger.debug("智能ppt主题列表查询 signature: {}", signature);
+
+        return sendGet(hostUrl + THEME_URL, header);
     }
 
     public static final class Builder extends HttpBuilder<Builder> {
         private static final String HOST_URL = "https://zwapi.xfyun.cn/";
 
-        private boolean logRequest = false;
-
         public Builder(String appId, String apiSecret) {
             super(HOST_URL, appId, null, apiSecret);
-        }
-
-        public Builder logRequest(boolean logRequest) {
-            this.logRequest = logRequest;
-            return this;
         }
 
         @Override

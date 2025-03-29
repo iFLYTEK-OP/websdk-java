@@ -201,10 +201,6 @@ public class SparkIatClient extends WebSocketClient {
      * 免切模式，不需要指定语种参数或传参ln=none
      */
     private final String ln;
-    /**
-     * 是否打印日志
-     */
-    private final boolean logRequest;
 
     public SparkIatClient(Builder builder) {
         this.okHttpClient = new OkHttpClient
@@ -219,7 +215,6 @@ public class SparkIatClient extends WebSocketClient {
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
         this.apiSecret = builder.apiSecret;
-        this.logRequest = builder.logRequest;
 
         this.language = builder.language;
         this.domain = builder.domain;
@@ -363,10 +358,6 @@ public class SparkIatClient extends WebSocketClient {
         return ln;
     }
 
-    public boolean getLogRequest() {
-        return logRequest;
-    }
-
     public AbstractSignature getSignature() {
         return signature;
     }
@@ -426,9 +417,7 @@ public class SparkIatClient extends WebSocketClient {
 
         // 创建webSocket连接
         createWebSocketConnect(webSocketListener);
-        if (this.logRequest) {
-            logger.info("语音听写请求URL：{}", this.hostUrl);
-        }
+        logger.debug("语音听写请求URL：{}", this.hostUrl);
 
         // 大模型语音听写数据发送任务
         SparkIatSendTask sparkIatSendTask = new SparkIatSendTask();
@@ -451,9 +440,7 @@ public class SparkIatClient extends WebSocketClient {
 
         // 创建webSocket连接
         createWebSocketConnect(webSocketListener);
-        if (this.logRequest) {
-            logger.info("语音听写请求URL：{}", this.hostUrl);
-        }
+        logger.debug("语音听写请求URL：{}", this.hostUrl);
 
         SparkIatSendTask sparkIatSendTask = new SparkIatSendTask();
         new SparkIatSendTask.Builder()
@@ -502,8 +489,6 @@ public class SparkIatClient extends WebSocketClient {
         private String textCompress = "raw";
         private String textFormat = "json";
         private String ln = "none";
-        private boolean logRequest = false;
-
 
         public SparkIatClient build() {
             return new SparkIatClient(this);
@@ -667,11 +652,6 @@ public class SparkIatClient extends WebSocketClient {
 
         public Builder ln(String ln) {
             this.ln = ln;
-            return this;
-        }
-
-        public Builder logRequest(boolean logRequest) {
-            this.logRequest = logRequest;
             return this;
         }
     }

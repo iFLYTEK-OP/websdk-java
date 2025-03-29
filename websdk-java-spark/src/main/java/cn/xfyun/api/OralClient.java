@@ -1,6 +1,7 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.webscoket.WebSocketClient;
+import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.oral.request.OralRequest;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.service.oral.AbstractOralWebSocketListener;
@@ -154,11 +155,6 @@ public class OralClient extends WebSocketClient {
      */
     private final String textFormat;
 
-    /**
-     * 是否打印日志
-     */
-    private final boolean logRequest;
-
     public OralClient(Builder builder) {
         this.okHttpClient = new OkHttpClient
                 .Builder()
@@ -172,7 +168,6 @@ public class OralClient extends WebSocketClient {
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
         this.apiSecret = builder.apiSecret;
-        this.logRequest = builder.logRequest;
 
         this.oralLevel = builder.oralLevel;
         this.sparkAssist = builder.sparkAssist;
@@ -309,12 +304,8 @@ public class OralClient extends WebSocketClient {
         return signature;
     }
 
-    public boolean getLogRequest() {
-        return logRequest;
-    }
-
     /**
-     * 超拟人语音合成处理方法
+     * 超拟人语音合成处理方法(一次性合成)
      *
      * @param text 合成文本
      *             文本数据[1,8000]
@@ -322,9 +313,36 @@ public class OralClient extends WebSocketClient {
      * @throws UnsupportedEncodingException 编码异常
      */
     public void send(String text, AbstractOralWebSocketListener webSocketListener) throws UnsupportedEncodingException, MalformedURLException, SignatureException {
+        //参数校验
+        verification(text);
+
+        // 初始化websocket链接
         createWebSocketConnect(webSocketListener);
 
-        // 发送数据,求数据均为json字符串
+        // 构建请求参数
+        String jsonStr = buildParam(text);
+
+        try {
+            logger.debug("超拟人合成请求URL：{}，参数：{}", this.hostUrl, jsonStr);
+            // 发送合成文本
+            webSocket.send(jsonStr);
+        } catch (Exception e) {
+            logger.error("超拟人合成请求出错：{}", e.getMessage(), e);
+        }
+    }
+
+    private void verification(String text) {
+        if (StringUtils.isNullOrEmpty(text)) {
+            throw new BusinessException("合成文本不能为空");
+        } else {
+            byte[] bytes = text.getBytes(StandardCharsets.UTF_8);
+            if (bytes.length > 8000) {
+                throw new BusinessException("合成文本长度不能超过8000字节");
+            }
+        }
+    }
+
+    private String buildParam(String text) {
         OralRequest request = new OralRequest();
         // 请求头
         OralRequest.Header header = new OralRequest.Header();
@@ -339,23 +357,13 @@ public class OralClient extends WebSocketClient {
         OralRequest.Payload.Text payloadText = new OralRequest.Payload.Text();
         payloadText.setEncoding(TEXT_ENCODING);
         payloadText.setCompress(TEXT_COMPRESS);
-        payloadText.setFormat("plain");
+        payloadText.setFormat(textFormat);
         payloadText.setStatus(2);
         payloadText.setSeq(0);
         payloadText.setText(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
         payload.setText(payloadText);
         request.setPayload(payload);
-
-        try {
-            String jsonStr = StringUtils.gson.toJson(request);
-            if (this.logRequest) {
-                logger.info("超拟人合成请求URL：{}，参数：{}", this.hostUrl, jsonStr);
-            }
-            // 发送合成文本
-            webSocket.send(jsonStr);
-        } catch (Exception e) {
-            logger.error("超拟人合成请求出错：{}", e.getMessage(), e);
-        }
+        return StringUtils.gson.toJson(request);
     }
 
     public static final class Builder {
@@ -388,7 +396,6 @@ public class OralClient extends WebSocketClient {
         private int bitDepth = 16;
         private int frameSize = 0;
         private String textFormat = "plain";
-        private boolean logRequest = false;
 
         public OralClient build() throws MalformedURLException, SignatureException {
             return new OralClient(this);
@@ -523,11 +530,6 @@ public class OralClient extends WebSocketClient {
 
         public Builder textFormat(String textFormat) {
             this.textFormat = textFormat;
-            return this;
-        }
-
-        public Builder logRequest(boolean logRequest) {
-            this.logRequest = logRequest;
             return this;
         }
     }

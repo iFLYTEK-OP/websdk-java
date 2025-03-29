@@ -1,23 +1,26 @@
 package cn.xfyun.model.finetuning.request;
 
 import cn.xfyun.model.RoleContent;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 /**
- * @program: websdk-java
- * @description: 精调文本大模型http请求实体类
- * @author: zyding6
- * @create: 2025/3/20 10:17
+ * 精调文本大模型http请求实体类
+ *
+ * @author zyding6
  **/
 public class FTTHttpRequest {
     private String model;
     private List<RoleContent> messages;
     private Boolean stream;
     private Float temperature;
-    private Integer max_tokens;
-    private Object extra_headers;
-    private Object stream_options;
+    @SerializedName("max_tokens")
+    private Integer maxTokens;
+    @SerializedName("extra_headers")
+    private Object extraHeaders;
+    @SerializedName("stream_options")
+    private Object streamOptions;
 
     public String getModel() {
         return model;
@@ -51,27 +54,27 @@ public class FTTHttpRequest {
         this.temperature = temperature;
     }
 
-    public Integer getMax_tokens() {
-        return max_tokens;
+    public Integer getMaxTokens() {
+        return maxTokens;
     }
 
-    public void setMax_tokens(Integer max_tokens) {
-        this.max_tokens = max_tokens;
+    public void setMaxTokens(Integer maxTokens) {
+        this.maxTokens = maxTokens;
     }
 
-    public Object getExtra_headers() {
-        return extra_headers;
+    public Object getExtraHeaders() {
+        return extraHeaders;
     }
 
-    public void setExtra_headers(Object extra_headers) {
-        this.extra_headers = extra_headers;
+    public void setExtraHeaders(Object extraHeaders) {
+        this.extraHeaders = extraHeaders;
     }
 
-    public Object getStream_options() {
-        return stream_options;
+    public Object getStreamOptions() {
+        return streamOptions;
     }
 
-    public void setStream_options(Object stream_options) {
-        this.stream_options = stream_options;
+    public void setStreamOptions(Object streamOptions) {
+        this.streamOptions = streamOptions;
     }
 }

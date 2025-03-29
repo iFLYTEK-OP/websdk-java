@@ -1,12 +1,13 @@
 package cn.xfyun.model.finetuning.response;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
 
 /**
- * @program: websdk-java
- * @description:
- * @author: zyding6
- * @create: 2025/3/17 16:12
+ * 大模型微调响应体
+ *
+ * @author zyding6
  **/
 public class MassResponse {
 
@@ -157,7 +158,8 @@ public class MassResponse {
                 private String content;
                 private int index;
                 private String role;
-                private String reasoning_content;
+                @SerializedName("reasoning_content")
+                private String reasoningContent;
 
                 public String getContent() {
                     return content;
@@ -183,12 +185,12 @@ public class MassResponse {
                     this.role = role;
                 }
 
-                public String getReasoning_content() {
-                    return reasoning_content;
+                public String getReasoningContent() {
+                    return reasoningContent;
                 }
 
-                public void setReasoning_content(String reasoning_content) {
-                    this.reasoning_content = reasoning_content;
+                public void setReasoningContent(String reasoningContent) {
+                    this.reasoningContent = reasoningContent;
                 }
             }
         }
@@ -216,41 +218,45 @@ public class MassResponse {
                  * total_tokens : 0
                  */
 
-                private int completion_tokens;
-                private int question_tokens;
-                private int prompt_tokens;
-                private int total_tokens;
+                @SerializedName("completion_tokens")
+                private int completionTokens;
+                @SerializedName("question_tokens")
+                private int questionTokens;
+                @SerializedName("prompt_tokens")
+                private int promptTokens;
+                @SerializedName("total_tokens")
+                private int totalTokens;
 
-                public int getCompletion_tokens() {
-                    return completion_tokens;
+                public int getCompletionTokens() {
+                    return completionTokens;
                 }
 
-                public void setCompletion_tokens(int completion_tokens) {
-                    this.completion_tokens = completion_tokens;
+                public void setCompletionTokens(int completionTokens) {
+                    this.completionTokens = completionTokens;
                 }
 
-                public int getQuestion_tokens() {
-                    return question_tokens;
+                public int getQuestionTokens() {
+                    return questionTokens;
                 }
 
-                public void setQuestion_tokens(int question_tokens) {
-                    this.question_tokens = question_tokens;
+                public void setQuestionTokens(int questionTokens) {
+                    this.questionTokens = questionTokens;
                 }
 
-                public int getPrompt_tokens() {
-                    return prompt_tokens;
+                public int getPromptTokens() {
+                    return promptTokens;
                 }
 
-                public void setPrompt_tokens(int prompt_tokens) {
-                    this.prompt_tokens = prompt_tokens;
+                public void setPromptTokens(int promptTokens) {
+                    this.promptTokens = promptTokens;
                 }
 
-                public int getTotal_tokens() {
-                    return total_tokens;
+                public int getTotalTokens() {
+                    return totalTokens;
                 }
 
-                public void setTotal_tokens(int total_tokens) {
-                    this.total_tokens = total_tokens;
+                public void setTotalTokens(int totalTokens) {
+                    this.totalTokens = totalTokens;
                 }
             }
         }

@@ -2,13 +2,14 @@ package cn.xfyun.model.finetuning.request;
 
 import cn.xfyun.api.MassClient;
 import cn.xfyun.model.RoleContent;
+import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 /**
- * @description: 精调文本大模型请求实体类
- * @author: zyding6
- * @create: 2025/3/17 15:56
+ * 精调文本大模型请求实体类
+ *
+ * @author zyding6
  **/
 public class MassReqeust {
 
@@ -54,17 +55,11 @@ public class MassReqeust {
          * patch_id : ["xxx"]
          */
 
-        private String app_id;
+        @SerializedName("app_id")
+        private String appId;
         private String uid;
-        private List<String> patch_id;
-
-        public String getApp_id() {
-            return app_id;
-        }
-
-        public void setApp_id(String app_id) {
-            this.app_id = app_id;
-        }
+        @SerializedName("patch_id")
+        private List<String> patchId;
 
         public String getUid() {
             return uid;
@@ -74,12 +69,20 @@ public class MassReqeust {
             this.uid = uid;
         }
 
-        public List<String> getPatch_id() {
-            return patch_id;
+        public String getAppId() {
+            return appId;
         }
 
-        public void setPatch_id(List<String> patch_id) {
-            this.patch_id = patch_id;
+        public void setAppId(String appId) {
+            this.appId = appId;
+        }
+
+        public List<String> getPatchId() {
+            return patchId;
+        }
+
+        public void setPatchId(List<String> patchId) {
+            this.patchId = patchId;
         }
     }
 
@@ -89,15 +92,15 @@ public class MassReqeust {
          */
 
         private Chat chat;
-        
+
         public Parameter(MassClient chat) {
             this.chat = new Chat();
             this.chat.domain = chat.getDomain();
             this.chat.temperature = chat.getTemperature();
-            this.chat.top_k = chat.getTopK();
-            this.chat.max_tokens = chat.getMaxTokens();
+            this.chat.topK = chat.getTopK();
+            this.chat.maxTokens = chat.getMaxTokens();
             this.chat.auditing = chat.getAuditing();
-            this.chat.chat_id = chat.getChatId();
+            this.chat.chatId = chat.getChatId();
         }
 
         public Chat getChat() {
@@ -120,10 +123,13 @@ public class MassReqeust {
 
             private String domain;
             private double temperature;
-            private int top_k;
-            private int max_tokens;
+            @SerializedName("top_k")
+            private int topK;
+            @SerializedName("max_tokens")
+            private int maxTokens;
             private String auditing;
-            private String chat_id;
+            @SerializedName("chat_id")
+            private String chatId;
 
             public String getDomain() {
                 return domain;
@@ -141,20 +147,20 @@ public class MassReqeust {
                 this.temperature = temperature;
             }
 
-            public int getTop_k() {
-                return top_k;
+            public int getTopK() {
+                return topK;
             }
 
-            public void setTop_k(int top_k) {
-                this.top_k = top_k;
+            public void setTopK(int topK) {
+                this.topK = topK;
             }
 
-            public int getMax_tokens() {
-                return max_tokens;
+            public int getMaxTokens() {
+                return maxTokens;
             }
 
-            public void setMax_tokens(int max_tokens) {
-                this.max_tokens = max_tokens;
+            public void setMaxTokens(int maxTokens) {
+                this.maxTokens = maxTokens;
             }
 
             public String getAuditing() {
@@ -165,12 +171,12 @@ public class MassReqeust {
                 this.auditing = auditing;
             }
 
-            public String getChat_id() {
-                return chat_id;
+            public String getChatId() {
+                return chatId;
             }
 
-            public void setChat_id(String chat_id) {
-                this.chat_id = chat_id;
+            public void setChatId(String chatId) {
+                this.chatId = chatId;
             }
         }
     }

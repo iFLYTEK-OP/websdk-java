@@ -54,6 +54,7 @@ public class SparkIatClientTest {
                 .readTimeout(10, TimeUnit.SECONDS)
                 .pingInterval(0, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
+                .hostUrl("test.url")
                 .encoding("raw")
                 .dwa("123")
                 .smth(1)
@@ -75,7 +76,6 @@ public class SparkIatClientTest {
                 .textEncoding("utf8")
                 .textFormat("123")
                 .ln("none")
-                .logRequest(Boolean.TRUE)
                 .build();
 
         Assert.assertEquals(sparkIatClient.getAppId(), appId);
@@ -88,10 +88,9 @@ public class SparkIatClientTest {
         Assert.assertEquals(sparkIatClient.getReadTimeout(), 10000);
         Assert.assertEquals(sparkIatClient.getPingInterval(), 0);
         Assert.assertTrue(sparkIatClient.isRetryOnConnectionFailure());
-        Assert.assertTrue(sparkIatClient.getLogRequest());
 
-        Assert.assertTrue(sparkIatClient.getOriginHostUrl().contains("iat"));
-        Assert.assertTrue(sparkIatClient.getHostUrl().contains("iat"));
+        Assert.assertTrue(sparkIatClient.getOriginHostUrl().contains("test"));
+        Assert.assertTrue(sparkIatClient.getHostUrl().contains("test"));
         Assert.assertEquals(sparkIatClient.getLangType().intValue(), 1);
         Assert.assertEquals(sparkIatClient.getLanguage(), "zh_cn");
         Assert.assertEquals(sparkIatClient.getDomain(), "slm");
@@ -148,6 +147,7 @@ public class SparkIatClientTest {
 
             }
         });
+        Assert.assertNotNull(sparkIatClient.getRequest());
         try {
             Thread.sleep(5000);
         } catch (InterruptedException e) {
@@ -304,10 +304,9 @@ public class SparkIatClientTest {
     }
 
     @Test
-    public void testSendBytes() throws IOException, InterruptedException, SignatureException {
+    public void testSendBytes() throws IOException, SignatureException {
         SparkIatClient sparkIatClient = new SparkIatClient.Builder()
                 .signature(appId, apiKey, apiSecret, SparkIatModelEnum.ZH_CN_MULACC.getCode())
-                .logRequest(Boolean.TRUE)
                 .build();
 
         File file = new File(resourcePath + filePath);
