@@ -1,17 +1,18 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.webscoket.WebSocketClient;
+import cn.xfyun.config.VoiceCloneLangEnum;
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.oral.request.OralRequest;
 import cn.xfyun.model.sign.AbstractSignature;
-import cn.xfyun.service.oral.AbstractOralWebSocketListener;
+import cn.xfyun.model.voiceclone.request.VoiceCloneRequest;
+import cn.xfyun.service.voiceclone.AbstractVoiceCloneWebSocketListener;
 import cn.xfyun.util.StringUtils;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
 import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
@@ -19,59 +20,45 @@ import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 超拟人合成 Client
+ * 一句话复刻合成Client
+ * 文档地址: <a href="https://www.xfyun.cn/doc/spark/reproduction.html">...</a>
  *
  * @author zyding6
- **/
-public class OralClient extends WebSocketClient {
+ */
+public class VoiceCloneClient extends WebSocketClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(OralClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(VoiceCloneClient.class);
 
     /**
-     * 文本编码
-     * 仅支持 utf8
+     * 文本编码 utf8, gb2312, gbk
+     * 默认 utf8
      */
-    private static final String TEXT_ENCODING = "utf8";
+    private final String textEncoding;
 
     /**
-     * 文本压缩格式
+     * 文本压缩格式 raw, gzip
+     * 默认 raw
      */
-    private static final String TEXT_COMPRESS = "raw";
+    private final String textCompress;
 
     /**
-     * 口语化等级
-     * 高:high, 中:mid, 低:low
-     * 默认 mid
+     * 文本格式 plain, json, xml
+     * 默认 plain
      */
-    private final String oralLevel;
+    private final String textFormat;
 
     /**
-     * 是否通过大模型进行口语化
-     * 开启:1, 关闭:0
-     * 默认 1
+     * 训练得到的音色id
      */
-    private final int sparkAssist;
+    private final String resId;
 
     /**
-     * 关闭服务端拆句
-     * 不关闭：0，关闭：1
+     * 合成的语种
+     * 注意：需要和训练时指定的语种保持一致
+     * 中：0 英：1 日：2 韩：3 俄：4
      * 默认 0
      */
-    private final int stopSplit;
-
-    /**
-     * 是否保留原书面语的样子
-     * remain=1, 保留书面语，即移除所有新增填充语、重复语、语气词和话语符号，保留原书面语的样子。
-     * remain=0, 不保留书面语，即包含所有新增填充语、重复语、语气词和话语符号，不保留原书面语的样子。
-     * 默认 0
-     */
-    private final int remain;
-
-    /**
-     * 超拟人发音人
-     * 可去开放平台查询可用超拟人信息
-     */
-    private final String vcn;
+    private final int languageId;
 
     /**
      * 语速[0,100]
@@ -116,14 +103,16 @@ public class OralClient extends WebSocketClient {
     /**
      * 是否返回拼音标注，
      * 0:不返回拼音,
-     * 1:返回拼音（纯文本格式，utf8编码）
+     * 1:返回拼音（纯文本格式，utf8编码）,
+     * 3:支持文本中的标点符号输出（纯文本格式，utf8编码）
+     * 默认 0
      */
     private final int rhy;
 
     /**
      * 音频编码
-     * lame: mp3格式音频
-     * raw: pcm格式音频
+     * lame, speex, opus, opus-wb, speex-wb
+     * 默认 speex-wb
      */
     private final String encoding;
 
@@ -134,28 +123,18 @@ public class OralClient extends WebSocketClient {
     private final int sampleRate;
 
     /**
-     * 声道数   1（缺省）, 2
+     * 发言人名称
+     * 固定值x5_clone
      */
-    private final int channels;
+    private final String vcn;
 
     /**
-     * 位深    16（缺省）, 8
+     * 数据状态
+     * 固定值:2一次性传完
      */
-    private final int bitDepth;
+    private final int status;
 
-    /**
-     * 帧大小[0,1024]   默认0
-     */
-    private final int frameSize;
-
-    /**
-     * 返回结果格式
-     * plain, json
-     * 默认plain
-     */
-    private final String textFormat;
-
-    public OralClient(Builder builder) {
+    public VoiceCloneClient(Builder builder) {
         this.okHttpClient = new OkHttpClient
                 .Builder()
                 .callTimeout(builder.callTimeout, TimeUnit.SECONDS)
@@ -169,11 +148,11 @@ public class OralClient extends WebSocketClient {
         this.apiKey = builder.apiKey;
         this.apiSecret = builder.apiSecret;
 
-        this.oralLevel = builder.oralLevel;
-        this.sparkAssist = builder.sparkAssist;
-        this.stopSplit = builder.stopSplit;
-        this.remain = builder.remain;
-        this.vcn = builder.vcn;
+        this.textEncoding = builder.textEncoding;
+        this.textCompress = builder.textCompress;
+        this.textFormat = builder.textFormat;
+        this.resId = builder.resId;
+        this.languageId = builder.languageId;
         this.speed = builder.speed;
         this.volume = builder.volume;
         this.pitch = builder.pitch;
@@ -183,10 +162,8 @@ public class OralClient extends WebSocketClient {
         this.rhy = builder.rhy;
         this.encoding = builder.encoding;
         this.sampleRate = builder.sampleRate;
-        this.channels = builder.channels;
-        this.bitDepth = builder.bitDepth;
-        this.frameSize = builder.frameSize;
-        this.textFormat = builder.textFormat;
+        this.vcn = builder.vcn;
+        this.status = builder.status;
 
         this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
         this.callTimeout = builder.callTimeout;
@@ -200,24 +177,32 @@ public class OralClient extends WebSocketClient {
         return originHostUrl;
     }
 
-    public String getOralLevel() {
-        return oralLevel;
+    public String getTextEncoding() {
+        return textEncoding;
     }
 
-    public int getSparkAssist() {
-        return sparkAssist;
+    public String getTextCompress() {
+        return textCompress;
     }
 
-    public int getStopSplit() {
-        return stopSplit;
-    }
-
-    public int getRemain() {
-        return remain;
+    public String getTextFormat() {
+        return textFormat;
     }
 
     public String getVcn() {
         return vcn;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public String getResId() {
+        return resId;
+    }
+
+    public int getLanguageId() {
+        return languageId;
     }
 
     public int getSpeed() {
@@ -256,23 +241,15 @@ public class OralClient extends WebSocketClient {
         return sampleRate;
     }
 
-    public int getChannels() {
-        return channels;
+    public AbstractSignature getSignature() {
+        return signature;
     }
 
-    public int getBitDepth() {
-        return bitDepth;
+    public Request getRequest() {
+        return request;
     }
 
-    public int getFrameSize() {
-        return frameSize;
-    }
-
-    public String getTextFormat() {
-        return textFormat;
-    }
-
-    public OkHttpClient getClient() {
+    public OkHttpClient getOkHttpClient() {
         return okHttpClient;
     }
 
@@ -300,41 +277,36 @@ public class OralClient extends WebSocketClient {
         return pingInterval;
     }
 
-    public AbstractSignature getSignature() {
-        return signature;
-    }
-
     /**
-     * 超拟人语音合成处理方法(一次性合成)
+     * 超拟人语音合成处理方法
      *
      * @param text 合成文本
      *             文本数据[1,8000]
      *             文本内容，base64编码后不超过8000字节，约2000个字符
-     * @throws UnsupportedEncodingException 编码异常
      */
-    public void send(String text, AbstractOralWebSocketListener webSocketListener) throws UnsupportedEncodingException, MalformedURLException, SignatureException {
-        //参数校验
-        verification(text);
+    public void send(String text, AbstractVoiceCloneWebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+        // 参数校验
+        paramCheck(text);
 
-        // 初始化websocket链接
+        // 初始化链接client
         createWebSocketConnect(webSocketListener);
 
-        // 构建请求参数
-        String jsonStr = buildParam(text);
-
         try {
-            logger.debug("超拟人合成请求URL：{}，参数：{}", this.hostUrl, jsonStr);
+            // 构建请求参数
+            String param = buildParam(text);
+            logger.debug("一句话复刻合成URL：{}，入参：{}", this.hostUrl, param);
+
             // 发送合成文本
-            webSocket.send(jsonStr);
+            webSocket.send(param);
         } catch (Exception e) {
-            logger.error("超拟人合成请求出错：{}", e.getMessage(), e);
+            logger.error("一句话复刻合成请求出错：{}", e.getMessage(), e);
         }
     }
 
     /**
      * 参数校验
      */
-    private void verification(String text) {
+    private void paramCheck(String text) {
         if (StringUtils.isNullOrEmpty(text)) {
             throw new BusinessException("合成文本不能为空");
         } else {
@@ -349,22 +321,25 @@ public class OralClient extends WebSocketClient {
      * 构建参数
      */
     private String buildParam(String text) {
-        OralRequest request = new OralRequest();
+        VoiceCloneRequest request = new VoiceCloneRequest();
         // 请求头
-        OralRequest.Header header = new OralRequest.Header();
+        VoiceCloneRequest.Header header = new VoiceCloneRequest.Header();
         header.setAppId(appId);
-        header.setStatus(2);
+        header.setStatus(status);
+        header.setResId(resId);
         request.setHeader(header);
         // 请求参数
-        OralRequest.Parameter parameter = new OralRequest.Parameter(this);
+        VoiceCloneRequest.Parameter parameter = new VoiceCloneRequest.Parameter(this);
+        parameter.getTts().setVcn(vcn);
+        parameter.getTts().setPybuffer(1);
         request.setParameter(parameter);
         // 请求体
-        OralRequest.Payload payload = new OralRequest.Payload();
-        OralRequest.Payload.Text payloadText = new OralRequest.Payload.Text();
-        payloadText.setEncoding(TEXT_ENCODING);
-        payloadText.setCompress(TEXT_COMPRESS);
+        VoiceCloneRequest.Payload payload = new VoiceCloneRequest.Payload();
+        VoiceCloneRequest.Payload.Text payloadText = new VoiceCloneRequest.Payload.Text();
+        payloadText.setEncoding(textEncoding);
+        payloadText.setCompress(textCompress);
         payloadText.setFormat(textFormat);
-        payloadText.setStatus(2);
+        payloadText.setStatus(status);
         payloadText.setSeq(0);
         payloadText.setText(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
         payload.setText(payloadText);
@@ -380,15 +355,15 @@ public class OralClient extends WebSocketClient {
         int readTimeout = 30000;
         int writeTimeout = 30000;
         int pingInterval = 0;
-        private String hostUrl = "https://cbm01.cn-huabei-1.xf-yun.com/v1/private/mcd9m97e6";
+        private String hostUrl = "http://cn-huabei-1.xf-yun.com/v1/private/voice_clone";
         private String appId;
         private String apiKey;
         private String apiSecret;
-        private String oralLevel = "mid";
-        private int sparkAssist = 1;
-        private int stopSplit = 0;
-        private int remain = 0;
-        private String vcn = "x4_lingxiaoxuan_oral";
+        private String textEncoding = "utf8";
+        private String textCompress = "raw";
+        private String textFormat = "plain";
+        private String resId;
+        private int languageId = 0;
         private int speed = 50;
         private int volume = 50;
         private int pitch = 50;
@@ -396,21 +371,21 @@ public class OralClient extends WebSocketClient {
         private int reg = 0;
         private int rdn = 0;
         private int rhy = 0;
-        private String encoding = "lame";
-        private int sampleRate = 24000;
-        private int channels = 1;
-        private int bitDepth = 16;
-        private int frameSize = 0;
-        private String textFormat = "plain";
+        private String encoding = "speex-wb";
+        private int sampleRate = 16000;
+        private int status = 2;
+        private String vcn = "x5_clone";
 
-        public OralClient build() throws MalformedURLException, SignatureException {
-            return new OralClient(this);
+        public VoiceCloneClient build() {
+            return new VoiceCloneClient(this);
         }
 
-        public Builder signature(String appId, String apiKey, String apiSecret) {
+        public Builder signature(String resId, VoiceCloneLangEnum langEnum, String appId, String apiKey, String apiSecret) {
             this.appId = appId;
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
+            this.resId = resId;
+            this.languageId = langEnum.code();
             return this;
         }
 
@@ -449,28 +424,18 @@ public class OralClient extends WebSocketClient {
             return this;
         }
 
-        public Builder oralLevel(String oralLevel) {
-            this.oralLevel = oralLevel;
+        public Builder textEncoding(String textEncoding) {
+            this.textEncoding = textEncoding;
             return this;
         }
 
-        public Builder sparkAssist(int sparkAssist) {
-            this.sparkAssist = sparkAssist;
+        public Builder textCompress(String textCompress) {
+            this.textCompress = textCompress;
             return this;
         }
 
-        public Builder stopSplit(int stopSplit) {
-            this.stopSplit = stopSplit;
-            return this;
-        }
-
-        public Builder remain(int remain) {
-            this.remain = remain;
-            return this;
-        }
-
-        public Builder vcn(String vcn) {
-            this.vcn = vcn;
+        public Builder textFormat(String textFormat) {
+            this.textFormat = textFormat;
             return this;
         }
 
@@ -519,23 +484,13 @@ public class OralClient extends WebSocketClient {
             return this;
         }
 
-        public Builder channels(int channels) {
-            this.channels = channels;
+        public Builder status(int status) {
+            this.status = status;
             return this;
         }
 
-        public Builder bitDepth(int bitDepth) {
-            this.bitDepth = bitDepth;
-            return this;
-        }
-
-        public Builder frameSize(int frameSize) {
-            this.frameSize = frameSize;
-            return this;
-        }
-
-        public Builder textFormat(String textFormat) {
-            this.textFormat = textFormat;
+        public Builder vcn(String vcn) {
+            this.vcn = vcn;
             return this;
         }
     }

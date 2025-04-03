@@ -34,6 +34,8 @@ public class PropertiesConfig {
     private static final String massAPPKey;
     private static final String massAPPSecret;
     private static final String massAPIKey;
+    private static final String voiceCloneAPPKey;
+    private static final String voiceCloneAPPSecret;
 
     static {
         Properties properties = new Properties();
@@ -59,6 +61,8 @@ public class PropertiesConfig {
         massAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("massAPPSecret")) ? System.getenv("massAPPSecret") : properties.getProperty("massAPPSecret");
         aiPPTClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("aiPPTClientApiKey")) ? System.getenv("aiPPTClientApiKey") : properties.getProperty("aiPPTClientApiKey");
         aiPPTClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("aiPPTClientApiSecret")) ? System.getenv("aiPPTClientApiSecret") : properties.getProperty("aiPPTClientApiSecret");
+        voiceCloneAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("voiceCloneAPPKey")) ? System.getenv("voiceCloneAPPKey") : properties.getProperty("voiceCloneAPPKey");
+        voiceCloneAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("voiceCloneAPPSecret")) ? System.getenv("voiceCloneAPPSecret") : properties.getProperty("voiceCloneAPPSecret");
     }
 
     public static String getAppId() {
@@ -123,5 +127,13 @@ public class PropertiesConfig {
 
     public static String getMassAPPSecret() {
         return massAPPSecret;
+    }
+
+    public static String getVoiceCloneAPPSecret() {
+        return voiceCloneAPPSecret;
+    }
+
+    public static String getVoiceCloneAPPKey() {
+        return voiceCloneAPPKey;
     }
 }

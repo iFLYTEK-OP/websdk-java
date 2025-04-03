@@ -1,6 +1,6 @@
-package cn.xfyun.service.oral;
+package cn.xfyun.service.voiceclone;
 
-import cn.xfyun.model.oral.response.OralResponse;
+import cn.xfyun.model.voiceclone.response.VoiceCloneResponse;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.Gson;
 import okhttp3.Response;
@@ -18,13 +18,13 @@ import java.util.Base64;
 
 /**
  * @author zyding
- *
- * 超拟人合成监听类
+ * <p>
+ * 一句话复刻合成监听类
  */
-public abstract class AbstractOralWebSocketListener extends WebSocketListener {
+public abstract class AbstractVoiceCloneWebSocketListener extends WebSocketListener {
 
     public static final Gson JSON = new Gson();
-    private static final Logger logger = LoggerFactory.getLogger(AbstractOralWebSocketListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractVoiceCloneWebSocketListener.class);
     /**
      * 传输结束标识
      */
@@ -36,10 +36,10 @@ public abstract class AbstractOralWebSocketListener extends WebSocketListener {
 
     private FileOutputStream os;
 
-    public AbstractOralWebSocketListener() {
+    public AbstractVoiceCloneWebSocketListener() {
     }
 
-    public AbstractOralWebSocketListener(File f) throws FileNotFoundException {
+    public AbstractVoiceCloneWebSocketListener(File f) throws FileNotFoundException {
         this.f = f;
         this.os = new FileOutputStream(f);
     }
@@ -52,20 +52,11 @@ public abstract class AbstractOralWebSocketListener extends WebSocketListener {
     public abstract void onSuccess(byte[] bytes);
 
     /**
-     * websocket关闭，需要用户重写的方法
-     *
-     * @param webSocket websocket
-     * @param code      关闭状态码
-     * @param reason    关闭原因
-     */
-    public abstract void onClose(WebSocket webSocket, int code, String reason);
-
-    /**
      * websocket返回失败时，需要用户重写的方法
      *
      * @param webSocket websocket
-     * @param t         报错信息
-     * @param response  返回值
+     * @param t         异常信息
+     * @param response  返回结果
      */
     public abstract void onFail(WebSocket webSocket, Throwable t, Response response);
 
@@ -73,9 +64,18 @@ public abstract class AbstractOralWebSocketListener extends WebSocketListener {
      * 发生业务失败的情况，需要用户重写的方法
      *
      * @param webSocket websocket
-     * @param response  返回值
+     * @param response  返回结果
      */
-    public abstract void onBusinessFail(WebSocket webSocket, OralResponse response);
+    public abstract void onBusinessFail(WebSocket webSocket, VoiceCloneResponse response);
+
+    /**
+     * 发生业务失败的情况，需要用户重写的方法
+     *
+     * @param webSocket websocket
+     * @param code      关闭编码
+     * @param reason    关闭原因
+     */
+    public abstract void onClose(WebSocket webSocket, int code, String reason);
 
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
@@ -86,10 +86,10 @@ public abstract class AbstractOralWebSocketListener extends WebSocketListener {
     public void onMessage(WebSocket webSocket, String text) {
         super.onMessage(webSocket, text);
         logger.debug("receive=>" + text);
-        OralResponse resp = JSON.fromJson(text, OralResponse.class);
+        VoiceCloneResponse resp = JSON.fromJson(text, VoiceCloneResponse.class);
         if (resp != null) {
-            OralResponse.HeaderBean header = resp.getHeader();
-            OralResponse.PayloadBean payload = resp.getPayload();
+            VoiceCloneResponse.HeaderBean header = resp.getHeader();
+            VoiceCloneResponse.PayloadBean payload = resp.getPayload();
 
             if (header.getCode() != 0) {
                 logger.error("error=>" + header.getMessage() + " sid=" + header.getSid());
@@ -122,7 +122,7 @@ public abstract class AbstractOralWebSocketListener extends WebSocketListener {
                         }
                     } catch (IOException e) {
                         logger.warn("流关闭异常：{}", e.getMessage(), e);
-                        onBusinessFail(webSocket, new OralResponse(-1, "IO Exception", null, null));
+                        onBusinessFail(webSocket, new VoiceCloneResponse(-1, "IO Exception", null, null));
                     }
                 }
             }
