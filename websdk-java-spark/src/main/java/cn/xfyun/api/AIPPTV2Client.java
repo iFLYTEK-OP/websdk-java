@@ -6,7 +6,6 @@ import cn.xfyun.config.AIPPTEnum;
 import cn.xfyun.model.aippt.request.PPTCreate;
 import cn.xfyun.model.aippt.request.PPTSearch;
 import cn.xfyun.model.sign.Signature;
-import cn.xfyun.util.RequestUtil;
 import com.sun.istack.internal.NotNull;
 import okhttp3.RequestBody;
 import org.slf4j.Logger;
@@ -49,11 +48,8 @@ public class AIPPTV2Client extends HttpClient {
         // 参数校验
         pptCreate.createCheck();
 
-        // 构建表单类型的请求体
-        RequestBody formDataBody = RequestUtil.getFormDataBody(pptCreate);
-
         // 发送请求
-        return send(AIPPTEnum.CREATE, formDataBody);
+        return send(AIPPTEnum.CREATE, pptCreate.toFormDataBody());
     }
 
     /**
@@ -63,11 +59,8 @@ public class AIPPTV2Client extends HttpClient {
         // 参数校验
         pptCreate.createOutLineCheck();
 
-        // 构建表单类型的请求体
-        RequestBody formDataBody = RequestUtil.getFormDataBody(pptCreate);
-
         // 发送请求
-        return send(AIPPTEnum.CREATE_OUTLINE, formDataBody);
+        return send(AIPPTEnum.CREATE_OUTLINE, pptCreate.toFormDataBody());
     }
 
     /**
@@ -80,11 +73,8 @@ public class AIPPTV2Client extends HttpClient {
         // 参数校验
         pptCreate.createOutlineByDocCheck();
 
-        // 构建表单类型的请求体
-        RequestBody formDataBody = RequestUtil.getFormDataBody(pptCreate);
-
         // 发送请求
-        return send(AIPPTEnum.CREATE_OUTLINE_BY_DOC, formDataBody);
+        return send(AIPPTEnum.CREATE_OUTLINE_BY_DOC, pptCreate.toFormDataBody());
     }
 
     /**

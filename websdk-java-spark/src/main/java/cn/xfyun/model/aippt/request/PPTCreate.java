@@ -2,6 +2,8 @@ package cn.xfyun.model.aippt.request;
 
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.util.StringUtils;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 import java.io.File;
 
@@ -251,6 +253,49 @@ public class PPTCreate {
         if ((null != file || !StringUtils.isNullOrEmpty(fileUrl)) && StringUtils.isNullOrEmpty(fileName)) {
             throw new BusinessException("文件名称不能为空");
         }
+    }
+
+    public RequestBody toFormDataBody() {
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM);
+        if (!StringUtils.isNullOrEmpty(query)) {
+            builder.addFormDataPart("query", query);
+        }
+        if (null != file) {
+            builder.addFormDataPart(file.getName(), file.getName(),
+                    RequestBody.create(MultipartBody.FORM, file));
+        }
+        if (!StringUtils.isNullOrEmpty(fileUrl)) {
+            builder.addFormDataPart("fileUrl", fileUrl);
+        }
+        if (!StringUtils.isNullOrEmpty(fileName)) {
+            builder.addFormDataPart("fileName", fileName);
+        }
+        if (!StringUtils.isNullOrEmpty(templateId)) {
+            builder.addFormDataPart("templateId", templateId);
+        }
+        if (!StringUtils.isNullOrEmpty(businessId)) {
+            builder.addFormDataPart("businessId", businessId);
+        }
+        if (!StringUtils.isNullOrEmpty(author)) {
+            builder.addFormDataPart("author", author);
+        }
+        if (null != isCardNote) {
+            builder.addFormDataPart("isCardNote", String.valueOf(isCardNote));
+        }
+        if (null != search) {
+            builder.addFormDataPart("search", String.valueOf(search));
+        }
+        if (!StringUtils.isNullOrEmpty(language)) {
+            builder.addFormDataPart("language", language);
+        }
+        if (null != isFigure) {
+            builder.addFormDataPart("isFigure", String.valueOf(isFigure));
+        }
+        if (!StringUtils.isNullOrEmpty(aiImage)) {
+            builder.addFormDataPart("aiImage", aiImage);
+        }
+        return builder.build();
     }
 
     public void createOutLineCheck() {
