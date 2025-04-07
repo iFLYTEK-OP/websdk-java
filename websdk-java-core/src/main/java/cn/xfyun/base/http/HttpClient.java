@@ -53,7 +53,7 @@ public abstract class HttpClient extends Client {
         return sendPost(url, header, formBuilder.build());
     }
 
-    private String sendPost(String url, Map<String, String> header, RequestBody requestBody) throws IOException {
+    protected String sendPost(String url, Map<String, String> header, RequestBody requestBody) throws IOException {
         Request.Builder builder = new Request
                 .Builder()
                 .url(url)
@@ -65,7 +65,11 @@ public abstract class HttpClient extends Client {
         }
         request = builder.build();
         try (Response response = okHttpClient.newCall(request).execute()) {
-            return response.body().string();
+            if (null != response.body()) {
+                return response.body().string();
+            } else {
+                return "";
+            }
         }
     }
 
@@ -82,7 +86,11 @@ public abstract class HttpClient extends Client {
         }
         request = builder.build();
         try (Response response = okHttpClient.newCall(request).execute()) {
-            return response.body().string();
+            if (null != response.body()) {
+                return response.body().string();
+            } else {
+                return "";
+            }
         }
     }
 
