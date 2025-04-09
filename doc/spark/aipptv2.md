@@ -4,7 +4,7 @@
 
 ### 应用申请
 
-> 提供工单开通接口权限
+> 能力开通地址：https://www.xfyun.cn/services/aippt
 
 
 ### 实例代码
@@ -18,7 +18,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-spark</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.6</version>
+    <version>2.0.5</version>
 </dependency>
 ```
 

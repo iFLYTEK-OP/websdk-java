@@ -5,7 +5,7 @@
 
 ### 应用申请
 
-> 提供工单开通接口权限
+> 星辰Mass平台地址：https://training.xfyun.cn/
 
 
 ### 实例代码
