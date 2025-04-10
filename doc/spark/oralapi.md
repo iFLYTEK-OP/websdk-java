@@ -5,7 +5,7 @@
 
 ### 应用申请
 
-> 提供工单开通接口权限
+> 能力开通地址：https://www.xfyun.cn/services/smart-tts
 
 
 ### 实例代码
