@@ -1,14 +1,13 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.WebSocketClient;
+import cn.xfyun.base.webscoket.AbstractClient;
 import cn.xfyun.config.VoiceCloneLangEnum;
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.voiceclone.request.VoiceCloneRequest;
-import cn.xfyun.service.voiceclone.AbstractVoiceCloneWebSocketListener;
 import cn.xfyun.util.StringUtils;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,9 +22,9 @@ import java.util.concurrent.TimeUnit;
  * 一句话复刻合成Client
  * 文档地址: <a href="https://www.xfyun.cn/doc/spark/reproduction.html">...</a>
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
-public class VoiceCloneClient extends WebSocketClient {
+public class VoiceCloneClient extends AbstractClient {
 
     private static final Logger logger = LoggerFactory.getLogger(VoiceCloneClient.class);
 
@@ -173,10 +172,6 @@ public class VoiceCloneClient extends WebSocketClient {
         this.pingInterval = builder.pingInterval;
     }
 
-    public String getOriginHostUrl() {
-        return originHostUrl;
-    }
-
     public String getTextEncoding() {
         return textEncoding;
     }
@@ -241,63 +236,28 @@ public class VoiceCloneClient extends WebSocketClient {
         return sampleRate;
     }
 
-    public AbstractSignature getSignature() {
-        return signature;
-    }
-
-    public Request getRequest() {
-        return request;
-    }
-
-    public OkHttpClient getOkHttpClient() {
-        return okHttpClient;
-    }
-
-    public boolean isRetryOnConnectionFailure() {
-        return retryOnConnectionFailure;
-    }
-
-    public int getCallTimeout() {
-        return callTimeout;
-    }
-
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    public int getWriteTimeout() {
-        return writeTimeout;
-    }
-
-    public int getPingInterval() {
-        return pingInterval;
-    }
-
     /**
      * 超拟人语音合成处理方法
      *
      * @param text 合成文本
      *             文本数据[1,8000]
      *             文本内容，base64编码后不超过8000字节，约2000个字符
+     * @param webSocketListener ws监听类 AbstractVoiceCloneWebSocketListener
      */
-    public void send(String text, AbstractVoiceCloneWebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+    public void send(String text, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
         // 参数校验
         paramCheck(text);
 
         // 初始化链接client
-        createWebSocketConnect(webSocketListener);
+        WebSocket socket = newWebSocket(webSocketListener);
 
         try {
             // 构建请求参数
             String param = buildParam(text);
-            logger.debug("一句话复刻合成URL：{}，入参：{}", this.hostUrl, param);
+            logger.debug("一句话复刻合成入参：{}", param);
 
             // 发送合成文本
-            webSocket.send(param);
+            socket.send(param);
         } catch (Exception e) {
             logger.error("一句话复刻合成请求出错：{}", e.getMessage(), e);
         }
@@ -348,6 +308,7 @@ public class VoiceCloneClient extends WebSocketClient {
     }
 
     public static final class Builder {
+
         // websocket相关
         boolean retryOnConnectionFailure = true;
         int callTimeout = 0;

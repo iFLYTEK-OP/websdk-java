@@ -24,7 +24,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-
 /**
  * 大模型语音听写 Client单元测试
  *
@@ -34,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 @PrepareForTest({SparkIatClient.class})
 @PowerMockIgnore({"cn.xfyun.util.HttpConnector", "javax.crypto.*", "javax.net.ssl.*"})
 public class SparkIatClientTest {
+
     private static final Logger logger = LoggerFactory.getLogger(SparkIatClientTest.class);
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getSparkIatAPPKey();
