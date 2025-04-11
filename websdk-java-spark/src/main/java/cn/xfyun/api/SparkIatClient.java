@@ -39,7 +39,11 @@ public class SparkIatClient extends WebSocketClient {
      */
     private static final String MULTI_LANGUAGE_API = "https://iat.cn-huabei-1.xf-yun.com/v1";
 
-    private static final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    /**
+     * 线程池管理
+     * 默认单例线程池
+     */
+    private final ExecutorService executor;
 
     /**
      * 语种类型
@@ -215,6 +219,7 @@ public class SparkIatClient extends WebSocketClient {
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
         this.apiSecret = builder.apiSecret;
+        this.executor = builder.executor;
 
         this.language = builder.language;
         this.domain = builder.domain;
@@ -394,11 +399,15 @@ public class SparkIatClient extends WebSocketClient {
         return pingInterval;
     }
 
+    public ExecutorService getExecutor() {
+        return executor;
+    }
 
     /**
      * 发送文件给语音听写服务端
      *
-     * @param file 发送的文件
+     * @param file              发送的文件
+     * @param webSocketListener ws监听类 (AbstractSparkIatWebSocketListener)
      */
     public void send(File file, WebSocketListener webSocketListener) throws FileNotFoundException, MalformedURLException, SignatureException {
         FileInputStream fileInputStream = new FileInputStream(file);
@@ -408,7 +417,8 @@ public class SparkIatClient extends WebSocketClient {
     /**
      * 发送文件流给服务端
      *
-     * @param inputStream 需要发送的流
+     * @param inputStream       需要发送的流
+     * @param webSocketListener ws监听类 (AbstractSparkIatWebSocketListener)
      */
     public void send(InputStream inputStream, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
         if (inputStream == null) {
@@ -426,12 +436,13 @@ public class SparkIatClient extends WebSocketClient {
                 .webSocketClient(this)
                 .build(sparkIatSendTask);
 
-        executorService.submit(sparkIatSendTask);
+        executor.submit(sparkIatSendTask);
     }
 
     /**
-     * @param bytes     字节数据
-     * @param closeable 需要关闭的流，可为空
+     * @param bytes             字节数据
+     * @param closeable         需要关闭的流，可为空
+     * @param webSocketListener ws监听类 (AbstractSparkIatWebSocketListener)
      */
     public void send(byte[] bytes, Closeable closeable, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
         if (bytes == null || bytes.length == 0) {
@@ -449,10 +460,11 @@ public class SparkIatClient extends WebSocketClient {
                 .closeable(closeable)
                 .build(sparkIatSendTask);
 
-        executorService.submit(sparkIatSendTask);
+        executor.submit(sparkIatSendTask);
     }
 
     public static class Builder {
+
         // websocket相关
         private boolean retryOnConnectionFailure = true;
         private int callTimeout = 0;
@@ -489,6 +501,7 @@ public class SparkIatClient extends WebSocketClient {
         private String textCompress = "raw";
         private String textFormat = "json";
         private String ln = "none";
+        private ExecutorService executor = Executors.newSingleThreadExecutor();
 
         public SparkIatClient build() {
             return new SparkIatClient(this);
@@ -652,6 +665,11 @@ public class SparkIatClient extends WebSocketClient {
 
         public Builder ln(String ln) {
             this.ln = ln;
+            return this;
+        }
+
+        public Builder executor(ExecutorService executor) {
+            this.executor = executor;
             return this;
         }
     }

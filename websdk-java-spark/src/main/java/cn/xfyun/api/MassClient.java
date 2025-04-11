@@ -1,12 +1,10 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.WebSocketClient;
+import cn.xfyun.base.webscoket.AbstractClient;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.RoleContent;
 import cn.xfyun.model.finetuning.request.FTTHttpRequest;
 import cn.xfyun.model.finetuning.request.MassReqeust;
-import cn.xfyun.model.sign.AbstractSignature;
-import cn.xfyun.service.finetuning.AbstractMassWebSocketListener;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 import okhttp3.*;
@@ -15,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
 import java.util.Collections;
@@ -29,7 +26,7 @@ import java.util.concurrent.TimeUnit;
  *
  * @author zyding6
  **/
-public class MassClient extends WebSocketClient {
+public class MassClient extends AbstractClient {
 
     private static final Logger logger = LoggerFactory.getLogger(MassClient.class);
 
@@ -115,10 +112,6 @@ public class MassClient extends WebSocketClient {
         this.pingInterval = builder.pingInterval;
     }
 
-    public String getOriginHostUrl() {
-        return originHostUrl;
-    }
-
     public String getAuditing() {
         return auditing;
     }
@@ -151,42 +144,10 @@ public class MassClient extends WebSocketClient {
         return requestUrl;
     }
 
-    public OkHttpClient getClient() {
-        return okHttpClient;
-    }
-
-    public boolean isRetryOnConnectionFailure() {
-        return retryOnConnectionFailure;
-    }
-
-    public int getCallTimeout() {
-        return callTimeout;
-    }
-
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    public int getWriteTimeout() {
-        return writeTimeout;
-    }
-
-    public int getPingInterval() {
-        return pingInterval;
-    }
-
-    public AbstractSignature getSignature() {
-        return signature;
-    }
-
     /**
      * 精炼文本大模型ws请求方式
      *
-     * @param text              对话信息
+     * @param messages          对话信息
      *                          [
      *                          {"role": "user", "content": "你好"},
      *                          {"role": "assistant", "content": "你好！"},
@@ -196,21 +157,20 @@ public class MassClient extends WebSocketClient {
      *                          ]
      *                          历史记录最大上限1.2W左右
      *                          按 user -> assistant -> user -> assistant 顺序传递历史记录，最后一条为当前问题
-     * @param webSocketListener ftt抽象监听类
-     * @throws UnsupportedEncodingException 编码异常
+     * @param webSocketListener ftt抽象监听类 (AbstractMassWebSocketListener)
      */
-    public void sendWs(List<RoleContent> text, AbstractMassWebSocketListener webSocketListener) throws UnsupportedEncodingException, MalformedURLException, SignatureException {
+    public void send(List<RoleContent> messages, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
         // 参数校验
-        text = checkText(text);
+        textCheck(messages);
 
         // 初始化链接client
-        createWebSocketConnect(webSocketListener);
+        WebSocket socket = newWebSocket(webSocketListener);
 
         try {
-            String jsonStr = buildParam(text);
-            logger.debug("精调文本大模型ws请求URL：{}，参数：{}", this.hostUrl, jsonStr);
+            String jsonStr = buildParam(messages);
+            logger.debug("精调文本大模型ws请求参数：{}", jsonStr);
             // 发送合成文本
-            webSocket.send(jsonStr);
+            socket.send(jsonStr);
         } catch (Exception e) {
             logger.error("ws消息发送失败：{}", e.getMessage(), e);
         }
@@ -221,9 +181,9 @@ public class MassClient extends WebSocketClient {
      *
      * @param messages 会话记录
      */
-    public String sendPost(List<RoleContent> messages) throws IOException {
+    public String send(List<RoleContent> messages) throws IOException {
         // 参数校验
-        messages = checkText(messages);
+        textCheck(messages);
 
         // 构建入参
         String body = buildPostParam(messages, false);
@@ -242,9 +202,9 @@ public class MassClient extends WebSocketClient {
      * @param messages 会话记录
      * @param callback sse回调函数
      */
-    public void sendStream(List<RoleContent> messages, Callback callback) {
+    public void send(List<RoleContent> messages, Callback callback) {
         // 参数校验
-        messages = checkText(messages);
+        textCheck(messages);
 
         // 构建入参
         String body = buildPostParam(messages, true);
@@ -343,19 +303,14 @@ public class MassClient extends WebSocketClient {
      *
      * @param text 会话记录
      */
-    private static List<RoleContent> checkText(List<RoleContent> text) {
+    private void textCheck(List<RoleContent> text) {
         if (text == null || text.isEmpty()) {
             throw new BusinessException("文本内容不能为空");
-        } else if (text.size() > 12000) {
-            // 历史记录最大上线1.2W左右，需要判断是能能加入历史
-            int startIndex = text.size() - 12000 + 5;
-            text = text.subList(startIndex, text.size());
-            logger.warn("历史记录长度已截取：{}-{}", startIndex, text.size());
         }
-        return text;
     }
 
     public static final class Builder {
+
         // websocket相关
         boolean retryOnConnectionFailure = true;
         int callTimeout = 0;

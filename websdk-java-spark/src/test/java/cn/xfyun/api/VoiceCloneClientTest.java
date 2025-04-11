@@ -29,12 +29,13 @@ import static org.junit.Assert.assertNotNull;
 /**
  * 一句话复刻Client单元测试
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({VoiceCloneClient.class})
 @PowerMockIgnore({"cn.xfyun.util.HttpConnector", "javax.crypto.*", "javax.net.ssl.*"})
 public class VoiceCloneClientTest {
+
     private static final Logger logger = LoggerFactory.getLogger(VoiceCloneClientTest.class);
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getVoiceCloneAPPKey();

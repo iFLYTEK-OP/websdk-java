@@ -36,6 +36,9 @@ public class PropertiesConfig {
     private static final String massAPIKey;
     private static final String voiceCloneAPPKey;
     private static final String voiceCloneAPPSecret;
+    private static final String sparkAPPKey;
+    private static final String sparkAPPSecret;
+    private static final String sparkAPIPassword;
 
     static {
         Properties properties = new Properties();
@@ -63,6 +66,9 @@ public class PropertiesConfig {
         aiPPTClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("aiPPTClientApiSecret")) ? System.getenv("aiPPTClientApiSecret") : properties.getProperty("aiPPTClientApiSecret");
         voiceCloneAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("voiceCloneAPPKey")) ? System.getenv("voiceCloneAPPKey") : properties.getProperty("voiceCloneAPPKey");
         voiceCloneAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("voiceCloneAPPSecret")) ? System.getenv("voiceCloneAPPSecret") : properties.getProperty("voiceCloneAPPSecret");
+        sparkAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("sparkAPPKey")) ? System.getenv("sparkAPPKey") : properties.getProperty("sparkAPPKey");
+        sparkAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("sparkAPPSecret")) ? System.getenv("sparkAPPSecret") : properties.getProperty("sparkAPPSecret");
+        sparkAPIPassword = StringUtils.isNullOrEmpty(properties.getProperty("sparkAPIPassword")) ? System.getenv("sparkAPIPassword") : properties.getProperty("sparkAPIPassword");
     }
 
     public static String getAppId() {
@@ -135,5 +141,17 @@ public class PropertiesConfig {
 
     public static String getVoiceCloneAPPKey() {
         return voiceCloneAPPKey;
+    }
+
+    public static String getSparkAPPKey() {
+        return sparkAPPKey;
+    }
+
+    public static String getSparkAPPSecret() {
+        return sparkAPPSecret;
+    }
+
+    public static String getSparkAPIPassword() {
+        return sparkAPIPassword;
     }
 }

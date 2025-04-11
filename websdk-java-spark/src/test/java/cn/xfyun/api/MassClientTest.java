@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit;
 @PrepareForTest({MassClient.class})
 @PowerMockIgnore({"cn.xfyun.util.HttpConnector", "javax.crypto.*", "javax.net.ssl.*"})
 public class MassClientTest {
+
     private static final Logger logger = LoggerFactory.getLogger(MassClientTest.class);
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getMassAPPKey();
@@ -45,7 +46,7 @@ public class MassClientTest {
     private static final String postKey = PropertiesConfig.getMassAPIKey();
 
     @Test
-    public void buildParamTest() throws MalformedURLException, SignatureException {
+    public void buildParamTest() {
         MassClient massClient = new MassClient.Builder()
                 .signatureWs("0", "1", appId, apiKey, apiSecret)
                 .wsUrl("test.wsUrl")
@@ -90,24 +91,39 @@ public class MassClientTest {
                 .wsUrl("wss://maas-api.cn-huabei-1.xf-yun.com/v1.1/chat")
                 .build();
         try {
-            client.sendWs(null, null);
+            client.send(null, new WebSocketListener() {
+                @Override
+                public void onOpen(WebSocket webSocket, Response response) {
+                    super.onOpen(webSocket, response);
+                }
+            });
         } catch (BusinessException e) {
             Assert.assertTrue(e.getMessage().contains("文本内容不能为空"));
         }
         try {
-            client.sendPost(null);
+            client.send(null);
         } catch (BusinessException e) {
             Assert.assertTrue(e.getMessage().contains("文本内容不能为空"));
         }
         try {
-            client.sendStream(null, null);
+            client.send(null, new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+
+                }
+            });
         } catch (BusinessException e) {
             Assert.assertTrue(e.getMessage().contains("文本内容不能为空"));
         }
     }
 
     @Test
-    public void testWs() throws MalformedURLException, SignatureException, UnsupportedEncodingException {
+    public void testWs() throws MalformedURLException, SignatureException {
         MassClient client = new MassClient.Builder()
                 .signatureWs("0", "xdeepseekv3", appId, apiKey, apiSecret)
                 .wsUrl("wss://maas-api.cn-huabei-1.xf-yun.com/v1.1/chat")
@@ -124,7 +140,7 @@ public class MassClientTest {
 
         StringBuffer finalResult = new StringBuffer();
         StringBuffer thingkingResult = new StringBuffer();
-        client.sendWs(messages, new AbstractMassWebSocketListener() {
+        client.send(messages, new AbstractMassWebSocketListener() {
             @Override
             public void onSuccess(WebSocket webSocket, MassResponse resp) {
                 logger.debug("中间返回json结果 ==>{}", StringUtils.gson.toJson(resp));
@@ -158,14 +174,14 @@ public class MassClientTest {
                         logger.info("完整思维链结果 ==> {}", thingkingResult);
                         logger.info("最终识别结果 ==> {}", finalResult);
                         logger.info("本次识别sid ==> {}", resp.getHeader().getSid());
-                        client.closeWebsocket();
+                        webSocket.close(1000, "正常关闭");
                     }
                 }
             }
 
             @Override
             public void onFail(WebSocket webSocket, Throwable t, Response response) {
-                client.closeWebsocket();
+                webSocket.close(1000, t.getMessage());
             }
 
             @Override
@@ -188,7 +204,7 @@ public class MassClientTest {
         messages.add(roleContent);
 
         // post方式
-        String result = client.sendPost(messages);
+        String result = client.send(messages);
         logger.info("{} 模型返回结果 ==>{}", client.getDomain(), result);
         JsonObject obj = StringUtils.gson.fromJson(result, JsonObject.class);
         String content = obj.getAsJsonArray("choices").get(0).getAsJsonObject().getAsJsonObject("message").get("content").getAsString();
@@ -215,7 +231,7 @@ public class MassClientTest {
         StringBuilder thingkingResult = new StringBuilder();
 
         // sse方式
-        client.sendStream(messages, new Callback() {
+        client.send(messages, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 logger.error("sse连接失败：{}", e.getMessage());
