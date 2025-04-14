@@ -9,7 +9,6 @@ import cn.xfyun.model.sparkmodel.WebSearch;
 import cn.xfyun.model.sparkmodel.request.*;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
-import com.sun.istack.internal.NotNull;
 import okhttp3.*;
 import okhttp3.internal.Util;
 import org.slf4j.Logger;
@@ -222,7 +221,7 @@ public class SparkChatClient extends AbstractClient {
      * @param param             请求参数
      * @param webSocketListener 用户自定义ws监听类 (AbstractSparkModelWebSocketListener)
      */
-    public void send(@NotNull SparkChatParam param, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+    public void send(SparkChatParam param, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
         // 参数校验
         paramCheck(param, false);
 
@@ -251,7 +250,7 @@ public class SparkChatClient extends AbstractClient {
      *
      * @param param 请求参数
      */
-    public String send(@NotNull SparkChatParam param) throws IOException {
+    public String send(SparkChatParam param) throws IOException {
         // 参数校验
         paramCheck(param, true);
 
@@ -277,7 +276,7 @@ public class SparkChatClient extends AbstractClient {
      *
      * @param request 请求参数
      */
-    public void send(@NotNull SparkChatParam request, Callback callback) {
+    public void send(SparkChatParam request, Callback callback) {
         // 参数校验
         paramCheck(request, true);
 
@@ -294,6 +293,11 @@ public class SparkChatClient extends AbstractClient {
      * 参数校验
      */
     private void paramCheck(SparkChatParam param, boolean isPost) {
+        // 非空校验
+        if (param == null) {
+            throw new BusinessException("参数不能为空");
+        }
+
         // 验证消息不能为空
         if (param.getMessages() == null || param.getMessages().isEmpty()) {
             throw new BusinessException("文本内容不能为空");

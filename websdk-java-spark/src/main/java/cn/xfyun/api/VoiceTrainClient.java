@@ -3,12 +3,12 @@ package cn.xfyun.api;
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
 import cn.xfyun.config.VoiceTrainEnum;
+import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sign.VoiceCloneSignature;
 import cn.xfyun.model.voiceclone.request.AudioAddParam;
 import cn.xfyun.model.voiceclone.request.CreateTaskParam;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
-import com.sun.istack.internal.NotNull;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -99,7 +99,7 @@ public class VoiceTrainClient extends HttpClient {
      */
     public String trainText(Long textId) throws Exception {
         // token校验
-        tokenCheck();
+        tokenCheck(textId);
 
         // 请求体 body
         JsonObject body = new JsonObject();
@@ -116,12 +116,12 @@ public class VoiceTrainClient extends HttpClient {
      * @return 返回结果
      * @throws Exception 异常信息
      */
-    public String createTask(@NotNull CreateTaskParam request) throws Exception {
+    public String createTask(CreateTaskParam param) throws Exception {
         // token校验
-        tokenCheck();
+        tokenCheck(param);
 
         // 封装请求体
-        String bodyStr = request.toJsonString();
+        String bodyStr = param.toJsonString();
 
         // 发送请求
         return send(VoiceTrainEnum.TASK_ADD, bodyStr, null, null);
@@ -139,15 +139,15 @@ public class VoiceTrainClient extends HttpClient {
      * @return 返回结果
      * @throws Exception 异常信息
      */
-    public String audioAdd(@NotNull AudioAddParam request) throws Exception {
+    public String audioAdd(AudioAddParam param) throws Exception {
         // token校验
-        tokenCheck();
+        tokenCheck(param);
 
         // 参数校验
-        request.selfCheckUrl();
+        param.selfCheckUrl();
 
         // 请求体 body
-        String bodyStr = request.toJsonString();
+        String bodyStr = param.toJsonString();
 
         // 发送请求
         return send(VoiceTrainEnum.AUDIO_ADD, bodyStr, null, null);
@@ -162,7 +162,7 @@ public class VoiceTrainClient extends HttpClient {
      */
     public String submit(String taskId) throws Exception {
         // token校验
-        tokenCheck();
+        tokenCheck(taskId);
 
         // 请求体 body
         JsonObject body = new JsonObject();
@@ -184,15 +184,15 @@ public class VoiceTrainClient extends HttpClient {
      * @return 返回结果
      * @throws Exception 异常信息
      */
-    public String submitWithAudio(@NotNull AudioAddParam request) throws Exception {
+    public String submitWithAudio(AudioAddParam param) throws Exception {
         // token校验
-        tokenCheck();
+        tokenCheck(param);
 
         // 参数校验
-        request.selfCheckFile();
+        param.selfCheckFile();
 
         // 请求体 body
-        RequestBody httpBody = getRequestBody(request);
+        RequestBody httpBody = getRequestBody(param);
 
         // 发送请求
         return send(VoiceTrainEnum.AUDIO_SUBMIT, httpBody.toString(), null, httpBody);
@@ -207,7 +207,7 @@ public class VoiceTrainClient extends HttpClient {
      */
     public String result(String taskId) throws Exception {
         // token校验
-        tokenCheck();
+        tokenCheck(taskId);
 
         // 请求体 body
         JsonObject body = new JsonObject();
@@ -253,9 +253,15 @@ public class VoiceTrainClient extends HttpClient {
     }
 
     /**
-     * 判断 token 是否有效
+     * 参数校验
      */
-    private void tokenCheck() {
+    private void tokenCheck(Object param) {
+        // 非空校验
+        if (param == null) {
+            throw new BusinessException("参数不能为空");
+        }
+
+        // token有效期校验
         if (token == null || System.currentTimeMillis() > tokenExpiryTime) {
             refreshToken();
         }
