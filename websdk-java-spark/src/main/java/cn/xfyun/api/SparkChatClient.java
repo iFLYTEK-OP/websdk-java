@@ -235,7 +235,7 @@ public class SparkChatClient extends AbstractClient {
             // 发送请求
             socket.send(body);
         } catch (Exception e) {
-            logger.error("ws消息发送失败：{}", e.getMessage(), e);
+            logger.error("ws消息发送失败", e);
         }
     }
 
@@ -274,14 +274,14 @@ public class SparkChatClient extends AbstractClient {
      * 5. 当前仅Spark 4.0Ultra、Max版本支持返回联网检索的信源标题及地址
      * 6. 多语种当前仅支持日、韩、俄、阿、法、西、葡、德 8种语言
      *
-     * @param request 请求参数
+     * @param param 请求参数
      */
-    public void send(SparkChatParam request, Callback callback) {
+    public void send(SparkChatParam param, Callback callback) {
         // 参数校验
-        paramCheck(request, true);
+        paramCheck(param, true);
 
         // 构建入参
-        String body = buildPostParam(request, true);
+        String body = buildPostParam(param, true);
         logger.debug("{}post请求URL：{}，参数：{}", sparkModel.getDesc(), this.originHostUrl, body);
 
         // 构建sse请求
@@ -344,23 +344,23 @@ public class SparkChatClient extends AbstractClient {
     /**
      * 构建post请求参数
      *
-     * @param request 请求参数
+     * @param param 请求参数
      * @param stream  是否流式输出
      * @return 入参
      */
-    private String buildPostParam(SparkChatParam request, boolean stream) {
+    private String buildPostParam(SparkChatParam param, boolean stream) {
         // 封装请求参数
         SparkChatPostRequest sendRequest = new SparkChatPostRequest(this);
         sendRequest.setModel(sparkModel.getDomain());
         sendRequest.setStream(stream);
-        sendRequest.setUser(request.getUserId());
-        sendRequest.setMessages(request.getMessages());
+        sendRequest.setUser(param.getUserId());
+        sendRequest.setMessages(param.getMessages());
 
         // 封装用户使用的工具
         List<Object> toolList = new ArrayList<>();
         // 搜索插件
-        WebSearch webSearch = request.getWebSearch();
-        webSearch = null != webSearch ? webSearch : this.webSearch;
+        WebSearch webSearch = param.getWebSearch();
+        webSearch = (null != webSearch) ? webSearch : this.webSearch;
         if (null != webSearch) {
             JsonObject tool = new JsonObject();
             tool.addProperty("type", "web_search");
@@ -369,8 +369,8 @@ public class SparkChatClient extends AbstractClient {
         }
 
         // 配置函数调用
-        List<FunctionCall> functions = request.getFunctions();
-        functions = null != functions && !functions.isEmpty() ? functions : this.functions;
+        List<FunctionCall> functions = param.getFunctions();
+        functions = (null != functions) && !functions.isEmpty() ? functions : this.functions;
         if (null != functions && !functions.isEmpty()) {
             functions.forEach(fun -> {
                 JsonObject obj = new JsonObject();
@@ -393,12 +393,17 @@ public class SparkChatClient extends AbstractClient {
     /**
      * 构建参数
      */
-    private String buildParam(SparkChatParam request) {
+    private String buildParam(SparkChatParam param) {
         // 发送数据,求数据均为json字符串
         SparkChatRequest sendRequest = new SparkChatRequest();
 
         // 请求头
-        SparkChatRequest.Header header = new SparkChatRequest.Header(appId, UUID.randomUUID().toString().substring(0, 10));
+        String userId = param.getUserId();
+        if (null == userId) {
+            //用户没传输参数使用默认UUID生成
+            userId = UUID.randomUUID().toString().substring(0, 10);
+        }
+        SparkChatRequest.Header header = new SparkChatRequest.Header(appId, userId);
         sendRequest.setHeader(header);
 
         // 请求参数
@@ -409,24 +414,24 @@ public class SparkChatClient extends AbstractClient {
         chat.setMaxTokens(maxTokens);
         chat.setTopK(topK);
         // 配置搜索插件
-        WebSearch webSearch = request.getWebSearch();
-        webSearch = null != webSearch ? webSearch : this.webSearch;
+        WebSearch webSearch = param.getWebSearch();
+        webSearch = (null != webSearch) ? webSearch : this.webSearch;
         if (null != webSearch && sparkModel.isWebSearchEnable()) {
             JsonObject obj = new JsonObject();
             obj.addProperty("type", "web_search");
             obj.add("web_search", StringUtils.gson.toJsonTree(webSearch));
             chat.setTools(Collections.singletonList(obj));
         }
-        chat.setChatId(request.getChatId());
+        chat.setChatId(param.getChatId());
         parameter.setChat(chat);
         sendRequest.setParameter(parameter);
 
         // 请求体
-        List<FunctionCall> functions = request.getFunctions();
-        functions = null != functions && !functions.isEmpty() ? functions : this.functions;
+        List<FunctionCall> functions = param.getFunctions();
+        functions = (null != functions) && !functions.isEmpty() ? functions : this.functions;
         SparkChatRequest.Payload payload = new SparkChatRequest.Payload();
         SparkChatRequest.Payload.Message message = new SparkChatRequest.Payload.Message();
-        message.setText(request.getMessages());
+        message.setText(param.getMessages());
         // 配置函数调用
         if (null != functions && !functions.isEmpty() && sparkModel.isFunctionEnable()) {
             SparkChatRequest.Payload.Function function = new SparkChatRequest.Payload.Function();
@@ -439,11 +444,14 @@ public class SparkChatClient extends AbstractClient {
     }
 
     public static final class Builder {
-        // websocket相关
+
+        /**
+         * websocket相关
+         */
         private boolean retryOnConnectionFailure = true;
         private int callTimeout = 0;
         private int connectTimeout = 30000;
-        private int readTimeout = 30000;
+        private int readTimeout = 60000;
         private int writeTimeout = 30000;
         private int pingInterval = 0;
         private String appId;

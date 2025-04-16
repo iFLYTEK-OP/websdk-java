@@ -54,6 +54,7 @@ public class SparkIatClientTest {
                 .readTimeout(10, TimeUnit.SECONDS)
                 .pingInterval(0, TimeUnit.SECONDS)
                 .retryOnConnectionFailure(true)
+                .executor(null)
                 .hostUrl("test.url")
                 .encoding("raw")
                 .dwa("123")
@@ -119,6 +120,7 @@ public class SparkIatClientTest {
         Assert.assertEquals(sparkIatClient.getLn(), "none");
 
         Assert.assertNotNull(sparkIatClient.getOkHttpClient());
+        Assert.assertNull(sparkIatClient.getExecutor());
     }
 
     @Test

@@ -311,11 +311,13 @@ public class MassClient extends AbstractClient {
 
     public static final class Builder {
 
-        // websocket相关
+        /**
+         * websocket相关
+         */
         boolean retryOnConnectionFailure = true;
         int callTimeout = 0;
         int connectTimeout = 30000;
-        int readTimeout = 30000;
+        int readTimeout = 60000;
         int writeTimeout = 30000;
         int pingInterval = 0;
         private String appId;

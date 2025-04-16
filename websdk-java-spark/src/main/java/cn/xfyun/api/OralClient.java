@@ -343,7 +343,9 @@ public class OralClient extends AbstractClient {
 
     public static final class Builder {
 
-        // websocket相关
+        /**
+         * websocket相关
+         */
         boolean retryOnConnectionFailure = true;
         int callTimeout = 0;
         int connectTimeout = 30000;

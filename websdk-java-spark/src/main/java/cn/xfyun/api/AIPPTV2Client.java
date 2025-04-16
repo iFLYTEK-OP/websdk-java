@@ -151,8 +151,8 @@ public class AIPPTV2Client extends HttpClient {
 
         public Builder(String appId, String apiSecret) {
             super(HOST_URL, appId, null, apiSecret);
-            // ppt生成有耗时操作, 客户端等待服务器响应的时间调整为30s
-            this.readTimeout(30);
+            // ppt生成有耗时操作, 客户端等待服务器响应的时间调整为120s
+            this.readTimeout(120);
         }
 
         @Override
