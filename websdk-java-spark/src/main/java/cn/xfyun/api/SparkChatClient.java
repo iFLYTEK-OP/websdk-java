@@ -81,25 +81,25 @@ public class SparkChatClient extends AbstractClient {
      * 取值越大，生成的随机性越高；取值越低，生成的确定性越高。
      * 取值范围(0, 1] 默认值1
      */
-    private final Integer topP;
+    private final int topP;
 
     /**
      * 重复词的惩罚值
      * 取值范围[-2.0,2.0] 默认0
      */
-    private final Float presencePenalty;
+    private final float presencePenalty;
 
     /**
      * 频率惩罚值
      * 取值范围[-2.0,2.0] 默认0
      */
-    private final Float frequencyPenalty;
+    private final float frequencyPenalty;
 
     /**
      * 设置为true时，触发function call结果中tool_calls以数组格式返回，默认为 false，则以json格式返回
      * 默认表示关闭
      */
-    private final Boolean toolCallsSwitch;
+    private final boolean toolCallsSwitch;
 
     /**
      * 设置模型自动选择调用的函数：
@@ -355,6 +355,12 @@ public class SparkChatClient extends AbstractClient {
         sendRequest.setStream(stream);
         sendRequest.setUser(param.getUserId());
         sendRequest.setMessages(param.getMessages());
+        sendRequest.setTopP(topP);
+        sendRequest.setPresencePenalty(presencePenalty);
+        sendRequest.setFrequencyPenalty(frequencyPenalty);
+        sendRequest.setToolCallsSwitch(toolCallsSwitch);
+        sendRequest.setToolChoice(toolChoice);
+        sendRequest.setSuppressPlugin(suppressPlugin);
 
         // 封装用户使用的工具
         List<Object> toolList = new ArrayList<>();
@@ -464,10 +470,10 @@ public class SparkChatClient extends AbstractClient {
         private int topK = 4;
         private WebSearch webSearch;
         private List<FunctionCall> functions;
-        private Integer topP;
-        private Float presencePenalty;
-        private Float frequencyPenalty;
-        private Boolean toolCallsSwitch;
+        private int topP = 1;
+        private float presencePenalty = 0;
+        private float frequencyPenalty = 0;
+        private boolean toolCallsSwitch = false;
         private Object toolChoice;
         private String responseType;
         private List<String> suppressPlugin;

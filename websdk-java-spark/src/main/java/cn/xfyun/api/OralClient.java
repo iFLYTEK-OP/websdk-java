@@ -127,6 +127,7 @@ public class OralClient extends AbstractClient {
 
     /**
      * 音频编码
+     * raw,lame, speex, opus, opus-wb, opus-swb, speex-wb
      * lame: mp3格式音频
      * raw: pcm格式音频
      */
@@ -368,7 +369,7 @@ public class OralClient extends AbstractClient {
         private int reg = 0;
         private int rdn = 0;
         private int rhy = 0;
-        private String encoding = "lame";
+        private String encoding = "speex-wb";
         private int sampleRate = 24000;
         private int channels = 1;
         private int bitDepth = 16;

@@ -1,6 +1,6 @@
-package cn.xfyun.service.finetuning;
+package cn.xfyun.service.mass;
 
-import cn.xfyun.model.finetuning.response.MassResponse;
+import cn.xfyun.model.mass.response.MassResponse;
 import cn.xfyun.util.StringUtils;
 import okhttp3.Response;
 import okhttp3.WebSocket;

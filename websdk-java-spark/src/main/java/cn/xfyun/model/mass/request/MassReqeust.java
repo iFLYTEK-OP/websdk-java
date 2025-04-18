@@ -1,4 +1,4 @@
-package cn.xfyun.model.finetuning.request;
+package cn.xfyun.model.mass.request;
 
 import cn.xfyun.api.MassClient;
 import cn.xfyun.model.RoleContent;
@@ -100,7 +100,6 @@ public class MassReqeust {
             this.chat.topK = chat.getTopK();
             this.chat.maxTokens = chat.getMaxTokens();
             this.chat.auditing = chat.getAuditing();
-            this.chat.chatId = chat.getChatId();
         }
 
         public Chat getChat() {
@@ -130,6 +129,10 @@ public class MassReqeust {
             private String auditing;
             @SerializedName("chat_id")
             private String chatId;
+            @SerializedName("search_disable")
+            private Boolean searchDisable;
+            @SerializedName("show_ref_label")
+            private Boolean showRefLabel;
 
             public String getDomain() {
                 return domain;
@@ -177,6 +180,22 @@ public class MassReqeust {
 
             public void setChatId(String chatId) {
                 this.chatId = chatId;
+            }
+
+            public Boolean getSearchDisable() {
+                return searchDisable;
+            }
+
+            public void setSearchDisable(Boolean searchDisable) {
+                this.searchDisable = searchDisable;
+            }
+
+            public Boolean getShowRefLabel() {
+                return showRefLabel;
+            }
+
+            public void setShowRefLabel(Boolean showRefLabel) {
+                this.showRefLabel = showRefLabel;
             }
         }
     }

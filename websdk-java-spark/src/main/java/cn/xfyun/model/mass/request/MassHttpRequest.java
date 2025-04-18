@@ -1,4 +1,4 @@
-package cn.xfyun.model.finetuning.request;
+package cn.xfyun.model.mass.request;
 
 import cn.xfyun.model.RoleContent;
 import com.google.gson.annotations.SerializedName;
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author zyding6
  **/
-public class FTTHttpRequest {
+public class MassHttpRequest {
     private String model;
     private List<RoleContent> messages;
     private Boolean stream;
@@ -19,6 +19,8 @@ public class FTTHttpRequest {
     private Integer maxTokens;
     @SerializedName("extra_headers")
     private Object extraHeaders;
+    @SerializedName("extra_body")
+    private Object extraBody;
     @SerializedName("stream_options")
     private Object streamOptions;
 
@@ -68,6 +70,14 @@ public class FTTHttpRequest {
 
     public void setExtraHeaders(Object extraHeaders) {
         this.extraHeaders = extraHeaders;
+    }
+
+    public Object getExtraBody() {
+        return extraBody;
+    }
+
+    public void setExtraBody(Object extraBody) {
+        this.extraBody = extraBody;
     }
 
     public Object getStreamOptions() {

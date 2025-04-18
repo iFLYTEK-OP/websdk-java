@@ -2,11 +2,10 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.webscoket.AbstractClient;
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.RoleContent;
-import cn.xfyun.model.finetuning.request.FTTHttpRequest;
-import cn.xfyun.model.finetuning.request.MassReqeust;
+import cn.xfyun.model.mass.MassParam;
+import cn.xfyun.model.mass.request.MassHttpRequest;
+import cn.xfyun.model.mass.request.MassReqeust;
 import cn.xfyun.util.StringUtils;
-import com.google.gson.JsonObject;
 import okhttp3.*;
 import okhttp3.internal.Util;
 import org.slf4j.Logger;
@@ -15,10 +14,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -66,18 +62,34 @@ public class MassClient extends AbstractClient {
     private final Integer maxTokens;
 
     /**
-     * 用于关联用户会话
-     * 需保障用户下的唯一性
-     */
-    private final String chatId;
-
-    /**
      * 请求地址
      * 部分模型因部署配置不同，其请求地址可能略有差异，具体可参考服务管控>模型服务列表右侧调用信息
      */
     private final String requestUrl;
 
     private final String auditing;
+
+    /**
+     * 关闭联网检索功能
+     * 取值：[true,false]；默认值：true
+     * 该参数仅DeepSeek-R1和DeepSeek-V3支持
+     */
+    private final boolean searchDisable;
+
+    /**
+     * 展示检索信源信息
+     * 取值：[true,false]；默认值：false
+     * 该参数仅DeepSeek-R1和DeepSeek-V3支持。
+     * 开启联网检索功能后当该参数设置为true，且触发了联网检索功能，会先返回检索信源列表，
+     * 然后再返回大模型回复结果，否则仅返回大模型回复结果
+     */
+    private final boolean showRefLabel;
+
+    /**
+     * 针对流式响应模式的扩展配置，如控制是否在响应中包含API调用统计信息等附加数据
+     * 默认值为{"include_usage": True}
+     */
+    private final Map<String, Object> streamOptions;
 
     public MassClient(Builder builder) {
         this.okHttpClient = new OkHttpClient
@@ -101,8 +113,10 @@ public class MassClient extends AbstractClient {
         this.temperature = builder.temperature;
         this.topK = builder.topK;
         this.maxTokens = builder.maxTokens;
-        this.chatId = builder.chatId;
         this.auditing = builder.auditing;
+        this.searchDisable = builder.searchDisable;
+        this.showRefLabel = builder.showRefLabel;
+        this.streamOptions = builder.streamOptions;
 
         this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
         this.callTimeout = builder.callTimeout;
@@ -136,38 +150,37 @@ public class MassClient extends AbstractClient {
         return maxTokens;
     }
 
-    public String getChatId() {
-        return chatId;
-    }
-
     public String getRequestUrl() {
         return requestUrl;
+    }
+
+    public boolean isSearchDisable() {
+        return searchDisable;
+    }
+
+    public boolean isShowRefLabel() {
+        return showRefLabel;
+    }
+
+    public Map<String, Object> getStreamOptions() {
+        return streamOptions;
     }
 
     /**
      * 精炼文本大模型ws请求方式
      *
-     * @param messages          对话信息
-     *                          [
-     *                          {"role": "user", "content": "你好"},
-     *                          {"role": "assistant", "content": "你好！"},
-     *                          {"role": "user", "content": "你是谁？"},
-     *                          {"role": "assistant", "content": "我是 Spark API。"},
-     *                          {"role": "user", "content": "你会做什么？"}
-     *                          ]
-     *                          历史记录最大上限1.2W左右
-     *                          按 user -> assistant -> user -> assistant 顺序传递历史记录，最后一条为当前问题
-     * @param webSocketListener ftt抽象监听类 (AbstractMassWebSocketListener)
+     * @param param             请求参数
+     * @param webSocketListener 自定义抽象监听类 (AbstractMassWebSocketListener)
      */
-    public void send(List<RoleContent> messages, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+    public void send(MassParam param, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
         // 参数校验
-        textCheck(messages);
+        textCheck(param);
 
         // 初始化链接client
         WebSocket socket = newWebSocket(webSocketListener);
 
         try {
-            String jsonStr = buildParam(messages);
+            String jsonStr = buildParam(param);
             logger.debug("精调文本大模型ws请求参数：{}", jsonStr);
             // 发送合成文本
             socket.send(jsonStr);
@@ -179,15 +192,14 @@ public class MassClient extends AbstractClient {
     /**
      * 精炼文本大模型post请求方式
      *
-     * @param messages 会话记录
+     * @param param 请求参数
      */
-    public String send(List<RoleContent> messages) throws IOException {
+    public String send(MassParam param) throws IOException {
         // 参数校验
-        textCheck(messages);
+        textCheck(param);
 
         // 构建入参
-        String body = buildPostParam(messages, false);
-        logger.debug("精调文本大模型post请求URL：{}，参数：{}", this.requestUrl, body);
+        String body = buildPostParam(param, false);
 
         // 构建请求Request
         Request requestUrl = getRequest(body);
@@ -199,16 +211,15 @@ public class MassClient extends AbstractClient {
     /**
      * 精炼文本大模型sse请求方式
      *
-     * @param messages 会话记录
+     * @param param    请求参数
      * @param callback sse回调函数
      */
-    public void send(List<RoleContent> messages, Callback callback) {
+    public void send(MassParam param, Callback callback) {
         // 参数校验
-        textCheck(messages);
+        textCheck(param);
 
         // 构建入参
-        String body = buildPostParam(messages, true);
-        logger.debug("精调文本大模型sse请求URL：{}，参数：{}", this.requestUrl, body);
+        String body = buildPostParam(param, true);
 
         // 构建sse请求
         Request sseRequest = getSseRequest(body);
@@ -254,25 +265,28 @@ public class MassClient extends AbstractClient {
     /**
      * 构建请求参数
      *
-     * @param text 会话记录
+     * @param param 请求参数
      */
-    private String buildParam(List<RoleContent> text) {
+    private String buildParam(MassParam param) {
         // 发送数据,求数据均为json字符串
         MassReqeust request = new MassReqeust();
         // 请求头
         MassReqeust.Header header = new MassReqeust.Header();
         header.setAppId(appId);
-        header.setUid(UUID.randomUUID().toString().substring(0, 10));
+        header.setUid(param.getUserId());
         header.setPatchId(patchId);
         request.setHeader(header);
 
         // 请求参数
         MassReqeust.Parameter parameter = new MassReqeust.Parameter(this);
+        parameter.getChat().setChatId(param.getChatId());
+        parameter.getChat().setSearchDisable(searchDisable);
+        parameter.getChat().setShowRefLabel(showRefLabel);
         request.setParameter(parameter);
 
         // 请求体
         MassReqeust.Payload payload = new MassReqeust.Payload();
-        payload.getMessage().setText(text);
+        payload.getMessage().setText(param.getMessages());
         request.setPayload(payload);
         return StringUtils.gson.toJson(request);
     }
@@ -280,31 +294,55 @@ public class MassClient extends AbstractClient {
     /**
      * 构建post请求的参数
      *
-     * @param messages 会话记录
-     * @param stream   是否流式返回
+     * @param param  请求参数
+     * @param stream 是否流式返回
      * @return 流式返回
      */
-    private String buildPostParam(List<RoleContent> messages, boolean stream) {
-        // 构建完整的URL
-        FTTHttpRequest request = new FTTHttpRequest();
+    private String buildPostParam(MassParam param, boolean stream) {
+        MassHttpRequest request = new MassHttpRequest();
         request.setModel(domain);
-        request.setMessages(messages);
+        request.setMessages(param.getMessages());
         request.setStream(stream);
         request.setMaxTokens(maxTokens);
         request.setTemperature(temperature);
-        request.setExtraHeaders(StringUtils.gson.fromJson("{\"lora_id\": \"0\"}", JsonObject.class));
-        request.setStreamOptions(StringUtils.gson.fromJson("{\"include_usage\": true}", JsonObject.class));
 
-        return StringUtils.gson.toJson(request);
+        // 设置请求头
+        Map<String, Object> headers = param.getExtraHeaders();
+        if (headers != null && !headers.isEmpty()) {
+            request.setExtraHeaders(StringUtils.gson.toJsonTree(headers));
+        }
+
+        // 构造请求体
+        Map<String, Object> body = Optional.ofNullable(param.getExtraBody()).orElseGet(HashMap::new);
+        if (!body.containsKey("show_ref_label")) {
+            body.put("show_ref_label", showRefLabel);
+        }
+        if (!body.containsKey("search_disable")) {
+            body.put("search_disable", searchDisable);
+        }
+        request.setExtraBody(StringUtils.gson.toJsonTree(body));
+
+        // 设置流式选项
+        if (streamOptions != null && !streamOptions.isEmpty()) {
+            request.setStreamOptions(StringUtils.gson.toJsonTree(streamOptions));
+        }
+
+        // 转换为 JSON 字符串并打印日志
+        String json = StringUtils.gson.toJson(request);
+        logger.debug("精调文本大模型 http 请求 URL：{}，参数：{}", this.requestUrl, body);
+
+        return json;
     }
 
     /**
      * 会话记录参数校验
      *
-     * @param text 会话记录
+     * @param param 参数
      */
-    private void textCheck(List<RoleContent> text) {
-        if (text == null || text.isEmpty()) {
+    private void textCheck(MassParam param) {
+        if (param == null) {
+            throw new BusinessException("参数不能为空");
+        } else if (param.getMessages() == null || param.getMessages().isEmpty()) {
             throw new BusinessException("文本内容不能为空");
         }
     }
@@ -342,8 +380,10 @@ public class MassClient extends AbstractClient {
         private Float temperature = 0.5f;
         private Integer topK = 4;
         private Integer maxTokens = 2048;
-        private String chatId;
         private final String auditing = "default";
+        private boolean searchDisable = true;
+        private boolean showRefLabel = false;
+        private Map<String, Object> streamOptions;
 
         public MassClient build() {
             return new MassClient(this);
@@ -420,11 +460,6 @@ public class MassClient extends AbstractClient {
             return this;
         }
 
-        public Builder chatId(String chatId) {
-            this.chatId = chatId;
-            return this;
-        }
-
         public Builder wsUrl(String wsUrl) {
             this.wsUrl = wsUrl;
             return this;
@@ -432,6 +467,21 @@ public class MassClient extends AbstractClient {
 
         public Builder requestUrl(String requestUrl) {
             this.requestUrl = requestUrl;
+            return this;
+        }
+
+        public Builder searchDisable(boolean searchDisable) {
+            this.searchDisable = searchDisable;
+            return this;
+        }
+
+        public Builder showRefLabel(boolean showRefLabel) {
+            this.showRefLabel = showRefLabel;
+            return this;
+        }
+
+        public Builder streamOptions(Map<String, Object> streamOptions) {
+            this.streamOptions = streamOptions;
             return this;
         }
     }

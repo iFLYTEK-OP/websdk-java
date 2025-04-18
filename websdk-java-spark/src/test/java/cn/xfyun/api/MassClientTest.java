@@ -2,8 +2,9 @@ package cn.xfyun.api;
 
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.RoleContent;
-import cn.xfyun.model.finetuning.response.MassResponse;
-import cn.xfyun.service.finetuning.AbstractMassWebSocketListener;
+import cn.xfyun.model.mass.MassParam;
+import cn.xfyun.model.mass.response.MassResponse;
+import cn.xfyun.service.mass.AbstractMassWebSocketListener;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -20,7 +21,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
 import java.text.SimpleDateFormat;
@@ -54,13 +54,15 @@ public class MassClientTest {
                 .connectTimeout(10, TimeUnit.SECONDS)
                 .writeTimeout(10, TimeUnit.SECONDS)
                 .readTimeout(10, TimeUnit.SECONDS)
+                .streamOptions(null)
                 .retryOnConnectionFailure(true)
-                .chatId("666")
                 .domain("1")
                 .maxTokens(8960)
                 .pingInterval(0, TimeUnit.SECONDS)
                 .patchId(new ArrayList<>())
                 .topK(1)
+                .searchDisable(true)
+                .showRefLabel(true)
                 .temperature(0.5F)
                 .build();
 
@@ -76,11 +78,13 @@ public class MassClientTest {
         Assert.assertEquals(massClient.getPingInterval(), 0);
         Assert.assertTrue(massClient.isRetryOnConnectionFailure());
         Assert.assertTrue(massClient.getPatchId().isEmpty());
-        Assert.assertEquals(massClient.getChatId(), "666");
+        Assert.assertTrue(massClient.isSearchDisable());
+        Assert.assertTrue(massClient.isShowRefLabel());
         Assert.assertEquals(massClient.getDomain(), "1");
         Assert.assertEquals(massClient.getMaxTokens().intValue(), 8960);
         Assert.assertEquals(massClient.getTopK().intValue(), 1);
         Assert.assertNotNull(massClient.getTemperature());
+        Assert.assertNull(massClient.getStreamOptions());
     }
 
     @Test
@@ -90,6 +94,9 @@ public class MassClientTest {
                 // .signatureWs("0", "xdeepseekr1", appId, apiKey, apiSecret)
                 .wsUrl("wss://maas-api.cn-huabei-1.xf-yun.com/v1.1/chat")
                 .build();
+        MassParam param = MassParam.builder()
+                .messages(new ArrayList<>())
+                .build();
         try {
             client.send(null, new WebSocketListener() {
                 @Override
@@ -98,22 +105,22 @@ public class MassClientTest {
                 }
             });
         } catch (BusinessException e) {
-            Assert.assertTrue(e.getMessage().contains("文本内容不能为空"));
+            Assert.assertTrue(e.getMessage().contains("参数不能为空"));
         }
         try {
             client.send(null);
         } catch (BusinessException e) {
-            Assert.assertTrue(e.getMessage().contains("文本内容不能为空"));
+            Assert.assertTrue(e.getMessage().contains("参数不能为空"));
         }
         try {
-            client.send(null, new Callback() {
+            client.send(param, new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {
 
                 }
 
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
+                public void onResponse(Call call, Response response) {
 
                 }
             });
@@ -140,7 +147,11 @@ public class MassClientTest {
 
         StringBuffer finalResult = new StringBuffer();
         StringBuffer thingkingResult = new StringBuffer();
-        client.send(messages, new AbstractMassWebSocketListener() {
+
+        MassParam param = MassParam.builder()
+                .messages(messages)
+                .build();
+        client.send(param, new AbstractMassWebSocketListener() {
             @Override
             public void onSuccess(WebSocket webSocket, MassResponse resp) {
                 logger.debug("中间返回json结果 ==>{}", StringUtils.gson.toJson(resp));
@@ -203,8 +214,12 @@ public class MassClientTest {
         roleContent.setContent("讲一个笑话");
         messages.add(roleContent);
 
+        MassParam param = MassParam.builder()
+                .messages(messages)
+                .build();
+
         // post方式
-        String result = client.send(messages);
+        String result = client.send(param);
         logger.info("{} 模型返回结果 ==>{}", client.getDomain(), result);
         JsonObject obj = StringUtils.gson.fromJson(result, JsonObject.class);
         String content = obj.getAsJsonArray("choices").get(0).getAsJsonObject().getAsJsonObject("message").get("content").getAsString();
@@ -224,6 +239,10 @@ public class MassClientTest {
         roleContent.setContent("帮我讲一个笑话");
         messages.add(roleContent);
 
+        MassParam param = MassParam.builder()
+                .messages(messages)
+                .build();
+
         SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
         Date dateBegin = new Date();
 
@@ -231,7 +250,7 @@ public class MassClientTest {
         StringBuilder thingkingResult = new StringBuilder();
 
         // sse方式
-        client.send(messages, new Callback() {
+        client.send(param, new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
                 logger.error("sse连接失败：{}", e.getMessage());

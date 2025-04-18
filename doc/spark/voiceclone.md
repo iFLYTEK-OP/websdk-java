@@ -1,17 +1,41 @@
-# 一句话复刻API文档
+# 一句话训练API文档
 
-## 接口与鉴权
+## 简介
 
-### 应用申请
+本客户端基于讯飞Spark API实现，提供一句话复刻能力[官方文档](https://www.xfyun.cn/doc/spark/reproduction.html)，支持以下功能：
 
-> 能力开通地址：https://www.xfyun.cn/services/quick_tts
+- PPT主题列表查询
+- 智能PPT生成（直接生成最终PPT）
+- 大纲生成（基于用户输入）
+- 文档自定义大纲生成（支持PDF/DOC等格式）
+- 大纲转PPT生成
+- PPT生成进度查询
+- 一句话合成
 
+## 功能列表
 
-### 实例代码
+| 方法名            | 功能说明                                                     |
+| ----------------- | ------------------------------------------------------------ |
+| refreshToken()    | 刷新token(自动)                                              |
+| trainText()       | 获取训练文本                                                 |
+| createTask()      | 创建音色训练任务                                             |
+| audioAdd()        | 向训练任务添加音频（url链接）                                |
+| submit()          | 音色训练任务提交训练(异步)                                   |
+| submitWithAudio() | 向训练任务添加音频（本地文件）并提交训练任务                 |
+| result()          | 根据任务id查询音色训练任务的状态，任务完成后返回训练得到的音色id |
+| send()            | 一句话合成接口                                               |
 
-##### 示例代码
+## 使用准备
 
-1、添加maven依赖
+1. 前往[能力开通](https://www.xfyun.cn/services/quick_tts)页面
+2. 创建应用并获取以下凭证：
+   - appId
+   - apiKey
+   - apiSecret
+
+## 快速开始
+
+### 1、添加maven依赖
 
 ```xml
 <dependency>
@@ -22,136 +46,109 @@
 </dependency>
 ```
 
-2、Java代码
+### 2、一句话训练代码
 
 ```java
-package cn.xfyun.demo.spark;
+VoiceTrainClient client = new VoiceTrainClient.Builder(APP_ID, API_KEY).build();
+            logger.info("token：{}, 到期时间：{}", client.getToken(), client.getTokenExpiryTime());
 
-import cn.xfyun.api.VoiceCloneClient;
-import cn.xfyun.config.PropertiesConfig;
-import cn.xfyun.config.VoiceCloneLangEnum;
-import cn.xfyun.model.voiceclone.response.VoiceCloneResponse;
-import cn.xfyun.service.voiceclone.AbstractVoiceCloneWebSocketListener;
-import cn.xfyun.util.AudioPlayer;
-import okhttp3.Response;
-import okhttp3.WebSocket;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+            // 获取到训练文本
+            String trainTextTree = client.trainText(5001L);
+            logger.info("获取到训练文本列表：{}", trainTextTree);
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.security.SignatureException;
-import java.util.Base64;
-import java.util.Objects;
-import java.util.UUID;
+            // 创建任务
+            CreateTaskParam createTaskParam = CreateTaskParam.builder()
+                    .taskName("task-01")
+                    .sex(2)
+                    .ageGroup(2)
+                    .thirdUser("")
+                    .language("cn")
+                    .resourceName("中文女发音人")
+                    .build();
+            String taskResp = client.createTask(createTaskParam);
+            JsonObject taskObj = StringUtils.gson.fromJson(taskResp, JsonObject.class);
+            String taskId = taskObj.get("data").getAsString();
+            logger.info("创建任务：{}，返回taskId：{}", taskResp, taskId);
 
-/**
- * （voice-clone）一句话复刻
- * 1、APPID、APISecret、APIKey信息获取：<a href="https://console.xfyun.cn/services/oneSentence">...</a>
- * 2、文档地址：<a href="https://www.xfyun.cn/doc/spark/reproduction.html">...</a>
- */
-public class VoiceCloneClientApp {
+            // 添加链接音频
+            // AudioAddParam audioAddParam1 = AudioAddParam.builder()
+            //         .audioUrl("https开头,wav|mp3|m4a|pcm文件结尾的URL地址")
+            //         .taskId(taskId)
+            //         .textId(5001L)
+            //         .textSegId(1L)
+            //         .build();
+            // String audioResp = client.audioAdd(audioAddParam1);
+            // logger.info("添加链接音频：{}", audioResp);
 
-    private static final Logger logger = LoggerFactory.getLogger(VoiceCloneClientApp.class);
-    private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
-    private static String filePath;
-    private static String resourcePath;
+            // 提交任务
+            // String submit = client.submit(taskId);
+            // logger.info("提交任务：{}", submit);
 
-    static {
-        try {
-            filePath = "audio/voiceclone_" + UUID.randomUUID() + ".mp3";
-            resourcePath = Objects.requireNonNull(VoiceCloneClientApp.class.getResource("/")).toURI().getPath();
-        } catch (URISyntaxException e) {
-            logger.error("获取资源路径失败", e);
-        }
-    }
+            // 提交文件任务(不需要单独调用submit接口)
+            AudioAddParam audioAddParam2 = AudioAddParam.builder()
+                    .file(new File(resourcePath + filePath))
+                    .taskId(taskId)
+                    .textId(5001L)
+                    .textSegId(1L)
+                    .build();
+            String submitWithAudio = client.submitWithAudio(audioAddParam2);
+            logger.info("提交任务：{}", submitWithAudio);
 
-    public static void main(String[] args) throws MalformedURLException, SignatureException, UnsupportedEncodingException, FileNotFoundException {
-        String text = "欢迎使用本语音合成测试文本，本测试旨在全面检验语音合成系统在准确性、流畅性以及自然度等多方面的性能表现。";
-        VoiceCloneClient voiceCloneClient = new VoiceCloneClient.Builder()
-                .signature("您的一句话复刻生成的声纹Id", VoiceCloneLangEnum.CN, appId, apiKey, apiSecret)
-                .encoding("raw")
-                .build();
-
-        File file = new File(resourcePath + filePath);
-        try {
-
-            // 开启语音实时播放
-            AudioPlayer audioPlayer = new AudioPlayer();
-            audioPlayer.start();
-
-            voiceCloneClient.send(text, new AbstractVoiceCloneWebSocketListener(file) {
-                @Override
-                public void onSuccess(byte[] bytes) {
-                    logger.info("success");
+            while (true) {
+                // 根据taskId查询任务结果
+                String result = client.result(taskId);
+                JSONObject queryObj = JSON.parseObject(result);
+                Integer taskStatus = queryObj.getJSONObject("data").getInteger("trainStatus");
+                if (Objects.equals(taskStatus, -1)) {
+                    logger.info("一句话复刻训练中...");
                 }
-
-                @Override
-                public void onFail(WebSocket webSocket, Throwable throwable, Response response) {
-                    logger.error(throwable.getMessage());
-                    audioPlayer.stop();
-                    System.exit(0);
+                if (Objects.equals(taskStatus, 0)) {
+                    String message = queryObj.getJSONObject("data").getString("failedDesc");
+                    logger.info("一句话复刻训练失败: {}", message);
+                    break;
                 }
-
-                @Override
-                public void onBusinessFail(WebSocket webSocket, VoiceCloneResponse response) {
-                    logger.error(response.toString());
-                    audioPlayer.stop();
-                    System.exit(0);
+                if (Objects.equals(taskStatus, 2)) {
+                    logger.info("一句话复刻训练任务未提交: {}", result);
+                    break;
                 }
-
-                @Override
-                public void onClose(WebSocket webSocket, int code, String reason) {
-                    logger.info("连接关闭，原因：" + reason);
-                    audioPlayer.stop();
-                    System.exit(0);
+                if (Objects.equals(taskStatus, 1)) {
+                    String string = queryObj.getJSONObject("data").getString("assetId");
+                    logger.info("一句话复刻训练完成, 声纹ID: {}", string);
+                    break;
                 }
-
-                @Override
-                public void onMessage(WebSocket webSocket, String text) {
-                    super.onMessage(webSocket, text);
-                    VoiceCloneResponse resp = JSON.fromJson(text, VoiceCloneResponse.class);
-                    if (resp != null) {
-                        VoiceCloneResponse.PayloadBean payload = resp.getPayload();
-
-                        if (resp.getHeader().getCode() != 0) {
-                            onBusinessFail(webSocket, resp);
-                        }
-
-                        if (null != payload && null != payload.getAudio()) {
-                            String result = payload.getAudio().getAudio();
-                            if (result != null) {
-                                byte[] audio = Base64.getDecoder().decode(result);
-                                audioPlayer.play(audio);
-                            }
-                        }
-                    }
-                }
-            });
-        } catch (Exception e) {
-            logger.error(e.getMessage());
-            logger.error("错误码查询链接：https://www.xfyun.cn/document/error-code");
-        }
-    }
-}
-
+                TimeUnit.MILLISECONDS.sleep(3000);
+            }
 ```
 
-更详细请参见 [Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/spark/VoiceCloneClientApp.java)
+更详细请参见 [Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/spark/VoiceTrainClientApp.java)
 
+### 3、一句话合成代码
 
-### 接口域名
-
-```apl
-cn-huabei-1.xf-yun.com
-```
+详情请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/spark/VoiceCloneClientApp.java)
 
 ## 错误码
+
+### 1.1 一句话训练
+
+| 参数名称 | 参数描述                         | 解决方式                                               |
+| -------- | -------------------------------- | ------------------------------------------------------ |
+| 10000    | token过期无效                    | 检查token是否过期，刷新token                           |
+| 10001    | 缺少请求头参数(X-AppId或X-Token) | 检查头部参数                                           |
+| 10015    | 训练任务无权操作                 | 任务不属于该应用，无权限操作                           |
+| 10016    | 无效的appid                      | 联系我方分配appid权限                                  |
+| 10017    | 未授权该训练类型                 | 联系我方授权该训练类型                                 |
+| 10018    | 未分配训练路数                   | 联系我方对合作方appid授权训练路数                      |
+| 10021    | 未分配训练次数                   | 联系我方对合作方appid授权训练次数                      |
+| 10019    | appid授权已过期                  | 联系我方业务员是否增加授权到期时间                     |
+| 10020    | 请求ip地址未授权                 | 服务端开启白名单校验时，需要提供ip给我方配置           |
+| 20001    | 该textId无效或训练文本内容为空   | 检查textId和textSegId是否正确(通过/train/text接口确认) |
+| 20002    | 该textSegId无效                  | 检查textId和textSegId是否正确(通过/train/text接口确认) |
+| 60000    | 训练任务不存在                   | 检测taskId是否正确                                     |
+| 90001    | 请求非法                         | 按照接口协议检查请求结构                               |
+| 90002    | 请求参数不正确(详细原因)         | 例如：textId must not be blank                         |
+| 99999    | 系统内部异常                     | 联系我方排查解决                                       |
+
+### 1.2 一句话合成
 
 | 错误码        | 错误描述                                     | 说明                                         | 处理策略                                                     |
 | ------------- | -------------------------------------------- | -------------------------------------------- | ------------------------------------------------------------ |
@@ -176,144 +173,214 @@ cn-huabei-1.xf-yun.com
 | 11502         | server error: too many datas in resp         | 服务配置错误                                 | 提交工单                                                     |
 | 100001~100010 | WrapperInitErr                               | 调用引擎时出现错误                           | 请根据message中包含的errno前往 5.2引擎错误码 查看对应的说明及处理策略 |
 
-## 接口列表
+## 合成参数
 
-### 音频合成接口
+| 字段         | 类型                         | 是否必传 | 含义                                                | 限制 | 备注     |
+| ------------ | ---------------------------- | -------- | --------------------------------------------------- | ---- | -------- |
+| textEncoding | 文本编码                     | String   | utf8, gb2312, gbk                                   | 否   | utf8     |
+| textCompress | 文本压缩格式                 | String   | raw, gzip                                           | 否   | raw      |
+| textFormat   | 文本格式                     | String   | plain, json, xml                                    | 否   | plain    |
+| resId        | 训练得到的音色id             | String   | -                                                   | 是   | -        |
+| languageId   | 合成的语种（需与训练时一致） | int      | 0(中),1(英),2(日),3(韩),4(俄)                       | 否   | 0        |
+| speed        | 语速                         | int      | [0,100] (0=默认1/2,100=默认2倍)                     | 否   | -        |
+| volume       | 音量                         | int      | [0,100] (0=默认1/2,100=默认2倍)                     | 否   | -        |
+| pitch        | 语调                         | int      | [0,100] (0=默认1/2,100=默认2倍)                     | 否   | -        |
+| bgs          | 背景音                       | int      | -                                                   | 否   | 0        |
+| reg          | 英文发音方式                 | int      | 0(自动判断),1(字母发音),2(自动判断优先字母)         | 否   | 0        |
+| rdn          | 数字发音方式                 | int      | 0(自动判断),1(完全数值),2(完全字符串),3(字符串优先) | 否   | 0        |
+| rhy          | 是否返回拼音标注             | int      | 0(不返回),1(返回拼音),3(支持标点符号输出)           | 否   | 0        |
+| encoding     | 音频编码                     | String   | lame, speex, opus, opus-wb, speex-wb                | 否   | speex-wb |
+| sampleRate   | 音频采样率                   | int      | 16000, 8000, 24000                                  | 否   | 24000    |
+| vcn          | 发言人名称                   | String   | 固定值x5_clone                                      | 是   | x5_clone |
+| status       | 数据状态                     | int      | 固定值2(一次性传完)                                 | 是   | 2        |
 
-**接口描述：**
-音色训练成功后，通过训练得到的音色id合成指定文本的音频。
+## 方法详解
 
-**接口地址：**
-**注意：本接口支持合成的语种包括：中、英、日、韩、俄。全链路请求会话时长不超过1分钟**
-**原中文合成接口不再对外开放，已接入使用的用户仍可继续使用，建议尽快迁移至新的接口。迁移过程遇到问题，可扫描接口文档上方二维码获取1v1支持服务**
-
-```text
-ws(s)://cn-huabei-1.xf-yun.com/v1/private/voice_clone
+### 1. 刷新token
+```java
+public String refreshToken()
 ```
+**参数说明**：
 
-**接口要求**
+ 无
 
-**接口类型：**
-流式 [ws(s)]
+**响应参数**：
 
-**接口鉴权：**
-使用签名机制进行鉴权，签名详情参照 “[接口鉴权 ](https://www.xfyun.cn/doc/spark/general_url_authentication.html#_1-鉴权说明)”
+| 参数名称    | 类型   | 是否必传 | 参数说明                 |
+| ----------- | ------ | -------- | ------------------------ |
+| retcode     | string | 是       | 状态码                   |
+| accesstoken | string | 是       | Access Token             |
+| expiresin   | string | 是       | 有效期：默认7200，单位秒 |
 
-**请求参数示例**
+---
 
-```text
-{
-    "header": {
-        "app_id": "123456",
-        "status": 2,
-        "res_id": ""
-    },
-    "parameter": {
-        "tts": {
-            "vcn": "x5_clone",
-            "volume": 50,
-            "rhy": 0,
-            "pybuffer": 1,
-            "speed": 50,
-            "pitch": 50,
-            "bgs": 0,
-            "reg": 0,
-            "rdn": 0,
-            "audio": {
-                "encoding": "speex-wb",
-                "sample_rate": 16000
-            }
-        }
-    },
-    "payload": {
-        "text": {
-            "encoding": "utf8",
-            "compress": "raw",
-            "format": "plain",
-            "status": 2,
-            "seq": 0,
-            "text": ""
-        }
-    }
-}
+### 2. 获取训练文本
+```java
+public String trainText(Long textId) throws Exception
 ```
+**参数说明**：
 
-**请求头header部分：**
+| 参数名称 | 类型 | 是否必需 | 参数说明                        |
+| -------- | ---- | -------- | ------------------------------- |
+| textId   | Long | true     | 可使用通用训练文本(textId=5001) |
 
-| 字段   | 含义                                                         | 类型   | 限制             | 是否必传 |
-| ------ | ------------------------------------------------------------ | ------ | ---------------- | -------- |
-| app_id | 控制台获取您的appid，[控制台](https://console.xfyun.cn/services/oneSentence) | string | "maxLength":50   | 是       |
-| res_id | 训练得到的音色id                                             | string | "maxLength":1024 | 是       |
-| status | 请求状态，文本只能一次性传输，status必须传2                  | int    | 2                | 是       |
+**响应参数**：
+
+| 参数名称 | 类型   | 是否必需 | 参数说明         |
+| -------- | ------ | -------- | ---------------- |
+| code     | int    | true     | 返回码 0表示成功 |
+| desc     | string | true     | 返回描述         |
+| data     | object | true     | 响应数据         |
+| flag     | bool   | true     | true or false    |
+
+**data部分响应参数**
+
+| 参数名称 | 类型      | 是否必需 | 参数说明 |
+| -------- | --------- | -------- | -------- |
+| textId   | Long      | true     | 文本ID   |
+| textName | string    | true     | 文本标题 |
+| textSegs | TextSeg[] | true     | 文本列表 |
+
+**TextSeg数据结构**
+
+| 参数名称 | 类型   | 是否必需 | 参数说明               |
+| -------- | ------ | -------- | ---------------------- |
+| segId    | string | true     | 段落ID，表示第几条文本 |
+| segText  | string | true     | 文本内容               |
+
+---
+
+### 3. 创建训练任务
+```java
+public String createTask(CreateTaskParam param) throws Exception
+```
+**请求体：**
+
+| 参数名称     | 类型   | 是否必需 | 参数说明                                                     |
+| ------------ | ------ | -------- | ------------------------------------------------------------ |
+| taskName     | string | false    | 创建任务名称, 默认””                                         |
+| sex          | int    | false    | 性别, 1:男2:女, 默认1                                        |
+| ageGroup     | int    | false    | 1:儿童、2:青年、3:中年、4:中老年, 默认1                      |
+| resourceType | int    | true     | 12:一句话合成                                                |
+| thirdUser    | string | false    | 用户标识, 默认””                                             |
+| language     | string | false    | 训练的语种, 默认”” 中文：不传language参数，默认中文 英：en 日：jp 韩：ko 俄：ru |
+| resourceName | string | false    | 音库名称, 默认””                                             |
+| callbackUrl  | string | false    | 任务结果回调地址，训练结束时进行回调                         |
+
+**响应体**
+
+| 参数名称 | 类型   | 是否必需 | 参数说明         |
+| -------- | ------ | -------- | ---------------- |
+| code     | int    | true     | 返回码 0表示成功 |
+| desc     | string | true     | 返回描述         |
+| data     | string | true     | 任务id           |
+| flag     | bool   | true     | true or false    |
+
+---
+
+### 4. 向训练任务添加音频（url链接）
+```java
+public String audioAdd(AudioAddParam param) throws Exception
+```
+**请求体：**
+
+| 参数名称  | 类型   | 是否必需 | 参数说明                                                     |
+| --------- | ------ | -------- | ------------------------------------------------------------ |
+| taskId    | string | true     | 训练任务唯一id                                               |
+| audioUrl  | string | true     | 文件上传的url地址, 必须是http/https开头，以mp3/wav/m4a/pcm结尾 |
+| textId    | Long   | true     | 文本ID, 可使用通用训练文本(textId=5001)                      |
+| textSegId | Long   | true     | 训练样例文本段落ID, 例：1, 2, 3 ……                           |
+
+**响应体**
+
+| 参数名称 | 类型   | 是否必需 | 参数说明         |
+| -------- | ------ | -------- | ---------------- |
+| code     | int    | true     | 返回码 0表示成功 |
+| desc     | string | true     | 返回描述         |
+| data     | null   |          |                  |
+| flag     | bool   | true     | true or false    |
+
+---
+
+### 5. 音色训练任务提交训练(异步)
+```java
+public String submit(String taskId) throws Exception
+```
+**请求体：**
+
+| 参数名称 | 类型   | 是否必需 | 参数说明   |
+| -------- | ------ | -------- | ---------- |
+| taskId   | string | true     | 训练任务id |
+
+**响应体**
+
+| 参数名称 | 类型   | 是否必需 | 参数说明         |
+| -------- | ------ | -------- | ---------------- |
+| code     | int    | true     | 返回码 0表示成功 |
+| desc     | string | true     | 返回描述         |
+| data     | null   |          |                  |
+| flag     | bool   | true     | true or false    |
+
+---
+
+### 6. 向训练任务添加音频（本地文件）并提交训练任务
+```java
+public String submitWithAudio(AudioAddParam param) throws Exception
+```
+**请求体：**
+
+| 参数名称  | 类型          | 是否必需 | 参数说明                                |
+| --------- | ------------- | -------- | --------------------------------------- |
+| file      | MultipartFile | true     | 上传的音频文件                          |
+| taskId    | string        | true     | 训练任务唯一id                          |
+| textId    | string        | true     | 文本ID, 可使用通用训练文本(textId=5001) |
+| textSegId | string        | true     | 训练样例文本段落ID, 例：1, 2, 3 ……      |
+
+**响应体**
+
+| 参数名称 | 类型   | 是否必需 | 参数说明         |
+| -------- | ------ | -------- | ---------------- |
+| code     | int    | true     | 返回码 0表示成功 |
+| desc     | string | true     | 返回描述         |
+| data     | null   |          |                  |
+| flag     | bool   | true     | true or false    |
+
+---
+
+### 7. 根据任务id查询音色训练任务的状态
+
+```java
+public String result(String taskId) throws Exception
+```
 
 **请求体：**
 
-**parameter.tts部分**
+| 参数名称 | 类型   | 是否必需 | 参数说明   |
+| -------- | ------ | -------- | ---------- |
+| taskId   | string | true     | 训练任务id |
 
-| 功能标识   | 功能描述                                              | 数据类型 | 取值范围                                                     | 必填 | 默认值            |
-| ---------- | ----------------------------------------------------- | -------- | ------------------------------------------------------------ | ---- | ----------------- |
-| vcn        | 发言人名称                                            | string   | x5_clone                                                     | 是   |                   |
-| LanguageID | 合成的语种 注意：需要和训练时指定的语种保持一致       | int      | 中：0 英：1 日：2 韩：3 俄：4                                | 是   | 不传默认为0：中文 |
-| volume     | 音量：0是静音，1对应默认音量1/2，100对应默认音量的2倍 | int      | 最小值:0, 最大值:100                                         | 否   | 50                |
-| rhy        | 是否返回音素信息/拼音标注                             | int      | 0:不返回拼音, 1:返回拼音（纯文本格式，utf8编码）, 3:支持文本中的标点符号输出（纯文本格式，utf8编码） | 否   | 0                 |
-| pybuffer   | 输出音素时长信息                                      | int      | 1:打开                                                       | 否   | 1                 |
-| speed      | 语速：0对应默认语速的1/2，100对应默认语速的2倍        | int      | 最小值:0, 最大值:100                                         | 否   | 50                |
-| pitch      | 语调：0对应默认语速的1/2，100对应默认语速的2倍        | int      | 最小值:0, 最大值:100                                         | 否   | 50                |
-| bgs        | 背景音                                                | int      | 0:无背景音, 1:内置背景音1, 2:内置背景音2                     | 否   | 0                 |
-| reg        | 英文发音方式                                          | int      | 0:自动判断处理，如果不确定将按照英文词语拼写处理（缺省）, 1:所有英文按字母发音, 2:自动判断处理，如果不确定将按照字母朗读 | 否   | 0                 |
-| rdn        | 合成音频数字发音方式                                  | int      | 0:自动判断, 1:完全数值, 2:完全字符串, 3:字符串优先           | 否   | 0                 |
-| audio      | 响应数据控制                                          | Object   | 数据格式预期，用于描述返回结果的编码等相关约束，不同的数据类型，约束维度亦不相同，此 object 与响应结果存在对应关系。 | 是   |                   |
+**响应体**
 
-**parameter.tts.audio部分**
+| 参数名称 | 类型   | 是否必需 | 参数说明         |
+| -------- | ------ | -------- | ---------------- |
+| code     | int    | true     | 返回码 0表示成功 |
+| desc     | string | true     | 返回描述         |
+| data     | null   |          |                  |
+| flag     | bool   | true     | true or false    |
 
-| 字段        | 含义     | 数据类型 | 取值范围                             | 默认值   | 说明               | 必填 |
-| ----------- | -------- | -------- | ------------------------------------ | -------- | ------------------ | ---- |
-| encoding    | 音频编码 | string   | lame, speex, opus, opus-wb, speex-wb | speex-wb | 取值范围可枚举     | 否   |
-| sample_rate | 采样率   | int      | 16000, 8000, 24000                   | 16000    | 音频采样率，可枚举 | 否   |
+### 8. 一句话合成
 
-**payload.text部分**
-
-| 字段     | 含义         | 数据类型 | 取值范围                                           | 默认值 | 说明           | 必填 |
-| -------- | ------------ | -------- | -------------------------------------------------- | ------ | -------------- | ---- |
-| encoding | 文本编码     | string   | utf8, gb2312, gbk                                  | utf8   | 取值范围可枚举 | 否   |
-| compress | 文本压缩格式 | string   | raw, gzip                                          | raw    | 取值范围可枚举 | 否   |
-| format   | 文本格式     | string   | plain, json, xml                                   | plain  | 取值范围可枚举 | 否   |
-| status   | 数据状态     | int      | 2:一次性传完                                       |        | 一次性传完     | 是   |
-| seq      | 数据序号     | int      | 最小值:0, 最大值:9999999                           |        | 数据序号       | 是   |
-| text     | 文本数据     | string   | 文本内容，base64编码后不超过8000字节，约2000个字符 |        | 需base64编码   | 是   |
-
-**响应参数示例**
-
-```text
-{
-    "header": {
-        "code": 0,
-        "message": "success",
-        "sid": "ase000704fa@dx16ade44e4d87a1c802",
-        "status": 0
-    },
-    "payload": {
-        "audio": {
-            "encoding": "speex-wb",
-            "sample_rate": 16000,
-            "channels": 1,
-            "bit_depth": 16,
-            "status": 0,
-            "seq": 0,
-            "audio": "",
-            "frame_size": 0
-        },
-        "pybuf": {
-            "encoding": "utf8",
-            "compress": "raw",
-            "format": "plain",
-            "status": 0,
-            "seq": 0,
-            "text": ""
-        }
-    }
-}
+```java
+public void send(String text, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
 ```
+
+**请求体：**
+
+| 参数名称 | 类型   | 是否必需 | 参数说明                                           |
+| -------- | ------ | -------- | -------------------------------------------------- |
+| text     | string | true     | 文本内容，base64编码后不超过8000字节，约2000个字符 |
+
+**响应体：**
 
 **响应头header部分：**
 
@@ -348,37 +415,36 @@ ws(s)://cn-huabei-1.xf-yun.com/v1/private/voice_clone
 | seq      | 数据序号     | int      | 最小值:0, 最大值:9999999                           |
 | text     | 文本数据     | string   | 文本内容，base64编码后不超过8000字节，约2000个字符 |
 
-pybuf, 当请求参数的 rhy = 1 时text解码后的数据包含音素信息/拼音标注。
-注：如果文本中包含英文，英文音素目前不带声调信息；音素时长的单位是5毫秒。
+---
 
-例如：输入的待合成的文本”科大讯飞语音合成系统“，text解码后得到信息如下
 
-```text
-sil:6;欢[=huan1]-h1:16;@-uan1:24;迎[=ying2]-ing2:20;使[=shi3]-sh3:24;@-iii3:14;用[=yong4]-iong4:24;科[=ke1]-k1:20;@-e1:14;大[=da4]-d4:12;@-a4:24;讯[=xun4]-x4:22;@-vn4:20;飞[=fei1]-f1:16;@-ei1:22;语[=yu3]-v3:32;音[=yin1]-in1:26;合[=he2]-h2:26;@-e2:18;成[=cheng2]-ch2:18;@-eng2:14;系[=xi4]-x4:20;@-i4:12;统[=tong3]*-t3:20;@-ong3:12;sil:82;
+
+## 注意事项
+
+1. 支持合成的语种包括：中、英、日、韩、俄。全链路请求会话时长不超过1分钟
+
+2. 合成返回结果为base64 , 需要解码后使用
+
+3. token会自动刷新 , 异常情况下需要手动刷新
+
+4. 训练接口都需要处理`BusinessException`（参数校验失败）和`IOException`（网络错误）
+
+5. 客户端默认超时时间为10秒，可通过Builder调整：
+
+```java
+new Builder(appId, apiSecret)
+    .readTimeout(10)
+    .build();
 ```
 
-| 符号 | 解释                                                         |
-| ---- | ------------------------------------------------------------ |
-| ;    | 音素分割符，将不同的音素分割开                               |
-| :    | 音素时长分割符，后的数字为该音素的帧数（目前1帧代表5ms）。例如"sil:8"表示音素sil的发音时长为8*5=40毫秒 |
-| -    | 音节分割符，将音素和该音素对应的音节分割开。例如"欢[=huan1]-h1:16"中‘-’之后的"h1"表示音素 |
-| @    | 表示当前音素和前一个是一个文本                               |
-| *    | L1韵律的分割符。L1韵律分割符放在音节信息后面。               |
-| []   | 音节信息。例如"科"--->[=ke1]是该音素对应的音节和词。         |
-| sil  | 表示句首和句末的清音, sil不带声调信息                        |
-| sp   | 是句中的清音, sp的声调信息和前一个音素一致                   |
-
-## [#](https://www.xfyun.cn/doc/spark/reproduction.html#合成接口-静音停顿、多音字读法)合成接口-静音停顿、多音字读法
-
-**合成时，加入静音停顿**
-1、格式： [p] (=无符号整数)
-2、参数： * – 静音的时间长度，单位：毫秒(ms)
-文本举例：你好[p500]科大讯飞
-该句合成时，将会在“你好”后加入500ms的静音
-
-**指定汉字发音**
-1、格式： [=] (=拼音/音标)
-2、参数： * – 为前一个汉字/单词设定的拼音/音标
-3、说明： 汉字：声调用后接一位数字15分别表示阴平、阳平、上声、去声和轻声5个声调。
-文本举例：着[=zhuo2]手
-其中，“着”字将读作“zhuó”
+## 错误处理
+捕获异常示例：
+```java
+try {
+    String result = client.create(createReq);
+} catch (BusinessException e) {
+    System.err.println("业务异常：" + e.getMessage());
+} catch (IOException e) {
+    System.err.println("网络请求失败：" + e.getMessage());
+}
+```
