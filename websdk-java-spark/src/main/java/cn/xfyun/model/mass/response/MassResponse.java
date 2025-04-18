@@ -1,4 +1,4 @@
-package cn.xfyun.model.finetuning.response;
+package cn.xfyun.model.mass.response;
 
 import com.google.gson.annotations.SerializedName;
 

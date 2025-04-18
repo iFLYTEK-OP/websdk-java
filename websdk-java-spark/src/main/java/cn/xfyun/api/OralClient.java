@@ -1,17 +1,16 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.WebSocketClient;
+import cn.xfyun.base.webscoket.AbstractClient;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.oral.request.OralRequest;
-import cn.xfyun.model.sign.AbstractSignature;
-import cn.xfyun.service.oral.AbstractOralWebSocketListener;
 import cn.xfyun.util.StringUtils;
 import okhttp3.OkHttpClient;
+import okhttp3.WebSocket;
+import okhttp3.WebSocketListener;
 import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
@@ -23,9 +22,15 @@ import java.util.concurrent.TimeUnit;
  *
  * @author zyding6
  **/
-public class OralClient extends WebSocketClient {
+public class OralClient extends AbstractClient {
 
     private static final Logger logger = LoggerFactory.getLogger(OralClient.class);
+
+    /**
+     * 传输数据状态
+     * 2: 一次性传完
+     */
+    private static final int STATUS = 2;
 
     /**
      * 文本编码
@@ -122,6 +127,7 @@ public class OralClient extends WebSocketClient {
 
     /**
      * 音频编码
+     * raw,lame, speex, opus, opus-wb, opus-swb, speex-wb
      * lame: mp3格式音频
      * raw: pcm格式音频
      */
@@ -196,10 +202,6 @@ public class OralClient extends WebSocketClient {
         this.pingInterval = builder.pingInterval;
     }
 
-    public String getOriginHostUrl() {
-        return originHostUrl;
-    }
-
     public String getOralLevel() {
         return oralLevel;
     }
@@ -272,60 +274,28 @@ public class OralClient extends WebSocketClient {
         return textFormat;
     }
 
-    public OkHttpClient getClient() {
-        return okHttpClient;
-    }
-
-    public boolean isRetryOnConnectionFailure() {
-        return retryOnConnectionFailure;
-    }
-
-    public int getCallTimeout() {
-        return callTimeout;
-    }
-
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    public int getWriteTimeout() {
-        return writeTimeout;
-    }
-
-    public int getPingInterval() {
-        return pingInterval;
-    }
-
-    public AbstractSignature getSignature() {
-        return signature;
-    }
-
     /**
      * 超拟人语音合成处理方法(一次性合成)
      *
-     * @param text 合成文本
-     *             文本数据[1,8000]
-     *             文本内容，base64编码后不超过8000字节，约2000个字符
-     * @throws UnsupportedEncodingException 编码异常
+     * @param text              合成文本
+     *                          文本数据[1,8000]
+     *                          文本内容，base64编码后不超过8000字节，约2000个字符
+     * @param webSocketListener ws监听类 (AbstractOralWebSocketListener)
      */
-    public void send(String text, AbstractOralWebSocketListener webSocketListener) throws UnsupportedEncodingException, MalformedURLException, SignatureException {
-        //参数校验
-        verification(text);
+    public void send(String text, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+        // 参数校验
+        paramCheck(text);
 
         // 初始化websocket链接
-        createWebSocketConnect(webSocketListener);
+        WebSocket socket = newWebSocket(webSocketListener);
 
         // 构建请求参数
         String jsonStr = buildParam(text);
 
         try {
-            logger.debug("超拟人合成请求URL：{}，参数：{}", this.hostUrl, jsonStr);
+            logger.debug("超拟人合成请求参数：{}", jsonStr);
             // 发送合成文本
-            webSocket.send(jsonStr);
+            socket.send(jsonStr);
         } catch (Exception e) {
             logger.error("超拟人合成请求出错：{}", e.getMessage(), e);
         }
@@ -334,7 +304,7 @@ public class OralClient extends WebSocketClient {
     /**
      * 参数校验
      */
-    private void verification(String text) {
+    private void paramCheck(String text) {
         if (StringUtils.isNullOrEmpty(text)) {
             throw new BusinessException("合成文本不能为空");
         } else {
@@ -353,7 +323,7 @@ public class OralClient extends WebSocketClient {
         // 请求头
         OralRequest.Header header = new OralRequest.Header();
         header.setAppId(appId);
-        header.setStatus(2);
+        header.setStatus(STATUS);
         request.setHeader(header);
         // 请求参数
         OralRequest.Parameter parameter = new OralRequest.Parameter(this);
@@ -364,7 +334,7 @@ public class OralClient extends WebSocketClient {
         payloadText.setEncoding(TEXT_ENCODING);
         payloadText.setCompress(TEXT_COMPRESS);
         payloadText.setFormat(textFormat);
-        payloadText.setStatus(2);
+        payloadText.setStatus(STATUS);
         payloadText.setSeq(0);
         payloadText.setText(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
         payload.setText(payloadText);
@@ -373,7 +343,10 @@ public class OralClient extends WebSocketClient {
     }
 
     public static final class Builder {
-        // websocket相关
+
+        /**
+         * websocket相关
+         */
         boolean retryOnConnectionFailure = true;
         int callTimeout = 0;
         int connectTimeout = 30000;
@@ -396,14 +369,14 @@ public class OralClient extends WebSocketClient {
         private int reg = 0;
         private int rdn = 0;
         private int rhy = 0;
-        private String encoding = "lame";
+        private String encoding = "speex-wb";
         private int sampleRate = 24000;
         private int channels = 1;
         private int bitDepth = 16;
         private int frameSize = 0;
         private String textFormat = "plain";
 
-        public OralClient build() throws MalformedURLException, SignatureException {
+        public OralClient build() {
             return new OralClient(this);
         }
 

@@ -17,7 +17,6 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
 import java.util.UUID;
@@ -34,13 +33,14 @@ import static org.junit.Assert.assertNotNull;
 @PrepareForTest({OralClient.class})
 @PowerMockIgnore({"cn.xfyun.util.HttpConnector", "javax.crypto.*", "javax.net.ssl.*"})
 public class OralClientTest {
+
     private static final Logger logger = LoggerFactory.getLogger(OralClientTest.class);
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getOralAPPKey();
     private static final String apiSecret = PropertiesConfig.getOralAPPSecret();
 
     @Test
-    public void defaultParamTest() throws MalformedURLException, SignatureException {
+    public void defaultParamTest() {
         OralClient client = new OralClient.Builder()
                 .signature(appId, apiKey, apiSecret)
                 .callTimeout(10, TimeUnit.SECONDS)
@@ -101,7 +101,7 @@ public class OralClientTest {
     }
 
     @Test
-    public void test() throws MalformedURLException, SignatureException, FileNotFoundException, UnsupportedEncodingException {
+    public void test() throws MalformedURLException, FileNotFoundException, SignatureException {
         String filePath = "src/test/resources/audio/oral_" + UUID.randomUUID() + ".mp3";
         String text = "检查签名的各个参数是否有缺失是否正确，特别确认下复制的api_key是否正确";
         // 正常流程
@@ -137,7 +137,7 @@ public class OralClientTest {
         send(text, oralClient5, filePath);
     }
 
-    private void send(String text, OralClient oralClient, String filePath) throws MalformedURLException, SignatureException, FileNotFoundException, UnsupportedEncodingException {
+    private void send(String text, OralClient oralClient, String filePath) throws FileNotFoundException, MalformedURLException, SignatureException {
         // 存放音频的文件
         File f = new File(filePath);
         if (!f.exists()) {
