@@ -54,6 +54,13 @@ public class RtasrClientTest {
 				.hostUrl("http://www.iflytek.com")
 				.addPunc()
 				.addPd("edu")
+				.lang("cn")
+				.transType("normal")
+				.transStrategy(2)
+				.targetLang("en")
+				.vadMdn(2)
+				.roleType(2)
+				.engLangType(1)
 				.callTimeout(2000, TimeUnit.MILLISECONDS)
 				.connectTimeout(2000, TimeUnit.MILLISECONDS)
 				.readTimeout(2000, TimeUnit.MILLISECONDS)
@@ -67,6 +74,13 @@ public class RtasrClientTest {
 		Assert.assertEquals(rtasrClient.getWriteTimeout(), 2000);
 		Assert.assertEquals(rtasrClient.getPingInterval(), 10);
 		Assert.assertFalse(rtasrClient.isRetryOnConnectionFailure());
+		Assert.assertEquals(rtasrClient.getLang(), "cn");
+		Assert.assertEquals(rtasrClient.getTransType(), "normal");
+		Assert.assertEquals(rtasrClient.getTransStrategy(), 2);
+		Assert.assertEquals(rtasrClient.getTargetLang(), "en");
+		Assert.assertTrue(rtasrClient.getVadMdn() == 2);
+		Assert.assertTrue(rtasrClient.getRoleType() == 2);
+		Assert.assertTrue(rtasrClient.getEngLangType() == 1);
 	}
 
 
