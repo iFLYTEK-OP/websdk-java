@@ -108,9 +108,15 @@ public class SparkChatRequest {
             private Integer maxTokens;
             @SerializedName("top_k")
             private Integer topK;
+            @SerializedName("top_p")
+            private Integer topP;
             private List<Object> tools;
             @SerializedName("chat_id")
             private String chatId;
+            @SerializedName("presence_penalty")
+            private Float presencePenalty;
+            @SerializedName("frequency_penalty")
+            private Float frequencyPenalty;
 
             public String getChatId() {
                 return chatId;
@@ -158,6 +164,30 @@ public class SparkChatRequest {
 
             public void setTools(List<Object> tools) {
                 this.tools = tools;
+            }
+
+            public Integer getTopP() {
+                return topP;
+            }
+
+            public void setTopP(Integer topP) {
+                this.topP = topP;
+            }
+
+            public Float getPresencePenalty() {
+                return presencePenalty;
+            }
+
+            public void setPresencePenalty(Float presencePenalty) {
+                this.presencePenalty = presencePenalty;
+            }
+
+            public Float getFrequencyPenalty() {
+                return frequencyPenalty;
+            }
+
+            public void setFrequencyPenalty(Float frequencyPenalty) {
+                this.frequencyPenalty = frequencyPenalty;
             }
         }
     }

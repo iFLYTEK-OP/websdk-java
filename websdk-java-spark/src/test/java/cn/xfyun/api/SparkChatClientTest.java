@@ -58,6 +58,7 @@ public class SparkChatClientTest {
                 .functions(new ArrayList<>())
                 .maxTokens(4680)
                 .temperature(0.5F)
+                .keepAlive(true)
                 .topK(4)
                 .webSearch(null)
                 .frequencyPenalty(1)
@@ -93,6 +94,7 @@ public class SparkChatClientTest {
         Assert.assertTrue(client.getSuppressPlugin().isEmpty());
         Assert.assertEquals(client.getOriginHostUrl(), "test.url");
         Assert.assertEquals(client.getToolChoice(), "none");
+        Assert.assertTrue(client.getKeepAlive());
 
         Assert.assertNotNull(client.getSparkModel());
     }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
+import java.util.Base64;
 
 /**
  * 文件工具类
@@ -83,4 +84,14 @@ public class FileUtil {
         }
     }
 
+    /**
+     * 读取文件为为base64
+     *
+     * @param filePath 文件路径
+     * @return 文件的Base64值
+     * @throws IOException 错误信息
+     */
+    public static String fileToBase64(String filePath) throws IOException {
+        return Base64.getEncoder().encodeToString(readFileToByteArray(new File(filePath)));
+    }
 }

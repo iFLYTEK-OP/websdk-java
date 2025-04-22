@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 星辰Mass Client单元测试
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MassClient.class})

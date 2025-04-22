@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.WebSocketClient;
+import cn.xfyun.base.websocket.WebSocketClient;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.RtasrSignature;
 import cn.xfyun.service.rta.AbstractRtasrWebSocketListener;

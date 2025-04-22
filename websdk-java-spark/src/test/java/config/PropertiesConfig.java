@@ -39,6 +39,10 @@ public class PropertiesConfig {
     private static final String sparkAPPKey;
     private static final String sparkAPPSecret;
     private static final String sparkAPIPassword;
+    private static final String imageGenAPPKey;
+    private static final String imageGenAPPSecret;
+    private static final String hidreamAPPKey;
+    private static final String hidreamAPPSecret;
 
     static {
         Properties properties = new Properties();
@@ -69,6 +73,10 @@ public class PropertiesConfig {
         sparkAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("sparkAPPKey")) ? System.getenv("sparkAPPKey") : properties.getProperty("sparkAPPKey");
         sparkAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("sparkAPPSecret")) ? System.getenv("sparkAPPSecret") : properties.getProperty("sparkAPPSecret");
         sparkAPIPassword = StringUtils.isNullOrEmpty(properties.getProperty("sparkAPIPassword")) ? System.getenv("sparkAPIPassword") : properties.getProperty("sparkAPIPassword");
+        imageGenAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("imageGenAPPKey")) ? System.getenv("imageGenAPPKey") : properties.getProperty("imageGenAPPKey");
+        imageGenAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("imageGenAPPSecret")) ? System.getenv("imageGenAPPSecret") : properties.getProperty("imageGenAPPSecret");
+        hidreamAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("hidreamAPPKey")) ? System.getenv("hidreamAPPKey") : properties.getProperty("hidreamAPPKey");
+        hidreamAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("hidreamAPPSecret")) ? System.getenv("hidreamAPPSecret") : properties.getProperty("hidreamAPPSecret");
     }
 
     public static String getAppId() {
@@ -153,5 +161,21 @@ public class PropertiesConfig {
 
     public static String getSparkAPIPassword() {
         return sparkAPIPassword;
+    }
+
+    public static String getImageGenAPPKey() {
+        return imageGenAPPKey;
+    }
+
+    public static String getImageGenAPPSecret() {
+        return imageGenAPPSecret;
+    }
+
+    public static String getHidreamAPPKey() {
+        return hidreamAPPKey;
+    }
+
+    public static String getHidreamAPPSecret() {
+        return hidreamAPPSecret;
     }
 }

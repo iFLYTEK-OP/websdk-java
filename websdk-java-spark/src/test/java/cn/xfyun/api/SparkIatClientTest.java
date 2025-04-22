@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 大模型语音听写 Client单元测试
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SparkIatClient.class})

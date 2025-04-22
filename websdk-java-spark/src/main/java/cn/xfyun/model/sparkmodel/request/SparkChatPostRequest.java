@@ -51,6 +51,8 @@ public class SparkChatPostRequest {
     private Object toolChoice;
     @SerializedName("suppress_plugin")
     private List<String> suppressPlugin;
+    @SerializedName("keep_alive")
+    private Boolean keepAlive;
 
     public SparkChatPostRequest() {
     }
@@ -184,6 +186,14 @@ public class SparkChatPostRequest {
 
     public void setSuppressPlugin(List<String> suppressPlugin) {
         this.suppressPlugin = suppressPlugin;
+    }
+
+    public Boolean getKeepAlive() {
+        return keepAlive;
+    }
+
+    public void setKeepAlive(Boolean keepAlive) {
+        this.keepAlive = keepAlive;
     }
 
     public static class ResponseFormat {

@@ -1,4 +1,4 @@
-package cn.xfyun.base.webscoket;
+package cn.xfyun.base.websocket;
 
 import cn.xfyun.base.Client;
 import cn.xfyun.model.sign.AbstractSignature;
