@@ -3,10 +3,10 @@ package cn.xfyun.api;
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
 import cn.xfyun.config.AIPPTEnum;
+import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.aippt.request.PPTCreate;
 import cn.xfyun.model.aippt.request.PPTSearch;
 import cn.xfyun.model.sign.Signature;
-import com.sun.istack.internal.NotNull;
 import okhttp3.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,10 @@ public class AIPPTV2Client extends HttpClient {
     /**
      * PPT主题列表查询
      */
-    public String list(@NotNull PPTSearch pptSearch) throws IOException {
+    public String list(PPTSearch pptSearch) throws IOException {
+        // 非空校验
+        nullCheck(pptSearch);
+
         // 构建JSON类型请求体
         RequestBody body = RequestBody.create(JSON, pptSearch.toJSONString());
 
@@ -44,7 +47,10 @@ public class AIPPTV2Client extends HttpClient {
      * PPT生成（直接根据用户输入要求，获得最终PPT）
      * 基于用户提示、文档等相关内容生成PPT，字数不得超过8000字，文件限制10M。
      */
-    public String create(@NotNull PPTCreate pptCreate) throws IOException {
+    public String create(PPTCreate pptCreate) throws IOException {
+        // 非空校验
+        nullCheck(pptCreate);
+
         // 参数校验
         pptCreate.createCheck();
 
@@ -55,7 +61,10 @@ public class AIPPTV2Client extends HttpClient {
     /**
      * 大纲生成
      */
-    public String createOutline(@NotNull PPTCreate pptCreate) throws IOException {
+    public String createOutline(PPTCreate pptCreate) throws IOException {
+        // 非空校验
+        nullCheck(pptCreate);
+
         // 参数校验
         pptCreate.createOutLineCheck();
 
@@ -69,7 +78,10 @@ public class AIPPTV2Client extends HttpClient {
      * query参数不得超过8000字，上传文件支持pdf(不支持扫描件)、doc、docx、txt、md格式的文件，
      * 注意：txt格式限制100万字以内，其他文件限制10M
      */
-    public String createOutlineByDoc(@NotNull PPTCreate pptCreate) throws IOException {
+    public String createOutlineByDoc(PPTCreate pptCreate) throws IOException {
+        // 非空校验
+        nullCheck(pptCreate);
+
         // 参数校验
         pptCreate.createOutlineByDocCheck();
 
@@ -80,7 +92,10 @@ public class AIPPTV2Client extends HttpClient {
     /**
      * 通过大纲生成PPT
      */
-    public String createPptByOutline(@NotNull PPTCreate pptCreate) throws IOException {
+    public String createPptByOutline(PPTCreate pptCreate) throws IOException {
+        // 非空校验
+        nullCheck(pptCreate);
+
         // 参数校验
         pptCreate.createPptByOutlineCheck();
 
@@ -97,6 +112,15 @@ public class AIPPTV2Client extends HttpClient {
     public String progress(String sid) throws IOException {
         // 发送请求
         return send(AIPPTEnum.PROGRESS, null, sid);
+    }
+
+    /**
+     * 非空参数校验
+     */
+    private void nullCheck(Object param) {
+        if (param == null) {
+            throw new BusinessException("参数不能为空");
+        }
     }
 
     /**
@@ -127,8 +151,8 @@ public class AIPPTV2Client extends HttpClient {
 
         public Builder(String appId, String apiSecret) {
             super(HOST_URL, appId, null, apiSecret);
-            // ppt生成有耗时操作, 客户端等待服务器响应的时间调整为30s
-            this.readTimeout(30);
+            // ppt生成有耗时操作, 客户端等待服务器响应的时间调整为120s
+            this.readTimeout(120);
         }
 
         @Override

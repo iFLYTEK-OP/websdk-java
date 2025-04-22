@@ -1,15 +1,35 @@
 # 智能PPT生成(新版)API文档
 
-## 接口与鉴权
+## 简介
 
-### 应用申请
+本客户端基于讯飞Spark API实现，提供智能PPT生成能力[官方文档](https://www.xfyun.cn/doc/spark/PPTv2.html)，支持以下功能：
 
-> 能力开通地址：https://www.xfyun.cn/services/aippt
+- PPT主题列表查询
+- 智能PPT生成（直接生成最终PPT）
+- 大纲生成（基于用户输入）
+- 文档自定义大纲生成（支持PDF/DOC等格式）
+- 大纲转PPT生成
+- PPT生成进度查询
 
+## 功能列表
 
-### 实例代码
+| 方法名               | 功能说明               |
+| -------------------- | ---------------------- |
+| list()               | 查询PPT主题列表        |
+| create()             | 直接生成完整PPT        |
+| createOutline()      | 生成大纲               |
+| createOutlineByDoc() | 基于文档生成自定义大纲 |
+| createPptByOutline() | 通过大纲生成PPT        |
+| progress()           | 查询PPT生成进度        |
 
-##### 示例代码
+## 使用准备
+
+1. 前往[能力开通](https://www.xfyun.cn/)页面
+2. 创建应用并获取以下凭证：
+   - APPID 
+   - APISecret
+
+## 快速开始
 
 1、添加maven依赖
 
@@ -51,8 +71,8 @@ import java.util.Objects;
 public class AIPPTV2ClientApp {
 
     private static final Logger logger = LoggerFactory.getLogger(AIPPTV2ClientApp.class);
-    private static final String APP_ID = "替换成你的appid";
-    private static final String API_SECRET = "替换成你的apiSecret";
+    private static final String APP_ID = "你的appid";
+    private static final String API_SECRET = "你的apiSecret";
     private static String filePath;
     private static String resourcePath;
 
@@ -125,13 +145,6 @@ public class AIPPTV2ClientApp {
 
 更详细请参见 [Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/spark/AIPPTV2ClientApp.java)
 
-
-### 接口域名
-
-```apl
-zwapi.xfyun.cn
-```
-
 ## 错误码
 
 | 错误码 | 描述         | 处理方式                                                     |
@@ -142,35 +155,15 @@ zwapi.xfyun.cn
 | 20007  | 鉴权错误     | 检查鉴权信息                                                 |
 | 9999   | 系统异常     | 确认鉴权信息、请求方式、请求参数是否有误，或联系技术人员排查相关日志 |
 
-## 接口列表
+## 方法详解
 
-### 1、PPT主题列表查询
-
-**1.1 接口地址：**
-
-```text
-https://zwapi.xfyun.cn/api/ppt/v2/template/list
+### 1. PPT主题列表查询
+```java
+public String list(PPTSearch pptSearch) throws IOException
 ```
+**参数说明**：
 
-**1.2 请求示例：**
-
-```text
-{
-    "style": "简约",
-    "color": "红色",
-    "industry": "教育培训",
-    "pageNum": 1,
-    "pageSize": 10
-}
-```
-
-**1.3 请求查询参数：**
-
-```text
-POST，application/json
-```
-
-**注意:请求体不能为空，至少有一项。**
+- `pptSearch`: 查询参数对象，可设置：
 
 |   名称   |  类型   |                             描述                             | 必须 | 默认值 |
 | :------: | :-----: | :----------------------------------------------------------: | ---- | ------ |
@@ -180,9 +173,9 @@ POST，application/json
 | pageNum  | Integer |                             页数                             | N    | 1      |
 | pageSize | Integer |                           每页数量                           | N    | 10     |
 
-**1.4 响应参数：**
+**响应示例**：
 
-```text
+```json
 {
     "flag": true,
     "code": 0,
@@ -198,7 +191,7 @@ POST，application/json
                 "color": "蓝色",
                 "industry": "教育培训",
                 "style": "卡通",
-                "detailImage": "{\"titleCoverImageLarge\":\"\",\"titleCoverImage\":\"\",\"catalogueCoverImage\":\"\",\"chapterCoverImage\":\"\",\"contentCoverImage\":\"\",\"endCoverImage\":\"\"}"
+                "detailImage": "{\"titleCoverImageLarge\":\"ppt图片地址\",\"titleCoverImage\":\"ppt图片地址\",\"catalogueCoverImage\":\"ppt图片地址\",\"chapterCoverImage\":\"ppt图片地址\",\"contentCoverImage\":\"ppt图片地址\",\"endCoverImage\":\"ppt图片地址\"}"
             },
 			...
 			 ],
@@ -207,74 +200,24 @@ POST，application/json
 }
 ```
 
-**1.5 响应描述**
+---
 
-|            响应字段             |  类型   |                     描述                     |
-| :-----------------------------: | :-----: | :------------------------------------------: |
-|              flag               | Boolean |                   响应标识                   |
-|              code               | Integer |                    错误码                    |
-|              desc               | String  |                   错误详情                   |
-|              count              | Integer |                不用关注，预留                |
-|           data.total            |  Long   |               PPT主题列表总数                |
-|          data.records           |  array  |               PPT主题列表集合                |
-| data.records[]. templateIndexId | String  |              供用户检索模板的ID              |
-|    data.records[]. pageCount    | Integer |                    总页数                    |
-|      data.records[]. type       | String  |                     类型                     |
-|      data.records[]. color      | String  |                   颜色类型                   |
-|    data.records[]. industry     | String  |                   行业类型                   |
-|      data.records[]. style      | String  |                   风格类型                   |
-|   data.records[]. detailImage   | String  |                    详细图                    |
-|     data.records[]. payType     | String  | 模板支付方式，**注意：所有模板均已免费使用** |
-
-### [#](https://www.xfyun.cn/doc/spark/PPTv2.html#_2、ppt生成-直接根据用户输入要求-获得最终ppt)2、PPT生成（直接根据用户输入要求，获得最终PPT）
-
-**2.1 接口描述：**
-
-基于用户提示、文档等相关内容生成PPT，字数不得超过8000字，文件限制10M。
-
-**2.2 接口地址：**
-
-```text
-https://zwapi.xfyun.cn/api/ppt/v2/create
+### 2. 生成PPT
+```java
+public String create(PPTCreate pptCreate) throws IOException
 ```
+**参数说明**：
 
-**2.3 请求查询参数：**
+- `pptCreate`: 查询参数对象，可设置：
 
-```text
-POST，multipart/form-data
-```
+|    名称    |  类型   |                             描述                             | 必须 | 默认值 |
+| :--------: | :-----: | :----------------------------------------------------------: | ---- | ------ |
+|   query    | String  | 用户生成PPT要求（最多8000字） 注意：query不能为空字符串、仅包含空格的字符串 | Y    |        |
+| businessId | String  |           业务ID（非必传）- 业务方自行决定是否使用           | N    |        |
+|  language  | String  |                             语种                             | N    | cn     |
+|   search   | Boolean |                         是否联网搜索                         | N    | false  |
 
-|    名称    |     类型      |                             描述                             | 必须 | 默认值 |
-| :--------: | :-----------: | :----------------------------------------------------------: | ---- | ------ |
-|   query    |    String     | 用户生成PPT要求（最多8000字；query、file、fileUrl必填其一） 注意：query不能为空字符串、仅包含空格的字符串 | N    |        |
-|    file    | MultipartFile | 上传文件 (file、fileUrl、query必填其一，如果传file或者fileUrl，fileName必填) | N    |        |
-|  fileUrl   |    String     | 文件地址（file、fileUrl、query必填其一，如果传file或者fileUrl，fileName必填） | N    |        |
-|  fileName  |    String     |  文件名(带文件名后缀；如果传file或者fileUrl，fileName必填)   | N    |        |
-| templateId |    String     |        直接供用户检索模板的ID,从PPT主题列表查询中获取        | N    |        |
-| businessId |    String     |           业务ID（非必传）- 业务方自行决定是否使用           | N    |        |
-|   author   |    String     |            PPT作者名：用户自行选择是否设置作者名             | N    | 智文   |
-| isCardNote |    Boolean    |                     是否生成PPT演讲备注                      | N    | false  |
-|   search   |    Boolean    |                         是否联网搜索                         | N    | false  |
-|  language  |    String     |                             语种                             | N    | cn     |
-|  isFigure  |    Boolean    |                         是否自动配图                         | N    | false  |
-|  aiImage   |    String     | ai配图类型： normal、advanced （isFigure为true的话生效）； normal-普通配图，20%正文配图；advanced-高级配图，50%正文配图 | N    |        |
-
-**2.4 可选参数列表：**
-
-- language：
-  - cn：中文（简体）
-  - en：英语
-  - ja：日语
-  - ru：俄语
-  - ko：韩语
-  - de：德语
-  - fr：法语
-  - pt：葡萄牙语
-  - es：西班牙语
-  - it：意大利语
-  - th：泰语
-
-**2.5 请求响应：**
+**响应示例**：
 
 ```text
 {
@@ -292,33 +235,15 @@ POST，multipart/form-data
 }
 ```
 
-**2.6 响应描述**
+---
 
-|     响应字段     |  类型   |      描述      |
-| :--------------: | :-----: | :------------: |
-|       flag       | Boolean |    响应标识    |
-|       code       | Integer |     错误码     |
-|       desc       | String  |    错误详情    |
-|      count       | Integer | 不用关注，预留 |
-|     data.sid     | string  |   请求唯一id   |
-| data.CoverImgSrc | string  | PPT封面图链接  |
-|    data.title    | string  |   PPT主标题    |
-|  data.subTitle   | string  |   PPT副标题    |
-|   data.outline   | string  |    PPT大纲     |
-
-### [#](https://www.xfyun.cn/doc/spark/PPTv2.html#_3、大纲生成)3、大纲生成
-
-**3.1 接口地址：**
-
-```text
-https://zwapi.xfyun.cn/api/ppt/v2/createOutline
+### 3. 生成大纲
+```java
+public String createOutline(PPTCreate pptCreate)
 ```
+**参数说明**：
 
-**3.2 请求参数查询**
-
-```text
-POST，multipart/form-data
-```
+- `pptCreate`: 查询参数对象，可设置：
 
 |    名称    |  类型   |                             描述                             | 必须 | 默认值 |
 | :--------: | :-----: | :----------------------------------------------------------: | ---- | ------ |
@@ -327,7 +252,7 @@ POST，multipart/form-data
 |  language  | String  |                             语种                             | N    | cn     |
 |   search   | Boolean |                         是否联网搜索                         | N    | false  |
 
-**3.3 请求响应**
+**响应示例**：
 
 ```text
 {
@@ -369,162 +294,67 @@ POST，multipart/form-data
 }
 ```
 
-**3.4 响应描述**
+---
 
-|                 响应字段                  |  类型   |                    描述                     |
-| :---------------------------------------: | :-----: | :-----------------------------------------: |
-|                   flag                    | Boolean |                  响应标识                   |
-|                   code                    | Integer |                   错误码                    |
-|                   desc                    | String  |                  错误详情                   |
-|                   count                   | Integer |               不用关注，预留                |
-|                 data.sid                  | string  | 请求大纲唯一id，后续通过大纲生成ppt可能需要 |
-|               data.outline                | object  |                  大纲数据                   |
-|            data.outline.title             | string  |                  PPT主标题                  |
-|           data.outline.subTitle           | string  |                  PPT副标题                  |
-|   data.outline.chapters[].chapterTitle    | string  |            章节、子章节标题名称             |
-| data.outline.chapters[].chapterContents[] |  array  |                二级大纲内容                 |
-
-**3.5 大纲结构体说明（data.outline）**
-
+### 4. 自定义大纲生成
 ```java
-public class Outline {
-
-    // 主标题
-    private String title;
-
-    // 副标题
-    private String subTitle;
-
-    /**
-     * 文档的章节列表。
-     */
-    private List<Outline.Chapter> chapters;
-
-    public static class Chapter {
-        // 章节、子章节标题名称
-        String chapterTitle;
-
-        // 二级大纲chapterContents为空
-        List<Outline.Chapter> chapterContents = null;
-    }
-}
+public String createOutlineByDoc(PPTCreate pptCreate)
 ```
+**参数说明**：
 
-### [#](https://www.xfyun.cn/doc/spark/PPTv2.html#_4、自定义大纲生成)4、自定义大纲生成
+- `pptCreate`: 查询参数对象，可设置：
 
-**4.1 接口描述：**
+|    名称    |  类型   |                             描述                             | 必须 | 默认值 |
+| :--------: | :-----: | :----------------------------------------------------------: | ---- | ------ |
+|   query    | String  | 用户生成PPT要求（最多8000字） 注意：query不能为空字符串、仅包含空格的字符串 | N    |        |
+|    file    |  File   |               上传文件 (file、fileUrl必填其一)               | N    |        |
+|  fileUrl   | String  |              文件地址（file、fileUrl必填其一）               | N    |        |
+|  fileName  | String  |              文件名(带文件名后缀；fileName必填)              | Y    |        |
+| businessId | String  |           业务ID（非必传）- 业务方自行决定是否使用           | N    |        |
+|  language  | String  |                             语种                             | N    | cn     |
+|   search   | Boolean |                         是否联网搜索                         | N    | false  |
 
-基于用户提示、文档等相关内容生成PPT大纲。
-query参数不得超过8000字，上传文件支持pdf(不支持扫描件)、doc、docx、txt、md格式的文件，注意：txt格式限制100万字以内，其他文件限制10M。
+**响应示例**：见3
 
-**4.2 接口地址：**
+---
 
-```text
-https://zwapi.xfyun.cn/api/ppt/v2/createOutlineByDoc
+### 5. 通过大纲生成PPT
+```java
+public String createPptByOutline(PPTCreate pptCreate)
 ```
+**参数说明**：
 
-**4.3 请求查询参数：**
+- `pptCreate`: 查询参数对象，可设置：
 
-```text
-POST，multipart/form-data
+|    名称    |    类型     |                             描述                             | 必须 | 默认值   |
+| :--------: | :---------: | :----------------------------------------------------------: | ---- | -------- |
+|   query    |   String    | 用户生成PPT要求（最多8000字） 注意：query不能为空字符串、仅包含空格的字符串 | Y    |          |
+| outlineSid |   String    |            已生成大纲后，响应返回的请求大纲唯一id            | N    |          |
+|  outline   | Outline对象 | 大纲内容（不得超过20个一级大纲--outline.chapters[].chapterTitle | Y    |          |
+| templateId |   String    | 直接供用户检索模板的ID,从PPT主题列表查询中获取，为空的话，从free模板中随机取一个 | N    |          |
+| businessId |   String    |           业务ID（非必传）- 业务方自行决定是否使用           | N    |          |
+|   author   |   String    |            PPT作者名：用户自行选择是否设置作者名             | N    | 讯飞智文 |
+| isCardNote |   Boolean   |                     是否生成PPT演讲备注                      | N    | false    |
+|   search   |   Boolean   |                         是否联网搜索                         | N    | false    |
+|  language  |   String    |          语种（保证传入大纲语种与输入PPT语种一致）           | N    | cn       |
+|  fileUrl   |   String    |                           文件地址                           | N    |          |
+|  fileName  |   String    |           文件名(带文件名后缀) ，传fileUrl的话必填           | N    |          |
+|  isFigure  |   Boolean   |                         是否自动配图                         | N    | false    |
+|  aiImage   |   String    | ai配图类型： normal、advanced （isFigure为true的话生效）； normal-普通配图，20%正文配图；advanced-高级配图，50%正文配图 | N    |          |
+
+**响应示例**：见3
+
+---
+
+### 6. 查询生成进度
+```java
+public String progress(String sid) 
 ```
+**参数说明**：
 
-|    名称    |     类型      |                             描述                             | 必须 | 默认值 |
-| :--------: | :-----------: | :----------------------------------------------------------: | ---- | ------ |
-|   query    |    String     | 用户生成PPT要求（最多8000字） 注意：query不能为空字符串、仅包含空格的字符串 | N    |        |
-|    file    | MultipartFile |               上传文件 (file、fileUrl必填其一)               | N    |        |
-|  fileUrl   |    String     |              文件地址（file、fileUrl必填其一）               | N    |        |
-|  fileName  |    String     |              文件名(带文件名后缀；fileName必填)              | Y    |        |
-| businessId |    String     |           业务ID（非必传）- 业务方自行决定是否使用           | N    |        |
-|  language  |    String     |                             语种                             | N    | cn     |
-|   search   |    Boolean    |                         是否联网搜索                         | N    | false  |
+- sid: 任务ID（从生成接口返回）
 
-**4.4请求响应与说明**
-
-> 见3.3、3.4小节说明
-
-### [#](https://www.xfyun.cn/doc/spark/PPTv2.html#_5、通过大纲生成ppt)5、通过大纲生成PPT
-
-**5.1 接口地址：**
-
-```text
-https://zwapi.xfyun.cn/api/ppt/v2/createPptByOutline
-```
-
-**5.2 请求示例：**
-
-```text
-{
-    "outline": {
-        "title": "烧烤制作方法",
-        "subTitle": "从食材准备到成品展示",
-        "chapters": [
-            {
-                "chapterTitle": "烧烤概述",
-                "chapterContents": [
-                    {
-                        "chapterTitle": "烧烤定义与起源与发展",
-                        "chapterContents": null
-                    }
-                ]
-            }
-        ]
-    },
-    "language": "cn",
-    "isCardNote": true,
-    "aiImage": "advanced",
-    "search":true,
-    "isFigure":true,
-    "author":"测试",
-    "query":"烧烤"
-}
-```
-
-**5.3 请求查询参数：**
-
-```text
-POST，application/json
-```
-
-|    名称    |    类型    |                             描述                             | 必须 | 默认值   |
-| :--------: | :--------: | :----------------------------------------------------------: | ---- | -------- |
-|   query    |   String   | 用户生成PPT要求（最多8000字） 注意：query不能为空字符串、仅包含空格的字符串 | Y    |          |
-| outlineSid |   String   | 已生成大纲后，响应返回的请求大纲唯一id （见 **3.4** 小节返回字段data.sid） | N    |          |
-|  outline   | JSONObject | 大纲内容（不得超过20个一级大纲--outline.chapters[].chapterTitle，见 **3.4** 小节返回字段data.outline） | Y    |          |
-| templateId |   String   | 直接供用户检索模板的ID,从PPT主题列表查询中获取；见 **1.5** 小节返回字段templateIndexId；为空的话，从free模板中随机取一个 | N    |          |
-| businessId |   String   |           业务ID（非必传）- 业务方自行决定是否使用           | N    |          |
-|   author   |   String   |            PPT作者名：用户自行选择是否设置作者名             | N    | 讯飞智文 |
-| isCardNote |  Boolean   |                     是否生成PPT演讲备注                      | N    | false    |
-|   search   |  Boolean   |                         是否联网搜索                         | N    | false    |
-|  language  |   String   |          语种（保证传入大纲语种与输入PPT语种一致）           | N    | cn       |
-|  fileUrl   |   String   |                           文件地址                           | N    |          |
-|  fileName  |   String   |           文件名(带文件名后缀) ，传fileUrl的话必填           | N    |          |
-|  isFigure  |  Boolean   |                         是否自动配图                         | N    | false    |
-|  aiImage   |   String   | ai配图类型： normal、advanced （isFigure为true的话生效）； normal-普通配图，20%正文配图；advanced-高级配图，50%正文配图 | N    |          |
-
-**5.4 请求响应与说明**
-
-> 见2.5、2.6小节说明
-
-### [#](https://www.xfyun.cn/doc/spark/PPTv2.html#_6、ppt进度查询)6、PPT进度查询
-
-**6.1 接口地址：**
-
-```text
-https://zwapi.xfyun.cn/api/ppt/v2/progress?sid={}
-```
-
-**6.2 请求查询参数：**
-
-注：该接口设置限流，三秒访问一次
-
-```text
-GET
-```
-
-| 名称 |  类型  |    描述    | 必须 |
-| :--: | :----: | :--------: | ---- |
-| sid  | String | 请求唯一ID | Y    |
+**响应示例**：
 
 ```text
 {
@@ -544,23 +374,47 @@ GET
 }
 ```
 
-**6.3 响应描述**
+**注**：该接口设置限流，三秒访问一次
 
-|      响应字段       |  类型   |                             描述                             |
-| :-----------------: | :-----: | :----------------------------------------------------------: |
-|        flag         | Boolean |                           响应标识                           |
-|        code         | Integer |                            错误码                            |
-|        desc         | String  |                           错误详情                           |
-|        count        | Integer |                        不用关注，预留                        |
-|   data.pptStatus    | String  | PPT构建状态：building（构建中），done（已完成），build_failed（生成失败） |
-| data.aiImageStatus  | String  |        ai配图状态：building（构建中），done（已完成）        |
-| data.cardNoteStatus | String  |       演讲备注状态：building（构建中），done（已完成）       |
-|     data.pptUrl     | String  |                        生成PPT的地址                         |
-|     data.errMsg     | String  |                      生成PPT的失败信息                       |
-|   data.totalPages   | Integer |                       生成PPT的总页数                        |
-|   data.donePages    | Integer | 生成PPT的完成页数 （ai配图和演讲备注为异步任务，ppt页数完成，不代表配图和演讲备注也完成） |
+---
 
-## [#](https://www.xfyun.cn/doc/spark/PPTv2.html#扣量说明)扣量说明
+## 注意事项
+1. 基于用户提示、文档等相关内容生成PPT，字数不得超过 **8000 **字，文件限制  **10M**。
+   
+2. 所有生成类接口都需要处理`BusinessException`（参数校验失败）和`IOException`（网络错误）
+
+3. 客户端默认超时时间为120秒，可通过Builder调整：
+
+```java
+new Builder(appId, apiSecret)
+    .readTimeout(120)
+    .build();
+```
+
+## 错误处理
+捕获异常示例：
+```java
+try {
+    String result = client.create(createReq);
+} catch (BusinessException e) {
+    System.err.println("业务异常：" + e.getMessage());
+} catch (IOException e) {
+    System.err.println("网络请求失败：" + e.getMessage());
+}
+```
+
+## 常见问题
+Q: 生成PPT时超时怎么办？  
+A: 适当增加readTimeout时间，复杂PPT生成可能需要更长时间
+
+Q: 如何获取生成的PPT文件？  
+A: 生成成功后，响应结果会包含PPT下载链接（具体字段参考官方API文档）
+
+---
+
+**更多问题请打开官方文档联系技术支持**
+
+## 扣量说明
 
 - 基于query直接生成ppt：扣除10点量，1个并发，若需要增加备注，则增加5点量
 - 基于query生成大纲：扣除2点量1个并发

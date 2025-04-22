@@ -1,6 +1,6 @@
-package cn.xfyun.service.finetuning;
+package cn.xfyun.service.sparkmodel;
 
-import cn.xfyun.model.finetuning.response.MassResponse;
+import cn.xfyun.model.sparkmodel.response.SparkChatResponse;
 import cn.xfyun.util.StringUtils;
 import okhttp3.Response;
 import okhttp3.WebSocket;
@@ -12,27 +12,27 @@ import org.slf4j.LoggerFactory;
 import javax.annotation.Nullable;
 
 /**
- * 语音听写监听类
+ * 大模型会话ws监听类
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
-public abstract class AbstractMassWebSocketListener extends WebSocketListener {
+public abstract class AbstractSparkModelWebSocketListener extends WebSocketListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractMassWebSocketListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSparkModelWebSocketListener.class);
 
     /**
      * construction method
      */
-    public AbstractMassWebSocketListener() {
+    public AbstractSparkModelWebSocketListener() {
     }
 
     /**
      * websocket返回成功时，需要用户重写的方法
      *
-     * @param webSocket websocket
-     * @param iatResponse 返回结果
+     * @param webSocket         ws
+     * @param sparkChatResponse 大模型请求返回结果
      */
-    public abstract void onSuccess(WebSocket webSocket, MassResponse iatResponse);
+    public abstract void onSuccess(WebSocket webSocket, SparkChatResponse sparkChatResponse);
 
     /**
      * websocket返回失败时，需要用户重写的方法
@@ -56,21 +56,20 @@ public abstract class AbstractMassWebSocketListener extends WebSocketListener {
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
         super.onOpen(webSocket, response);
-
+        logger.info("webSocket is open");
     }
 
     @Override
     public void onMessage(WebSocket webSocket, String text) {
         super.onMessage(webSocket, text);
-        logger.debug("onMessage: {}", text);
         try {
             if (!StringUtils.isNullOrEmpty(text)) {
-                MassResponse iatResponse = StringUtils.gson.fromJson(text, MassResponse.class);
+                SparkChatResponse response = StringUtils.gson.fromJson(text, SparkChatResponse.class);
 
-                if (iatResponse != null) {
-                    onSuccess(webSocket, iatResponse);
+                if (response != null) {
+                    onSuccess(webSocket, response);
                 } else {
-                    onSuccess(webSocket, new MassResponse(-1, "ftt response error"));
+                    onSuccess(webSocket, new SparkChatResponse(-1, "sparkChat response error"));
                 }
             }
         } catch (Exception e) {
@@ -86,7 +85,7 @@ public abstract class AbstractMassWebSocketListener extends WebSocketListener {
     @Override
     public void onClosing(WebSocket webSocket, int code, String reason) {
         super.onClosing(webSocket, code, reason);
-        logger.warn("webSocket is closing ,code is {} , reason is [{}]", code, reason);
+        // logger.warn("webSocket is closing ,code is {} , reason is [{}]", code, reason);
     }
 
     @Override
@@ -99,8 +98,7 @@ public abstract class AbstractMassWebSocketListener extends WebSocketListener {
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
         super.onFailure(webSocket, t, response);
-        logger.error("webSocket connect failed .", t);
+        logger.error("webSocket failed .", t);
         onFail(webSocket, t, response);
     }
-
 }
