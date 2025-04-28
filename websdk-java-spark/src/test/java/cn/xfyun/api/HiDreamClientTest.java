@@ -49,11 +49,11 @@ public class HiDreamClientTest {
             String resourcePath = Objects.requireNonNull(this.getClass().getResource("/")).toURI().getPath();
             // 参考图片的路径
             String referenceImage1 = "image/hidream_1.jpg";
-//            String referenceImage2 = "hidream_2.jpg";
+           // String referenceImage2 = "hidream_2.jpg";
             // 初始化参考图片列表   可以是url 或者 base64文件
             referenceImages = new ArrayList<>();
             referenceImages.add(FileUtil.fileToBase64(resourcePath + referenceImage1));
-//            referenceImages.add(FileUtils.fileToBase64(referenceImage2));
+           // referenceImages.add(FileUtils.fileToBase64(referenceImage2));
         } catch (URISyntaxException e) {
             logger.error("获取资源路径失败", e);
         } catch (IOException ex) {
