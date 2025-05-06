@@ -42,7 +42,7 @@ public class AIPPTV2ClientTest {
         try {
             // 图片基路径
             resourcePath = Objects.requireNonNull(this.getClass().getResource("/")).toURI().getPath();
-            filePath = "document/aipptpro.pdf";
+            filePath = "document/aipptv2.pdf";
         } catch (URISyntaxException e) {
             logger.error("获取资源路径失败", e);
         }
@@ -108,7 +108,7 @@ public class AIPPTV2ClientTest {
 
         PPTCreate createParam = PPTCreate.builder()
                 // .query("生成一个介绍科大讯飞的ppt")
-                .file(new File(resourcePath + filePath), "aipptpro.pdf")
+                .file(new File(resourcePath + filePath), "aipptv2.pdf")
                 .build();
         String create = client.create(createParam);
         logger.info("ppt生成返回结果：{}", create);
@@ -121,7 +121,7 @@ public class AIPPTV2ClientTest {
 
         PPTCreate docParam = PPTCreate.builder()
                 .query("模仿这个文件生成一个随机的大纲")
-                .file(new File(resourcePath + filePath), "aipptpro.pdf")
+                .file(new File(resourcePath + filePath), "aipptv2.pdf")
                 .build();
         String docResult = client.createOutlineByDoc(docParam);
         logger.info("自定义大纲生成返回结果：{}", docResult);

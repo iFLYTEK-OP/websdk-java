@@ -1,6 +1,9 @@
 package cn.xfyun.api;
 
 import cn.xfyun.exception.BusinessException;
+import cn.xfyun.model.sparkmodel.batch.BatchInfo;
+import cn.xfyun.model.sparkmodel.batch.FileInfo;
+import cn.xfyun.util.StringUtils;
 import config.PropertiesConfig;
 import org.junit.Assert;
 import org.junit.Before;
@@ -30,7 +33,7 @@ public class SparkBatchClientTest {
     private static final Logger logger = LoggerFactory.getLogger(SparkBatchClientTest.class);
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiPassword = PropertiesConfig.getSparkBatchAPIPassword();
-    private String imagePath;
+    private String filePath;
     private String resourcePath;
 
     @Before
@@ -38,7 +41,7 @@ public class SparkBatchClientTest {
         try {
             // 图片基路径
             resourcePath = Objects.requireNonNull(this.getClass().getResource("/")).toURI().getPath();
-            imagePath = "image/car.jpg";
+            filePath = "document/batch.jsonl";
         } catch (URISyntaxException e) {
             logger.error("获取资源路径失败", e);
         }
@@ -49,31 +52,37 @@ public class SparkBatchClientTest {
         try {
             SparkBatchClient client = new SparkBatchClient.Builder(appId, apiPassword).build();
 
-            String upload = client.upload(new File("您的jsonl文件地址"));
-            logger.info("文件上传返回结果 ==> {}", upload);
+            String upload = client.upload(new File(resourcePath + filePath));
+            FileInfo uploadResp = StringUtils.gson.fromJson(upload,FileInfo.class);
+            logger.info("文件上传返回结果 ==> {}",upload);
 
             String fileList = client.listFile(1, 20);
             logger.info("文件查询返回结果 ==> {}", fileList);
 
-            String getFile = client.getFile("您上传的文件ID");
+            String getFile = client.getFile(uploadResp.getId());
             logger.info("获取文件信息返回结果 ==> {}", getFile);
 
-            String deleteFile = client.deleteFile("您需要删除的文件ID");
-            logger.info("删除文件返回结果 ==> {}", deleteFile);
-
-            String download = client.download("您需要下载的文件ID");
+            String download = client.download(uploadResp.getId());
             logger.info("下载文件返回结果 ==> {}", download);
 
-            String create = client.create("您需要创建任务的文件ID", null);
+            String deleteFile = client.deleteFile(uploadResp.getId());
+            logger.info("删除文件返回结果 ==> {}", deleteFile);
+
+            String upload1 = client.upload(new File(resourcePath + filePath));
+            FileInfo uploadResp1 = StringUtils.gson.fromJson(upload1,FileInfo.class);
+            logger.info("文件上传返回结果 ==> {}", upload1);
+
+            String create = client.create(uploadResp1.getId(), null);
+            BatchInfo createResp = StringUtils.gson.fromJson(create,BatchInfo.class);
             logger.info("创建任务返回结果 ==> {}", create);
 
-            String getBatch = client.getBatch("您创建任务后返回的任务ID");
+            String getBatch = client.getBatch(createResp.getId());
             logger.info("获取任务信息返回结果 ==> {}", getBatch);
 
-            String cancel = client.cancel("您创建任务后返回的任务ID");
+            String cancel = client.cancel(createResp.getId());
             logger.info("取消任务返回结果 ==> {}", cancel);
 
-            String listBatch = client.listBatch(10, "您创建任务后返回的任务ID");
+            String listBatch = client.listBatch(10, null);
             logger.info("查询Batch列表返回结果 ==> {}", listBatch);
         } catch (Exception e) {
             logger.error("请求失败", e);
@@ -90,7 +99,7 @@ public class SparkBatchClientTest {
             Assert.assertTrue(e.getMessage().contains("无效的jsonl文件"));
         }
         try {
-            client.upload(new File(resourcePath + imagePath));
+            client.upload(new File(resourcePath + filePath));
         } catch (BusinessException e) {
             Assert.assertTrue(e.getMessage().contains("暂不支持该格式的文件"));
         }

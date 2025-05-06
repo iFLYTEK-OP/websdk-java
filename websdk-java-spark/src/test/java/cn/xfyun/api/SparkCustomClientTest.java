@@ -12,6 +12,7 @@ import config.PropertiesConfig;
 import okhttp3.Response;
 import okhttp3.WebSocket;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
@@ -23,6 +24,7 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.net.URISyntaxException;
 import java.security.SignatureException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -43,6 +45,20 @@ public class SparkCustomClientTest {
     private static final String appId = PropertiesConfig.getAppId();
     private static final String apiKey = PropertiesConfig.getSparkAPPKey();
     private static final String apiSecret = PropertiesConfig.getSparkAPPSecret();
+
+    private String filePath;
+    private String resourcePath;
+
+    @Before
+    public void init() {
+        try {
+            // 图片基路径
+            resourcePath = Objects.requireNonNull(this.getClass().getResource("/")).toURI().getPath();
+            filePath = "document/private.md";
+        } catch (URISyntaxException e) {
+            logger.error("获取资源路径失败", e);
+        }
+    }
 
     @Test
     public void buildParamTest() {
@@ -212,27 +228,27 @@ public class SparkCustomClientTest {
     }
 
     @Test
+    public void create() throws IOException {
+        SparkCustomClient client = new SparkCustomClient.Builder()
+                .signature(appId, apiKey, apiSecret)
+                .build();
+
+        String result = client.create("test-01");
+        logger.info("创建知识库接口返回结果 ==> {}", result);
+    }
+
+    @Test
     public void upload() throws IOException {
         SparkCustomClient client = new SparkCustomClient.Builder()
                 .signature(appId, apiKey, apiSecret)
                 .build();
 
         KnowledgeFileUpload upload = KnowledgeFileUpload.builder()
-                .file(new File("需要上传的文件路径"))
-                .knowledgeName("知识库名称")
+                .file(new File(resourcePath + filePath))
+                .knowledgeName("test-01")
                 .build();
         String result = client.upload(upload);
         logger.info("上传文件到知识库返回结果 ==> {}", result);
-    }
-
-    @Test
-    public void create() throws IOException {
-        SparkCustomClient client = new SparkCustomClient.Builder()
-                .signature(appId, apiKey, apiSecret)
-                .build();
-
-        String result = client.create("知识库名称");
-        logger.info("创建知识库接口返回结果 ==> {}", result);
     }
 
     private List<FunctionCall> getFunctions() {
