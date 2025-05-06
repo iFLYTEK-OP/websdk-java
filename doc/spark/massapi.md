@@ -45,7 +45,7 @@ import cn.hutool.json.JSONUtil;
 import cn.xfyun.api.MassClient;
 import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.RoleContent;
+import cn.xfyun.model.sparkmodel.RoleContent;
 import cn.xfyun.model.mass.MassParam;
 import cn.xfyun.model.mass.response.MassResponse;
 import cn.xfyun.service.mass.AbstractMassWebSocketListener;
@@ -398,8 +398,6 @@ public class MassClientApp {
 | searchDisable | boolean | 否       | 关闭联网检索功能                                             | 取值：[true,false]；默认值：true  | **该参数仅DeepSeek-R1和DeepSeek-V3支持**                     |
 | showRefLabel  | boolean | 否       | 展示检索信源信息                                             | 取值：[true,false]；默认值：false | **该参数仅DeepSeek-R1和DeepSeek-V3支持**。开启联网检索功能后当该参数设置为true，且触发了联网检索功能，会先返回检索信源列表，然后再返回大模型回复结果，否则仅返回大模型回复结果 |
 | streamOptions | Object  | 否       | 扩展配置                                                     | 默认值为{"include_usage": true}   | 针对流式响应模式的扩展配置，如控制是否在响应中包含API调用统计信息等附加数据 |
-
-## 方法详解
 
 ### 1. websocket调用方式
 ```java
