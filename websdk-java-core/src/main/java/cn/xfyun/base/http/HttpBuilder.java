@@ -26,14 +26,14 @@ public abstract class HttpBuilder<T> {
     /**
      *   三次握手 + SSL建立耗时
      */
-    private int connectTimeout = 3;
+    private int connectTimeout = 10;
 
-    private int readTimeout = 3;
+    private int readTimeout = 10;
 
     /**
      *  sink写入耗时
      */
-    private int writeTimeout = 3;
+    private int writeTimeout = 10;
 
     public HttpBuilder(String hostUrl, String appId, String apiKey, String apiSecret) {
         this.hostUrl = hostUrl;

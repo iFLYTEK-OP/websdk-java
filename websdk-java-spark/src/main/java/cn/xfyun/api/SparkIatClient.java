@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.WebSocketClient;
+import cn.xfyun.base.websocket.WebSocketClient;
 import cn.xfyun.config.SparkIatModelEnum;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.service.sparkiat.SparkIatSendTask;
@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 大模型语音听写
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
 public class SparkIatClient extends WebSocketClient {
 

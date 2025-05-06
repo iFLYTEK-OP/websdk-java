@@ -23,7 +23,7 @@ import java.util.Map;
  * 一句话复刻client
  * 文档地址: <a href="https://www.xfyun.cn/doc/spark/reproduction.html">...</a>
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
 public class VoiceTrainClient extends HttpClient {
 

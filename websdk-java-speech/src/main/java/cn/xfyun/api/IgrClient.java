@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.WebSocketClient;
+import cn.xfyun.base.websocket.WebSocketClient;
 import cn.xfyun.common.IgrConstant;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.Hmac256Signature;

@@ -1,10 +1,11 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.WebSocketClient;
+import cn.xfyun.base.websocket.WebSocketClient;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.RtasrSignature;
 import cn.xfyun.service.rta.AbstractRtasrWebSocketListener;
 import cn.xfyun.service.rta.RtasrSendTask;
+import cn.xfyun.util.StringUtils;
 import okhttp3.*;
 import okhttp3.internal.Util;
 
@@ -35,6 +36,67 @@ public class RtasrClient extends WebSocketClient {
     /** 垂直领域个性化参数, 设置示例：pd="edu" 参数pd为非必须设置，不设置参数默认为通用 */
     private String pd;
 
+    /**
+     * 实时语音转写语种，不传默认为中文
+     * 语种类型：中文、中英混合识别：cn；
+     * 英文：en；
+     * 小语种及方言可到控制台-实时语音转写-方言/语种处添加，添加后会显示该方言/语种参数值。传参示例如："lang=en"
+     * 若未授权无法使用会报错10110
+     * */
+    private String lang;
+
+    /**
+     * normal表示普通翻译，默认值normal；
+     * 注意：需控制台开通翻译功能
+     * */
+    private String transType;
+
+    /**
+     * 策略1，转写的vad结果直接送去翻译；
+     * 策略2，返回中间过程中的结果；
+     * 策略3，按照结束性标点拆分转写结果请求翻译；
+     * 建议使用策略2
+     * 注意：需控制台开通翻译功能
+     * */
+    private Integer transStrategy;
+
+    /**
+     * 目标翻译语种：控制把源语言转换成什么类型的语言；
+     * 请注意类似英文转成法语必须以中文为过渡语言，即英-中-法，暂不支持不含中文语种之间的直接转换；
+     * 中文：cn
+     * 英文：en
+     * 日语：ja
+     * 韩语：ko
+     * 俄语：ru
+     * 法语：fr
+     * 西班牙语：es
+     * 越南语：vi
+     * 广东话：cn_cantonese
+     * 如果使用中文实时翻译为英文传参示例如下：
+     * "&lang=cn&transType=normal&transStrategy=2&targetLang=en"
+     * 注意：需控制台开通翻译功能
+     * */
+    private String targetLang;
+
+    /**
+     * 远近场切换，不传此参数或传1代表远场，传2代表近场
+     * */
+    private Integer vadMdn;
+
+    /**
+     * 是否开角色分离，默认不开启，传2开启
+     * (效果持续优化中)
+     * */
+    private Integer roleType;
+
+    /**
+     * 语言识别模式，默认为模式1中英文模式：
+     * 1：自动中英文模式
+     * 2：中文模式，可能包含少量英文
+     * 4：纯中文模式，不包含英文
+     * */
+    private Integer engLangType;
+
     private static ExecutorService executorService = Executors.newSingleThreadExecutor();
 
 
@@ -51,6 +113,13 @@ public class RtasrClient extends WebSocketClient {
         this.webSocket = builder.webSocket;
         this.pd = builder.pd;
         this.punc = builder.punc;
+        this.lang = builder.lang;
+        this.transType = builder.transType;
+        this.transStrategy = builder.transStrategy;
+        this.targetLang = builder.targetLang;
+        this.vadMdn = builder.vadMdn;
+        this.roleType = builder.roleType;
+        this.engLangType = builder.engLangType;
         if (Objects.isNull(builder.hostUrl)) {
             this.originHostUrl = RTASR_URL;
             this.hostUrl = RTASR_URL;
@@ -76,7 +145,7 @@ public class RtasrClient extends WebSocketClient {
     @Override
     protected void createWebSocketConnect(WebSocketListener webSocketListener) throws SignatureException {
         this.signature = new RtasrSignature(appId, apiKey);
-        String url = RTASR_URL + signature.getSigna();
+        String url = RTASR_URL + signature.getSigna() + getLinkParam();
         this.request = new Request.Builder().url(url).build();
         // 创建websocket连接
         this.webSocket = okHttpClient.newWebSocket(request, webSocketListener);
@@ -149,6 +218,41 @@ public class RtasrClient extends WebSocketClient {
         closeWebsocket();
     }
 
+    /**
+     * 获取拼接参数
+     */
+    private String getLinkParam() {
+        StringBuilder param = new StringBuilder();
+        if (!StringUtils.isNullOrEmpty(punc)) {
+            param.append("&punc=").append(punc);
+        }
+        if (!StringUtils.isNullOrEmpty(pd)) {
+            param.append("&pd=").append(pd);
+        }
+        if (!StringUtils.isNullOrEmpty(lang)) {
+            param.append("&lang=").append(lang);
+        }
+        if (!StringUtils.isNullOrEmpty(transType)) {
+            param.append("&transType=").append(transType);
+        }
+        if (null != transStrategy) {
+            param.append("&transStrategy=").append(transStrategy);
+        }
+        if (!StringUtils.isNullOrEmpty(targetLang)) {
+            param.append("&targetLang=").append(targetLang);
+        }
+        if (null != vadMdn) {
+            param.append("&vadMdn=").append(vadMdn);
+        }
+        if (null != roleType) {
+            param.append("&roleType=").append(roleType);
+        }
+        if (null != engLangType) {
+            param.append("&engLangType=").append(engLangType);
+        }
+        return param.toString();
+    }
+
     @Override
     public WebSocket getWebSocket() {
         return webSocket;
@@ -160,6 +264,34 @@ public class RtasrClient extends WebSocketClient {
 
     public String getPd() {
         return pd;
+    }
+
+    public String getLang() {
+        return lang;
+    }
+
+    public String getTransType() {
+        return transType;
+    }
+
+    public int getTransStrategy() {
+        return transStrategy;
+    }
+
+    public String getTargetLang() {
+        return targetLang;
+    }
+
+    public Integer getVadMdn() {
+        return vadMdn;
+    }
+
+    public Integer getRoleType() {
+        return roleType;
+    }
+
+    public Integer getEngLangType() {
+        return engLangType;
     }
 
     public String getHostUrl() {
@@ -245,6 +377,19 @@ public class RtasrClient extends WebSocketClient {
 
         private String pd;
 
+        private String lang;
+
+        private String transType;
+
+        private Integer transStrategy;
+
+        private String targetLang;
+
+        private Integer vadMdn;
+
+        private Integer roleType;
+
+        private Integer engLangType;
 
         public RtasrClient.Builder request(Request request) {
             this.request = request;
@@ -312,5 +457,39 @@ public class RtasrClient extends WebSocketClient {
             return rtasrClient;
         }
 
+        public Builder lang(String lang) {
+            this.lang = lang;
+            return this;
+        }
+
+        public Builder transType(String transType) {
+            this.transType = transType;
+            return this;
+        }
+
+        public Builder transStrategy(int transStrategy) {
+            this.transStrategy = transStrategy;
+            return this;
+        }
+
+        public Builder targetLang(String targetLang) {
+            this.targetLang = targetLang;
+            return this;
+        }
+
+        public Builder vadMdn(int vadMdn) {
+            this.vadMdn = vadMdn;
+            return this;
+        }
+
+        public Builder roleType(int roleType) {
+            this.roleType = roleType;
+            return this;
+        }
+
+        public Builder engLangType(int engLangType) {
+            this.engLangType = engLangType;
+            return this;
+        }
     }
 }

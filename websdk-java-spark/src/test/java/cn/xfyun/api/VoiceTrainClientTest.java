@@ -19,7 +19,7 @@ import java.io.File;
 /**
  * 语音训练 Client单元测试
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({VoiceTrainClient.class})

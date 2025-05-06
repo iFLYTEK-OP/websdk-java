@@ -45,6 +45,16 @@ public class QbhClient extends HttpClient {
         return sendPost(hostUrl, FORM, header, data);
     }
 
+    public String send(String audioUrl) throws IOException {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("engine_type", engineType);
+        jsonObject.addProperty("aue", aue);
+        jsonObject.addProperty("sample_rate", sampleRate);
+        jsonObject.addProperty("audio_url", audioUrl);
+        Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, jsonObject.toString());
+        return sendPost(hostUrl, FORM, header, new byte[0]);
+    }
+
     public String getEngineType() {
         return engineType;
     }

@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.AbstractClient;
+import cn.xfyun.base.websocket.AbstractClient;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.oral.request.OralRequest;
 import cn.xfyun.util.StringUtils;
@@ -20,7 +20,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * 超拟人合成 Client
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  **/
 public class OralClient extends AbstractClient {
 

@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.AbstractClient;
+import cn.xfyun.base.websocket.AbstractClient;
 import cn.xfyun.config.VoiceCloneLangEnum;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.voiceclone.request.VoiceCloneRequest;

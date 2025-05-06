@@ -27,7 +27,7 @@ import static org.junit.Assert.assertNotNull;
 /**
  * 超拟人合成 Client单元测试
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({OralClient.class})

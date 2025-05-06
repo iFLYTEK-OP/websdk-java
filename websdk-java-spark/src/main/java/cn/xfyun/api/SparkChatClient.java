@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.AbstractClient;
+import cn.xfyun.base.websocket.AbstractClient;
 import cn.xfyun.config.SparkModel;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sparkmodel.FunctionCall;
@@ -86,12 +86,16 @@ public class SparkChatClient extends AbstractClient {
     /**
      * 重复词的惩罚值
      * 取值范围[-2.0,2.0] 默认0
+     * x1推理模型:
+     * 取值范围[-2.0,10] 默认2.01 repeat_punish
      */
     private final float presencePenalty;
 
     /**
      * 频率惩罚值
      * 取值范围[-2.0,2.0] 默认0
+     * x1推理模型:
+     * 频率惩罚值 取值范围[-2.0,10] 默认0.001
      */
     private final float frequencyPenalty;
 
@@ -121,6 +125,13 @@ public class SparkChatClient extends AbstractClient {
      */
     private final List<String> suppressPlugin;
 
+    /**
+     * 是否开启非流式请求保活。
+     * 默认是false 表示不开启。
+     * 如果开启，服务端会定时发送空行，直至所有结果返回。需要客户端自己处理空行。
+     */
+    private final boolean keepAlive;
+
     public SparkChatClient(Builder builder) {
         this.okHttpClient = new OkHttpClient
                 .Builder()
@@ -148,6 +159,7 @@ public class SparkChatClient extends AbstractClient {
         this.toolChoice = builder.toolChoice;
         this.responseType = builder.responseType;
         this.suppressPlugin = builder.suppressPlugin;
+        this.keepAlive = builder.keepAlive;
 
         this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
         this.callTimeout = builder.callTimeout;
@@ -207,6 +219,10 @@ public class SparkChatClient extends AbstractClient {
 
     public List<FunctionCall> getFunctions() {
         return functions;
+    }
+
+    public Boolean getKeepAlive() {
+        return keepAlive;
     }
 
     /**
@@ -334,6 +350,7 @@ public class SparkChatClient extends AbstractClient {
                 .url(urlBuilder.build().toString())
                 .post(RequestBody.create(MediaType.get("application/json; charset=utf-8"), body));
         builder.addHeader("Authorization", "Bearer " + apiKey);
+        builder.addHeader("Content-type", "application/json");
         if (isStream) {
             // sse流式请求
             builder.addHeader("Accept", "text/event-stream");
@@ -344,8 +361,8 @@ public class SparkChatClient extends AbstractClient {
     /**
      * 构建post请求参数
      *
-     * @param param 请求参数
-     * @param stream  是否流式输出
+     * @param param  请求参数
+     * @param stream 是否流式输出
      * @return 入参
      */
     private String buildPostParam(SparkChatParam param, boolean stream) {
@@ -361,6 +378,9 @@ public class SparkChatClient extends AbstractClient {
         sendRequest.setToolCallsSwitch(toolCallsSwitch);
         sendRequest.setToolChoice(toolChoice);
         sendRequest.setSuppressPlugin(suppressPlugin);
+        if (SparkModel.SPARK_X1 == sparkModel) {
+            sendRequest.setKeepAlive(keepAlive);
+        }
 
         // 封装用户使用的工具
         List<Object> toolList = new ArrayList<>();
@@ -406,7 +426,7 @@ public class SparkChatClient extends AbstractClient {
         // 请求头
         String userId = param.getUserId();
         if (null == userId) {
-            //用户没传输参数使用默认UUID生成
+            // 用户没传输参数使用默认UUID生成
             userId = UUID.randomUUID().toString().substring(0, 10);
         }
         SparkChatRequest.Header header = new SparkChatRequest.Header(appId, userId);
@@ -419,6 +439,12 @@ public class SparkChatClient extends AbstractClient {
         chat.setTemperature(temperature);
         chat.setMaxTokens(maxTokens);
         chat.setTopK(topK);
+        // X1推理大模型
+        if (SparkModel.SPARK_X1 == sparkModel) {
+            chat.setTopP(topP);
+            chat.setFrequencyPenalty(frequencyPenalty);
+            chat.setPresencePenalty(presencePenalty);
+        }
         // 配置搜索插件
         WebSearch webSearch = param.getWebSearch();
         webSearch = (null != webSearch) ? webSearch : this.webSearch;
@@ -451,6 +477,8 @@ public class SparkChatClient extends AbstractClient {
 
     public static final class Builder {
 
+        public final String SPARK_X1_URL = "https://spark-api-open.xf-yun.com/v2/chat/completions";
+        public final String SPARK_URL = "https://spark-api-open.xf-yun.com/v1/chat/completions";
         /**
          * websocket相关
          */
@@ -464,7 +492,7 @@ public class SparkChatClient extends AbstractClient {
         private String apiKey;
         private String apiSecret;
         private SparkModel sparkModel;
-        private String hostUrl = "https://spark-api-open.xf-yun.com/v1/chat/completions";
+        private String hostUrl = SPARK_URL;
         private float temperature = 0.5F;
         private int maxTokens = 4096;
         private int topK = 4;
@@ -477,6 +505,7 @@ public class SparkChatClient extends AbstractClient {
         private Object toolChoice;
         private String responseType;
         private List<String> suppressPlugin;
+        private boolean keepAlive = false;
 
         public SparkChatClient build() {
             return new SparkChatClient(this);
@@ -488,6 +517,11 @@ public class SparkChatClient extends AbstractClient {
             this.apiSecret = apiSecret;
             this.sparkModel = model;
             this.hostUrl = model.getUrl();
+            if (SparkModel.SPARK_X1 == model) {
+                this.temperature = 1.2F;
+                this.frequencyPenalty = 0.001F;
+                this.presencePenalty = 2.01F;
+            }
             return this;
         }
 
@@ -495,6 +529,12 @@ public class SparkChatClient extends AbstractClient {
             this.apiKey = apiPassword;
             this.sparkModel = model;
             this.temperature = 1;
+            if (SparkModel.SPARK_X1 == model) {
+                this.temperature = 1.2F;
+                this.frequencyPenalty = 0.001F;
+                this.presencePenalty = 2.01F;
+                this.hostUrl = SPARK_X1_URL;
+            }
             return this;
         }
 
@@ -590,6 +630,11 @@ public class SparkChatClient extends AbstractClient {
 
         public Builder suppressPlugin(List<String> suppressPlugin) {
             this.suppressPlugin = suppressPlugin;
+            return this;
+        }
+
+        public Builder keepAlive(boolean keepAlive) {
+            this.keepAlive = keepAlive;
             return this;
         }
     }

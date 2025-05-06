@@ -1,6 +1,6 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.webscoket.WebSocketClient;
+import cn.xfyun.base.websocket.WebSocketClient;
 import com.google.gson.JsonObject;
 import cn.xfyun.service.tts.AbstractTtsWebSocketListener;
 import okhttp3.OkHttpClient;

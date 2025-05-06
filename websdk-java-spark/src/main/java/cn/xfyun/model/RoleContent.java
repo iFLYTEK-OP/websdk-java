@@ -1,9 +1,9 @@
 package cn.xfyun.model;
 
 /**
- * @description: 大模型会话message实体类
- * @author: zyding6
- * @create: 2025/3/17 17:38
+ * 大模型会话message实体类
+ *
+ * @author <zyding6@ifytek.com>
  **/
 public class RoleContent {
 

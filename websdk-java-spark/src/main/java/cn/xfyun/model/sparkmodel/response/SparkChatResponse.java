@@ -175,6 +175,8 @@ public class SparkChatResponse {
                  */
 
                 private String content;
+                @SerializedName("reasoning_content")
+                private String reasoningContent;
                 private String role;
                 private Integer index;
                 @SerializedName("content_type")
@@ -220,6 +222,14 @@ public class SparkChatResponse {
 
                 public void setFunctionCall(FunctionCall functionCall) {
                     this.functionCall = functionCall;
+                }
+
+                public String getReasoningContent() {
+                    return reasoningContent;
+                }
+
+                public void setReasoningContent(String reasoningContent) {
+                    this.reasoningContent = reasoningContent;
                 }
 
                 public static class FunctionCall {
