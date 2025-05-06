@@ -259,8 +259,7 @@ public class SparkCustomClient extends AbstractClient {
         // 发送数据,求数据均为json字符串
         SparkCustomRequest request = new SparkCustomRequest();
         // 请求头
-        String uid = StringUtils.isNullOrEmpty(userId) ? UUID.randomUUID().toString().substring(0, 10) : userId;
-        SparkCustomRequest.Header header = new SparkCustomRequest.Header(appId, uid);
+        SparkCustomRequest.Header header = new SparkCustomRequest.Header(appId, userId);
         request.setHeader(header);
 
         // 请求参数

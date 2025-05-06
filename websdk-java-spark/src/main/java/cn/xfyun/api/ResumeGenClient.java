@@ -58,7 +58,7 @@ public class ResumeGenClient extends PlatformHttpClient {
         // 请求头
         ResumeRequest.HeaderBean header = new ResumeRequest.HeaderBean();
         header.setAppId(appId);
-        header.setStatus(3);
+        header.setStatus(status);
         request.setHeader(header);
 
         // 请求参数
@@ -68,7 +68,7 @@ public class ResumeGenClient extends PlatformHttpClient {
         // 请求体
         ResumeRequest.PayloadBean payload = new ResumeRequest.PayloadBean(this);
         payload.getReqData().setText(Base64.getEncoder().encodeToString(text.getBytes()));
-        payload.getReqData().setStatus(3);
+        payload.getReqData().setStatus(status);
         request.setPayload(payload);
 
         String body = StringUtils.gson.toJson(request);

@@ -110,7 +110,8 @@ public class SparkBatchClient extends HttpClient {
     /**
      * 创建Batch任务
      * #接口描述
-     * 调用该接口前需要先上传jsonl文件，通过上传文件得到的file_id来创建Batch任务。 单个Batch任务最多包含5万个请求（一个请求对应jsonl文件的一行），每个请求的body不超过6KB
+     * 调用该接口前需要先上传jsonl文件，通过上传文件得到的file_id来创建Batch任务。
+     * 单个Batch任务最多包含5万个请求（一个请求对应jsonl文件的一行），每个请求的body不超过6KB
      *
      * @param fileId   文件ID
      * @param metadata 批任务附加信息，例如：

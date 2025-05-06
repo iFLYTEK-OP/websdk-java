@@ -4,9 +4,9 @@ import cn.xfyun.api.ResumeGenClient;
 import com.google.gson.annotations.SerializedName;
 
 /**
- * @description: 简历解析请求参数
- * @author: zyding6
- * @create: 2025/3/17 11:17
+ * 简历解析请求参数
+ *
+ * @author <zyding6@iflytek.com>
  **/
 public class ResumeRequest {
 
