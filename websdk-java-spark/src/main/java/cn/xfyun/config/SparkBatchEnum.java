@@ -16,7 +16,7 @@ public enum SparkBatchEnum {
     CREATE("https://spark-api-open.xf-yun.com/v1/batches", "创建Batch任务", "POST"),
     GET_BATCH("https://spark-api-open.xf-yun.com/v1/batches/%s", "查询Batch任务", "GET"),
     CANCEL("https://spark-api-open.xf-yun.com/v1/batches/%s/cancel", "取消Batch任务", "POST"),
-    GET_BATHES("https://spark-api-open.xf-yun.com/v1/batches?limit=%s&after=%s", "查询Batch列表", "GET");
+    GET_BATCHES("https://spark-api-open.xf-yun.com/v1/batches?limit=%s&after=%s", "查询Batch列表", "GET");
 
     private final String url;
     private final String desc;

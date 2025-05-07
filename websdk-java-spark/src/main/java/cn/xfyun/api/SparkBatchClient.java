@@ -169,7 +169,7 @@ public class SparkBatchClient extends HttpClient {
      */
     public String listBatch(int limit, String batchId) throws IOException {
         // 发送请求
-        return send(SparkBatchEnum.GET_BATHES, null, limit, batchId);
+        return send(SparkBatchEnum.GET_BATCHES, null, limit, batchId);
     }
 
     /**
