@@ -297,7 +297,7 @@ public class OralClient extends AbstractClient {
             // 发送合成文本
             socket.send(jsonStr);
         } catch (Exception e) {
-            logger.error("超拟人合成请求出错：{}", e.getMessage(), e);
+            logger.error("超拟人合成请求出错", e);
         }
     }
 

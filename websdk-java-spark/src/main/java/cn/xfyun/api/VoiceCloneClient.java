@@ -259,7 +259,7 @@ public class VoiceCloneClient extends AbstractClient {
             // 发送合成文本
             socket.send(param);
         } catch (Exception e) {
-            logger.error("一句话复刻合成请求出错：{}", e.getMessage(), e);
+            logger.error("一句话复刻合成请求出错", e);
         }
     }
 

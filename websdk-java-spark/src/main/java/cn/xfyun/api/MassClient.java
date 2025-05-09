@@ -185,7 +185,7 @@ public class MassClient extends AbstractClient {
             // 发送合成文本
             socket.send(jsonStr);
         } catch (Exception e) {
-            logger.error("ws消息发送失败：{}", e.getMessage(), e);
+            logger.error("ws消息发送失败", e);
         }
     }
 
