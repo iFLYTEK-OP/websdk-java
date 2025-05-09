@@ -1,6 +1,6 @@
 package cn.xfyun.model.image;
 
-import cn.xfyun.model.RoleContent;
+import cn.xfyun.model.sparkmodel.RoleContent;
 import java.util.List;
 
 /**

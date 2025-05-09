@@ -40,7 +40,7 @@ import cn.xfyun.api.SparkChatClient;
 import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.config.SparkModel;
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.RoleContent;
+import cn.xfyun.model.sparkmodel.RoleContent;
 import cn.xfyun.model.sparkmodel.FunctionCall;
 import cn.xfyun.model.sparkmodel.WebSearch;
 import cn.xfyun.model.sparkmodel.SparkChatParam;

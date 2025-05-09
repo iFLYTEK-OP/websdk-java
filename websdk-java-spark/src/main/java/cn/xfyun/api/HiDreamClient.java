@@ -110,7 +110,7 @@ public class HiDreamClient extends PlatformHttpClient {
      * 构建请求参数
      */
     private String buildParam(HiDreamParam param, String realUrl) {
-        // 发送数据,求数据均为json字符串
+        // 发送数据,请求数据均为json字符串
         ImageHiDreamRequest request = new ImageHiDreamRequest();
         // 请求头
         ImageHiDreamRequest.Header header = new ImageHiDreamRequest.Header();

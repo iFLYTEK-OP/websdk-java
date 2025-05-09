@@ -121,7 +121,7 @@ public abstract class AbstractVoiceCloneWebSocketListener extends WebSocketListe
                             os.close();
                         }
                     } catch (IOException e) {
-                        logger.warn("流关闭异常：{}", e.getMessage(), e);
+                        logger.warn("流关闭异常", e);
                         onBusinessFail(webSocket, new VoiceCloneResponse(-1, "IO Exception", null, null));
                     }
                 }

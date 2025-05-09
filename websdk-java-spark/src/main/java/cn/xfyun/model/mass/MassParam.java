@@ -1,6 +1,6 @@
 package cn.xfyun.model.mass;
 
-import cn.xfyun.model.RoleContent;
+import cn.xfyun.model.sparkmodel.RoleContent;
 
 import java.util.List;
 import java.util.Map;

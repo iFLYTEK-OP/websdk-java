@@ -297,7 +297,7 @@ public class OralClient extends AbstractClient {
             // 发送合成文本
             socket.send(jsonStr);
         } catch (Exception e) {
-            logger.error("超拟人合成请求出错：{}", e.getMessage(), e);
+            logger.error("超拟人合成请求出错", e);
         }
     }
 
@@ -369,7 +369,7 @@ public class OralClient extends AbstractClient {
         private int reg = 0;
         private int rdn = 0;
         private int rhy = 0;
-        private String encoding = "speex-wb";
+        private String encoding = "lame";
         private int sampleRate = 24000;
         private int channels = 1;
         private int bitDepth = 16;

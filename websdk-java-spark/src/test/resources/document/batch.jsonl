@@ -1,0 +1,1 @@
+{"custom_id": "request-1", "method": "POST", "url": "/v1/chat/completions", "body": {"model": "4.0Ultra", "messages": [{"role": "system", "content": "You are a helpful assistant."},{"role": "user", "content": "1+1=?"}],"max_tokens": 1000}}

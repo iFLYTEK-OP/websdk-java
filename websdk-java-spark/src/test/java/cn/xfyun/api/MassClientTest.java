@@ -1,7 +1,7 @@
 package cn.xfyun.api;
 
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.RoleContent;
+import cn.xfyun.model.sparkmodel.RoleContent;
 import cn.xfyun.model.mass.MassParam;
 import cn.xfyun.model.mass.response.MassResponse;
 import cn.xfyun.service.mass.AbstractMassWebSocketListener;

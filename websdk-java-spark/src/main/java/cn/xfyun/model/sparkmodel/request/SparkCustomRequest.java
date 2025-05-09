@@ -1,22 +1,24 @@
 package cn.xfyun.model.sparkmodel.request;
 
-import cn.xfyun.model.sparkmodel.RoleContent;
+import cn.xfyun.api.SparkCustomClient;
+import cn.xfyun.model.sparkmodel.FileContent;
 import cn.xfyun.model.sparkmodel.FunctionCall;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
 /**
- * 大模型ws请求实体类
+ * 星火定制化大模型会话请求实体类
  *
  * @author <zyding6@ifytek.com>
  **/
-public class SparkChatRequest {
+public class SparkCustomRequest {
+
 
     /**
-     * header : {"app_id":"12345","uid":"12345"}
-     * parameter : {"chat":{"domain":"generalv3.5","temperature":0.5,"max_tokens":1024}}
-     * payload : {"message":{"text":[]}}
+     * header : {"app_id":"这里填写应用appid，从开放平台控制台创建的应用中获取","uid":"123456"}
+     * parameter : {"chat":{"domain":"max","temperature":0.5,"top_k":4,"max_tokens":8192}}
+     * payload : {"message":{"text":[{"role":"user","content":[{"type":"file","file":["file_id1","file_id2"]},{"type":"text","text":"请总结两篇文章的不同点"}]},{"role":"assistant","content":"两篇文章有几个不同点......"},{"role":"user","content":[{"type":"file","file":["file_id3"]},{"type":"text","text":"总结下这篇文章"}]}]}}
      */
 
     private Header header;
@@ -49,17 +51,20 @@ public class SparkChatRequest {
 
     public static class Header {
         /**
-         * app_id : 12345
-         * uid : 12345
+         * app_id : 这里填写应用appid，从开放平台控制台创建的应用中获取
+         * uid : 123456
          */
 
         @SerializedName("app_id")
         private String appId;
         private String uid;
 
-        public Header(String appId, String uuid) {
+        public Header() {
+        }
+
+        public Header(String appId, String uid) {
             this.appId = appId;
-            this.uid = uuid;
+            this.uid = uid;
         }
 
         public String getAppId() {
@@ -81,10 +86,17 @@ public class SparkChatRequest {
 
     public static class Parameter {
         /**
-         * chat : {"domain":"generalv3.5","temperature":0.5,"max_tokens":1024}
+         * chat : {"domain":"max","temperature":0.5,"top_k":4,"max_tokens":8192}
          */
 
         private Chat chat;
+
+        public Parameter() {
+        }
+
+        public Parameter(SparkCustomClient client) {
+            this.chat = new Chat(client);
+        }
 
         public Chat getChat() {
             return chat;
@@ -96,34 +108,27 @@ public class SparkChatRequest {
 
         public static class Chat {
             /**
-             * domain : generalv3.5
+             * domain : max
              * temperature : 0.5
-             * max_tokens : 1024
              * top_k : 4
+             * max_tokens : 8192
              */
 
             private String domain;
             private Float temperature;
-            @SerializedName("max_tokens")
-            private Integer maxTokens;
             @SerializedName("top_k")
             private Integer topK;
-            @SerializedName("top_p")
-            private Integer topP;
-            private List<Object> tools;
-            @SerializedName("chat_id")
-            private String chatId;
-            @SerializedName("presence_penalty")
-            private Float presencePenalty;
-            @SerializedName("frequency_penalty")
-            private Float frequencyPenalty;
+            @SerializedName("max_tokens")
+            private Integer maxTokens;
 
-            public String getChatId() {
-                return chatId;
+            public Chat() {
             }
 
-            public void setChatId(String chatId) {
-                this.chatId = chatId;
+            public Chat(SparkCustomClient client) {
+                this.domain = client.getDomain();
+                this.temperature = client.getTemperature();
+                this.topK = client.getTopK();
+                this.maxTokens = client.getMaxTokens();
             }
 
             public String getDomain() {
@@ -142,14 +147,6 @@ public class SparkChatRequest {
                 this.temperature = temperature;
             }
 
-            public Integer getMaxTokens() {
-                return maxTokens;
-            }
-
-            public void setMaxTokens(Integer maxTokens) {
-                this.maxTokens = maxTokens;
-            }
-
             public Integer getTopK() {
                 return topK;
             }
@@ -158,43 +155,19 @@ public class SparkChatRequest {
                 this.topK = topK;
             }
 
-            public List<Object> getTools() {
-                return tools;
+            public Integer getMaxTokens() {
+                return maxTokens;
             }
 
-            public void setTools(List<Object> tools) {
-                this.tools = tools;
-            }
-
-            public Integer getTopP() {
-                return topP;
-            }
-
-            public void setTopP(Integer topP) {
-                this.topP = topP;
-            }
-
-            public Float getPresencePenalty() {
-                return presencePenalty;
-            }
-
-            public void setPresencePenalty(Float presencePenalty) {
-                this.presencePenalty = presencePenalty;
-            }
-
-            public Float getFrequencyPenalty() {
-                return frequencyPenalty;
-            }
-
-            public void setFrequencyPenalty(Float frequencyPenalty) {
-                this.frequencyPenalty = frequencyPenalty;
+            public void setMaxTokens(Integer maxTokens) {
+                this.maxTokens = maxTokens;
             }
         }
     }
 
     public static class Payload {
         /**
-         * message : {"text":[]}
+         * message : {"text":[{"role":"user","content":[{"type":"file","file":["file_id1","file_id2"],"text":"请总结两篇文章的不同点"},{"type":"text","text":"请总结两篇文章的不同点"}]},{"role":"assistant","content":"两篇文章有几个不同点......"},{"role":"user","content":[{"type":"file","file":["file_id3"]},{"type":"text","text":"总结下这篇文章"}]}]}
          */
 
         private Message message;
@@ -217,13 +190,13 @@ public class SparkChatRequest {
         }
 
         public static class Message {
-            private List<RoleContent> text;
+            private List<FileContent> text;
 
-            public List<RoleContent> getText() {
+            public List<FileContent> getText() {
                 return text;
             }
 
-            public void setText(List<RoleContent> text) {
+            public void setText(List<FileContent> text) {
                 this.text = text;
             }
         }

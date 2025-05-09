@@ -43,6 +43,11 @@ public class PropertiesConfig {
     private static final String imageGenAPPSecret;
     private static final String hidreamAPPKey;
     private static final String hidreamAPPSecret;
+    private static final String imgUnderstandAPPSecret;
+    private static final String imgUnderstandAPIKey;
+    private static final String resumeGenClientApiKey;
+    private static final String resumeGenClientApiSecret;
+    private static final String sparkBatchAPIPassword;
 
     static {
         Properties properties = new Properties();
@@ -77,6 +82,11 @@ public class PropertiesConfig {
         imageGenAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("imageGenAPPSecret")) ? System.getenv("imageGenAPPSecret") : properties.getProperty("imageGenAPPSecret");
         hidreamAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("hidreamAPPKey")) ? System.getenv("hidreamAPPKey") : properties.getProperty("hidreamAPPKey");
         hidreamAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("hidreamAPPSecret")) ? System.getenv("hidreamAPPSecret") : properties.getProperty("hidreamAPPSecret");
+        imgUnderstandAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("imgUnderstandAPPSecret")) ? System.getenv("imgUnderstandAPPSecret") : properties.getProperty("imgUnderstandAPPSecret");
+        imgUnderstandAPIKey = StringUtils.isNullOrEmpty(properties.getProperty("imgUnderstandAPIKey")) ? System.getenv("imgUnderstandAPIKey") : properties.getProperty("imgUnderstandAPIKey");
+        resumeGenClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("resumeGenClientApiKey")) ? System.getenv("resumeGenClientApiKey") : properties.getProperty("resumeGenClientApiKey");
+        resumeGenClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("resumeGenClientApiSecret")) ? System.getenv("resumeGenClientApiSecret") : properties.getProperty("resumeGenClientApiSecret");
+        sparkBatchAPIPassword = StringUtils.isNullOrEmpty(properties.getProperty("sparkBatchAPIPassword")) ? System.getenv("sparkBatchAPIPassword") : properties.getProperty("sparkBatchAPIPassword");
     }
 
     public static String getAppId() {
@@ -177,5 +187,25 @@ public class PropertiesConfig {
 
     public static String getHidreamAPPSecret() {
         return hidreamAPPSecret;
+    }
+
+    public static String getImgUnderstandAPPSecret() {
+        return imgUnderstandAPPSecret;
+    }
+
+    public static String getImgUnderstandAPIKey() {
+        return imgUnderstandAPIKey;
+    }
+
+    public static String getResumeGenClientApiKey() {
+        return resumeGenClientApiKey;
+    }
+
+    public static String getResumeGenClientApiSecret() {
+        return resumeGenClientApiSecret;
+    }
+
+    public static String getSparkBatchAPIPassword() {
+        return sparkBatchAPIPassword;
     }
 }

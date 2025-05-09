@@ -1,7 +1,7 @@
 package cn.xfyun.model.sparkmodel.request;
 
 import cn.xfyun.api.SparkChatClient;
-import cn.xfyun.model.RoleContent;
+import cn.xfyun.model.sparkmodel.RoleContent;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;

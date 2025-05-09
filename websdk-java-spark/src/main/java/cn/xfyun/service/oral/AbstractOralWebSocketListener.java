@@ -121,7 +121,7 @@ public abstract class AbstractOralWebSocketListener extends WebSocketListener {
                             os.close();
                         }
                     } catch (IOException e) {
-                        logger.warn("流关闭异常：{}", e.getMessage(), e);
+                        logger.warn("流关闭异常", e);
                         onBusinessFail(webSocket, new OralResponse(-1, "IO Exception", null, null));
                     }
                 }
