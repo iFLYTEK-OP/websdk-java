@@ -150,7 +150,7 @@ public class ImageGenClient extends HttpClient {
      * 构建参数
      */
     private String buildParam(ImageGenParam param, String realUrl) {
-        // 发送数据,求数据均为json字符串
+        // 发送数据,请求数据均为json字符串
         ImageGenRequest request = new ImageGenRequest();
         // 请求头
         ImageGenRequest.Header header = new ImageGenRequest.Header();

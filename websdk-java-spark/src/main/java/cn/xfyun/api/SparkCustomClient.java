@@ -256,7 +256,7 @@ public class SparkCustomClient extends AbstractClient {
      * @param functions 会话使用的函数
      */
     private String buildParam(List<FileContent> text, List<FunctionCall> functions) {
-        // 发送数据,求数据均为json字符串
+        // 发送数据,请求数据均为json字符串
         SparkCustomRequest request = new SparkCustomRequest();
         // 请求头
         SparkCustomRequest.Header header = new SparkCustomRequest.Header(appId, userId);

@@ -53,7 +53,7 @@ public class ResumeGenClient extends PlatformHttpClient {
      * 构建参数
      */
     private String buildParam(String text, String realUrl) {
-        // 发送数据,求数据均为json字符串
+        // 发送数据,请求数据均为json字符串
         ResumeRequest request = new ResumeRequest();
         // 请求头
         ResumeRequest.HeaderBean header = new ResumeRequest.HeaderBean();

@@ -283,7 +283,7 @@ public class ImageUnderstandClient extends AbstractClient {
      * 构建参数
      */
     private String buildParam(SparkChatParam param) {
-        // 发送数据,求数据均为json字符串
+        // 发送数据,请求数据均为json字符串
         SparkSendRequest sendRequest = new SparkSendRequest();
 
         // 请求头
