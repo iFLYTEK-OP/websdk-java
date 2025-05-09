@@ -157,7 +157,7 @@ public class ImageUnderstandClient extends AbstractClient {
             // 发送请求
             webSocket.send(param);
         } catch (Exception e) {
-            logger.error("ws消息发送失败：{}", e.getMessage(), e);
+            logger.error("ws消息发送失败", e);
         }
     }
 

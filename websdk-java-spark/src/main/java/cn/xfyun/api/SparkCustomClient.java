@@ -166,7 +166,7 @@ public class SparkCustomClient extends AbstractClient {
             // 发送合成文本
             webSocket.send(jsonStr);
         } catch (Exception e) {
-            logger.error("ws消息发送失败：{}", e.getMessage(), e);
+            logger.error("ws消息发送失败", e);
         }
     }
 
@@ -272,7 +272,7 @@ public class SparkCustomClient extends AbstractClient {
         message.setText(text);
         payload.setMessage(message);
         // 配置函数调用
-        functions = null != functions && !functions.isEmpty() ? functions : this.functions;
+        functions = (null != functions) && !functions.isEmpty() ? functions : this.functions;
         if (null != functions && !functions.isEmpty()) {
             SparkCustomRequest.Payload.Function function = new SparkCustomRequest.Payload.Function();
             function.setText(functions);
