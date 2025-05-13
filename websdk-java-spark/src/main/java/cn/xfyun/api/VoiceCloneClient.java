@@ -332,8 +332,8 @@ public class VoiceCloneClient extends AbstractClient {
         private int reg = 0;
         private int rdn = 0;
         private int rhy = 0;
-        private String encoding = "speex-wb";
-        private int sampleRate = 16000;
+        private String encoding = "lame";
+        private int sampleRate = 24000;
         private int status = 2;
         private String vcn = "x5_clone";
 

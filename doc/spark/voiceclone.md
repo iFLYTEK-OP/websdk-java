@@ -175,8 +175,8 @@ VoiceTrainClient client = new VoiceTrainClient.Builder(APP_ID, API_KEY).build();
 
 ## 合成参数
 
-| 字段         | 类型                         | 是否必传 | 含义                                                | 限制 | 备注     |
-| ------------ | ---------------------------- | -------- | --------------------------------------------------- | ---- | -------- |
+| 字段         | 类型                         | 是否必传 | 含义                                                | 限制 | 备注       |
+| ------------ | ---------------------------- | -------- | --------------------------------------------------- | ---- |----------|
 | textEncoding | 文本编码                     | String   | utf8, gb2312, gbk                                   | 否   | utf8     |
 | textCompress | 文本压缩格式                 | String   | raw, gzip                                           | 否   | raw      |
 | textFormat   | 文本格式                     | String   | plain, json, xml                                    | 否   | plain    |
@@ -189,7 +189,7 @@ VoiceTrainClient client = new VoiceTrainClient.Builder(APP_ID, API_KEY).build();
 | reg          | 英文发音方式                 | int      | 0(自动判断),1(字母发音),2(自动判断优先字母)         | 否   | 0        |
 | rdn          | 数字发音方式                 | int      | 0(自动判断),1(完全数值),2(完全字符串),3(字符串优先) | 否   | 0        |
 | rhy          | 是否返回拼音标注             | int      | 0(不返回),1(返回拼音),3(支持标点符号输出)           | 否   | 0        |
-| encoding     | 音频编码                     | String   | lame, speex, opus, opus-wb, speex-wb                | 否   | speex-wb |
+| encoding     | 音频编码                     | String   | lame, speex, opus, opus-wb, speex-wb                | 否   | lame     |
 | sampleRate   | 音频采样率                   | int      | 16000, 8000, 24000                                  | 否   | 24000    |
 | vcn          | 发言人名称                   | String   | 固定值x5_clone                                      | 是   | x5_clone |
 | status       | 数据状态                     | int      | 固定值2(一次性传完)                                 | 是   | 2        |

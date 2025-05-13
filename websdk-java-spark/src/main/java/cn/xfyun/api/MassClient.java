@@ -32,8 +32,8 @@ public class MassClient extends AbstractClient {
     private final List<String> patchId;
 
     /**
-     * 调用微调大模型时，对应为模型服务卡片上的serviceid
-     * serviceId可从星辰网页获取 <a href="https://training.xfyun.cn/model/add">...</a>
+     * 调用微调大模型时，对应为模型服务卡片上的modelId
+     * modelId可从星辰网页获取 <a href="https://training.xfyun.cn/model/add">...</a>
      */
     private final String domain;
 
@@ -389,19 +389,19 @@ public class MassClient extends AbstractClient {
             return new MassClient(this);
         }
 
-        public Builder signatureWs(String resourceId, String serviceId, String appId, String apiKey, String apiSecret) {
+        public Builder signatureWs(String resourceId, String modelId, String appId, String apiKey, String apiSecret) {
             this.appId = appId;
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
             this.patchId = Collections.singletonList(resourceId);
-            this.domain = serviceId;
+            this.domain = modelId;
             return this;
         }
 
-        public Builder signatureHttp(String resourceId, String serviceId, String apiKey) {
+        public Builder signatureHttp(String resourceId, String modelId, String apiKey) {
             this.apiKey = apiKey;
             this.patchId = Collections.singletonList(resourceId);
-            this.domain = serviceId;
+            this.domain = modelId;
             return this;
         }
 

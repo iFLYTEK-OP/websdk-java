@@ -176,7 +176,7 @@ public class ImageGenClient extends HttpClient {
         request.setPayload(payload);
 
         String json = StringUtils.gson.toJson(request);
-        logger.info("图片生成请求URL: {}, 请求体: {}", realUrl, json);
+        logger.debug("图片生成请求URL: {}, 请求体: {}", realUrl, json);
         return json;
     }
 

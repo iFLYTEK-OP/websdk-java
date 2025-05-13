@@ -20,7 +20,7 @@
    - apiSecret
    - apiPassword
    - resourceId
-   - serviceId
+   - modelId
    - http请求URL
    - ws请求URL
 
@@ -79,7 +79,7 @@ public class MassClientApp {
     private static final String apiSecret = PropertiesConfig.getApiSecret();
     private static final String apiPassword = "您的apiPassword";
     private static final String resourceId = "您Mass平台模型卡片的resourceId";
-    private static final String serviceId = "您Mass平台模型卡片的serviceId";
+    private static final String modelId = "您Mass平台模型卡片的modelId";
     private static final String httpUrl = "https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions";
     private static final String wsUrl = "wss://maas-api.cn-huabei-1.xf-yun.com/v1.1/chat";
 
@@ -129,7 +129,7 @@ public class MassClientApp {
 
     private static void chatStream(MassParam param) {
         MassClient client = new MassClient.Builder()
-                .signatureHttp(resourceId, serviceId, apiPassword)
+                .signatureHttp(resourceId, modelId, apiPassword)
                 .requestUrl(httpUrl)
                 .build();
 
@@ -191,7 +191,7 @@ public class MassClientApp {
 
     private static void chatPost(MassParam param) throws IOException {
         MassClient client = new MassClient.Builder()
-                .signatureHttp(resourceId, serviceId, apiPassword)
+                .signatureHttp(resourceId, modelId, apiPassword)
                 .requestUrl(httpUrl)
                 .build();
 
@@ -208,7 +208,7 @@ public class MassClientApp {
 
     private static void chatWs(MassParam param) throws MalformedURLException, SignatureException {
         MassClient client = new MassClient.Builder()
-                .signatureWs(resourceId, serviceId, appId, apiKey, apiSecret)
+                .signatureWs(resourceId, modelId, appId, apiKey, apiSecret)
                 .wsUrl(wsUrl)
                 .build();
 
