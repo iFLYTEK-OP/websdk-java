@@ -185,7 +185,7 @@ public class MassClient extends AbstractClient {
             // 发送合成文本
             socket.send(jsonStr);
         } catch (Exception e) {
-            logger.error("ws消息发送失败：{}", e.getMessage(), e);
+            logger.error("ws消息发送失败", e);
         }
     }
 
@@ -268,7 +268,7 @@ public class MassClient extends AbstractClient {
      * @param param 请求参数
      */
     private String buildParam(MassParam param) {
-        // 发送数据,求数据均为json字符串
+        // 发送数据,请求数据均为json字符串
         MassReqeust request = new MassReqeust();
         // 请求头
         MassReqeust.Header header = new MassReqeust.Header();

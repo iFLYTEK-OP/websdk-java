@@ -2,8 +2,9 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
+import cn.xfyun.config.Role;
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.RoleContent;
+import cn.xfyun.model.sparkmodel.RoleContent;
 import cn.xfyun.model.image.ImageGenParam;
 import cn.xfyun.model.image.request.ImageGenRequest;
 import cn.xfyun.model.sign.Signature;
@@ -123,7 +124,7 @@ public class ImageGenClient extends HttpClient {
         // 封装会话记录
         List<RoleContent> messages = new ArrayList<>();
         RoleContent roleContent = new RoleContent();
-        roleContent.setRole("user");
+        roleContent.setRole(Role.USER.getValue());
         roleContent.setContent(text);
         messages.add(roleContent);
         // 返回参数
@@ -149,7 +150,7 @@ public class ImageGenClient extends HttpClient {
      * 构建参数
      */
     private String buildParam(ImageGenParam param, String realUrl) {
-        // 发送数据,求数据均为json字符串
+        // 发送数据,请求数据均为json字符串
         ImageGenRequest request = new ImageGenRequest();
         // 请求头
         ImageGenRequest.Header header = new ImageGenRequest.Header();

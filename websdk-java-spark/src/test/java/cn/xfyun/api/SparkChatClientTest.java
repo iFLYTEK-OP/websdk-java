@@ -2,7 +2,7 @@ package cn.xfyun.api;
 
 import cn.xfyun.config.SparkModel;
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.RoleContent;
+import cn.xfyun.model.sparkmodel.RoleContent;
 import cn.xfyun.model.sparkmodel.SparkChatParam;
 import cn.xfyun.model.sparkmodel.response.SparkChatResponse;
 import cn.xfyun.service.sparkmodel.AbstractSparkModelWebSocketListener;

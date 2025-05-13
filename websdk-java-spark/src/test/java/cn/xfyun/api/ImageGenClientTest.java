@@ -1,7 +1,7 @@
 package cn.xfyun.api;
 
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.RoleContent;
+import cn.xfyun.model.sparkmodel.RoleContent;
 import cn.xfyun.model.image.ImageGenParam;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;

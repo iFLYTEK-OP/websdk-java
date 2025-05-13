@@ -1,7 +1,5 @@
 package cn.xfyun.model.sparkmodel;
 
-import cn.xfyun.model.RoleContent;
-
 import java.util.List;
 
 /**

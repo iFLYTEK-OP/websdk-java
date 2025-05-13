@@ -40,7 +40,7 @@ public class SparkIatSendTask extends AbstractTask {
             status = STATUS_LAST_FRAME;
         }
 
-        // 发送数据,求数据均为json字符串
+        // 发送数据,请求数据均为json字符串
         SparkIatRequest request = new SparkIatRequest();
         // 请求头
         SparkIatRequest.Header header = new SparkIatRequest.Header(client().getAppId(), status);
