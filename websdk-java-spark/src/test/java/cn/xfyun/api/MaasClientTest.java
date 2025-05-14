@@ -1,10 +1,10 @@
 package cn.xfyun.api;
 
 import cn.xfyun.exception.BusinessException;
+import cn.xfyun.model.maas.MaasParam;
 import cn.xfyun.model.sparkmodel.RoleContent;
-import cn.xfyun.model.mass.MassParam;
-import cn.xfyun.model.mass.response.MassResponse;
-import cn.xfyun.service.mass.AbstractMassWebSocketListener;
+import cn.xfyun.model.maas.response.MaasResponse;
+import cn.xfyun.service.maas.AbstractMaasWebSocketListener;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -30,24 +30,24 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 星辰Mass Client单元测试
+ * 星辰Maas Client单元测试
  *
  * @author <zyding6@ifytek.com>
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MassClient.class})
+@PrepareForTest({MaasClient.class})
 @PowerMockIgnore({"cn.xfyun.util.HttpConnector", "javax.crypto.*", "javax.net.ssl.*"})
-public class MassClientTest {
+public class MaasClientTest {
 
-    private static final Logger logger = LoggerFactory.getLogger(MassClientTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(MaasClientTest.class);
     private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getMassAPPKey();
-    private static final String apiSecret = PropertiesConfig.getMassAPPSecret();
-    private static final String postKey = PropertiesConfig.getMassAPIKey();
+    private static final String apiKey = PropertiesConfig.getMaasAPPKey();
+    private static final String apiSecret = PropertiesConfig.getMaasAPPSecret();
+    private static final String postKey = PropertiesConfig.getMaasAPIKey();
 
     @Test
     public void buildParamTest() {
-        MassClient massClient = new MassClient.Builder()
+        MaasClient maasClient = new MaasClient.Builder()
                 .signatureWs("0", "1", appId, apiKey, apiSecret)
                 .wsUrl("test.wsUrl")
                 .callTimeout(10, TimeUnit.SECONDS)
@@ -66,35 +66,35 @@ public class MassClientTest {
                 .temperature(0.5F)
                 .build();
 
-        Assert.assertEquals(massClient.getAppId(), appId);
-        Assert.assertEquals(massClient.getApiKey(), apiKey);
-        Assert.assertEquals(massClient.getApiSecret(), apiSecret);
-        Assert.assertEquals(massClient.getOriginHostUrl(), "test.wsUrl");
-        Assert.assertNotNull(massClient.getRequestUrl());
-        Assert.assertEquals(massClient.getCallTimeout(), 10000);
-        Assert.assertEquals(massClient.getConnectTimeout(), 10000);
-        Assert.assertEquals(massClient.getWriteTimeout(), 10000);
-        Assert.assertEquals(massClient.getReadTimeout(), 10000);
-        Assert.assertEquals(massClient.getPingInterval(), 0);
-        Assert.assertTrue(massClient.isRetryOnConnectionFailure());
-        Assert.assertTrue(massClient.getPatchId().isEmpty());
-        Assert.assertTrue(massClient.isSearchDisable());
-        Assert.assertTrue(massClient.isShowRefLabel());
-        Assert.assertEquals(massClient.getDomain(), "1");
-        Assert.assertEquals(massClient.getMaxTokens().intValue(), 8960);
-        Assert.assertEquals(massClient.getTopK().intValue(), 1);
-        Assert.assertNotNull(massClient.getTemperature());
-        Assert.assertNull(massClient.getStreamOptions());
+        Assert.assertEquals(maasClient.getAppId(), appId);
+        Assert.assertEquals(maasClient.getApiKey(), apiKey);
+        Assert.assertEquals(maasClient.getApiSecret(), apiSecret);
+        Assert.assertEquals(maasClient.getOriginHostUrl(), "test.wsUrl");
+        Assert.assertNotNull(maasClient.getRequestUrl());
+        Assert.assertEquals(maasClient.getCallTimeout(), 10000);
+        Assert.assertEquals(maasClient.getConnectTimeout(), 10000);
+        Assert.assertEquals(maasClient.getWriteTimeout(), 10000);
+        Assert.assertEquals(maasClient.getReadTimeout(), 10000);
+        Assert.assertEquals(maasClient.getPingInterval(), 0);
+        Assert.assertTrue(maasClient.isRetryOnConnectionFailure());
+        Assert.assertTrue(maasClient.getPatchId().isEmpty());
+        Assert.assertTrue(maasClient.isSearchDisable());
+        Assert.assertTrue(maasClient.isShowRefLabel());
+        Assert.assertEquals(maasClient.getDomain(), "1");
+        Assert.assertEquals(maasClient.getMaxTokens().intValue(), 8960);
+        Assert.assertEquals(maasClient.getTopK().intValue(), 1);
+        Assert.assertNotNull(maasClient.getTemperature());
+        Assert.assertNull(maasClient.getStreamOptions());
     }
 
     @Test
     public void testBusinessError() throws IOException, SignatureException {
-        MassClient client = new MassClient.Builder()
+        MaasClient client = new MaasClient.Builder()
                 .signatureWs("0", "xdeepseekv3", appId, apiKey, apiSecret)
                 // .signatureWs("0", "xdeepseekr1", appId, apiKey, apiSecret)
                 .wsUrl("wss://maas-api.cn-huabei-1.xf-yun.com/v1.1/chat")
                 .build();
-        MassParam param = MassParam.builder()
+        MaasParam param = MaasParam.builder()
                 .messages(new ArrayList<>())
                 .build();
         try {
@@ -131,7 +131,7 @@ public class MassClientTest {
 
     @Test
     public void testWs() throws MalformedURLException, SignatureException {
-        MassClient client = new MassClient.Builder()
+        MaasClient client = new MaasClient.Builder()
                 .signatureWs("0", "xdeepseekv3", appId, apiKey, apiSecret)
                 .wsUrl("wss://maas-api.cn-huabei-1.xf-yun.com/v1.1/chat")
                 .build();
@@ -148,12 +148,12 @@ public class MassClientTest {
         StringBuffer finalResult = new StringBuffer();
         StringBuffer thingkingResult = new StringBuffer();
 
-        MassParam param = MassParam.builder()
+        MaasParam param = MaasParam.builder()
                 .messages(messages)
                 .build();
-        client.send(param, new AbstractMassWebSocketListener() {
+        client.send(param, new AbstractMaasWebSocketListener() {
             @Override
-            public void onSuccess(WebSocket webSocket, MassResponse resp) {
+            public void onSuccess(WebSocket webSocket, MaasResponse resp) {
                 logger.debug("中间返回json结果 ==>{}", StringUtils.gson.toJson(resp));
                 if (resp.getHeader().getCode() != 0) {
                     logger.error("code=>{}，error=>{}，sid=>{}", resp.getHeader().getCode(), resp.getHeader().getMessage(), resp.getHeader().getSid());
@@ -162,7 +162,7 @@ public class MassClientTest {
                 }
 
                 if (null != resp.getPayload() && null != resp.getPayload().getChoices()) {
-                    List<MassResponse.Payload.Choices.Text> text = resp.getPayload().getChoices().getText();
+                    List<MaasResponse.Payload.Choices.Text> text = resp.getPayload().getChoices().getText();
                     if (null != text && !text.isEmpty()) {
                         String content = resp.getPayload().getChoices().getText().get(0).getContent();
                         String reasonContent = resp.getPayload().getChoices().getText().get(0).getReasoningContent();
@@ -203,7 +203,7 @@ public class MassClientTest {
 
     @Test
     public void testPost() throws IOException {
-        MassClient client = new MassClient.Builder()
+        MaasClient client = new MaasClient.Builder()
                 .signatureHttp("0", "xdeepseekv3", postKey)
                 .requestUrl("https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions")
                 .build();
@@ -214,7 +214,7 @@ public class MassClientTest {
         roleContent.setContent("讲一个笑话");
         messages.add(roleContent);
 
-        MassParam param = MassParam.builder()
+        MaasParam param = MaasParam.builder()
                 .messages(messages)
                 .build();
 
@@ -228,7 +228,7 @@ public class MassClientTest {
 
     @Test
     public void testStream() {
-        MassClient client = new MassClient.Builder()
+        MaasClient client = new MaasClient.Builder()
                 .signatureHttp("0", "xdeepseekv3", postKey)
                 .requestUrl("https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions")
                 .build();
@@ -239,7 +239,7 @@ public class MassClientTest {
         roleContent.setContent("帮我讲一个笑话");
         messages.add(roleContent);
 
-        MassParam param = MassParam.builder()
+        MaasParam param = MaasParam.builder()
                 .messages(messages)
                 .build();
 

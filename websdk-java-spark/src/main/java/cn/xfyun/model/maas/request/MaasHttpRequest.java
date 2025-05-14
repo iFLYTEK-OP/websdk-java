@@ -1,4 +1,4 @@
-package cn.xfyun.model.mass.request;
+package cn.xfyun.model.maas.request;
 
 import cn.xfyun.model.sparkmodel.RoleContent;
 import com.google.gson.annotations.SerializedName;
@@ -10,7 +10,7 @@ import java.util.List;
  *
  * @author zyding6
  **/
-public class MassHttpRequest {
+public class MaasHttpRequest {
     private String model;
     private List<RoleContent> messages;
     private Boolean stream;

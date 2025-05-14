@@ -1,4 +1,4 @@
-package cn.xfyun.model.mass;
+package cn.xfyun.model.maas;
 
 import cn.xfyun.model.sparkmodel.RoleContent;
 
@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * mass精调大模型会话请求实体类
+ * maas精调大模型会话请求实体类
  *
  * @author <zyding6@ifytek.com>
  **/
-public class MassParam {
+public class MaasParam {
 
     /**
      * 对话记录和当前问题列表集合
@@ -40,7 +40,7 @@ public class MassParam {
      */
     private Map<String, Object> extraBody;
 
-    public MassParam(Builder builder) {
+    public MaasParam(Builder builder) {
         this.messages = builder.messages;
         this.chatId = builder.chatId;
         this.userId = builder.userId;
@@ -48,7 +48,7 @@ public class MassParam {
         this.extraBody = builder.extraBody;
     }
 
-    public MassParam() {
+    public MaasParam() {
     }
 
     public String getChatId() {
@@ -106,8 +106,8 @@ public class MassParam {
         private Builder() {
         }
 
-        public MassParam build() {
-            return new MassParam(this);
+        public MaasParam build() {
+            return new MaasParam(this);
         }
 
         public Builder messages(List<RoleContent> messages) {

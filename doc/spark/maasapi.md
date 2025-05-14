@@ -2,7 +2,7 @@
 
 ## 简介
 
-本客户端基于讯飞星辰Mass API实现，提供Mass平台精调服务调用能力[官方文档](https://www.xfyun.cn/doc/spark/%E7%B2%BE%E8%B0%83%E6%9C%8D%E5%8A%A1API-websocket.html)
+本客户端基于讯飞星辰Maas API实现，提供Maas平台精调服务调用能力[官方文档](https://www.xfyun.cn/doc/spark/%E7%B2%BE%E8%B0%83%E6%9C%8D%E5%8A%A1API-websocket.html)
 
 ## 功能列表
 
@@ -12,7 +12,7 @@
 
 ## 使用准备
 
-1. 前往[星辰Mass](https://training.xfyun.cn/)平台
+1. 前往[星辰Maas](https://training.xfyun.cn/)平台
 2. 创建训练模型
 3. 获取模型卡片的参数:
    - appId
@@ -33,7 +33,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-spark</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.5</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
@@ -42,13 +42,13 @@
 ```java
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import cn.xfyun.api.MassClient;
+import cn.xfyun.api.MaasClient;
 import cn.xfyun.config.PropertiesConfig;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sparkmodel.RoleContent;
-import cn.xfyun.model.mass.MassParam;
-import cn.xfyun.model.mass.response.MassResponse;
-import cn.xfyun.service.mass.AbstractMassWebSocketListener;
+import cn.xfyun.model.maas.MaasParam;
+import cn.xfyun.model.maas.response.MaasResponse;
+import cn.xfyun.service.maas.AbstractMaasWebSocketListener;
 import cn.xfyun.util.StringUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -71,261 +71,261 @@ import java.util.UUID;
  * 1、APPID、APISecret、APIKey、APIPassword信息获取：<a href="https://training.xfyun.cn/model/add">...</a>
  * 2、文档地址：<a href="https://www.xfyun.cn/doc/spark/%E7%B2%BE%E8%B0%83%E6%9C%8D%E5%8A%A1API-websocket.html">...</a>
  */
-public class MassClientApp {
+public class MaasClientApp {
 
-    private static final Logger logger = LoggerFactory.getLogger(MassClientApp.class);
-    private static final String appId = PropertiesConfig.getAppId();
-    private static final String apiKey = PropertiesConfig.getApiKey();
-    private static final String apiSecret = PropertiesConfig.getApiSecret();
-    private static final String apiPassword = "您的apiPassword";
-    private static final String resourceId = "您Mass平台模型卡片的resourceId";
-    private static final String modelId = "您Mass平台模型卡片的modelId";
-    private static final String httpUrl = "https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions";
-    private static final String wsUrl = "wss://maas-api.cn-huabei-1.xf-yun.com/v1.1/chat";
+   private static final Logger logger = LoggerFactory.getLogger(MaasClientApp.class);
+   private static final String appId = PropertiesConfig.getAppId();
+   private static final String apiKey = PropertiesConfig.getApiKey();
+   private static final String apiSecret = PropertiesConfig.getApiSecret();
+   private static final String apiPassword = "您的apiPassword";
+   private static final String resourceId = "您Maas平台模型卡片的resourceId";
+   private static final String modelId = "您Maas平台模型卡片的modelId";
+   private static final String httpUrl = "https://maas-api.cn-huabei-1.xf-yun.com/v1/chat/completions";
+   private static final String wsUrl = "wss://maas-api.cn-huabei-1.xf-yun.com/v1.1/chat";
 
-    public static void main(String[] args) throws Exception {
+   public static void main(String[] args) throws Exception {
 
-        MassParam param = MassParam.builder()
-                .messages(getMessages())
-                .chatId(UUID.randomUUID().toString().substring(0, 10))
-                .userId("1234567890")
-                .build();
+      MaasParam param = MaasParam.builder()
+              .messages(getMessages())
+              .chatId(UUID.randomUUID().toString().substring(0, 10))
+              .userId("1234567890")
+              .build();
 
-        // ws请求方式
-        chatWs(param);
+      // ws请求方式
+      chatWs(param);
 
-        // post方式
-        // chatPost(param);
+      // post方式
+      // chatPost(param);
 
-        // 流式请求
-        // chatStream(param);
-    }
+      // 流式请求
+      // chatStream(param);
+   }
 
-    private static List<RoleContent> getMessages() {
-        List<RoleContent> messages = new ArrayList<>();
-        RoleContent roleContent = new RoleContent();
-        roleContent.setRole("user");
-        roleContent.setContent("你好");
-        RoleContent roleContent1 = new RoleContent();
-        roleContent1.setRole("assistant");
-        roleContent1.setContent("你好！");
-        RoleContent roleContent2 = new RoleContent();
-        roleContent2.setRole("user");
-        roleContent2.setContent("你是谁");
-        RoleContent roleContent3 = new RoleContent();
-        roleContent3.setRole("assistant");
-        roleContent3.setContent("我是Spark API。");
-        RoleContent roleContent4 = new RoleContent();
-        roleContent4.setRole("user");
-        roleContent4.setContent("帮我讲一个笑话");
+   private static List<RoleContent> getMessages() {
+      List<RoleContent> messages = new ArrayList<>();
+      RoleContent roleContent = new RoleContent();
+      roleContent.setRole("user");
+      roleContent.setContent("你好");
+      RoleContent roleContent1 = new RoleContent();
+      roleContent1.setRole("assistant");
+      roleContent1.setContent("你好！");
+      RoleContent roleContent2 = new RoleContent();
+      roleContent2.setRole("user");
+      roleContent2.setContent("你是谁");
+      RoleContent roleContent3 = new RoleContent();
+      roleContent3.setRole("assistant");
+      roleContent3.setContent("我是Spark API。");
+      RoleContent roleContent4 = new RoleContent();
+      roleContent4.setRole("user");
+      roleContent4.setContent("帮我讲一个笑话");
 
-        messages.add(roleContent);
-        messages.add(roleContent1);
-        messages.add(roleContent2);
-        messages.add(roleContent3);
-        messages.add(roleContent4);
-        return messages;
-    }
+      messages.add(roleContent);
+      messages.add(roleContent1);
+      messages.add(roleContent2);
+      messages.add(roleContent3);
+      messages.add(roleContent4);
+      return messages;
+   }
 
-    private static void chatStream(MassParam param) {
-        MassClient client = new MassClient.Builder()
-                .signatureHttp(resourceId, modelId, apiPassword)
-                .requestUrl(httpUrl)
-                .build();
+   private static void chatStream(MaasParam param) {
+      MaasClient client = new MaasClient.Builder()
+              .signatureHttp(resourceId, modelId, apiPassword)
+              .requestUrl(httpUrl)
+              .build();
 
-        // 统计耗时
-        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
-        Date dateBegin = new Date();
+      // 统计耗时
+      SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
+      Date dateBegin = new Date();
 
-        // 最终回复结果
-        StringBuilder finalResult = new StringBuilder();
-        // 最终思维链结果
-        StringBuilder thingkingResult = new StringBuilder();
+      // 最终回复结果
+      StringBuilder finalResult = new StringBuilder();
+      // 最终思维链结果
+      StringBuilder thingkingResult = new StringBuilder();
 
-        client.send(param, new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                logger.error("sse连接失败：{}", e.getMessage());
-                System.exit(0);
+      client.send(param, new Callback() {
+         @Override
+         public void onFailure(Call call, IOException e) {
+            logger.error("sse连接失败：{}", e.getMessage());
+            System.exit(0);
+         }
+
+         @Override
+         public void onResponse(Call call, Response response) {
+            if (!response.isSuccessful()) {
+               logger.error("请求失败，状态码：{}，原因：{}", response.code(), response.message());
+               System.exit(0);
+               return;
             }
-
-            @Override
-            public void onResponse(Call call, Response response) {
-                if (!response.isSuccessful()) {
-                    logger.error("请求失败，状态码：{}，原因：{}", response.code(), response.message());
-                    System.exit(0);
-                    return;
-                }
-                ResponseBody body = response.body();
-                if (body != null) {
-                    BufferedSource source = body.source();
-                    try {
-                        while (true) {
-                            String line = source.readUtf8Line();
-                            if (line == null) {
-                                break;
-                            }
-                            if (line.startsWith("data:")) {
-                                // 去掉前缀 "data: "
-                                String data = line.substring(5).trim();
-                                if (extractContent(data, finalResult, thingkingResult)) {
-                                    // 说明数据全部返回完毕，可以关闭连接，释放资源
-                                    logger.info("session end");
-                                    Date dateEnd = new Date();
-                                    logger.info("{}开始", sdf.format(dateBegin));
-                                    logger.info("{}结束", sdf.format(dateEnd));
-                                    logger.info("耗时：{}ms", dateEnd.getTime() - dateBegin.getTime());
-                                    logger.info("完整思维链结果 ==> {}", thingkingResult);
-                                    logger.info("最终识别结果 ==> {}", finalResult);
-                                    System.exit(0);
-                                }
-                            }
+            ResponseBody body = response.body();
+            if (body != null) {
+               BufferedSource source = body.source();
+               try {
+                  while (true) {
+                     String line = source.readUtf8Line();
+                     if (line == null) {
+                        break;
+                     }
+                     if (line.startsWith("data:")) {
+                        // 去掉前缀 "data: "
+                        String data = line.substring(5).trim();
+                        if (extractContent(data, finalResult, thingkingResult)) {
+                           // 说明数据全部返回完毕，可以关闭连接，释放资源
+                           logger.info("session end");
+                           Date dateEnd = new Date();
+                           logger.info("{}开始", sdf.format(dateBegin));
+                           logger.info("{}结束", sdf.format(dateEnd));
+                           logger.info("耗时：{}ms", dateEnd.getTime() - dateBegin.getTime());
+                           logger.info("完整思维链结果 ==> {}", thingkingResult);
+                           logger.info("最终识别结果 ==> {}", finalResult);
+                           System.exit(0);
                         }
-                    } catch (IOException e) {
-                        logger.error("读取sse返回内容发生异常", e);
-                    }
-                }
+                     }
+                  }
+               } catch (IOException e) {
+                  logger.error("读取sse返回内容发生异常", e);
+               }
             }
-        });
-    }
+         }
+      });
+   }
 
-    private static void chatPost(MassParam param) throws IOException {
-        MassClient client = new MassClient.Builder()
-                .signatureHttp(resourceId, modelId, apiPassword)
-                .requestUrl(httpUrl)
-                .build();
+   private static void chatPost(MaasParam param) throws IOException {
+      MaasClient client = new MaasClient.Builder()
+              .signatureHttp(resourceId, modelId, apiPassword)
+              .requestUrl(httpUrl)
+              .build();
 
-        String result = client.send(param);
-        logger.debug("{} 模型返回结果 ==>{}", client.getDomain(), result);
-        JSONObject obj = JSON.parseObject(result);
-        String content = obj.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
-        String reasoningContent = obj.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("reasoning_content");
-        if (null != reasoningContent) {
-            logger.info("{} 大模型思维链内容 ==>{}", client.getDomain(), reasoningContent);
-        }
-        logger.info("{} 大模型回复内容 ==>{}", client.getDomain(), content);
-    }
+      String result = client.send(param);
+      logger.debug("{} 模型返回结果 ==>{}", client.getDomain(), result);
+      JSONObject obj = JSON.parseObject(result);
+      String content = obj.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("content");
+      String reasoningContent = obj.getJSONArray("choices").getJSONObject(0).getJSONObject("message").getString("reasoning_content");
+      if (null != reasoningContent) {
+         logger.info("{} 大模型思维链内容 ==>{}", client.getDomain(), reasoningContent);
+      }
+      logger.info("{} 大模型回复内容 ==>{}", client.getDomain(), content);
+   }
 
-    private static void chatWs(MassParam param) throws MalformedURLException, SignatureException {
-        MassClient client = new MassClient.Builder()
-                .signatureWs(resourceId, modelId, appId, apiKey, apiSecret)
-                .wsUrl(wsUrl)
-                .build();
+   private static void chatWs(MaasParam param) throws MalformedURLException, SignatureException {
+      MaasClient client = new MaasClient.Builder()
+              .signatureWs(resourceId, modelId, appId, apiKey, apiSecret)
+              .wsUrl(wsUrl)
+              .build();
 
-        // 统计耗时
-        SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
-        Date dateBegin = new Date();
+      // 统计耗时
+      SimpleDateFormat sdf = new SimpleDateFormat("yyy-MM-dd HH:mm:ss.SSS");
+      Date dateBegin = new Date();
 
-        // 最终回复结果
-        StringBuilder finalResult = new StringBuilder();
-        // 最终思维链结果
-        StringBuilder thingkingResult = new StringBuilder();
+      // 最终回复结果
+      StringBuilder finalResult = new StringBuilder();
+      // 最终思维链结果
+      StringBuilder thingkingResult = new StringBuilder();
 
-        // ws方式
-        client.send(param, new AbstractMassWebSocketListener() {
-            @Override
-            public void onSuccess(WebSocket webSocket, MassResponse resp) {
-                logger.debug("中间返回json结果 ==>{}", JSONUtil.toJsonStr(resp));
-                if (resp.getHeader().getCode() != 0) {
-                    logger.error("code=>{}，error=>{}，sid=>{}", resp.getHeader().getCode(), resp.getHeader().getMessage(), resp.getHeader().getSid());
-                    logger.warn("错误码查询链接：https://www.xfyun.cn/doc/spark/%E7%B2%BE%E8%B0%83%E6%9C%8D%E5%8A%A1API-websocket.html");
-                    System.exit(0);
-                    return;
-                }
-
-                if (null != resp.getPayload() && null != resp.getPayload().getChoices()) {
-                    List<MassResponse.Payload.Choices.Text> text = resp.getPayload().getChoices().getText();
-                    if (null != text && !text.isEmpty()) {
-                        String content = resp.getPayload().getChoices().getText().get(0).getContent();
-                        String reasonContent = resp.getPayload().getChoices().getText().get(0).getReasoningContent();
-                        if (!StringUtils.isNullOrEmpty(reasonContent)) {
-                            thingkingResult.append(reasonContent);
-                            logger.info("思维链结果... ==> {}", reasonContent);
-                        } else if (!StringUtils.isNullOrEmpty(content)) {
-                            finalResult.append(content);
-                            logger.info("中间结果 ==> {}", content);
-                        }
-                    }
-
-                    if (resp.getPayload().getChoices().getStatus() == 2) {
-                        // 说明数据全部返回完毕，可以关闭连接，释放资源
-                        logger.info("session end");
-                        Date dateEnd = new Date();
-                        logger.info("{}开始", sdf.format(dateBegin));
-                        logger.info("{}结束", sdf.format(dateEnd));
-                        logger.info("耗时：{}ms", dateEnd.getTime() - dateBegin.getTime());
-                        logger.info("完整思维链结果 ==> {}", thingkingResult);
-                        logger.info("最终识别结果 ==> {}", finalResult);
-                        logger.info("本次识别sid ==> {}", resp.getHeader().getSid());
-                        webSocket.close(1000, "正常关闭");
-                        System.exit(0);
-                    }
-                }
+      // ws方式
+      client.send(param, new AbstractMaasWebSocketListener() {
+         @Override
+         public void onSuccess(WebSocket webSocket, MaasResponse resp) {
+            logger.debug("中间返回json结果 ==>{}", JSONUtil.toJsonStr(resp));
+            if (resp.getHeader().getCode() != 0) {
+               logger.error("code=>{}，error=>{}，sid=>{}", resp.getHeader().getCode(), resp.getHeader().getMessage(), resp.getHeader().getSid());
+               logger.warn("错误码查询链接：https://www.xfyun.cn/doc/spark/%E7%B2%BE%E8%B0%83%E6%9C%8D%E5%8A%A1API-websocket.html");
+               System.exit(0);
+               return;
             }
 
-            @Override
-            public void onFail(WebSocket webSocket, Throwable t, Response response) {
-                webSocket.close(1000, t.getMessage());
-                System.exit(0);
-            }
+            if (null != resp.getPayload() && null != resp.getPayload().getChoices()) {
+               List<MaasResponse.Payload.Choices.Text> text = resp.getPayload().getChoices().getText();
+               if (null != text && !text.isEmpty()) {
+                  String content = resp.getPayload().getChoices().getText().get(0).getContent();
+                  String reasonContent = resp.getPayload().getChoices().getText().get(0).getReasoningContent();
+                  if (!StringUtils.isNullOrEmpty(reasonContent)) {
+                     thingkingResult.append(reasonContent);
+                     logger.info("思维链结果... ==> {}", reasonContent);
+                  } else if (!StringUtils.isNullOrEmpty(content)) {
+                     finalResult.append(content);
+                     logger.info("中间结果 ==> {}", content);
+                  }
+               }
 
-            @Override
-            public void onClose(WebSocket webSocket, int code, String reason) {
-                System.exit(0);
+               if (resp.getPayload().getChoices().getStatus() == 2) {
+                  // 说明数据全部返回完毕，可以关闭连接，释放资源
+                  logger.info("session end");
+                  Date dateEnd = new Date();
+                  logger.info("{}开始", sdf.format(dateBegin));
+                  logger.info("{}结束", sdf.format(dateEnd));
+                  logger.info("耗时：{}ms", dateEnd.getTime() - dateBegin.getTime());
+                  logger.info("完整思维链结果 ==> {}", thingkingResult);
+                  logger.info("最终识别结果 ==> {}", finalResult);
+                  logger.info("本次识别sid ==> {}", resp.getHeader().getSid());
+                  webSocket.close(1000, "正常关闭");
+                  System.exit(0);
+               }
             }
-        });
-    }
+         }
 
-    /**
-     * @param data            sse返回的数据
-     * @param finalResult     实时回复内容
-     * @param thingkingResult 实时思维链结果
-     * @return 是否结束
-     */
-    private static boolean extractContent(String data, StringBuilder finalResult, StringBuilder thingkingResult) {
-        logger.debug("sse返回数据 ==> {}", data);
-        try {
-            JSONObject obj = JSON.parseObject(data);
-            JSONObject choice0 = obj.getJSONArray("choices").getJSONObject(0);
-            JSONObject delta = choice0.getJSONObject("delta");
-            // 结束原因
-            String finishReason = choice0.getString("finish_reason");
-            if (StrUtil.isNotEmpty(finishReason)) {
-                if (finishReason.equals("stop")) {
-                    logger.info("本次识别sid ==> {}", obj.getString("id"));
-                    return true;
-                }
-                throw new BusinessException("异常结束: " + finishReason);
+         @Override
+         public void onFail(WebSocket webSocket, Throwable t, Response response) {
+            webSocket.close(1000, t.getMessage());
+            System.exit(0);
+         }
+
+         @Override
+         public void onClose(WebSocket webSocket, int code, String reason) {
+            System.exit(0);
+         }
+      });
+   }
+
+   /**
+    * @param data            sse返回的数据
+    * @param finalResult     实时回复内容
+    * @param thingkingResult 实时思维链结果
+    * @return 是否结束
+    */
+   private static boolean extractContent(String data, StringBuilder finalResult, StringBuilder thingkingResult) {
+      logger.debug("sse返回数据 ==> {}", data);
+      try {
+         JSONObject obj = JSON.parseObject(data);
+         JSONObject choice0 = obj.getJSONArray("choices").getJSONObject(0);
+         JSONObject delta = choice0.getJSONObject("delta");
+         // 结束原因
+         String finishReason = choice0.getString("finish_reason");
+         if (StrUtil.isNotEmpty(finishReason)) {
+            if (finishReason.equals("stop")) {
+               logger.info("本次识别sid ==> {}", obj.getString("id"));
+               return true;
             }
-            // 回复
-            String content = delta.getString("content");
-            if (StrUtil.isNotEmpty(content)) {
-                logger.info("中间结果 ==> {}", content);
-                finalResult.append(content);
-            }
-            // 思维链
-            String reasonContent = delta.getString("reasoning_content");
-            if (StrUtil.isNotEmpty(reasonContent)) {
-                logger.info("思维链结果... ==> {}", reasonContent);
-                thingkingResult.append(reasonContent);
-            }
-            // 插件
-            String pluginContent = delta.getString("plugins_content");
-            if (StrUtil.isNotEmpty(pluginContent)) {
-                logger.info("插件信息 ==> {}", pluginContent);
-            }
-        } catch (BusinessException bx) {
-            throw bx;
-        } catch (Exception e) {
-            logger.error("解析sse返回内容发生异常", e);
-            logger.error("异常数据 ==> {}", data);
-        }
-        return false;
-    }
+            throw new BusinessException("异常结束: " + finishReason);
+         }
+         // 回复
+         String content = delta.getString("content");
+         if (StrUtil.isNotEmpty(content)) {
+            logger.info("中间结果 ==> {}", content);
+            finalResult.append(content);
+         }
+         // 思维链
+         String reasonContent = delta.getString("reasoning_content");
+         if (StrUtil.isNotEmpty(reasonContent)) {
+            logger.info("思维链结果... ==> {}", reasonContent);
+            thingkingResult.append(reasonContent);
+         }
+         // 插件
+         String pluginContent = delta.getString("plugins_content");
+         if (StrUtil.isNotEmpty(pluginContent)) {
+            logger.info("插件信息 ==> {}", pluginContent);
+         }
+      } catch (BusinessException bx) {
+         throw bx;
+      } catch (Exception e) {
+         logger.error("解析sse返回内容发生异常", e);
+         logger.error("异常数据 ==> {}", data);
+      }
+      return false;
+   }
 }
 ```
 
-更详细请参见 [Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/spark/MassClientApp.java)
+更详细请参见 [Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/spark/MaasClientApp.java)
 
 ## 错误码
 
@@ -401,20 +401,20 @@ public class MassClientApp {
 
 ### 1. websocket调用方式
 ```java
-public void send(MassParam param, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+public void send(MaasParam param, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
 ```
 **参数说明**：
 
 - `param`: 查询参数对象，可设置：
 
-|       名称        |  类型  |                             描述                             | 必须 | 默认值 |
-| :---------------: | :----: | :----------------------------------------------------------: | ---- | ------ |
+|       名称        |  类型  |                                                                                                                                                                描述                                                                                                                                                                 | 必须 | 默认值 |
+| :---------------: | :----: |:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:| ---- | ------ |
 |     messages      | Array  | 对话信息: 有效内容不能超过**8192Token**<br />[{"role": "user", "content": "你好"},<br />{"role": "assistant", "content": "你好！"},<br />{"role": "user", "content": "你是谁？"},<br />{"role": "assistant", "content": "我是 Spark API。"},<br />{"role": "user", "content": "你会做什么？"}]<br />按 user -> assistant -> user -> assistant 顺序传递历史记录，最后一条为当前问题 | Y    |        |
-|      chatId       | String | 拓展的会话Id , 保障用户会话的唯一性 <br />仅多语种大模型联动返回 | N    |        |
-|      userId       | String |           用户的唯一id，表示一个用户，user_123456            | N    |        |
-|   extraHeaders    | Object |          http请求方式时生效:<br />额外的请求头参数           | N    |        |
-|     extraBody     | Object |          http请求方式时生效:<br />额外的请求体参数           | N    |        |
-| webSocketListener | Object | 自定义ws抽象监听类（可使用sdk提供的**AbstractMassWebSocketListener**） | Y    |        |
+|      chatId       | String |                                                                                                                                              拓展的会话Id , 保障用户会话的唯一性 <br />仅多语种大模型联动返回                                                                                                                                               | N    |        |
+|      userId       | String |                                                                                                                                                    用户的唯一id，表示一个用户，user_123456                                                                                                                                                     | N    |        |
+|   extraHeaders    | Object |                                                                                                                                                    http请求方式时生效:<br />额外的请求头参数                                                                                                                                                     | N    |        |
+|     extraBody     | Object |                                                                                                                                                    http请求方式时生效:<br />额外的请求体参数                                                                                                                                                     | N    |        |
+| webSocketListener | Object |                                                                                                                                      自定义ws抽象监听类（可使用sdk提供的**AbstractMaasWebSocketListener**）                                                                                                                                       | Y    |        |
 
 **响应示例**：
 
@@ -445,7 +445,7 @@ public void send(MassParam param, WebSocketListener webSocketListener) throws Ma
 
 ### 2. post调用方式
 ```java
-public String send(MassParam param) throws IOException {
+public String send(MaasParam param) throws IOException {
 ```
 **参数说明**：
 
@@ -516,7 +516,7 @@ data: [DONE]
 5. 客户端默认超时时间为60秒，**http请求可能会超时**,  可通过Builder调整：
 
 ```java
-new MassClient.Builder()
+new MaasClient.Builder()
                 .signatureHttp(resourceId, serviceId, apiPassword)
                 .requestUrl(httpUrl)
         		.readTimeout(60)

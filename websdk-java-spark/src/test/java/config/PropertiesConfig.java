@@ -31,9 +31,9 @@ public class PropertiesConfig {
     private static final String oralAPPSecret;
     private static final String sparkIatAPPKey;
     private static final String sparkIatAPPSecret;
-    private static final String massAPPKey;
-    private static final String massAPPSecret;
-    private static final String massAPIKey;
+    private static final String maasAPPKey;
+    private static final String maasAPPSecret;
+    private static final String maasAPIKey;
     private static final String voiceCloneAPPKey;
     private static final String voiceCloneAPPSecret;
     private static final String sparkAPPKey;
@@ -68,9 +68,9 @@ public class PropertiesConfig {
         oralAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("oralAPPSecret")) ? System.getenv("oralAPPSecret") : properties.getProperty("oralAPPSecret");
         sparkIatAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("sparkIatAPPKey")) ? System.getenv("sparkIatAPPKey") : properties.getProperty("sparkIatAPPKey");
         sparkIatAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("sparkIatAPPSecret")) ? System.getenv("sparkIatAPPSecret") : properties.getProperty("sparkIatAPPSecret");
-        massAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("massAPPKey")) ? System.getenv("massAPPKey") : properties.getProperty("massAPPKey");
-        massAPIKey = StringUtils.isNullOrEmpty(properties.getProperty("massAPIKey")) ? System.getenv("massAPIKey") : properties.getProperty("massAPIKey");
-        massAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("massAPPSecret")) ? System.getenv("massAPPSecret") : properties.getProperty("massAPPSecret");
+        maasAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("maasAPPKey")) ? System.getenv("maasAPPKey") : properties.getProperty("maasAPPKey");
+        maasAPIKey = StringUtils.isNullOrEmpty(properties.getProperty("maasAPIKey")) ? System.getenv("maasAPIKey") : properties.getProperty("maasAPIKey");
+        maasAPPSecret = StringUtils.isNullOrEmpty(properties.getProperty("maasAPPSecret")) ? System.getenv("maasAPPSecret") : properties.getProperty("maasAPPSecret");
         aiPPTClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("aiPPTClientApiKey")) ? System.getenv("aiPPTClientApiKey") : properties.getProperty("aiPPTClientApiKey");
         aiPPTClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("aiPPTClientApiSecret")) ? System.getenv("aiPPTClientApiSecret") : properties.getProperty("aiPPTClientApiSecret");
         voiceCloneAPPKey = StringUtils.isNullOrEmpty(properties.getProperty("voiceCloneAPPKey")) ? System.getenv("voiceCloneAPPKey") : properties.getProperty("voiceCloneAPPKey");
@@ -141,16 +141,16 @@ public class PropertiesConfig {
         return sparkIatAPPSecret;
     }
 
-    public static String getMassAPPKey() {
-        return massAPPKey;
+    public static String getMaasAPPKey() {
+        return maasAPPKey;
     }
 
-    public static String getMassAPIKey() {
-        return massAPIKey;
+    public static String getMaasAPIKey() {
+        return maasAPIKey;
     }
 
-    public static String getMassAPPSecret() {
-        return massAPPSecret;
+    public static String getMaasAPPSecret() {
+        return maasAPPSecret;
     }
 
     public static String getVoiceCloneAPPSecret() {
