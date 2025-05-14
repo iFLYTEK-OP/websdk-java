@@ -230,6 +230,12 @@ public class VoiceTrainClient extends HttpClient {
         builder.addFormDataPart("taskId", request.getTaskId());
         builder.addFormDataPart("textId", String.valueOf(request.getTextId()));
         builder.addFormDataPart("textSegId", String.valueOf(request.getTextSegId()));
+        if (request.getDenoiseSwitch() != null) {
+            builder.addFormDataPart("denoiseSwitch", String.valueOf(request.getDenoiseSwitch()));
+        }
+        if (request.getMosRatio() != null) {
+            builder.addFormDataPart("mosRatio", String.valueOf(request.getMosRatio()));
+        }
         return builder.build();
     }
 
