@@ -256,16 +256,18 @@ public String createTask(CreateTaskParam param) throws Exception
 ```
 **请求体：**
 
-| 参数名称     | 类型   | 是否必需 | 参数说明                                                     |
-| ------------ | ------ | -------- | ------------------------------------------------------------ |
-| taskName     | string | false    | 创建任务名称, 默认””                                         |
-| sex          | int    | false    | 性别, 1:男2:女, 默认1                                        |
-| ageGroup     | int    | false    | 1:儿童、2:青年、3:中年、4:中老年, 默认1                      |
-| resourceType | int    | true     | 12:一句话合成                                                |
-| thirdUser    | string | false    | 用户标识, 默认””                                             |
-| language     | string | false    | 训练的语种, 默认”” 中文：不传language参数，默认中文 英：en 日：jp 韩：ko 俄：ru |
-| resourceName | string | false    | 音库名称, 默认””                                             |
-| callbackUrl  | string | false    | 任务结果回调地址，训练结束时进行回调                         |
+| 参数名称      | 类型   | 是否必需 | 参数说明                                                     |
+| ------------- | ------ | -------- | ------------------------------------------------------------ |
+| taskName      | string | false    | 创建任务名称, 默认””                                         |
+| sex           | int    | false    | 性别, 1:男2:女, 默认1                                        |
+| ageGroup      | int    | false    | 1:儿童、2:青年、3:中年、4:中老年, 默认1                      |
+| resourceType  | int    | true     | 12:一句话合成                                                |
+| thirdUser     | string | false    | 用户标识, 默认””                                             |
+| language      | string | false    | 训练的语种, 默认”” 中文：不传language参数，默认中文 英：en 日：jp 韩：ko 俄：ru |
+| resourceName  | string | false    | 音库名称, 默认””                                             |
+| callbackUrl   | string | false    | 任务结果回调地址，训练结束时进行回调                         |
+| denoiseSwitch | int    | false    | 降噪开关, 默认0<br/>0: 关闭降噪 1:开启降噪                   |
+| mosRatio      | float  | false    | 范围0.0～5.0，单位0.1，默认0.0<br/>大于0，则开启音频检测。该值为对应的检测阈值,音频得分高于该值时将会生成音频特征 |
 
 **响应体**
 
@@ -329,12 +331,14 @@ public String submitWithAudio(AudioAddParam param) throws Exception
 ```
 **请求体：**
 
-| 参数名称  | 类型          | 是否必需 | 参数说明                                |
-| --------- | ------------- | -------- | --------------------------------------- |
-| file      | MultipartFile | true     | 上传的音频文件                          |
-| taskId    | string        | true     | 训练任务唯一id                          |
-| textId    | string        | true     | 文本ID, 可使用通用训练文本(textId=5001) |
-| textSegId | string        | true     | 训练样例文本段落ID, 例：1, 2, 3 ……      |
+| 参数名称      | 类型          | 是否必需 | 参数说明                                                     |
+| ------------- | ------------- | -------- | ------------------------------------------------------------ |
+| file          | MultipartFile | true     | 上传的音频文件                                               |
+| taskId        | string        | true     | 训练任务唯一id                                               |
+| textId        | string        | true     | 文本ID, 可使用通用训练文本(textId=5001)                      |
+| textSegId     | string        | true     | 训练样例文本段落ID, 例：1, 2, 3 ……                           |
+| denoiseSwitch | int           | false    | 降噪开关, 默认0<br/>0: 关闭降噪 1:开启降噪                   |
+| mosRatio      | float         | false    | 范围0.0～5.0，单位0.1，默认0.0<br/>大于0，则开启音频检测。该值为对应的检测阈值,音频得分高于该值时将会生成音频特征 |
 
 **响应体**
 
