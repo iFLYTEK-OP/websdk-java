@@ -61,6 +61,18 @@ public class CreateTaskParam {
      */
     private String callbackUrl;
 
+    /**
+     * 降噪开关, 默认0
+     * 0: 关闭降噪 1:开启降噪
+     */
+    private Integer denoiseSwitch;
+
+    /**
+     * 范围0.0～5.0，单位0.1，默认0.0
+     * 大于0，则开启音频检测。该值为对应的检测阈值,音频得分高于该值时将会生成音频特征
+     */
+    private Float mosRatio;
+
     public CreateTaskParam(Builder builder) {
         this.taskName = builder.taskName;
         this.sex = builder.sex;
@@ -70,6 +82,8 @@ public class CreateTaskParam {
         this.resourceName = builder.resourceName;
         this.resourceType = builder.resourceType;
         this.callbackUrl = builder.callbackUrl;
+        this.denoiseSwitch = builder.denoiseSwitch;
+        this.mosRatio = builder.mosRatio;
     }
 
     public String getTaskName() {
@@ -136,6 +150,22 @@ public class CreateTaskParam {
         this.callbackUrl = callbackUrl;
     }
 
+    public Integer getDenoiseSwitch() {
+        return denoiseSwitch;
+    }
+
+    public void setDenoiseSwitch(Integer denoiseSwitch) {
+        this.denoiseSwitch = denoiseSwitch;
+    }
+
+    public Float getMosRatio() {
+        return mosRatio;
+    }
+
+    public void setMosRatio(Float mosRatio) {
+        this.mosRatio = mosRatio;
+    }
+
     public String toJsonString() {
         return StringUtils.gson.toJson(this);
     }
@@ -153,6 +183,8 @@ public class CreateTaskParam {
         private String resourceName = "";
         private Integer resourceType = 12;
         private String callbackUrl;
+        private Integer denoiseSwitch;
+        private Float mosRatio;
 
         public CreateTaskParam build() {
             return new CreateTaskParam(this);
@@ -198,6 +230,16 @@ public class CreateTaskParam {
 
         public Builder callbackUrl(String callbackUrl) {
             this.callbackUrl = callbackUrl;
+            return this;
+        }
+
+        public Builder mosRatio(float mosRatio) {
+            this.mosRatio = mosRatio;
+            return this;
+        }
+
+        public Builder denoiseSwitch(int denoiseSwitch) {
+            this.denoiseSwitch = denoiseSwitch;
             return this;
         }
     }

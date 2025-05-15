@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 /**
- * 星辰Mass Client单元测试
+ * 星火大模型可定制化 Client单元测试
  *
  * @author <zyding6@ifytek.com>
  */

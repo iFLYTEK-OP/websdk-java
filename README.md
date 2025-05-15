@@ -10,11 +10,38 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-spark</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.4</version>
+    <version>2.1.0</version>
 </dependency>
 ```
 
-[1、讯飞智文PPT-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/pptapi.md)
+重要版本更新说明
+
+- 从 2.0.X 升级到 2.1.0 版本需注意，此次为不兼容升级，智能PPT的V1版本不再维护, 建议使用新的V2版本
+- 主要变更：新增星火大模型，星辰MaaS平台，一句话复刻，大模型语音听写等13个能力，详情见以下文档
+
+[1、智能PPT(新)-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/aipptv2.md)
+
+[2、文生图Hidream-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/hidreamapi.md)
+
+[3、文生图-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/imagegenapi.md)
+
+[4、图像理解-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/imgunderstandapi.md)
+
+[5、星辰MaaS-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/maasapi.md)
+
+[6、超拟人合成-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/oralapi.md)
+
+[7、简历生成-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/resumegenapi.md)
+
+[8、大模型批处理-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/sparkbatchapi.md)
+
+[9、星火大模型-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/sparkchat.md)
+
+[10、星火大模型可定制化-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/sparkcustomapi.md)
+
+[11、大模型语音听写-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/sparkiatapi.md)
+
+[12、一句话复刻-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/voiceclone.md)
 
 ### 语音相关能力
 ```xml
@@ -22,7 +49,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-speech</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>3.0.0</version>
+    <version>3.0.1</version>
 </dependency>
 ```
 重要版本更新说明
@@ -53,7 +80,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-nlp</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.4</version>
+    <version>2.0.5</version>
 </dependency>
 ```
 
@@ -72,7 +99,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-ocr</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.4</version>
+    <version>2.0.5</version>
 </dependency>
 ```
 
@@ -102,7 +129,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-face-detector</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.4</version>
+    <version>2.0.5</version>
 </dependency>
 ```
 

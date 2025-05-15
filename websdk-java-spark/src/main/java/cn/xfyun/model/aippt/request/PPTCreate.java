@@ -262,7 +262,7 @@ public class PPTCreate {
             builder.addFormDataPart("query", query);
         }
         if (null != file) {
-            builder.addFormDataPart(file.getName(), file.getName(),
+            builder.addFormDataPart("file", file.getName(),
                     RequestBody.create(MultipartBody.FORM, file));
         }
         if (!StringUtils.isNullOrEmpty(fileUrl)) {

@@ -1,4 +1,4 @@
-package cn.xfyun.model.mass.response;
+package cn.xfyun.model.maas.response;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author zyding6
  **/
-public class MassResponse {
+public class MaasResponse {
 
 
     /**
@@ -20,7 +20,7 @@ public class MassResponse {
     private Header header;
     private Payload payload;
 
-    public MassResponse(int code, String message) {
+    public MaasResponse(int code, String message) {
         this.header = new Header();
         this.header.code = code;
         this.header.message = message;

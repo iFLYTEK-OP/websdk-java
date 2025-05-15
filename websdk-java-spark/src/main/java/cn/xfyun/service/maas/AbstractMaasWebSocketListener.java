@@ -1,6 +1,6 @@
-package cn.xfyun.service.mass;
+package cn.xfyun.service.maas;
 
-import cn.xfyun.model.mass.response.MassResponse;
+import cn.xfyun.model.maas.response.MaasResponse;
 import cn.xfyun.util.StringUtils;
 import okhttp3.Response;
 import okhttp3.WebSocket;
@@ -16,14 +16,14 @@ import javax.annotation.Nullable;
  *
  * @author zyding6
  */
-public abstract class AbstractMassWebSocketListener extends WebSocketListener {
+public abstract class AbstractMaasWebSocketListener extends WebSocketListener {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractMassWebSocketListener.class);
+    private static final Logger logger = LoggerFactory.getLogger(AbstractMaasWebSocketListener.class);
 
     /**
      * construction method
      */
-    public AbstractMassWebSocketListener() {
+    public AbstractMaasWebSocketListener() {
     }
 
     /**
@@ -32,7 +32,7 @@ public abstract class AbstractMassWebSocketListener extends WebSocketListener {
      * @param webSocket websocket
      * @param iatResponse 返回结果
      */
-    public abstract void onSuccess(WebSocket webSocket, MassResponse iatResponse);
+    public abstract void onSuccess(WebSocket webSocket, MaasResponse iatResponse);
 
     /**
      * websocket返回失败时，需要用户重写的方法
@@ -65,12 +65,12 @@ public abstract class AbstractMassWebSocketListener extends WebSocketListener {
         logger.debug("onMessage: {}", text);
         try {
             if (!StringUtils.isNullOrEmpty(text)) {
-                MassResponse iatResponse = StringUtils.gson.fromJson(text, MassResponse.class);
+                MaasResponse iatResponse = StringUtils.gson.fromJson(text, MaasResponse.class);
 
                 if (iatResponse != null) {
                     onSuccess(webSocket, iatResponse);
                 } else {
-                    onSuccess(webSocket, new MassResponse(-1, "ftt response error"));
+                    onSuccess(webSocket, new MaasResponse(-1, "ftt response error"));
                 }
             }
         } catch (Exception e) {

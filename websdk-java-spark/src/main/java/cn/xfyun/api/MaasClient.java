@@ -2,9 +2,9 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.AbstractClient;
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.mass.MassParam;
-import cn.xfyun.model.mass.request.MassHttpRequest;
-import cn.xfyun.model.mass.request.MassReqeust;
+import cn.xfyun.model.maas.MaasParam;
+import cn.xfyun.model.maas.request.MaasHttpRequest;
+import cn.xfyun.model.maas.request.MaasReqeust;
 import cn.xfyun.util.StringUtils;
 import okhttp3.*;
 import okhttp3.internal.Util;
@@ -18,13 +18,13 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 星辰Mass Client
+ * 星辰Maas Client
  *
  * @author <zyding6@ifytek.com>
  **/
-public class MassClient extends AbstractClient {
+public class MaasClient extends AbstractClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(MassClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(MaasClient.class);
 
     /**
      * 调用微调大模型时必传,否则不传。对应为模型服务卡片上的resourceId
@@ -32,8 +32,8 @@ public class MassClient extends AbstractClient {
     private final List<String> patchId;
 
     /**
-     * 调用微调大模型时，对应为模型服务卡片上的serviceid
-     * serviceId可从星辰网页获取 <a href="https://training.xfyun.cn/model/add">...</a>
+     * 调用微调大模型时，对应为模型服务卡片上的modelId
+     * modelId可从星辰网页获取 <a href="https://training.xfyun.cn/model/add">...</a>
      */
     private final String domain;
 
@@ -91,7 +91,7 @@ public class MassClient extends AbstractClient {
      */
     private final Map<String, Object> streamOptions;
 
-    public MassClient(Builder builder) {
+    public MaasClient(Builder builder) {
         this.okHttpClient = new OkHttpClient
                 .Builder()
                 .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
@@ -170,9 +170,9 @@ public class MassClient extends AbstractClient {
      * 精炼文本大模型ws请求方式
      *
      * @param param             请求参数
-     * @param webSocketListener 自定义抽象监听类 (AbstractMassWebSocketListener)
+     * @param webSocketListener 自定义抽象监听类 (AbstractMaasWebSocketListener)
      */
-    public void send(MassParam param, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+    public void send(MaasParam param, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
         // 参数校验
         textCheck(param);
 
@@ -194,7 +194,7 @@ public class MassClient extends AbstractClient {
      *
      * @param param 请求参数
      */
-    public String send(MassParam param) throws IOException {
+    public String send(MaasParam param) throws IOException {
         // 参数校验
         textCheck(param);
 
@@ -214,7 +214,7 @@ public class MassClient extends AbstractClient {
      * @param param    请求参数
      * @param callback sse回调函数
      */
-    public void send(MassParam param, Callback callback) {
+    public void send(MaasParam param, Callback callback) {
         // 参数校验
         textCheck(param);
 
@@ -267,25 +267,25 @@ public class MassClient extends AbstractClient {
      *
      * @param param 请求参数
      */
-    private String buildParam(MassParam param) {
+    private String buildParam(MaasParam param) {
         // 发送数据,请求数据均为json字符串
-        MassReqeust request = new MassReqeust();
+        MaasReqeust request = new MaasReqeust();
         // 请求头
-        MassReqeust.Header header = new MassReqeust.Header();
+        MaasReqeust.Header header = new MaasReqeust.Header();
         header.setAppId(appId);
         header.setUid(param.getUserId());
         header.setPatchId(patchId);
         request.setHeader(header);
 
         // 请求参数
-        MassReqeust.Parameter parameter = new MassReqeust.Parameter(this);
+        MaasReqeust.Parameter parameter = new MaasReqeust.Parameter(this);
         parameter.getChat().setChatId(param.getChatId());
         parameter.getChat().setSearchDisable(searchDisable);
         parameter.getChat().setShowRefLabel(showRefLabel);
         request.setParameter(parameter);
 
         // 请求体
-        MassReqeust.Payload payload = new MassReqeust.Payload();
+        MaasReqeust.Payload payload = new MaasReqeust.Payload();
         payload.getMessage().setText(param.getMessages());
         request.setPayload(payload);
         return StringUtils.gson.toJson(request);
@@ -298,8 +298,8 @@ public class MassClient extends AbstractClient {
      * @param stream 是否流式返回
      * @return 流式返回
      */
-    private String buildPostParam(MassParam param, boolean stream) {
-        MassHttpRequest request = new MassHttpRequest();
+    private String buildPostParam(MaasParam param, boolean stream) {
+        MaasHttpRequest request = new MaasHttpRequest();
         request.setModel(domain);
         request.setMessages(param.getMessages());
         request.setStream(stream);
@@ -339,7 +339,7 @@ public class MassClient extends AbstractClient {
      *
      * @param param 参数
      */
-    private void textCheck(MassParam param) {
+    private void textCheck(MaasParam param) {
         if (param == null) {
             throw new BusinessException("参数不能为空");
         } else if (param.getMessages() == null || param.getMessages().isEmpty()) {
@@ -385,23 +385,23 @@ public class MassClient extends AbstractClient {
         private boolean showRefLabel = false;
         private Map<String, Object> streamOptions;
 
-        public MassClient build() {
-            return new MassClient(this);
+        public MaasClient build() {
+            return new MaasClient(this);
         }
 
-        public Builder signatureWs(String resourceId, String serviceId, String appId, String apiKey, String apiSecret) {
+        public Builder signatureWs(String resourceId, String modelId, String appId, String apiKey, String apiSecret) {
             this.appId = appId;
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
             this.patchId = Collections.singletonList(resourceId);
-            this.domain = serviceId;
+            this.domain = modelId;
             return this;
         }
 
-        public Builder signatureHttp(String resourceId, String serviceId, String apiKey) {
+        public Builder signatureHttp(String resourceId, String modelId, String apiKey) {
             this.apiKey = apiKey;
             this.patchId = Collections.singletonList(resourceId);
-            this.domain = serviceId;
+            this.domain = modelId;
             return this;
         }
 

@@ -1,6 +1,6 @@
-package cn.xfyun.model.mass.request;
+package cn.xfyun.model.maas.request;
 
-import cn.xfyun.api.MassClient;
+import cn.xfyun.api.MaasClient;
 import cn.xfyun.model.sparkmodel.RoleContent;
 import com.google.gson.annotations.SerializedName;
 
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author zyding6
  **/
-public class MassReqeust {
+public class MaasReqeust {
 
 
     /**
@@ -93,7 +93,7 @@ public class MassReqeust {
 
         private Chat chat;
 
-        public Parameter(MassClient chat) {
+        public Parameter(MaasClient chat) {
             this.chat = new Chat();
             this.chat.domain = chat.getDomain();
             this.chat.temperature = chat.getTemperature();

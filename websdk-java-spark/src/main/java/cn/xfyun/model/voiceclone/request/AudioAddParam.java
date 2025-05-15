@@ -40,12 +40,26 @@ public class AudioAddParam {
      */
     private Long textSegId;
 
+    /**
+     * 降噪开关, 默认0
+     * 0: 关闭降噪 1:开启降噪
+     */
+    private Integer denoiseSwitch;
+
+    /**
+     * 范围0.0～5.0，单位0.1，默认0.0
+     * 大于0，则开启音频检测。该值为对应的检测阈值,音频得分高于该值时将会生成音频特征
+     */
+    private Float mosRatio;
+
     public AudioAddParam(Builder builder) {
         this.taskId = builder.taskId;
         this.textId = builder.textId;
         this.textSegId = builder.textSegId;
         this.audioUrl = builder.audioUrl;
         this.file = builder.file;
+        this.denoiseSwitch = builder.denoiseSwitch;
+        this.mosRatio = builder.mosRatio;
     }
 
     public String getTaskId() {
@@ -88,6 +102,22 @@ public class AudioAddParam {
         this.textSegId = textSegId;
     }
 
+    public Integer getDenoiseSwitch() {
+        return denoiseSwitch;
+    }
+
+    public void setDenoiseSwitch(Integer denoiseSwitch) {
+        this.denoiseSwitch = denoiseSwitch;
+    }
+
+    public Float getMosRatio() {
+        return mosRatio;
+    }
+
+    public void setMosRatio(Float mosRatio) {
+        this.mosRatio = mosRatio;
+    }
+
     public String toJsonString() {
         return StringUtils.gson.toJson(this);
     }
@@ -127,6 +157,8 @@ public class AudioAddParam {
         private Long textSegId;
         private String audioUrl;
         private File file;
+        private Integer denoiseSwitch;
+        private Float mosRatio;
 
         public AudioAddParam build() {
             return new AudioAddParam(this);
@@ -157,6 +189,16 @@ public class AudioAddParam {
 
         public Builder textSegId(Long textSegId) {
             this.textSegId = textSegId;
+            return this;
+        }
+
+        public Builder mosRatio(float mosRatio) {
+            this.mosRatio = mosRatio;
+            return this;
+        }
+
+        public Builder denoiseSwitch(int denoiseSwitch) {
+            this.denoiseSwitch = denoiseSwitch;
             return this;
         }
     }
