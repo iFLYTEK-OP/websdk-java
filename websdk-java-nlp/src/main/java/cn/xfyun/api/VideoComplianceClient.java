@@ -16,7 +16,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
 
-
 /**
  * 视频合规 Client
  * 文档地址: <a href="https://www.xfyun.cn/doc/nlp/VideoModeration/API.html">...</a>

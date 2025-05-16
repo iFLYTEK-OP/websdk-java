@@ -1,6 +1,5 @@
 package cn.xfyun.config;
 
-
 /**
  * 词条敏感分类
  *

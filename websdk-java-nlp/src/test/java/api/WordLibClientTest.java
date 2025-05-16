@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
  * 词库 Client单元测试
  *
@@ -29,9 +28,13 @@ public class WordLibClientTest {
 
     private static final Logger logger = LoggerFactory.getLogger(WordLibClientTest.class);
     private static final String appId = PropertiesConfig.getAppId();
-    //（图片   文本）合规的key
+    /**
+     * （图片 文本）合规的key
+     */
     private static final String apiKey = PropertiesConfig.getTextComplianceClientApiKey();
-    //（图片   文本）合规的secret
+    /**
+     * （图片 文本）合规的secret
+     */
     private static final String apiSecret = PropertiesConfig.getTextComplianceClientApiSecret();
     private WordLibClient client = null;
 

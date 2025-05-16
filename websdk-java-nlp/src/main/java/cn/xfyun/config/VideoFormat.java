@@ -1,10 +1,9 @@
 package cn.xfyun.config;
 
 /**
- * @program: websdk-java
- * @description:
- * @author: zyding6
- * @create: 2025/3/18 16:02
+ * 视频类型分类
+ *
+ * @author <zyding6@ifytek.com>
  **/
 public enum VideoFormat {
 

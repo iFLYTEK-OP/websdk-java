@@ -2,7 +2,6 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
-import cn.xfyun.config.CategoryEnum;
 import cn.xfyun.config.WordLibEnum;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sign.Signature;
@@ -16,7 +15,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Map;
-
 
 /**
  * 词条操作 Client
@@ -218,7 +216,6 @@ public class WordLibClient extends HttpClient {
     public static final class Builder extends HttpBuilder<Builder> {
 
         private static final String HOST_URL = "https://audit.iflyaisol.com/audit_res/v1/";
-
         private String suggestion = "block";
 
         public Builder(String appId, String apiKey, String apiSecret) {

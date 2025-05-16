@@ -2,10 +2,10 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.http.HttpBuilder;
 import cn.xfyun.base.http.HttpClient;
+import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sign.Signature;
-import cn.xfyun.model.textcomp.TextCompParam;
+import cn.xfyun.model.compliance.text.TextCompParam;
 import cn.xfyun.util.StringUtils;
-import com.sun.istack.internal.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -66,15 +66,28 @@ public class TextComplianceClient extends HttpClient {
         return libIds;
     }
 
-    public String send(@NotNull TextCompParam param) throws Exception {
+    public String send(TextCompParam param) throws Exception {
         // 参数校验
-        param.selfCheck();
+        paramCheck(param);
 
         // 构建鉴权参数
         Map<String, String> parameters = Signature.getAuth(appId, apiKey, apiSecret);
 
+        // 构建请求体
+        String body = paramHandler(param);
+
         // 发送请求
-        return sendPost(hostUrl, JSON, null, paramHandler(param), parameters);
+        return sendPost(hostUrl, JSON, null, body, parameters);
+    }
+
+    /**
+     * 参数校验
+     */
+    private void paramCheck(TextCompParam param) {
+        if (param == null) {
+            throw new BusinessException("参数不能为空");
+        }
+        param.selfCheck();
     }
 
     /**

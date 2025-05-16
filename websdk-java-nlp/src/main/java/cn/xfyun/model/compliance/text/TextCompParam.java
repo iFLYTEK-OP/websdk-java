@@ -1,4 +1,4 @@
-package cn.xfyun.model.textcomp;
+package cn.xfyun.model.compliance.text;
 
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.util.StringUtils;
@@ -112,7 +112,7 @@ public class TextCompParam {
             return new TextCompParam(this);
         }
 
-        public Builder isMatchAll(Integer isMatchAll) {
+        public Builder isMatchAll(int isMatchAll) {
             this.isMatchAll = isMatchAll;
             return this;
         }

@@ -1,9 +1,9 @@
 package api;
 
 import cn.xfyun.api.AudioComplianceClient;
+import cn.xfyun.config.AudioFormat;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.Audio;
-import cn.xfyun.util.FileUtil;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 import config.PropertiesConfig;
@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 
 /**
  * 音频合规 Client单元测试
@@ -96,9 +95,9 @@ public class AudioComplianceClientTest {
         for (String audioUrl : audios) {
             if (!StringUtils.isNullOrEmpty(audioUrl)) {
                 Audio audio = new Audio.Builder()
-                        .audioType(FileUtil.getLegalAudioSuffixByUrl(audioUrl))
+                        .audioType(AudioFormat.WAV.getFormat())
                         .fileUrl(audioUrl)
-                        .name(FileUtil.getLegalAudioNameByUrl(audioUrl))
+                        .name("133c3269-c823-4499-94ad-e4283167402f.wav")
                         .build();
                 audioList.add(audio);
             }

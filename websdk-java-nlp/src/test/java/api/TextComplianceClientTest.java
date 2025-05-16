@@ -2,7 +2,7 @@ package api;
 
 import cn.xfyun.api.TextComplianceClient;
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.textcomp.TextCompParam;
+import cn.xfyun.model.compliance.text.TextCompParam;
 import config.PropertiesConfig;
 import org.junit.Assert;
 import org.junit.Test;
@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-
 
 /**
  * 文本合规 Client单元测试
