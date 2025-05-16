@@ -1,7 +1,7 @@
 package cn.xfyun.model.sign;
 
+import cn.xfyun.config.ModeType;
 import cn.xfyun.util.CryptTools;
-import cn.xfyun.util.StringUtils;
 import org.apache.commons.codec.digest.DigestUtils;
 
 import javax.crypto.Mac;
@@ -11,7 +11,9 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.security.InvalidKeyException;
 import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.security.SignatureException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -174,5 +176,84 @@ public class Signature {
         } catch (SignatureException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    /**
+     * 拼接鉴权-公共
+     */
+    public static Map<String, String> getAuth(String appid, String APIKey, String APISecret) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+        // 1.获取时间
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String utc = format.format(new Date()); // 如果用postman验证，需要对utc进行urlEncode，然后发起请求
+
+        // 2.控制台关键信息
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("appId", appid);
+        urlParams.put("accessKeyId", APIKey);
+        urlParams.put("utc", utc);
+        urlParams.put("uuid", UUID.randomUUID().toString()); // uuid有防重放的功能，如果调试，请注意更换uuid的值
+
+        // 3.获取signature
+        String signature = signature(APISecret, urlParams);
+        urlParams.put("signature", signature);
+        return urlParams;
+    }
+
+    /**
+     * 2.获取鉴权
+     */
+    private static String signature(String secret, Map<String, String> queryParam) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+        //排序
+        TreeMap<String, String> treeMap = new TreeMap<>(queryParam);
+        //剔除不参与签名运算的 signature
+        treeMap.remove("signature");
+        //生成 baseString
+        StringBuilder builder = new StringBuilder();
+        for (Map.Entry<String, String> entry : treeMap.entrySet()) {
+            //System.out.println(entry.getKey());
+            String value = entry.getValue();
+            //参数值为空的不参与签名，
+            if (value != null && !value.isEmpty()) {
+                //参数值需要 URLEncode
+                String encode = URLEncoder.encode(value, StandardCharsets.UTF_8.name());
+                builder.append(entry.getKey()).append("=").append(encode).append("&");
+            }
+        }
+        //删除最后位的&符号
+        if (builder.length() > 0) {
+            builder.deleteCharAt(builder.length() - 1);
+        }
+        String baseString = builder.toString();
+        Mac mac = Mac.getInstance("HmacSHA1");
+        SecretKeySpec keySpec = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8.name());
+        mac.init(keySpec);
+        //得到签名 byte[]
+        byte[] signBytes = mac.doFinal(baseString.getBytes(StandardCharsets.UTF_8));
+        //将 byte[]base64 编码
+        return Base64.getEncoder().encodeToString(signBytes);
+    }
+
+    /**
+     * 拼接鉴权-图片合规
+     */
+    public static Map<String, String> getImageAuth(String appid, String APIKey, String APISecret, ModeType modeType) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+        // 1.获取时间
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
+        format.setTimeZone(TimeZone.getTimeZone("GMT"));
+        String utc = format.format(new Date()); // 如果用postman验证，需要对utc进行urlEncode，然后发起请求
+
+        // 2.控制台关键信息
+        Map<String, String> urlParams = new HashMap<>();
+        urlParams.put("appId", appid);
+        urlParams.put("accessKeyId", APIKey);
+        urlParams.put("modeType", modeType.getValue());
+        urlParams.put("utc", utc);
+        urlParams.put("uuid", UUID.randomUUID().toString()); // uuid有防重放的功能，如果调试，请注意更换uuid的值
+
+        // 3.获取signature
+        String signature = signature(APISecret, urlParams);
+        urlParams.put("signature", signature);
+        return urlParams;
     }
 }
