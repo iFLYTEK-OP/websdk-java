@@ -39,7 +39,7 @@ public class ImageComplianceClientTest {
     public void init() {
         resourcePath = Objects.requireNonNull(this.getClass().getResource("/")).getPath();
         // 待检测图片路径
-        imagePath = "image/1.png";
+        imagePath = "image/political.png";
         // 待检测图片链接
         imageUrl = "http://baidu.com/1.jpg";
     }
