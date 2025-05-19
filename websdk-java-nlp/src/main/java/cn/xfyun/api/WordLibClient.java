@@ -30,18 +30,18 @@ public class WordLibClient extends HttpClient {
     }
 
     /**
-     * @param category 指定检测的敏感分类：
-     *                 pornDetection 色情
-     *                 violentTerrorism 暴恐
-     *                 political 涉政
-     *                 lowQualityIrrigation 低质量灌水
-     *                 contraband 违禁
-     *                 advertisement 广告
-     *                 uncivilizedLanguage 不文明用语
-     * @param name     词库名称
-     * @param suggestion     处理方式 block：违规
+     * @param category   指定检测的敏感分类：
+     *                   pornDetection 色情
+     *                   violentTerrorism 暴恐
+     *                   political 涉政
+     *                   lowQualityIrrigation 低质量灌水
+     *                   contraband 违禁
+     *                   advertisement 广告
+     *                   uncivilizedLanguage 不文明用语
+     * @param name       词库名称
+     * @param suggestion 处理方式 block：违规
      * @return 返回结果
-     * @throws IOException 请求异常
+     * @throws IOException        请求异常
      * @throws SignatureException 鉴权异常
      */
     public String createBlackLib(String name, String category, String suggestion) throws IOException, SignatureException {
@@ -51,7 +51,7 @@ public class WordLibClient extends HttpClient {
     /**
      * @param name 词库名称
      * @return 返回结果
-     * @throws IOException 请求异常
+     * @throws IOException        请求异常
      * @throws SignatureException 鉴权异常
      */
     public String createWhiteLib(String name) throws IOException, SignatureException {
@@ -67,7 +67,7 @@ public class WordLibClient extends HttpClient {
      *                 仅支持中文词条，单个长度最长不超过 20；
      *                 不能包含特殊符号，如："[`~!@#$%^*_+\-=<>?,./;':" \t]"
      * @return 返回结果
-     * @throws IOException 请求异常
+     * @throws IOException        请求异常
      * @throws SignatureException 鉴权异常
      */
     public String addWord(String libId, List<String> wordList) throws IOException, SignatureException {
@@ -92,7 +92,7 @@ public class WordLibClient extends HttpClient {
      * @param libId    词库ID
      * @param wordList 待删除的词列表（单次不能超过 500条）
      * @return 返回结果
-     * @throws IOException 请求异常
+     * @throws IOException        请求异常
      * @throws SignatureException 鉴权异常
      */
     public String delWord(String libId, List<String> wordList) throws IOException, SignatureException {
@@ -117,7 +117,7 @@ public class WordLibClient extends HttpClient {
      * @param libId      词库ID
      * @param returnWord 决定是否返回词条明细，建议必传true
      * @return 返回结果
-     * @throws IOException 请求异常
+     * @throws IOException        请求异常
      * @throws SignatureException 鉴权异常
      */
     public String info(String libId, boolean returnWord) throws IOException, SignatureException {
@@ -144,7 +144,7 @@ public class WordLibClient extends HttpClient {
      * 根据appid查询账户下所有词库
      *
      * @return 返回结果
-     * @throws IOException 请求异常
+     * @throws IOException        请求异常
      * @throws SignatureException 鉴权异常
      */
     public String listLib() throws IOException, SignatureException {
@@ -156,7 +156,7 @@ public class WordLibClient extends HttpClient {
      * 根据lib_id删除词库
      *
      * @return 返回结果
-     * @throws IOException 请求异常
+     * @throws IOException        请求异常
      * @throws SignatureException 鉴权异常
      */
     public String deleteLib(String libId) throws IOException, SignatureException {
@@ -177,7 +177,7 @@ public class WordLibClient extends HttpClient {
      * @param suggestion block：违规
      * @param black      true-黑名单，false-白名单
      * @return 返回结果
-     * @throws IOException 请求异常
+     * @throws IOException        请求异常
      * @throws SignatureException 鉴权异常
      */
     private String createLib(String name, String category, String suggestion, boolean black) throws IOException, SignatureException {
@@ -202,7 +202,8 @@ public class WordLibClient extends HttpClient {
      *
      * @param wordLibEnum 词库请求类型
      * @param param       请求参数
-     * @throws IOException              请求异常
+     * @throws IOException        请求异常
+     * @throws SignatureException 鉴权异常
      */
     private String send(WordLibEnum wordLibEnum, String param) throws IOException, SignatureException {
         // 获取鉴权参数

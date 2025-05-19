@@ -54,18 +54,18 @@ public class VideoComplianceClient extends HttpClient {
     }
 
     /**
-     * @param audioList 视频信息
+     * @param videoList 视频信息
      * @param notifyUrl 回调地址
      */
-    public String send(List<Video> audioList, String notifyUrl) throws IOException, SignatureException {
+    public String send(List<Video> videoList, String notifyUrl) throws IOException, SignatureException {
         // 参数校验
-        paramCheck(audioList);
+        paramCheck(videoList);
 
         // 获取鉴权头
         Map<String, String> parameters = Signature.getAuth(appId, apiKey, apiSecret);
 
         // 发送请求
-        return sendPost(hostUrl, JSON, null, buildParam(audioList, notifyUrl), parameters);
+        return sendPost(hostUrl, JSON, null, buildParam(videoList, notifyUrl), parameters);
     }
 
     /**
@@ -105,8 +105,8 @@ public class VideoComplianceClient extends HttpClient {
     /**
      * 参数校验
      */
-    private void paramCheck(List<Video> audioList) {
-        if (null == audioList || audioList.isEmpty()) {
+    private void paramCheck(List<Video> videoList) {
+        if (null == videoList || videoList.isEmpty()) {
             throw new BusinessException("视频信息不能为空");
         }
     }
@@ -114,10 +114,10 @@ public class VideoComplianceClient extends HttpClient {
     /**
      * 构建参数
      */
-    private String buildParam(List<Video> audioList, String callBackUrl) {
+    private String buildParam(List<Video> videoList, String callBackUrl) {
         // 发送数据,求数据均为json字符串
         JsonObject json = new JsonObject();
-        json.add("video_list", StringUtils.gson.toJsonTree(audioList));
+        json.add("video_list", StringUtils.gson.toJsonTree(videoList));
         json.addProperty("notify_url", StringUtils.isNullOrEmpty(callBackUrl) ? notifyUrl : callBackUrl);
         logger.debug("视频合规请求参数: {}", json);
         return json.toString();

@@ -42,6 +42,6 @@ public enum VideoFormat {
                 }
             }
         }
-        return null; // 或者抛出异常
+        throw new IllegalArgumentException("Unknown video format: " + format);
     }
 }

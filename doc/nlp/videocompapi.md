@@ -106,7 +106,7 @@ VideoComplianceClient correctionClient = new VideoComplianceClient
 
 ### 1. 创建合规任务
 ```java
-public String send(List<Video> audioList) throws IOException, SignatureException
+public String send(List<Video> videoList) throws IOException, SignatureException
 ```
 **参数说明**：
 
@@ -114,9 +114,9 @@ public String send(List<Video> audioList) throws IOException, SignatureException
 
 |    名称     |  类型  |                             描述                             | 必须 |
 | :---------: | :----: | :----------------------------------------------------------: | :--: |
-|  audioList  | Array  |             待识别视频列表，单次数量不能超过10个             |  Y   |
+|  videoList  | Array  |             待识别视频列表，单次数量不能超过10个             |  Y   |
 | (videoType) | String | 视频格式 * 支持mp4、3gp、asf、avi、rmvb、mpeg、wmv、rm、mpeg4、mpv、mkv、flv、vob格式 |  Y   |
-|  (fileUrl)  | String | 视频地址，长度限制 500字符以内 * 通过URL外链的音频时长建议限制在2小时内 |  Y   |
+|  (fileUrl)  | String | 视频地址，长度限制 500字符以内 * 通过URL外链的视频时长建议限制在2小时内 |  Y   |
 |   (name)    | String |                           视频名称                           |  Y   |
 
 **响应示例**：
@@ -193,7 +193,7 @@ public String query(String requestId) throws IOException, SignatureException
 1. 待识别视频列表，单次数量不能超过10个。
 2. 视频格式 * 支持mp4、3gp、asf、avi、rmvb、mpeg、wmv、rm、mpeg4、mpv、mkv、flv、vob格式
 3. 视频地址，长度限制 500字符以内 * 通过URL外链的音频时长建议限制在2小时内
-4. 所有生成类接口都需要处理`BusinessException`（参数校验失败）和`IOException`（网络错误）`SignatureException`(鉴权失败)
+4. 所有生成类接口都需要处理`BusinessException`（参数校验失败）和`IOException`（网络错误）和 `SignatureException` (鉴权失败)
 5. 客户端默认超时时间为10秒，可通过Builder调整：
 
 ```java
