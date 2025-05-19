@@ -42,7 +42,6 @@ public class WordLibClientTest {
     public void init() {
         client = new WordLibClient
                 .Builder(appId, apiKey, apiSecret)
-                .suggestion("block")
                 .build();
     }
 
@@ -54,7 +53,6 @@ public class WordLibClientTest {
         Assert.assertEquals(3, client.getReadTimeout());
         Assert.assertEquals(3, client.getWriteTimeout());
         Assert.assertEquals(3, client.getConnectTimeout());
-        Assert.assertEquals("block", client.getSuggestion());
     }
 
     @Test
@@ -74,7 +72,7 @@ public class WordLibClientTest {
     @Test
     public void blackLib() throws Exception {
         // 创建黑名单
-        String blackLib = client.createBlackLib("黑名单词库1", CategoryEnum.CONTRABAND.getCode());
+        String blackLib = client.createBlackLib("黑名单词库1", CategoryEnum.CONTRABAND.getCode(), "block");
         logger.info("创建黑名单词库返回结果：{}", blackLib);
     }
 

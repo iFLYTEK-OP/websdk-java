@@ -9,6 +9,8 @@ import cn.xfyun.util.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
+import java.security.SignatureException;
 import java.util.List;
 import java.util.Map;
 
@@ -66,7 +68,7 @@ public class TextComplianceClient extends HttpClient {
         return libIds;
     }
 
-    public String send(TextCompParam param) throws Exception {
+    public String send(TextCompParam param) throws SignatureException, IOException {
         // 参数校验
         paramCheck(param);
 

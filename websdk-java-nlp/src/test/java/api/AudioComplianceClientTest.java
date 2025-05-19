@@ -18,8 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -64,7 +63,7 @@ public class AudioComplianceClientTest {
     }
 
     @Test
-    public void testErrorParam() throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public void testErrorParam() throws IOException, SignatureException {
         AudioComplianceClient client = new AudioComplianceClient
                 .Builder(appId, apiKey, apiSecret)
                 .build();

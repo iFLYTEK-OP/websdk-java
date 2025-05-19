@@ -181,7 +181,7 @@ public class Signature {
     /**
      * 拼接鉴权-公共
      */
-    public static Map<String, String> getAuth(String appid, String APIKey, String APISecret) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+    public static Map<String, String> getAuth(String appid, String APIKey, String APISecret) throws SignatureException {
         // 1.获取时间
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
         format.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -203,41 +203,49 @@ public class Signature {
     /**
      * 2.获取鉴权
      */
-    private static String signature(String secret, Map<String, String> queryParam) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
-        //排序
-        TreeMap<String, String> treeMap = new TreeMap<>(queryParam);
-        //剔除不参与签名运算的 signature
-        treeMap.remove("signature");
-        //生成 baseString
-        StringBuilder builder = new StringBuilder();
-        for (Map.Entry<String, String> entry : treeMap.entrySet()) {
-            //System.out.println(entry.getKey());
-            String value = entry.getValue();
-            //参数值为空的不参与签名，
-            if (value != null && !value.isEmpty()) {
-                //参数值需要 URLEncode
-                String encode = URLEncoder.encode(value, StandardCharsets.UTF_8.name());
-                builder.append(entry.getKey()).append("=").append(encode).append("&");
+    private static String signature(String secret, Map<String, String> queryParam) throws SignatureException {
+        try {
+            //排序
+            TreeMap<String, String> treeMap = new TreeMap<>(queryParam);
+            //剔除不参与签名运算的 signature
+            treeMap.remove("signature");
+            //生成 baseString
+            StringBuilder builder = new StringBuilder();
+            for (Map.Entry<String, String> entry : treeMap.entrySet()) {
+                //System.out.println(entry.getKey());
+                String value = entry.getValue();
+                //参数值为空的不参与签名，
+                if (value != null && !value.isEmpty()) {
+                    //参数值需要 URLEncode
+                    String encode = URLEncoder.encode(value, StandardCharsets.UTF_8.name());
+                    builder.append(entry.getKey()).append("=").append(encode).append("&");
+                }
             }
+            //删除最后位的&符号
+            if (builder.length() > 0) {
+                builder.deleteCharAt(builder.length() - 1);
+            }
+            String baseString = builder.toString();
+            Mac mac = Mac.getInstance("HmacSHA1");
+            SecretKeySpec keySpec = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8.name());
+            mac.init(keySpec);
+            //得到签名 byte[]
+            byte[] signBytes = mac.doFinal(baseString.getBytes(StandardCharsets.UTF_8));
+            //将 byte[]base64 编码
+            return Base64.getEncoder().encodeToString(signBytes);
+        } catch (InvalidKeyException e) {
+            throw new SignatureException("InvalidKeyException:" + e.getMessage());
+        } catch (NoSuchAlgorithmException e) {
+            throw new SignatureException("NoSuchAlgorithmException:" + e.getMessage());
+        } catch (UnsupportedEncodingException e) {
+            throw new SignatureException("UnsupportedEncodingException:" + e.getMessage());
         }
-        //删除最后位的&符号
-        if (builder.length() > 0) {
-            builder.deleteCharAt(builder.length() - 1);
-        }
-        String baseString = builder.toString();
-        Mac mac = Mac.getInstance("HmacSHA1");
-        SecretKeySpec keySpec = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8.name());
-        mac.init(keySpec);
-        //得到签名 byte[]
-        byte[] signBytes = mac.doFinal(baseString.getBytes(StandardCharsets.UTF_8));
-        //将 byte[]base64 编码
-        return Base64.getEncoder().encodeToString(signBytes);
     }
 
     /**
      * 拼接鉴权-图片合规
      */
-    public static Map<String, String> getImageAuth(String appid, String APIKey, String APISecret, ModeType modeType) throws UnsupportedEncodingException, NoSuchAlgorithmException, InvalidKeyException {
+    public static Map<String, String> getImageAuth(String appid, String APIKey, String APISecret, ModeType modeType) throws SignatureException {
         // 1.获取时间
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.US);
         format.setTimeZone(TimeZone.getTimeZone("GMT"));

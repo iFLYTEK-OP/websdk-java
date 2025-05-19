@@ -11,8 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.Map;
 
 /**
@@ -56,7 +55,7 @@ public class ImageComplianceClient extends HttpClient {
      *                 modeType为link时，值为外链信息
      *                 modeType为base64时，值为图片base64编码信息
      */
-    public String send(String content, ModeType modeType) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public String send(String content, ModeType modeType) throws IOException, SignatureException {
         // 参数校验
         paramCheck(content, modeType);
 

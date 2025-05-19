@@ -11,8 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +54,7 @@ public class AudioComplianceClient extends HttpClient {
      *
      * @param audioList 音频信息
      */
-    public String send(List<Audio> audioList) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public String send(List<Audio> audioList) throws IOException, SignatureException {
         // 发送请求
         return send(audioList, null);
     }
@@ -66,7 +65,7 @@ public class AudioComplianceClient extends HttpClient {
      * @param audioList 音频信息
      * @param notifyUrl 回调地址
      */
-    public String send(List<Audio> audioList, String notifyUrl) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public String send(List<Audio> audioList, String notifyUrl) throws SignatureException, IOException {
         // 参数校验
         paramCheck(audioList);
 
@@ -82,7 +81,7 @@ public class AudioComplianceClient extends HttpClient {
      *
      * @param requestId 请求ID
      */
-    public String query(String requestId) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public String query(String requestId) throws IOException, SignatureException {
         // 参数校验
         queryCheck(requestId);
 

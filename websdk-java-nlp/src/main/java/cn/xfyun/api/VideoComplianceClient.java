@@ -11,8 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+import java.security.SignatureException;
 import java.util.List;
 import java.util.Map;
 
@@ -58,9 +57,9 @@ public class VideoComplianceClient extends HttpClient {
      * @param audioList 视频信息
      * @param notifyUrl 回调地址
      */
-    public String send(List<Video> audioList, String notifyUrl) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public String send(List<Video> audioList, String notifyUrl) throws IOException, SignatureException {
         // 参数校验
-        sendCheck(audioList);
+        paramCheck(audioList);
 
         // 获取鉴权头
         Map<String, String> parameters = Signature.getAuth(appId, apiKey, apiSecret);
@@ -74,7 +73,7 @@ public class VideoComplianceClient extends HttpClient {
      *
      * @param requestId 请求ID
      */
-    public String query(String requestId) throws IOException, NoSuchAlgorithmException, InvalidKeyException {
+    public String query(String requestId) throws IOException, SignatureException {
         // 参数校验
         queryCheck(requestId);
 
@@ -106,7 +105,7 @@ public class VideoComplianceClient extends HttpClient {
     /**
      * 参数校验
      */
-    private void sendCheck(List<Video> audioList) {
+    private void paramCheck(List<Video> audioList) {
         if (null == audioList || audioList.isEmpty()) {
             throw new BusinessException("视频信息不能为空");
         }

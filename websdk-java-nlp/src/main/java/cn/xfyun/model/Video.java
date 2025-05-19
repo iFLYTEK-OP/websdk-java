@@ -24,7 +24,7 @@ public class Video {
     private String fileUrl;
 
     /**
-     * 音频名称
+     * 视频名称
      */
     private String name;
 
