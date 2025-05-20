@@ -10,13 +10,13 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-spark</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.1.1</version>
+    <version>2.1.2</version>
 </dependency>
 ```
 
 重要版本更新说明
 
-- 从 2.0.X 升级到 2.1.1 版本需注意，此次为不兼容升级，智能PPT的V1版本不再维护, 建议使用新的V2版本
+- 从 2.0.X 升级到 2.1.X 版本需注意，此次为不兼容升级，智能PPT的V1版本不再维护, 建议使用新的V2版本
 - 主要变更：新增星火大模型，星辰MaaS平台，一句话复刻，大模型语音听写等13个能力，详情见以下文档
 
 [1、智能PPT(新)-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/aipptv2.md)
