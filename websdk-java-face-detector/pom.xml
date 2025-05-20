@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>websdk-java-face-detector</artifactId>
     <packaging>jar</packaging>
-    <version>2.0.5</version>
+    <version>${websdk-java-face-detector.version}</version>
     <parent>
         <artifactId>websdk-java-parent</artifactId>
         <groupId>cn.xfyun</groupId>
@@ -17,7 +17,7 @@
         <dependency>
             <groupId>cn.xfyun</groupId>
             <artifactId>websdk-java-core</artifactId>
-           <version>2.0.5</version>
+           <version>${websdk-java-core.version}</version>
         </dependency>
     </dependencies>
 

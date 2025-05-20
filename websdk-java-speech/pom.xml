@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <artifactId>websdk-java-speech</artifactId>
     <packaging>jar</packaging>
-    <version>3.0.1</version>
+    <version>${websdk-java-speech.version}</version>
     <parent>
         <artifactId>websdk-java-parent</artifactId>
         <groupId>cn.xfyun</groupId>
@@ -16,7 +16,7 @@
         <dependency>
             <groupId>cn.xfyun</groupId>
             <artifactId>websdk-java-core</artifactId>
-           <version>2.0.5</version>
+           <version>${websdk-java-core.version}</version>
         </dependency>
     </dependencies>
 
