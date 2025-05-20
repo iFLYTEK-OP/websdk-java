@@ -6,7 +6,7 @@
     <artifactId>websdk-java</artifactId>
     <name>websdk-java</name>
     <packaging>pom</packaging>
-    <version>2.1.1</version>
+    <version>2.1.2</version>
     
     <url>https://github.com/iFLYTEK-OP</url>
     <description>xfyun SDK</description>
