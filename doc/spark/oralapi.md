@@ -27,7 +27,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-spark</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.1.0</version>
+    <version>2.1.2</version>
 </dependency>
 ```
 
