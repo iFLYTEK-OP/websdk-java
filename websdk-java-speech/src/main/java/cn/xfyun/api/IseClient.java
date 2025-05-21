@@ -213,7 +213,6 @@ public class IseClient extends WebSocketClient {
      * @throws FileNotFoundException
      */
     public void send(File file, WebSocketListener webSocketListener) throws FileNotFoundException, MalformedURLException, SignatureException {
-        createWebSocketConnect(webSocketListener);
         FileInputStream fileInputStream = new FileInputStream(file);
         send(fileInputStream, webSocketListener);
     }
@@ -224,12 +223,11 @@ public class IseClient extends WebSocketClient {
      * @param inputStream 需要发送的流
      */
     public void send(InputStream inputStream, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
-        // 创建webSocket连接
-        createWebSocketConnect(webSocketListener);
         if (inputStream == null) {
-            webSocket.close(1000, null);
             return;
         }
+        // 创建webSocket连接
+        createWebSocketConnect(webSocketListener);
 
         // 数据发送任务
         IseSendTask iseSendTask = new IseSendTask();
@@ -246,12 +244,11 @@ public class IseClient extends WebSocketClient {
      * @param closeable 需要关闭的流，可为空
      */
     public void send(byte[] bytes, Closeable closeable, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
-        // 创建webSocket连接
-        createWebSocketConnect(webSocketListener);
         if (bytes == null || bytes.length == 0) {
-            webSocket.close(1000, null);
             return;
         }
+        // 创建webSocket连接
+        createWebSocketConnect(webSocketListener);
 
         IseSendTask iseSendTask = new IseSendTask();
         new IseSendTask.Builder()

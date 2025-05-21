@@ -73,6 +73,32 @@ public abstract class HttpClient extends Client {
         }
     }
 
+    protected String sendPost(String url, MediaType mediaType, Map<String, String> header, String body, Map<String, String> parameter) throws IOException {
+        // 构建完整的URL
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
+        if (Objects.nonNull(parameter)) {
+            for (Map.Entry<String, String> entry : parameter.entrySet()) {
+                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        Request.Builder builder = new Request
+                .Builder()
+                .url(urlBuilder.build().toString())
+                .post(RequestBody.create(mediaType, body));
+        if (Objects.nonNull(header)) {
+            for (Map.Entry<String, String> entry : header.entrySet()) {
+                builder.addHeader(entry.getKey(), entry.getValue());
+            }
+        }
+        request = builder.build();
+        try (Response response = okHttpClient.newCall(request).execute()) {
+            if (null != response.body()) {
+                return response.body().string();
+            } else {
+                return "";
+            }
+        }
+    }
 
     public String sendGet(String url, Map<String, String> header) throws IOException {
         Request.Builder builder = new Request

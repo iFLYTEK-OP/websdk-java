@@ -20,6 +20,14 @@ public class PropertiesConfig {
     private static final String textCheckClientApiSecret;
     private static final String transClientApiKey;
     private static final String transClientApiSecret;
+    private static final String textComplianceClientApiKey;
+    private static final String textComplianceClientApiSecret;
+    private static final String picComplianceClientApiKey;
+    private static final String picComplianceClientApiSecret;
+    private static final String audioComplianceClientApiKey;
+    private static final String audioComplianceClientApiSecret;
+    private static final String videoComplianceClientApiKey;
+    private static final String videoComplianceClientApiSecret;
 
     static {
         Properties properties = new Properties();
@@ -36,6 +44,14 @@ public class PropertiesConfig {
         textCheckClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("textCheckClientApiSecret")) ? System.getenv("textCheckClientApiSecret") : properties.getProperty("textCheckClientApiSecret");
         transClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("transClientApiKey")) ? System.getenv("transClientApiKey") : properties.getProperty("transClientApiKey");
         transClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("transClientApiSecret")) ? System.getenv("transClientApiSecret") : properties.getProperty("transClientApiSecret");
+        textComplianceClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("textComplianceClientApiKey")) ? System.getenv("textComplianceClientApiKey") : properties.getProperty("textComplianceClientApiKey");
+        textComplianceClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("textComplianceClientApiSecret")) ? System.getenv("textComplianceClientApiSecret") : properties.getProperty("textComplianceClientApiSecret");
+        picComplianceClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("picComplianceClientApiKey")) ? System.getenv("picComplianceClientApiKey") : properties.getProperty("picComplianceClientApiKey");
+        picComplianceClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("picComplianceClientApiSecret")) ? System.getenv("picComplianceClientApiSecret") : properties.getProperty("picComplianceClientApiSecret");
+        audioComplianceClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("audioComplianceClientApiKey")) ? System.getenv("audioComplianceClientApiKey") : properties.getProperty("audioComplianceClientApiKey");
+        audioComplianceClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("audioComplianceClientApiSecret")) ? System.getenv("audioComplianceClientApiSecret") : properties.getProperty("audioComplianceClientApiSecret");
+        videoComplianceClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("videoComplianceClientApiKey")) ? System.getenv("videoComplianceClientApiKey") : properties.getProperty("videoComplianceClientApiKey");
+        videoComplianceClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("videoComplianceClientApiSecret")) ? System.getenv("videoComplianceClientApiSecret") : properties.getProperty("videoComplianceClientApiSecret");
     }
 
     public static String getAppId() {
@@ -64,5 +80,37 @@ public class PropertiesConfig {
 
     public static String getTransClientApiSecret() {
         return transClientApiSecret;
+    }
+
+    public static String getTextComplianceClientApiKey() {
+        return textComplianceClientApiKey;
+    }
+
+    public static String getTextComplianceClientApiSecret() {
+        return textComplianceClientApiSecret;
+    }
+
+    public static String getPicComplianceClientApiKey() {
+        return picComplianceClientApiKey;
+    }
+
+    public static String getPicComplianceClientApiSecret() {
+        return picComplianceClientApiSecret;
+    }
+
+    public static String getAudioComplianceClientApiKey() {
+        return audioComplianceClientApiKey;
+    }
+
+    public static String getAudioComplianceClientApiSecret() {
+        return audioComplianceClientApiSecret;
+    }
+
+    public static String getVideoComplianceClientApiKey() {
+        return videoComplianceClientApiKey;
+    }
+
+    public static String getVideoComplianceClientApiSecret() {
+        return videoComplianceClientApiSecret;
     }
 }
