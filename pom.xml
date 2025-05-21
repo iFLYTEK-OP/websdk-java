@@ -6,7 +6,7 @@
     <artifactId>websdk-java</artifactId>
     <name>websdk-java</name>
     <packaging>pom</packaging>
-    <version>2.1.1</version>
+    <version>2.1.2</version>
     
     <url>https://github.com/iFLYTEK-OP</url>
     <description>xfyun SDK</description>
@@ -71,6 +71,13 @@
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
         <powermock.version>2.0.2</powermock.version>
         <jacoco.version>0.8.7</jacoco.version>
+        <!--子模块版本管理-->
+        <websdk-java-spark.version>2.1.2</websdk-java-spark.version>
+        <websdk-java-speech.version>3.0.2</websdk-java-speech.version>
+        <websdk-java-core.version>2.0.6</websdk-java-core.version>
+        <websdk-java-nlp.version>2.0.6</websdk-java-nlp.version>
+        <websdk-java-face-detector.version>2.0.6</websdk-java-face-detector.version>
+        <websdk-java-ocr.version>2.0.6</websdk-java-ocr.version>
     </properties>
 
     <build>
