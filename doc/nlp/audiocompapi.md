@@ -110,7 +110,7 @@ public String send(List<Audio> audioList, String notifyUrl) throws IOException, 
 ```
 **参数说明**：
 
-- 参数，可设置：
+- 参数可设置：
 
 |    名称     |  类型  |                             描述                             | 必须 |
 | :---------: | :----: | :----------------------------------------------------------: | :--: |

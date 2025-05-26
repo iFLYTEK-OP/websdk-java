@@ -98,7 +98,7 @@ public class WordLibClient extends HttpClient {
      */
     public String delWord(String libId, List<String> wordList) throws IOException, SignatureException {
         // 参数校验
-        if (StringUtils.isNullOrEmpty(libId) || wordList == null) {
+        if (StringUtils.isNullOrEmpty(libId) || wordList == null || wordList.isEmpty()) {
             throw new BusinessException("词库ID或词条列表为空");
         }
 

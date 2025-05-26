@@ -42,7 +42,7 @@ public class Signature {
         String httpRequestUrl = requestUrl.replace("ws://", "http://").replace("wss://", "https://");
         try {
             url = new URL(httpRequestUrl);
-            //获取当前日期并格式化
+            // 获取当前日期并格式化
             SimpleDateFormat format = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss z", Locale.US);
             format.setTimeZone(TimeZone.getTimeZone("UTC"));
             String date = format.format(new Date());
@@ -66,18 +66,16 @@ public class Signature {
     }
 
     /**
-     *    Host               请求主机
-     *    Date               当前时间戳，RFC1123格式
-     *    Digest             加密请求body SHA-256=Base64(SHA256(请求body))
-     *    Authorization      使用base64编码的签名相关信息(签名基于hamc-sha256计算)
+     * Host               请求主机
+     * Date               当前时间戳，RFC1123格式
+     * Digest             加密请求body SHA-256=Base64(SHA256(请求body))
+     * Authorization      使用base64编码的签名相关信息(签名基于hamc-sha256计算)
      *
-     *
-     * @param requestUrl
-     * @param apiKey
-     * @param apiSecret
-     * @param body
-     * @return
-     * @throws Exception
+     * @param requestUrl 请求的url
+     * @param apiKey     apiKey
+     * @param apiSecret  apiSecret
+     * @param body       请求体
+     * @return 鉴权头
      */
     public static Map<String, String> signHttpHeaderDigest(String requestUrl, String requestMethod, String apiKey, String apiSecret, String body) throws Exception {
         Map<String, String> header = new HashMap<>(6);
@@ -131,16 +129,16 @@ public class Signature {
 
 
     /**
-     *    X-Appid           appid
-     *    X-CurTime         当前UTC时间戳
-     *    X-Param           相关参数JSON串经Base64编码后的字符串
-     *    X-CheckSum        MD5(APIKey + X-CurTime + X-Param)，三个值拼接的字符串，进行MD5哈希计算（32位小写）
+     * X-Appid           appid
+     * X-CurTime         当前UTC时间戳
+     * X-Param           相关参数JSON串经Base64编码后的字符串
+     * X-CheckSum        MD5(APIKey + X-CurTime + X-Param)，三个值拼接的字符串，进行MD5哈希计算（32位小写）
      *
-     * @param appId
-     * @param apiKey
-     * @param param
-     * @return
-     * @throws UnsupportedEncodingException
+     * @param appId  appId
+     * @param apiKey apiKey
+     * @param param  param
+     * @return 鉴权头
+     * @throws UnsupportedEncodingException UnsupportedEncodingException
      */
     public static Map<String, String> signHttpHeaderCheckSum(String appId, String apiKey, String param) throws UnsupportedEncodingException {
         String curTime = String.valueOf(System.currentTimeMillis() / 1000L);
@@ -166,13 +164,9 @@ public class Signature {
         return "";
     }
 
-    /**
-     *
-     * @throws SignatureException
-     */
-    public static String generateSignature(String appId, Long timestamp, String apiSecret){
+    public static String generateSignature(String appId, Long timestamp, String apiSecret) {
         try {
-            return  CryptTools.hmacEncrypt(CryptTools.HMAC_SHA1, CryptTools.md5Encrypt(appId + timestamp), apiSecret);
+            return CryptTools.hmacEncrypt(CryptTools.HMAC_SHA1, CryptTools.md5Encrypt(appId + timestamp), apiSecret);
         } catch (SignatureException e) {
             throw new RuntimeException(e);
         }
@@ -205,23 +199,23 @@ public class Signature {
      */
     private static String signature(String secret, Map<String, String> queryParam) throws SignatureException {
         try {
-            //排序
+            // 排序
             TreeMap<String, String> treeMap = new TreeMap<>(queryParam);
-            //剔除不参与签名运算的 signature
+            // 剔除不参与签名运算的 signature
             treeMap.remove("signature");
-            //生成 baseString
+            // 生成 baseString
             StringBuilder builder = new StringBuilder();
             for (Map.Entry<String, String> entry : treeMap.entrySet()) {
-                //System.out.println(entry.getKey());
+                // System.out.println(entry.getKey());
                 String value = entry.getValue();
-                //参数值为空的不参与签名，
+                // 参数值为空的不参与签名，
                 if (value != null && !value.isEmpty()) {
-                    //参数值需要 URLEncode
+                    // 参数值需要 URLEncode
                     String encode = URLEncoder.encode(value, StandardCharsets.UTF_8.name());
                     builder.append(entry.getKey()).append("=").append(encode).append("&");
                 }
             }
-            //删除最后位的&符号
+            // 删除最后位的&符号
             if (builder.length() > 0) {
                 builder.deleteCharAt(builder.length() - 1);
             }
@@ -229,9 +223,9 @@ public class Signature {
             Mac mac = Mac.getInstance("HmacSHA1");
             SecretKeySpec keySpec = new SecretKeySpec(secret.getBytes(StandardCharsets.UTF_8), StandardCharsets.UTF_8.name());
             mac.init(keySpec);
-            //得到签名 byte[]
+            // 得到签名 byte[]
             byte[] signBytes = mac.doFinal(baseString.getBytes(StandardCharsets.UTF_8));
-            //将 byte[]base64 编码
+            // 将 byte[]base64 编码
             return Base64.getEncoder().encodeToString(signBytes);
         } catch (InvalidKeyException e) {
             throw new SignatureException("InvalidKeyException:" + e.getMessage());

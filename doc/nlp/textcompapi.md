@@ -68,7 +68,7 @@ public String send(TextCompParam param) throws SignatureException, IOException
 ```
 **参数说明**：
 
-- param参数，可设置：
+- param参数可设置：
 
 |    名称    |  类型  |                             描述                             | 必须 |
 | :--------: | :----: | :----------------------------------------------------------: | :--: |
