@@ -6,6 +6,7 @@ import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sign.Signature;
 import cn.xfyun.model.compliance.text.TextCompParam;
 import cn.xfyun.util.StringUtils;
+import okhttp3.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,10 +77,10 @@ public class TextComplianceClient extends HttpClient {
         Map<String, String> parameters = Signature.getAuth(appId, apiKey, apiSecret);
 
         // 构建请求体
-        String body = paramHandler(param);
+        RequestBody body = RequestBody.create(JSON, paramHandler(param));
 
         // 发送请求
-        return sendPost(hostUrl, JSON, null, body, parameters);
+        return sendPost(hostUrl, null, body, parameters);
     }
 
     /**

@@ -7,6 +7,7 @@ import cn.xfyun.model.Audio;
 import cn.xfyun.model.sign.Signature;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
+import okhttp3.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,8 +73,11 @@ public class AudioComplianceClient extends HttpClient {
         // 构建签名参数
         Map<String, String> parameters = Signature.getAuth(appId, apiKey, apiSecret);
 
+        // 构建请求体
+        RequestBody body = RequestBody.create(JSON, buildParam(audioList, notifyUrl));
+
         // 发送请求
-        return sendPost(hostUrl, JSON, null, buildParam(audioList, notifyUrl), parameters);
+        return sendPost(hostUrl, null, body, parameters);
     }
 
     /**
@@ -88,8 +92,11 @@ public class AudioComplianceClient extends HttpClient {
         // 构建签名参数
         Map<String, String> parameters = Signature.getAuth(appId, apiKey, apiSecret);
 
+        // 构建请求体
+        RequestBody body = RequestBody.create(JSON, buildQuery(requestId));
+
         // 发送请求
-        return sendPost(queryUrl, JSON, null, buildQuery(requestId), parameters);
+        return sendPost(queryUrl, null, body, parameters);
     }
 
     /**

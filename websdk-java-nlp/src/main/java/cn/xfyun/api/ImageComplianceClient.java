@@ -7,6 +7,7 @@ import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sign.Signature;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
+import okhttp3.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -62,8 +63,11 @@ public class ImageComplianceClient extends HttpClient {
         // 构建鉴权参数
         Map<String, String> parameters = Signature.getImageAuth(appId, apiKey, apiSecret, modeType);
 
+        // 构建请求体
+        RequestBody body = RequestBody.create(JSON, buildParam(content));
+
         // 发送请求
-        return sendPost(hostUrl, JSON, null, buildParam(content), parameters);
+        return sendPost(hostUrl, null, body, parameters);
     }
 
     /**

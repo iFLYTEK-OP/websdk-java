@@ -7,6 +7,7 @@ import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sign.Signature;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
+import okhttp3.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -209,8 +210,11 @@ public class WordLibClient extends HttpClient {
         // 获取鉴权参数
         Map<String, String> parameters = Signature.getAuth(appId, apiKey, apiSecret);
 
+        // 构建请求体
+        RequestBody body = RequestBody.create(JSON, param);
+
         // 发送请求
-        return sendPost(wordLibEnum.getUrl(), JSON, null, param, parameters);
+        return sendPost(wordLibEnum.getUrl(), null, body, parameters);
     }
 
     public static final class Builder extends HttpBuilder<Builder> {

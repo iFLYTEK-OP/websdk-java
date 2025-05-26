@@ -32,15 +32,15 @@ public abstract class HttpClient extends Client {
     }
 
     protected String sendPost(String url, MediaType mediaType, Map<String, String> header, String body) throws IOException {
-        return sendPost(url, header, RequestBody.create(mediaType, body));
+        return sendPost(url, header, RequestBody.create(mediaType, body), null);
     }
 
     protected String sendPost(String url, MediaType mediaType, String body) throws IOException {
-        return sendPost(url, null, RequestBody.create(mediaType, body));
+        return sendPost(url, null, RequestBody.create(mediaType, body), null);
     }
 
     protected String sendPost(String url, MediaType mediaType, Map<String, String> header, byte[] body) throws IOException {
-        return sendPost(url, header, RequestBody.create(mediaType, body));
+        return sendPost(url, header, RequestBody.create(mediaType, body), null);
     }
 
     protected String sendPost(String url, Map<String, String> header, Map<String, String> body) throws IOException {
@@ -50,30 +50,10 @@ public abstract class HttpClient extends Client {
                 formBuilder.add(entry.getKey(), entry.getValue());
             }
         }
-        return sendPost(url, header, formBuilder.build());
+        return sendPost(url, header, formBuilder.build(), null);
     }
 
-    protected String sendPost(String url, Map<String, String> header, RequestBody requestBody) throws IOException {
-        Request.Builder builder = new Request
-                .Builder()
-                .url(url)
-                .post(requestBody);
-        if (Objects.nonNull(header)) {
-            for (Map.Entry<String, String> entry : header.entrySet()) {
-                builder.addHeader(entry.getKey(), entry.getValue());
-            }
-        }
-        request = builder.build();
-        try (Response response = okHttpClient.newCall(request).execute()) {
-            if (null != response.body()) {
-                return response.body().string();
-            } else {
-                return "";
-            }
-        }
-    }
-
-    protected String sendPost(String url, MediaType mediaType, Map<String, String> header, String body, Map<String, String> parameter) throws IOException {
+    protected String sendPost(String url, Map<String, String> header, RequestBody requestBody, Map<String, String> parameter) throws IOException {
         // 构建完整的URL
         HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
         if (Objects.nonNull(parameter)) {
@@ -84,7 +64,7 @@ public abstract class HttpClient extends Client {
         Request.Builder builder = new Request
                 .Builder()
                 .url(urlBuilder.build().toString())
-                .post(RequestBody.create(mediaType, body));
+                .post(requestBody);
         if (Objects.nonNull(header)) {
             for (Map.Entry<String, String> entry : header.entrySet()) {
                 builder.addHeader(entry.getKey(), entry.getValue());
