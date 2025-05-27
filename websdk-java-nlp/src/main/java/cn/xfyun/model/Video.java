@@ -34,9 +34,6 @@ public class Video {
         this.name = builder.name;
     }
 
-    public String getAudioType() {
-        return videoType;
-    }
 
     public String getFileUrl() {
         return fileUrl;
