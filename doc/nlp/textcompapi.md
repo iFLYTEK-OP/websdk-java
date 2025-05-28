@@ -2,7 +2,7 @@
 
 ## 简介
 
-本客户端基于讯飞开发平台 API实现，提供文本合规能力[官方文档](https://www.xfyun.cn/doc/nlp/TextModeration/API.html)，支持以下功能：
+本客户端基于讯飞开放平台 API实现，提供文本合规能力[官方文档](https://www.xfyun.cn/doc/nlp/TextModeration/API.html)，支持以下功能：
 
 - 创建合规任务
 

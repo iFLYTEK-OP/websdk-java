@@ -2,7 +2,7 @@
 
 ## 简介
 
-本客户端基于讯飞开发平台 API实现，提供词库操作能力[官方文档](https://www.xfyun.cn/doc/nlp/TextModeration/API.html)，支持以下功能：
+本客户端基于讯飞开放平台 API实现，提供词库操作能力[官方文档](https://www.xfyun.cn/doc/nlp/TextModeration/API.html)，支持以下功能：
 
 - 创建词库
 - 添加词条
@@ -244,7 +244,7 @@ public String listLib() throws IOException, SignatureException
 ---
 
 ## 注意事项
-1. 所有生成类接口都需要处理`BusinessException`（参数校验失败）和`IOException`（网络错误）`SignatureException`（网络错误）
+1. 所有生成类接口都需要处理`BusinessException`（参数校验失败）和`IOException`（网络错误）`SignatureException`（鉴权失败）
 
 2. 客户端默认超时时间为10秒，可通过Builder调整：
 

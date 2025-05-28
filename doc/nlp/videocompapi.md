@@ -2,7 +2,7 @@
 
 ## 简介
 
-本客户端基于讯飞开发平台 API实现，提供视频合规能力[官方文档](https://www.xfyun.cn/doc/nlp/VideoModeration/API.html)，支持以下功能：
+本客户端基于讯飞开放平台 API实现，提供视频合规能力[官方文档](https://www.xfyun.cn/doc/nlp/VideoModeration/API.html)，支持以下功能：
 
 - 创建合规任务
 - 查询合规任务
