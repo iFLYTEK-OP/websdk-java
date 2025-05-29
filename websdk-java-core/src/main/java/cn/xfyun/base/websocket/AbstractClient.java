@@ -94,14 +94,14 @@ public abstract class AbstractClient {
     /**
      * 获取鉴权对象
      */
-    protected AbstractSignature getSignature() throws MalformedURLException, SignatureException {
+    public AbstractSignature getSignature() {
         return new Hmac256Signature(apiKey, apiSecret, originHostUrl);
     }
 
     /**
      * 获取请求地址
      */
-    protected String getHostUrl() throws MalformedURLException, SignatureException {
+    public String getHostUrl() throws MalformedURLException, SignatureException {
         String url = AuthUtil.generateRequestUrl(getSignature());
         return url.replace("http://", "ws://").replace("https://", "wss://");
     }
@@ -109,7 +109,7 @@ public abstract class AbstractClient {
     /**
      * 获取鉴权请求
      */
-    protected Request getRequest() throws MalformedURLException, SignatureException {
+    public Request getRequest() throws MalformedURLException, SignatureException {
         return new Request.Builder().url(getHostUrl()).build();
     }
 

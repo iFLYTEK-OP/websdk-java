@@ -10,9 +10,9 @@ import org.slf4j.LoggerFactory;
 import java.util.Base64;
 
 /**
- * @author zyding6
- *
  * 大模型听写通用发送任务
+ *
+ * @author <zyding6@ifytek.com>
  */
 public class SparkIatSendTask extends AbstractTask {
 
@@ -93,7 +93,7 @@ public class SparkIatSendTask extends AbstractTask {
 
     private SparkIatClient client() {
         if (sparkIatClient == null) {
-            return sparkIatClient = (SparkIatClient) webSocketClient;
+            return sparkIatClient = (SparkIatClient) client;
         }
 
         return sparkIatClient;
