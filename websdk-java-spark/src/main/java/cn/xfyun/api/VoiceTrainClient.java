@@ -252,7 +252,7 @@ public class VoiceTrainClient extends HttpClient {
         // 请求结果
         logger.debug("{}请求URL：{}，入参：{}", trainEnum.getDesc(), trainEnum.getUrl(), bodyStr);
         if (null != body) {
-            return sendPost(trainEnum.getUrl(), header, body);
+            return sendPost(trainEnum.getUrl(), header, body, null);
         } else {
             return sendPost(trainEnum.getUrl(), JSON, header, bodyStr);
         }

@@ -32,15 +32,15 @@ public abstract class HttpClient extends Client {
     }
 
     protected String sendPost(String url, MediaType mediaType, Map<String, String> header, String body) throws IOException {
-        return sendPost(url, header, RequestBody.create(mediaType, body));
+        return sendPost(url, header, RequestBody.create(mediaType, body), null);
     }
 
     protected String sendPost(String url, MediaType mediaType, String body) throws IOException {
-        return sendPost(url, null, RequestBody.create(mediaType, body));
+        return sendPost(url, null, RequestBody.create(mediaType, body), null);
     }
 
     protected String sendPost(String url, MediaType mediaType, Map<String, String> header, byte[] body) throws IOException {
-        return sendPost(url, header, RequestBody.create(mediaType, body));
+        return sendPost(url, header, RequestBody.create(mediaType, body), null);
     }
 
     protected String sendPost(String url, Map<String, String> header, Map<String, String> body) throws IOException {
@@ -50,13 +50,20 @@ public abstract class HttpClient extends Client {
                 formBuilder.add(entry.getKey(), entry.getValue());
             }
         }
-        return sendPost(url, header, formBuilder.build());
+        return sendPost(url, header, formBuilder.build(), null);
     }
 
-    protected String sendPost(String url, Map<String, String> header, RequestBody requestBody) throws IOException {
+    protected String sendPost(String url, Map<String, String> header, RequestBody requestBody, Map<String, String> parameter) throws IOException {
+        // 构建完整的URL
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
+        if (Objects.nonNull(parameter)) {
+            for (Map.Entry<String, String> entry : parameter.entrySet()) {
+                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+            }
+        }
         Request.Builder builder = new Request
                 .Builder()
-                .url(url)
+                .url(urlBuilder.build().toString())
                 .post(requestBody);
         if (Objects.nonNull(header)) {
             for (Map.Entry<String, String> entry : header.entrySet()) {
@@ -72,7 +79,6 @@ public abstract class HttpClient extends Client {
             }
         }
     }
-
 
     public String sendGet(String url, Map<String, String> header) throws IOException {
         Request.Builder builder = new Request
