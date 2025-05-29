@@ -4,11 +4,10 @@
 
 ```java
 TransParam param = TransParam.builder()
-                    // .text("神舟十二号载人飞船发射任务取得圆满成功")
-                    .text("牛逼")
+                    .text("神舟十二号载人飞船发射任务取得圆满成功")
                     .from("cn")
                     .to("en")
-                    .resId("q0jlsmjhsb")
+                    .resId("您的个性化术语ID")
                     .build();
             // 小牛翻译 (默认中译英)
             // String niuResponse = client.sendNiuTrans("神舟十二号载人飞船发射任务取得圆满成功");
