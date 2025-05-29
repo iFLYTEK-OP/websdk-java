@@ -91,7 +91,6 @@ public class SparkIatClientTest {
         Assert.assertTrue(sparkIatClient.isRetryOnConnectionFailure());
 
         Assert.assertTrue(sparkIatClient.getOriginHostUrl().contains("test"));
-        Assert.assertTrue(sparkIatClient.getHostUrl().contains("test"));
         Assert.assertEquals(sparkIatClient.getLangType().intValue(), 1);
         Assert.assertEquals(sparkIatClient.getLanguage(), "zh_cn");
         Assert.assertEquals(sparkIatClient.getDomain(), "slm");
@@ -137,7 +136,7 @@ public class SparkIatClientTest {
 
                 Assert.assertNotEquals(iatResponse.getHeader().getCode(), 101);
                 Assert.assertEquals(iatResponse.getHeader().getCode(), 10313);
-                sparkIatClient.closeWebsocket();
+                webSocket.close(1000, "");
             }
 
             @Override
@@ -246,7 +245,7 @@ public class SparkIatClientTest {
                             logger.info("最终识别结果 ==>{}", finalResult);
                         }
                         logger.info("本次识别sid ==>{}", resp.getHeader().getSid());
-                        sparkIatClient.closeWebsocket();
+                        webSocket.close(1000, "");
                     }
                 }
             }
@@ -345,7 +344,7 @@ public class SparkIatClientTest {
                         System.out.println("session end ");
                         System.out.println("本次识别sid ==》" + resp.getHeader().getSid());
 
-                        sparkIatClient.closeWebsocket();
+                        webSocket.close(1000, "");
                     } else {
                         // 根据返回的数据处理
                         System.out.println(StringUtils.gson.toJson(resp));

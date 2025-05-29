@@ -1,6 +1,7 @@
 package api;
 
 import cn.xfyun.api.TransClient;
+import cn.xfyun.model.translate.TransParam;
 import config.PropertiesConfig;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +48,7 @@ public class TransClientTest {
                 .connectTimeout(1)
                 .readTimeout(1)
                 .writeTimeout(1)
+                .resId("666")
                 .from("A")
                 .to("B")
                 .build();
@@ -56,6 +58,7 @@ public class TransClientTest {
         assertEquals(transClient.getConnectTimeout(), 1);
         assertEquals(transClient.getReadTimeout(), 1);
         assertEquals(transClient.getWriteTimeout(), 1);
+        assertEquals(transClient.getResId(), "666");
         assertEquals(transClient.getFrom(), "A");
         assertEquals(transClient.getTo(), "B");
     }
@@ -65,11 +68,31 @@ public class TransClientTest {
         TransClient client = new TransClient.Builder(appId, apiKey, apiSecret).build();
         String niuResponse = client.sendNiuTrans("6月9日是科大讯飞司庆日。");
         String itsResponse = client.sendIst("6月9日是科大讯飞司庆日。");
+        String itsV2Response = client.sendIstV2("6月9日是科大讯飞司庆日。");
         System.out.println(niuResponse);
         System.out.println(itsResponse);
+        System.out.println(itsV2Response);
 
         assertNotNull(niuResponse);
         assertNotNull(itsResponse);
+        assertNotNull(itsV2Response);
+
+    }
+
+    @Test
+    public void testSuccessParam() throws Exception {
+        TransClient client = new TransClient.Builder(appId, apiKey, apiSecret).build();
+        TransParam param = TransParam.builder().text("6月9日是科大讯飞司庆日。").build();
+        String niuResponse = client.sendNiuTrans(param);
+        String itsResponse = client.sendIst(param);
+        String itsV2Response = client.sendIstV2(param);
+        System.out.println(niuResponse);
+        System.out.println(itsResponse);
+        System.out.println(itsV2Response);
+
+        assertNotNull(niuResponse);
+        assertNotNull(itsResponse);
+        assertNotNull(itsV2Response);
 
     }
 

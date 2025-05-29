@@ -28,6 +28,12 @@ public class PropertiesConfig {
     private static final String audioComplianceClientApiSecret;
     private static final String videoComplianceClientApiKey;
     private static final String videoComplianceClientApiSecret;
+    private static final String textProofClientApiKey;
+    private static final String textProofClientApiSecret;
+    private static final String textReWriteClientApiKey;
+    private static final String textReWriteClientApiSecret;
+    private static final String simInterpClientApiKey;
+    private static final String simInterpClientApiSecret;
 
     static {
         Properties properties = new Properties();
@@ -52,6 +58,12 @@ public class PropertiesConfig {
         audioComplianceClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("audioComplianceClientApiSecret")) ? System.getenv("audioComplianceClientApiSecret") : properties.getProperty("audioComplianceClientApiSecret");
         videoComplianceClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("videoComplianceClientApiKey")) ? System.getenv("videoComplianceClientApiKey") : properties.getProperty("videoComplianceClientApiKey");
         videoComplianceClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("videoComplianceClientApiSecret")) ? System.getenv("videoComplianceClientApiSecret") : properties.getProperty("videoComplianceClientApiSecret");
+        textProofClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("textProofClientApiKey")) ? System.getenv("textProofClientApiKey") : properties.getProperty("textProofClientApiKey");
+        textProofClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("textProofClientApiSecret")) ? System.getenv("textProofClientApiSecret") : properties.getProperty("textProofClientApiSecret");
+        textReWriteClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("textReWriteClientApiKey")) ? System.getenv("textReWriteClientApiKey") : properties.getProperty("textReWriteClientApiKey");
+        textReWriteClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("textReWriteClientApiSecret")) ? System.getenv("textReWriteClientApiSecret") : properties.getProperty("textReWriteClientApiSecret");
+        simInterpClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("simInterpClientApiKey")) ? System.getenv("simInterpClientApiKey") : properties.getProperty("simInterpClientApiKey");
+        simInterpClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("simInterpClientApiSecret")) ? System.getenv("simInterpClientApiSecret") : properties.getProperty("simInterpClientApiSecret");
     }
 
     public static String getAppId() {
@@ -112,5 +124,29 @@ public class PropertiesConfig {
 
     public static String getVideoComplianceClientApiSecret() {
         return videoComplianceClientApiSecret;
+    }
+
+    public static String getTextProofClientApiKey() {
+        return textProofClientApiKey;
+    }
+
+    public static String getTextProofClientApiSecret() {
+        return textProofClientApiSecret;
+    }
+
+    public static String getTextReWriteClientApiKey() {
+        return textReWriteClientApiKey;
+    }
+
+    public static String getTextReWriteClientApiSecret() {
+        return textReWriteClientApiSecret;
+    }
+
+    public static String getSimInterpClientApiKey() {
+        return simInterpClientApiKey;
+    }
+
+    public static String getSimInterpClientApiSecret() {
+        return simInterpClientApiSecret;
     }
 }
