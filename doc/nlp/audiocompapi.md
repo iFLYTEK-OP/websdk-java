@@ -52,9 +52,9 @@ AudioComplianceClient correctionClient = new AudioComplianceClient
         for (String audioUrl : audios) {
             if (!StringUtils.isNullOrEmpty(audioUrl)) {
                 Audio audio = new Audio.Builder()
-                        .audioType(AudioFormat.WAV.getFormat())
+                        .audioType("您的文件格式")
                         .fileUrl(audioUrl)
-                        .name("133c3269-c823-4499-94ad-e4283167402f.wav")
+                        .name("您的文件名称")
                         .build();
                 audioList.add(audio);
             }
@@ -63,8 +63,8 @@ AudioComplianceClient correctionClient = new AudioComplianceClient
         // 发起音频合规任务请求
         String resp = correctionClient.send(audioList);
         logger.info("音频合规调用返回：{}", resp);
-        JsonObject obj = StringUtils.gson.fromJson(resp, JsonObject.class);
-        String requestId = obj.getAsJsonObject("data").get("request_id").getAsString();
+        JSONObject obj = JSON.parseObject(resp);
+        String requestId = obj.getJSONObject("data").getString("request_id");
         logger.info("音频合规任务请求Id：{}", requestId);
 
         // 拿到request_id后主动查询合规结果   如果有回调函数则在完成后自动调用回调接口
@@ -86,6 +86,7 @@ AudioComplianceClient correctionClient = new AudioComplianceClient
             if (auditStatus == 4) {
                 logger.info("音频合规审核异常：");
                 logger.info(query);
+                break;
             }
             TimeUnit.MILLISECONDS.sleep(3000);
         }
