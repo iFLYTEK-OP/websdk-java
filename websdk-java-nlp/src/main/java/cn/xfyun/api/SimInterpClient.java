@@ -30,18 +30,6 @@ public class SimInterpClient extends AbstractClient {
     private static final Logger logger = LoggerFactory.getLogger(SimInterpClient.class);
 
     /**
-     * 输入音频编码
-     * 可选值：raw （代表pcm音频）
-     */
-    public static final String INPUT_AUDIO_ENCODING = "raw";
-
-    /**
-     * 输入音频采样率
-     * 可选值：16000
-     */
-    public static final int INPUT_AUDIO_SAMPLERATE = 16000;
-
-    /**
      * 线程池管理
      * 默认单例线程池
      */
@@ -171,7 +159,7 @@ public class SimInterpClient extends AbstractClient {
         this.readTimeout = builder.readTimeout;
         this.writeTimeout = builder.writeTimeout;
         this.pingInterval = builder.pingInterval;
-        this.executor = builder.executor;
+        this.executor = (null == builder.executor) ? Executors.newSingleThreadExecutor() : builder.executor;
     }
 
     public String getLanguage() {
@@ -257,8 +245,8 @@ public class SimInterpClient extends AbstractClient {
         // 请求体
         SimInterpRequest.Payload payload = new SimInterpRequest.Payload();
         SimInterpRequest.Payload.Data data = new SimInterpRequest.Payload.Data();
-        data.setSampleRate(INPUT_AUDIO_SAMPLERATE);
-        data.setEncoding(INPUT_AUDIO_ENCODING);
+        data.setSampleRate(sampleRate);
+        data.setEncoding(encoding);
         data.setSeq(0);
         data.setStatus(status);
         if (bytes == null || bytes.length == 0) {
@@ -366,7 +354,7 @@ public class SimInterpClient extends AbstractClient {
         private int sampleRate = 16000;
         private int channels = 1;
         private int bitDepth = 16;
-        private ExecutorService executor = Executors.newSingleThreadExecutor();
+        private ExecutorService executor;
 
         public SimInterpClient build() {
             return new SimInterpClient(this);

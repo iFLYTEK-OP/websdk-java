@@ -12,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -127,7 +128,7 @@ public class HiDreamClient extends PlatformHttpClient {
         // 请求体
         ImageHiDreamRequest.Payload payload = new ImageHiDreamRequest.Payload(this);
         // 设置图片详情数据
-        String text = Base64.getEncoder().encodeToString(StringUtils.gson.toJson(param).getBytes());
+        String text = Base64.getEncoder().encodeToString(StringUtils.gson.toJson(param).getBytes(StandardCharsets.UTF_8));
         payload.getOig().setText(text);
         request.setPayload(payload);
 

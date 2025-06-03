@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -96,7 +97,7 @@ public class TextRewriteClient extends PlatformHttpClient {
         parameter.add(this.serviceId, StringUtils.gson.toJsonTree(serviceModel));
         // 请求体
         TextReWriteRequest.Payload payload = new TextReWriteRequest.Payload(this);
-        payload.getInput().setText(Base64.getEncoder().encodeToString(text.getBytes()));
+        payload.getInput().setText(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
         request.setPayload(payload);
         // 将参数转换成JsonObject  塞入parameter参数
         JsonObject requestObj = StringUtils.gson.toJsonTree(request).getAsJsonObject();

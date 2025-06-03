@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -60,7 +61,7 @@ public class TextProofreadClient extends PlatformHttpClient {
         request.setParameter(parameter);
         // 请求体
         TextProofreadRequest.Payload payload = new TextProofreadRequest.Payload(this);
-        payload.getText().setText(Base64.getEncoder().encodeToString(text.getBytes()));
+        payload.getText().setText(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
         request.setPayload(payload);
 
         String requestStr = StringUtils.gson.toJson(request);

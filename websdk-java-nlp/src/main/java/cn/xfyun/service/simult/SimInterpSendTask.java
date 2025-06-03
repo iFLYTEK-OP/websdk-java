@@ -45,8 +45,8 @@ public class SimInterpSendTask extends AbstractNlpTask {
         // 请求体
         SimInterpRequest.Payload payload = new SimInterpRequest.Payload();
         SimInterpRequest.Payload.Data data = new SimInterpRequest.Payload.Data();
-        data.setSampleRate(SimInterpClient.INPUT_AUDIO_SAMPLERATE);
-        data.setEncoding(SimInterpClient.INPUT_AUDIO_ENCODING);
+        data.setSampleRate(client().getSampleRate());
+        data.setEncoding(client().getEncoding());
         data.setSeq(seq);
         data.setStatus(STATUS_FIRST_FRAME);
         if (contents == null || contents.length == 0) {

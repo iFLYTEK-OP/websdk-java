@@ -221,7 +221,7 @@ public class SparkIatClient extends AbstractClient {
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
         this.apiSecret = builder.apiSecret;
-        this.executor = builder.executor;
+        this.executor = (null == builder.executor) ? Executors.newSingleThreadExecutor() : builder.executor;
 
         this.language = builder.language;
         this.domain = builder.domain;
@@ -461,7 +461,7 @@ public class SparkIatClient extends AbstractClient {
         private String textCompress = "raw";
         private String textFormat = "json";
         private String ln = "none";
-        private ExecutorService executor = Executors.newSingleThreadExecutor();
+        private ExecutorService executor;
 
         public SparkIatClient build() {
             return new SparkIatClient(this);
