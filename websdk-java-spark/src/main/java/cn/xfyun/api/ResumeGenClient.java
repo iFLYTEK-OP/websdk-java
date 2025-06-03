@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 /**
@@ -67,7 +68,7 @@ public class ResumeGenClient extends PlatformHttpClient {
 
         // 请求体
         ResumeRequest.PayloadBean payload = new ResumeRequest.PayloadBean(this);
-        payload.getReqData().setText(Base64.getEncoder().encodeToString(text.getBytes()));
+        payload.getReqData().setText(Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8)));
         payload.getReqData().setStatus(status);
         request.setPayload(payload);
 

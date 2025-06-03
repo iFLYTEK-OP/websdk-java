@@ -1,11 +1,10 @@
 package cn.xfyun.api;
 
-import cn.xfyun.base.websocket.WebSocketClient;
+import cn.xfyun.base.websocket.AbstractClient;
 import cn.xfyun.config.SparkIatModelEnum;
-import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.service.sparkiat.SparkIatSendTask;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
+import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okhttp3.internal.Util;
 import org.slf4j.Logger;
@@ -19,11 +18,14 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 大模型语音听写
+ * 大模型语音听写 Client
+ * 中英大模型文档地址: <a href="https://www.xfyun.cn/doc/spark/spark_zh_iat.html">...</a>
+ * 方言大模型文档地址: <a href="https://www.xfyun.cn/doc/spark/spark_slm_iat.html">...</a>
+ * 多语种大模型文档地址: <a href="https://www.xfyun.cn/doc/spark/spark_mul_cn_iat.html">...</a>
  *
  * @author <zyding6@ifytek.com>
  */
-public class SparkIatClient extends WebSocketClient {
+public class SparkIatClient extends AbstractClient {
 
     private static final Logger logger = LoggerFactory.getLogger(SparkIatClient.class);
 
@@ -219,7 +221,7 @@ public class SparkIatClient extends WebSocketClient {
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
         this.apiSecret = builder.apiSecret;
-        this.executor = builder.executor;
+        this.executor = (null == builder.executor) ? Executors.newSingleThreadExecutor() : builder.executor;
 
         this.language = builder.language;
         this.domain = builder.domain;
@@ -253,14 +255,6 @@ public class SparkIatClient extends WebSocketClient {
         this.readTimeout = builder.readTimeout;
         this.writeTimeout = builder.writeTimeout;
         this.pingInterval = builder.pingInterval;
-    }
-
-    public String getHostUrl() {
-        return originHostUrl;
-    }
-
-    public String getOriginHostUrl() {
-        return originHostUrl;
     }
 
     public String getLanguage() {
@@ -363,42 +357,6 @@ public class SparkIatClient extends WebSocketClient {
         return ln;
     }
 
-    public AbstractSignature getSignature() {
-        return signature;
-    }
-
-    public Request getRequest() {
-        return request;
-    }
-
-    public OkHttpClient getOkHttpClient() {
-        return okHttpClient;
-    }
-
-    public boolean isRetryOnConnectionFailure() {
-        return retryOnConnectionFailure;
-    }
-
-    public int getCallTimeout() {
-        return callTimeout;
-    }
-
-    public int getConnectTimeout() {
-        return connectTimeout;
-    }
-
-    public int getReadTimeout() {
-        return readTimeout;
-    }
-
-    public int getWriteTimeout() {
-        return writeTimeout;
-    }
-
-    public int getPingInterval() {
-        return pingInterval;
-    }
-
     public ExecutorService getExecutor() {
         return executor;
     }
@@ -426,14 +384,15 @@ public class SparkIatClient extends WebSocketClient {
         }
 
         // 创建webSocket连接
-        createWebSocketConnect(webSocketListener);
-        logger.debug("语音听写请求URL：{}", this.hostUrl);
+        WebSocket socket = newWebSocket(webSocketListener);
+        logger.debug("语音听写请求URL：{}", this.originHostUrl);
 
         // 大模型语音听写数据发送任务
         SparkIatSendTask sparkIatSendTask = new SparkIatSendTask();
         new SparkIatSendTask.Builder()
                 .inputStream(inputStream)
-                .webSocketClient(this)
+                .webSocket(socket)
+                .client(this)
                 .build(sparkIatSendTask);
 
         executor.submit(sparkIatSendTask);
@@ -450,13 +409,14 @@ public class SparkIatClient extends WebSocketClient {
         }
 
         // 创建webSocket连接
-        createWebSocketConnect(webSocketListener);
-        logger.debug("语音听写请求URL：{}", this.hostUrl);
+        WebSocket socket = newWebSocket(webSocketListener);
+        logger.debug("语音听写请求URL：{}", this.originHostUrl);
 
         SparkIatSendTask sparkIatSendTask = new SparkIatSendTask();
         new SparkIatSendTask.Builder()
                 .bytes(bytes)
-                .webSocketClient(this)
+                .webSocket(socket)
+                .client(this)
                 .closeable(closeable)
                 .build(sparkIatSendTask);
 
@@ -501,7 +461,7 @@ public class SparkIatClient extends WebSocketClient {
         private String textCompress = "raw";
         private String textFormat = "json";
         private String ln = "none";
-        private ExecutorService executor = Executors.newSingleThreadExecutor();
+        private ExecutorService executor;
 
         public SparkIatClient build() {
             return new SparkIatClient(this);

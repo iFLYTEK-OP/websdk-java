@@ -16,13 +16,13 @@ import java.util.concurrent.TimeUnit;
  *
  * @author <zyding6@ifytek.com>
  */
-public abstract class AbstractTask implements Runnable {
+public abstract class AbstractNlpTask implements Runnable {
 
-    private static final Logger logger = LoggerFactory.getLogger(AbstractTask.class);
-
-    protected WebSocket webSocket;
+    private static final Logger logger = LoggerFactory.getLogger(AbstractNlpTask.class);
 
     protected AbstractClient client;
+
+    protected WebSocket webSocket;
 
     /**
      * 间隔时间
@@ -42,14 +42,14 @@ public abstract class AbstractTask implements Runnable {
      */
     private boolean isDataEnd = false;
 
-    public AbstractTask build(Builder builder) {
+    public AbstractNlpTask build(Builder builder) {
         this.waitMillis = builder.waitMillis;
         this.bytes = builder.bytes;
         this.closeable = builder.closeable;
         this.inputStream = builder.inputStream;
         this.frameSize = builder.frameSize;
-        this.webSocket = builder.webSocket;
         this.client = builder.client;
+        this.webSocket = builder.webSocket;
         return this;
     }
 
@@ -111,6 +111,7 @@ public abstract class AbstractTask implements Runnable {
      *
      * @param contents 文本内容
      * @param isEnd    是否结束
+     * @param seq      数据块
      * @return 请求入参
      * @throws InterruptedException 线程异常
      */
@@ -119,12 +120,12 @@ public abstract class AbstractTask implements Runnable {
     public static final class Builder {
 
         private Integer waitMillis = 40;
+        private AbstractClient client;
         private WebSocket webSocket;
         private byte[] bytes;
         private Closeable closeable;
         private InputStream inputStream;
         private Integer frameSize = 1280;
-        private AbstractClient client;
 
         public Builder waitMillis(Integer waitMills) {
             this.waitMillis = waitMills;
@@ -161,7 +162,7 @@ public abstract class AbstractTask implements Runnable {
             return this;
         }
 
-        public void build(AbstractTask task) {
+        public void build(AbstractNlpTask task) {
             task.build(this);
         }
     }
