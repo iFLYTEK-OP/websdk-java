@@ -94,7 +94,7 @@ public abstract class AbstractTtsWebSocketListener extends WebSocketListener {
                             os.write(bytes);
                             os.flush();
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            logger.error("文件写入失败", e);
                         }
                         logger.info("session end ");
                         logger.info("合成的音频文件保存在：" + f.getPath());
@@ -105,7 +105,7 @@ public abstract class AbstractTtsWebSocketListener extends WebSocketListener {
                             os.close();
                         }
                     } catch (IOException e) {
-                        System.out.println(e.getMessage());
+                        logger.error("流关闭失败", e);
                         onBusinessFail(webSocket, new TtsResponse(-1, "IO Exception", null, null));
                     }
                 }

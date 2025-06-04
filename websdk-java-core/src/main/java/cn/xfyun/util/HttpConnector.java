@@ -171,7 +171,7 @@ public class HttpConnector {
         try {
             this.httpClient.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("连接池资源释放失败", e);
         }
     }
 

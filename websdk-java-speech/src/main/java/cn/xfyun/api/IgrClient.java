@@ -2,19 +2,27 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.WebSocketClient;
 import cn.xfyun.common.IgrConstant;
+import cn.xfyun.model.request.iat.IatBusiness;
+import cn.xfyun.model.request.iat.IatRequest;
+import cn.xfyun.model.request.iat.IatRequestData;
+import cn.xfyun.model.request.igr.IgrRequest;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.Hmac256Signature;
 import cn.xfyun.service.igr.IgrSendTask;
+import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okhttp3.internal.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
+import java.util.Base64;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -26,6 +34,8 @@ import java.util.concurrent.TimeUnit;
  * @create: 2021-06-01 16:56
  **/
 public class IgrClient extends WebSocketClient {
+
+    private static final Logger logger = LoggerFactory.getLogger(IatClient.class);
 
     /**
      * 公共参数，仅在握手成功后首帧请求时上传
@@ -39,17 +49,14 @@ public class IgrClient extends WebSocketClient {
      * 业务数据流参数，在握手成功后的所有请求中都需要上传
      */
     private JsonObject data;
-
     /**
      * 在平台申请的APPID信息
      */
     private String appId;
-
     /**
      * 引擎类型，目前仅支持igr
      */
     private String ent;
-
     /**
      * 音频格式
      * raw：原生音频数据pcm格式
@@ -59,12 +66,12 @@ public class IgrClient extends WebSocketClient {
      * amr-wb：宽频amr格式（rate需设置为16000）
      */
     private String aue;
-
     /**
      * 音频采样率 16000/8000,必填
      */
     private int rate;
     private Integer frameSize = IgrConstant.IGR_SIZE_FRAME;
+    private ExecutorService executorService;
 
     public IgrClient(Builder builder) {
         this.appId = builder.appId;
@@ -89,9 +96,55 @@ public class IgrClient extends WebSocketClient {
         this.readTimeout = builder.readTimeout;
         this.writeTimeout = builder.writeTimeout;
         this.pingInterval = builder.pingInterval;
+        this.executorService = (null == builder.executorService) ? Executors.newSingleThreadExecutor() : builder.executorService;
     }
 
-    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
+    /**
+     * 听写服务端启动
+     */
+    public void start(WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+        // 创建webSocket连接
+        createWebSocketConnect(webSocketListener);
+    }
+
+    /**
+     * 听写发送数据
+     */
+    public void sendMessage(byte[] bytes, Integer status) {
+        // 发送数据,请求数据均为json字符串
+        IgrRequest frame = new IgrRequest();
+
+        // 填充data，每一帧都要发送
+        JsonObject data = new JsonObject();
+        data.addProperty("status", status);
+        if (bytes == null || bytes.length == 0) {
+            data.addProperty("audio", "");
+        } else {
+            data.addProperty("audio", Base64.getEncoder().encodeToString(bytes));
+        }
+        frame.setData(data);
+
+        // 第一帧才需要的参数
+        if (0 == status) {
+            // 填充common,只有第一帧需要
+            JsonObject common = new JsonObject();
+            common.addProperty("app_id", appId);
+
+            // 填充business,第一帧必须发送
+            JsonObject business = new JsonObject();
+            business.addProperty("ent", ent);
+            business.addProperty("aue", aue);
+            business.addProperty("rate", rate);
+
+            // 填充frame
+            frame.setCommon(common);
+            frame.setBusiness(business);
+        }
+
+        String json = StringUtils.gson.toJson(frame);
+        logger.debug("性别年龄识别请求入参：{}", json);
+        webSocket.send(json);
+    }
 
     /**
      * 发送音频文件给性别年龄识别服务端
@@ -100,7 +153,7 @@ public class IgrClient extends WebSocketClient {
      * @throws FileNotFoundException
      */
     public void send(File file, WebSocketListener webSocketListener) throws FileNotFoundException, MalformedURLException, SignatureException {
-        //createWebSocketConnect(webSocketListener);
+        // createWebSocketConnect(webSocketListener);
         FileInputStream fileInputStream = new FileInputStream(file);
         send(fileInputStream, webSocketListener);
     }
@@ -112,7 +165,7 @@ public class IgrClient extends WebSocketClient {
      * @throws FileNotFoundException
      */
     public void send(String data, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
-        //createWebSocketConnect(webSocketListener);
+        // createWebSocketConnect(webSocketListener);
         InputStream inputStream = new ByteArrayInputStream(data.getBytes());
         send(inputStream, webSocketListener);
     }
@@ -247,7 +300,7 @@ public class IgrClient extends WebSocketClient {
         private String appId;
         private String ent = "igr";
         private String aue;
-        //设置个兜底值8000
+        // 设置个兜底值8000
         private int rate = 8000;
 
         private String hostUrl = IgrConstant.HOST_URL;
@@ -258,6 +311,7 @@ public class IgrClient extends WebSocketClient {
 
         private Request request;
         private OkHttpClient client;
+        private ExecutorService executorService;
 
         // websocket相关
         boolean retryOnConnectionFailure = true;
@@ -372,6 +426,11 @@ public class IgrClient extends WebSocketClient {
 
         public IgrClient.Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
             this.retryOnConnectionFailure = retryOnConnectionFailure;
+            return this;
+        }
+
+        public IgrClient.Builder executorService(ExecutorService executorService) {
+            this.executorService = executorService;
             return this;
         }
     }
