@@ -12,9 +12,11 @@
 
 ## 功能列表
 
-| 方法名 | 功能说明                                           |
-| ------ | -------------------------------------------------- |
-| send() | websocket调用 , 支持字节数组,文件流,文件等方式调用 |
+| 方法名        | 功能说明                                           |
+| ------------- | -------------------------------------------------- |
+| send()        | websocket调用 , 支持字节数组,文件流,文件等方式调用 |
+| start()       | 大模型转写服务启动 (ws超时会自动断开)              |
+| sendMessage() | 大模型转写发送数据                                 |
 
 ## 使用准备
 
@@ -33,7 +35,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-spark</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.1.2</version>
+    <version>2.1.3</version>
 </dependency>
 ```
 
@@ -167,6 +169,37 @@ public void send(byte[] bytes, Closeable closeable, WebSocketListener webSocketL
 | webSocketListener | Object | 自定义ws抽象监听类（可使用sdk提供的**AbstractSparkIatWebSocketListener**） | Y    |        |
 
 **响应示例**：见1响应
+
+### 4. 启动大模型转写服务
+
+```java
+public WebSocket start(WebSocketListener webSocketListener) throws MalformedURLException, SignatureException
+```
+
+**参数说明**：
+
+|       名称        |  类型  |                             描述                             | 必须 | 默认值 |
+| :---------------: | :----: | :----------------------------------------------------------: | ---- | ------ |
+| webSocketListener | Object | 自定义ws抽象监听类（可使用sdk提供的**AbstractSparkIatWebSocketListener**） | Y    |        |
+
+**响应参数**：返回websocket ， 可用于方法5的消息发送
+
+### 5. 大模型转写服务发送消息
+
+```java
+public void sendMessage(WebSocket webSocket, byte[] bytes, Integer status, Integer seq)
+```
+
+**参数说明**：
+
+|   名称    |  类型  |                    描述                     | 必须 | 默认值 |
+| :-------: | :----: | :-----------------------------------------: | ---- | ------ |
+| webSocket | Object |              方法4返回的ws对象              | Y    |        |
+|   bytes   | array  |                语音片段数据                 | Y    |        |
+|  status   |  int   | 当前发送状态0（开始）、1（继续）、2（结束） | Y    |        |
+|    seq    |  int   |          当前音频数据序号 0-999999          | N    |        |
+
+**响应参数**：返回websocket ， 可用于方法5的消息发送
 
 ---
 

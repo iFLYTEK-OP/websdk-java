@@ -1,17 +1,23 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.WebSocketClient;
+import cn.xfyun.model.request.ise.IseBusiness;
+import cn.xfyun.model.request.ise.IseRequest;
+import cn.xfyun.model.request.ise.IseRequestData;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.RtasrSignature;
 import cn.xfyun.service.rta.AbstractRtasrWebSocketListener;
 import cn.xfyun.service.rta.RtasrSendTask;
 import cn.xfyun.util.StringUtils;
+import com.google.gson.JsonObject;
 import okhttp3.*;
 import okhttp3.internal.Util;
+import okio.ByteString;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -152,19 +158,37 @@ public class RtasrClient extends WebSocketClient {
     }
 
     /**
+     * 语音评测服务端启动
+     */
+    public void start(WebSocketListener webSocketListener) throws SignatureException {
+        // 创建webSocket连接
+        createWebSocketConnect(webSocketListener);
+    }
+
+    /**
+     * 语音评测发送数据
+     */
+    public void sendMessage(byte[] bytes) {
+        if (null == bytes) {
+            webSocket.send("");
+        } else {
+            webSocket.send(ByteString.of(bytes));
+        }
+    }
+
+    /**
      *   发送pcm流
      *
      * @param inputStream
      * @throws InterruptedException
      */
     public void send(InputStream inputStream, AbstractRtasrWebSocketListener webSocketListener) throws SignatureException {
+        if (inputStream == null) {
+            return;
+        }
         // 创建webSocket连接
         createWebSocketConnect(webSocketListener);
 
-        if (inputStream == null) {
-            webSocket.close(1000, null);
-            return;
-        }
         // 实时语音转写数据发送任务
         RtasrSendTask rtasrSendTask = new RtasrSendTask();
         new RtasrSendTask.Builder()

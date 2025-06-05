@@ -3,6 +3,8 @@ package cn.xfyun.model.sign;
 import cn.xfyun.config.ModeType;
 import cn.xfyun.util.CryptTools;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -24,6 +26,8 @@ import java.util.*;
  * @date 2021/7/1 9:56
  */
 public class Signature {
+
+    private static final Logger logger = LoggerFactory.getLogger(Signature.class);
 
     /**
      * 请求签名方式
@@ -110,7 +114,7 @@ public class Signature {
             messageDigest.update(body.getBytes("UTF-8"));
             encodestr = Base64.getEncoder().encodeToString(messageDigest.digest());
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("对body进行SHA-256加密失败", e);
         }
         return encodestr;
     }
@@ -159,7 +163,7 @@ public class Signature {
             String signature = CryptTools.hmacEncrypt(CryptTools.HMAC_SHA1, CryptTools.md5Encrypt(appId + ts), key);
             return url + "?appid=" + appId + "&ts=" + ts + "&signa=" + URLEncoder.encode(signature, "UTF-8");
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("rtasrSignature error", e);
         }
         return "";
     }

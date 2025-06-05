@@ -1,9 +1,12 @@
 package cn.xfyun.service.rta;
 
 import cn.xfyun.api.RtasrClient;
+import cn.xfyun.util.HttpConnector;
 import cn.xfyun.util.IOCloseUtil;
 import okhttp3.WebSocket;
 import okio.ByteString;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.Closeable;
 import java.io.IOException;
@@ -16,6 +19,8 @@ import java.util.Arrays;
  * @date 2021/4/8 14:27
  */
 public class RtasrSendTask implements Runnable {
+
+	private static final Logger log = LoggerFactory.getLogger(RtasrSendTask.class);
 
 	protected WebSocket webSocket;
 	/**
@@ -51,7 +56,7 @@ public class RtasrSendTask implements Runnable {
 				sendByBytes(bytes);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("ws消息发送失败", e);
 		} finally {
 			IOCloseUtil.close(closeable);
 			IOCloseUtil.close(inputStream);

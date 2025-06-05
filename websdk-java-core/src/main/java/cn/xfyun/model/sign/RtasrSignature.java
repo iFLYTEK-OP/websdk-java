@@ -2,6 +2,8 @@ package cn.xfyun.model.sign;
 
 
 import cn.xfyun.util.CryptTools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URLEncoder;
 
@@ -12,6 +14,7 @@ import java.net.URLEncoder;
  */
 public class RtasrSignature extends AbstractSignature{
 
+	private static final Logger logger = LoggerFactory.getLogger(RtasrSignature.class);
 
 	public RtasrSignature(String id, String key) {
 		super(id, key, null);
@@ -26,7 +29,7 @@ public class RtasrSignature extends AbstractSignature{
 			signa = CryptTools.hmacEncrypt(CryptTools.HMAC_SHA1, CryptTools.md5Encrypt(id + ts), key);
 			return "?appid=" + id + "&ts=" + ts + "&signa=" + URLEncoder.encode(signa, "UTF-8");
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error("签名失败", e);
 		}
 
 		return "";
