@@ -37,33 +37,27 @@ public class ImageWordClient extends PlatformHttpClient {
 
     /**
      * @param imageBase64   图片base64信息
-     * @param encoding      编码
-     * @param imageWordEnum 识别类型
+     * @param format      编码
      * @return 返回结果
      * @throws IOException 异常信息
      */
-    public String imageWord(String imageBase64, String encoding, ImageWordEnum imageWordEnum) throws IOException {
+    public String imageWord(String imageBase64, String format) throws IOException {
         // 获取鉴权后的URL
         String signUrl = Signature.signHostDateAuthorization(hostUrl + serviceId, "POST", apiKey, apiSecret);
 
         // 请求体
-        String body = bodyParam(imageBase64, encoding, imageWordEnum);
+        String body = bodyParam(imageBase64, encoding);
 
         // 发送请求
         return sendPost(signUrl, JSON, body);
     }
 
-    public String imageWord(String imageBase64, String encoding) throws IOException {
-        return imageWord(imageBase64, encoding, null);
-    }
-
     /**
      * 构建参数
      */
-    private String bodyParam(String imageBase64, String encoding, ImageWordEnum imageWordEnum) {
-        ImageWordEnum finalEnum = (null == imageWordEnum) ? this.imageWordEnum : imageWordEnum;
-        if (null == finalEnum) {
-            throw new BusinessException("ImageWordEnum is null");
+    private String bodyParam(String imageBase64, String encoding) {
+        if (null == imageWordEnum) {
+            throw new BusinessException("识别类型不能为空");
         }
 
         JsonObject jso = new JsonObject();
@@ -74,12 +68,12 @@ public class ImageWordClient extends PlatformHttpClient {
         JsonObject service = new JsonObject();
         service.add("result", buildResult());
 
-        if (finalEnum.equals(ImageWordEnum.COMMON_WORD)) {
+        if (imageWordEnum.equals(ImageWordEnum.COMMON_WORD)) {
 
             // 通用文字识别
             service.addProperty("category", "ch_en_public_cloud");
 
-        } else if (finalEnum.equals(ImageWordEnum.PRINTED_WORD)) {
+        } else if (imageWordEnum.equals(ImageWordEnum.PRINTED_WORD)) {
 
             // 印刷文字多语种
             service.addProperty("category", "mix0");
@@ -87,7 +81,7 @@ public class ImageWordClient extends PlatformHttpClient {
         } else {
 
             // others
-            service.addProperty("template_list", finalEnum.getTemplateList());
+            service.addProperty("template_list", imageWordEnum.getTemplateList());
 
         }
 
@@ -100,10 +94,10 @@ public class ImageWordClient extends PlatformHttpClient {
         inputImage1.addProperty("encoding", encoding);
         inputImage1.addProperty("image", imageBase64);
         inputImage1.addProperty("status", status);
-        payload.add(finalEnum.getPayload(), inputImage1);
+        payload.add(imageWordEnum.getPayload(), inputImage1);
         jso.add("payload", payload);
 
-        logger.debug("{} 请求入参: {}", finalEnum.getName(), jso);
+        logger.debug("{} 请求入参: {}", imageWordEnum.getName(), jso);
         return jso.toString();
     }
 

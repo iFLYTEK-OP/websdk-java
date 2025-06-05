@@ -17,11 +17,14 @@ import okhttp3.WebSocket;
 import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
-import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.security.SignatureException;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 /**
  * （Picture Document Reconstruction）图片文档还原 Client
@@ -113,9 +116,20 @@ public class PDRecClient extends AbstractClient {
         newWebSocket(getWebSocketListener(param, future));
 
         // 等待socket完成
+        return getBytes(future);
+    }
+
+    /**
+     * 获取结果
+     */
+    private byte[] getBytes(CompletableFuture<byte[]> future) throws SocketTimeoutException {
         try {
-            return future.get();
-        } catch (Exception e) {
+            return future.get(this.readTimeout, TimeUnit.MILLISECONDS);
+        } catch (TimeoutException e) {
+            throw new SocketTimeoutException("请求超时");
+        } catch (ExecutionException e) {
+            throw new BusinessException(e.getMessage());
+        } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
     }
@@ -141,7 +155,7 @@ public class PDRecClient extends AbstractClient {
             @Override
             public void onSuccess(byte[] bytes) {
                 if (null != param.getDstFile()) {
-                    logger.debug("图片存储成功：{}", param.getDstFile().getAbsolutePath());
+                    logger.debug("File saved at: {}", param.getDstFile().getAbsolutePath());
                 }
                 future.complete(bytes);
             }
@@ -165,7 +179,7 @@ public class PDRecClient extends AbstractClient {
                 String message = response.getHeader().getMessage();
                 Integer code = response.getHeader().getCode();
                 if (!future.isDone()) {
-                    future.completeExceptionally(new BusinessException(String.format("Error: %s (CODE=%s)", message, code)));
+                    future.completeExceptionally(new Throwable(String.format("Error: %s (CODE=%s)", message, code)));
                 }
                 webSocket.close(1011, "业务处理失败");
             }
@@ -253,7 +267,7 @@ public class PDRecClient extends AbstractClient {
          */
         private String format = "plain";
 
-        public PDRecClient build() throws MalformedURLException, SignatureException {
+        public PDRecClient build() {
             return new PDRecClient(this);
         }
 

@@ -5,7 +5,6 @@ import cn.xfyun.base.http.HttpClient;
 import cn.xfyun.config.IdcardEnum;
 import cn.xfyun.config.IntsigRecgEnum;
 import cn.xfyun.exception.BusinessException;
-import cn.xfyun.model.intsigocr.IntsigParam;
 import cn.xfyun.model.sign.Signature;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
@@ -82,50 +81,42 @@ public class IntsigOcrClient extends HttpClient {
      * @throws IOException 请求异常
      */
     public String intsigRecg(String imageBase64) throws IOException {
-        // 封装通用入参
-        IntsigParam param = IntsigParam.builder().imageBase64(imageBase64).build();
-
         // 发送请求
-        return intsigRecg(param);
+        return intsigRecg(imageBase64, null);
     }
 
     /**
-     * @param param 入参
+     * @param imageBase64 入参
+     * @param format      入参
      * @return 返回结果
      * @throws IOException 异常信息
      */
-    public String intsigRecg(IntsigParam param) throws IOException {
+    public String intsigRecg(String imageBase64, String format) throws IOException {
         // 参数校验
-        paramCheck(param);
-
-        // 校验参数是否为空， 如果为空则取builder的参数
-        IntsigRecgEnum finalEnum = (null == param.getIntsigRecgEnum()) ?
-                this.intsigRecgEnum : param.getIntsigRecgEnum();
+        paramCheck(imageBase64);
 
         // 参数初始化
-        String body = buildParam(param);
+        String body = buildParam(imageBase64, format);
 
-        if (finalEnum.equals(IntsigRecgEnum.COMMON_WORD)) {
+        if (intsigRecgEnum.equals(IntsigRecgEnum.COMMON_WORD)) {
             // 获取鉴权URL
             String signUrl = Signature.signHostDateAuthorization(
-                    Builder.COMMON_WORD_URL + finalEnum.getValue(), "POST", apiKey, apiSecret);
+                    Builder.COMMON_WORD_URL + intsigRecgEnum.getValue(), "POST", apiKey, apiSecret);
             return sendPost(signUrl, JSON, body);
         } else {
             // 获取鉴权头
             Map<String, String> header = Signature.signHttpHeaderCheckSum(appId, apiKey, body);
-            return sendPost(hostUrl + finalEnum.getValue(), FORM, header, "image=" + param.getImageBase64());
+            return sendPost(hostUrl + intsigRecgEnum.getValue(), FORM, header, "image=" + imageBase64);
         }
     }
 
     /**
      * 参数校验
      */
-    private void paramCheck(IntsigParam param) {
-        if (null == param) {
-            throw new BusinessException("参数不能为空");
-        } else if (StringUtils.isNullOrEmpty(param.getImageBase64())) {
+    private void paramCheck(String imageBase64) {
+        if (StringUtils.isNullOrEmpty(imageBase64)) {
             throw new BusinessException("需要识别的图片信息不能为空");
-        } else if (null == param.getIntsigRecgEnum() && null == this.intsigRecgEnum) {
+        } else if (null == this.intsigRecgEnum) {
             throw new BusinessException("识别类型不能为空");
         }
     }
@@ -133,11 +124,7 @@ public class IntsigOcrClient extends HttpClient {
     /**
      * 构建参数
      */
-    private String buildParam(IntsigParam intsigParam) {
-        IntsigRecgEnum intsigRecgEnum = intsigParam.getIntsigRecgEnum();
-        String imageFormat = intsigParam.getImageFormat();
-        String imageBase64 = intsigParam.getImageBase64();
-
+    private String buildParam(String imageBase64, String format) {
         JsonObject jsonObject = new JsonObject();
         if (intsigRecgEnum.equals(IntsigRecgEnum.IDCARD)) {
             jsonObject.addProperty("engine_type", intsigRecgEnum.getValue());
@@ -166,7 +153,7 @@ public class IntsigOcrClient extends HttpClient {
             // payload
             JsonObject payload = new JsonObject();
             JsonObject inputImage1 = new JsonObject();
-            inputImage1.addProperty("encoding", imageFormat);
+            inputImage1.addProperty("encoding", format);
             inputImage1.addProperty("image", imageBase64);
             inputImage1.addProperty("status", 3);
             payload.add("image", inputImage1);

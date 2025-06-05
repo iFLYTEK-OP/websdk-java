@@ -103,7 +103,7 @@ public abstract class AbstractPDRecWebSocketListener extends WebSocketListener {
             try (FileOutputStream fos = outputStream) {
                 fos.write(bytes);
                 fos.flush();
-                logger.info("File saved at: {}", file.getPath());
+                logger.debug("File saved at: {}", file.getPath());
             } catch (IOException e) {
                 logger.error("Error writing document file", e);
                 onBusinessFail(webSocket, new PDRecResponse(-1, "File Write Error"));
@@ -116,7 +116,6 @@ public abstract class AbstractPDRecWebSocketListener extends WebSocketListener {
     private void closeWebSocket(WebSocket webSocket) {
         try {
             webSocket.close(1000, "");
-            logger.warn("WebSocket closed.");
         } catch (Exception e) {
             logger.warn("Error closing WebSocket", e);
         }
@@ -124,7 +123,7 @@ public abstract class AbstractPDRecWebSocketListener extends WebSocketListener {
 
     @Override
     public void onClosed(WebSocket webSocket, int code, String reason) {
-        logger.warn("WebSocket closed with code: {}, reason: {}", code, reason);
+        // logger.warn("WebSocket closed with code: {}, reason: {}", code, reason);
         onClose(webSocket, code, reason);
     }
 

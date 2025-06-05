@@ -12,7 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 
 /**
- * 通用票证识别 Client
+ * 国内通用票证识别sinosecu Client
  * 文档地址: <a href="https://www.xfyun.cn/doc/words/invoiceIdentification/API.html">...</a>
  *
  * @author zyding6
@@ -31,7 +31,7 @@ public class SinoOCRClient extends PlatformHttpClient {
      * @return 返回结果
      * @throws IOException 请求异常信息
      */
-    public String execute(String imgBase64, String imgFormat) throws IOException {
+    public String send(String imgBase64, String imgFormat) throws IOException {
         if (StringUtils.isNullOrEmpty(imgBase64)) {
             throw new BusinessException("图片内容不能为空");
         }

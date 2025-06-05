@@ -3,18 +3,18 @@ package cn.xfyun.api;
 import cn.xfyun.base.http.platform.PlatformBuilder;
 import cn.xfyun.base.http.platform.PlatformHttpClient;
 import cn.xfyun.config.DocumentType;
+import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sign.Signature;
 import cn.xfyun.model.ticket.TicketOCRParam;
 import cn.xfyun.model.ticket.request.TicketOCRRequest;
 import cn.xfyun.util.StringUtils;
-import com.sun.istack.internal.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
 /**
- * 通用票证识别 Client
+ * 票据卡证识别 Client
  * 文档地址: <a href="https://www.xfyun.cn/doc/words/TicketIdentification/API.html">...</a>
  *
  * @author zyding6
@@ -32,15 +32,25 @@ public class TicketOCRClient extends PlatformHttpClient {
      * @return 返回结果
      * @throws IOException 请求异常信息
      */
-    public String execute(@NotNull TicketOCRParam param) throws IOException {
+    public String send(TicketOCRParam param) throws IOException {
         // 参数校验
-        param.selfCheck();
+        paramCheck(param);
 
         // 构建签名URL
-        String signUrl = Signature.signHostDateAuthorization(
-                hostUrl, "POST", apiKey, apiSecret);
+        String signUrl = Signature.signHostDateAuthorization(hostUrl, "POST", apiKey, apiSecret);
 
+        // 发送请求
         return sendPost(signUrl, JSON, bodyParam(param));
+    }
+
+    /**
+     * 参数校验
+     */
+    private void paramCheck(TicketOCRParam param) {
+        if (null == param) {
+            throw new BusinessException("请求参数不能为空");
+        }
+        param.selfCheck();
     }
 
     /**

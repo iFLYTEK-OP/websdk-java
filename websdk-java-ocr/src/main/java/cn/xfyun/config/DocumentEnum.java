@@ -30,4 +30,13 @@ public enum DocumentEnum {
         }
         return null;
     }
+
+    public static String getDescByCode(String code) {
+        for (DocumentEnum documentEnum : DocumentEnum.values()) {
+            if (documentEnum.getCode().equals(code)) {
+                return documentEnum.getDesc();
+            }
+        }
+        return null;
+    }
 } 
