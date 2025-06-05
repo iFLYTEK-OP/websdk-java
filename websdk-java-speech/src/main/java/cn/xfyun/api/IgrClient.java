@@ -114,16 +114,6 @@ public class IgrClient extends WebSocketClient {
         // 发送数据,请求数据均为json字符串
         IgrRequest frame = new IgrRequest();
 
-        // 填充data，每一帧都要发送
-        JsonObject data = new JsonObject();
-        data.addProperty("status", status);
-        if (bytes == null || bytes.length == 0) {
-            data.addProperty("audio", "");
-        } else {
-            data.addProperty("audio", Base64.getEncoder().encodeToString(bytes));
-        }
-        frame.setData(data);
-
         // 第一帧才需要的参数
         if (0 == status) {
             // 填充common,只有第一帧需要
@@ -140,6 +130,16 @@ public class IgrClient extends WebSocketClient {
             frame.setCommon(common);
             frame.setBusiness(business);
         }
+
+        // 填充data，每一帧都要发送
+        JsonObject data = new JsonObject();
+        data.addProperty("status", status);
+        if (bytes == null || bytes.length == 0) {
+            data.addProperty("audio", "");
+        } else {
+            data.addProperty("audio", Base64.getEncoder().encodeToString(bytes));
+        }
+        frame.setData(data);
 
         String json = StringUtils.gson.toJson(frame);
         logger.debug("性别年龄识别请求入参：{}", json);

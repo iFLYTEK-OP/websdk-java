@@ -299,7 +299,7 @@ public class IseClient extends WebSocketClient {
                 frame.setData(continueDate);
                 webSocket.send(StringUtils.gson.toJson(frame));
                 break;
-            // 最后一帧音频status = 2,志音频发送结束
+            // 最后一帧音频status = 2, 标志音频发送结束
             case 2:
                 IseBusiness lastBusiness = new IseBusiness();
                 if (!business.isTtp_skip()) {
