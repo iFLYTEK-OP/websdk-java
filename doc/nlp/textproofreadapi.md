@@ -27,9 +27,9 @@
 ```xml
 <dependency>
     <groupId>cn.xfyun</groupId>
-    <artifactId>websdk-java-spark</artifactId>
+    <artifactId>websdk-java-nlp</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.6</version>
+    <version>2.0.7</version>
 </dependency>
 ```
 
@@ -137,26 +137,26 @@ public String send(String text) throws IOException
 
 ### 错误能力ID对照表
 
-| 错误能力ID（belongId） | 说明                   |
-| ---------------------- | ---------------------- |
-| 9                      | 错别字、词             |
-| 31                     | 多字错误               |
-| 32                     | 少字错误               |
-| 35                     | 语义重复               |
-| 34                     | 语序错误               |
-| 39                     | 量和单位差错           |
-| 36                     | 数字差错               |
-| 20                     | 句式杂糅               |
-| 21                     | 标点符号差错           |
-| 24                     | 句子查重               |
-| 119                    | 重要讲话引用           |
-| 123                    | 地理名词               |
-| 19                     | 机构名称               |
-| 124                    | 专有名词及术语         |
-| 122                    | 媒体报道禁用词和慎用词 |
-| 6                      | 常识差错               |
-| 111                    | 涉低俗辱骂             |
-| 118                    | 其他敏感内容           |
+| 错误能力ID（belongId） | 说明                                                         |
+| ---------------------- | ------------------------------------------------------------ |
+| 9                      | 错别字、词                                                   |
+| 31                     | 多字错误                                                     |
+| 32                     | 少字错误                                                     |
+| 35                     | 语义重复                                                     |
+| 34                     | 语序错误                                                     |
+| 39                     | 量和单位差错                                                 |
+| 36                     | 数字差错                                                     |
+| 20                     | 句式杂糅                                                     |
+| 21                     | 标点符号差错                                                 |
+| 24                     | 句子查重                                                     |
+| 119                    | 重要讲话引用                                                 |
+| 123                    | 地理名词                                                     |
+| 19                     | 机构名称                                                     |
+| 124                    | 专有名词及术语                                               |
+| 122                    | 媒体报道禁用词和慎用词                                       |
+| 6                      | xxxxxxxxxx try {    String result = client.create(createReq);} catch (BusinessException e) {    System.err.println("业务异常：" + e.getMessage());} catch (IOException e) {    System.err.println("网络请求失败：" + e.getMessage());} catch (SignatureException e) {    System.err.println("鉴权失败：" + e.getMessage());}java |
+| 111                    | 涉低俗辱骂                                                   |
+| 118                    | 其他敏感内容                                                 |
 
 
 
