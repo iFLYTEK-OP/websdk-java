@@ -1,6 +1,8 @@
 package config;
 
 import cn.xfyun.util.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -13,6 +15,8 @@ import java.util.Properties;
  * @date : 2021年04月02日
  */
 public class PropertiesConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(PropertiesConfig.class);
     private static final String appId;
     private static final String ltpClientApiKey;
     private static final String saClientApiKey;
@@ -41,7 +45,7 @@ public class PropertiesConfig {
         try {
             properties.load(new FileInputStream(PropertiesConfig.class.getResource("/").getPath() + "test.properties"));
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("加载配置文件失败", e);
         }
         appId = StringUtils.isNullOrEmpty(properties.getProperty("appId")) ? System.getenv("appId") : properties.getProperty("appId");
         ltpClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("ltpClientApiKey")) ? System.getenv("ltpClientApiKey") : properties.getProperty("ltpClientApiKey");

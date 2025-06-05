@@ -29,9 +29,9 @@
 ```xml
 <dependency>
     <groupId>cn.xfyun</groupId>
-    <artifactId>websdk-java-spark</artifactId>
+    <artifactId>websdk-java-nlp</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.1.2</version>
+    <version>2.0.7</version>
 </dependency>
 ```
 
