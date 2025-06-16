@@ -1,17 +1,25 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.WebSocketClient;
+import cn.xfyun.model.request.iat.IatBusiness;
+import cn.xfyun.model.request.iat.IatRequest;
+import cn.xfyun.model.request.iat.IatRequestData;
 import cn.xfyun.service.iat.IatSendTask;
 import cn.xfyun.model.sign.AbstractSignature;
+import cn.xfyun.util.StringUtils;
+import com.google.gson.JsonObject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okhttp3.internal.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
+import java.util.Base64;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -23,16 +31,16 @@ import java.util.concurrent.TimeUnit;
  */
 public class IatClient extends WebSocketClient {
 
+    private static final Logger logger = LoggerFactory.getLogger(IatClient.class);
     /**
      * 小语种
      */
     private static final String SMALL_LANGUAGE = "http://iat-niche-api.xfyun.cn/v2/iat";
-
     /**
      * 中英文
      */
     private static final String CH_EN_LANGUAGE = "http://iat-api.xfyun.cn/v2/iat";
-    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private ExecutorService executorService;
     /**
      * 语种
      * zh_cn：中文（支持简单的英文识别）
@@ -177,6 +185,49 @@ public class IatClient extends WebSocketClient {
         this.readTimeout = builder.readTimeout;
         this.writeTimeout = builder.writeTimeout;
         this.pingInterval = builder.pingInterval;
+        this.executorService = (null == builder.executorService) ? Executors.newSingleThreadExecutor() : builder.executorService;
+    }
+
+    /**
+     * 听写服务端启动
+     */
+    public void start(WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+        // 创建webSocket连接
+        createWebSocketConnect(webSocketListener);
+    }
+
+    /**
+     * 听写发送数据
+     */
+    public void sendMessage(byte[] bytes, Integer status) {
+        // 发送数据,请求数据均为json字符串
+        IatRequest frame = new IatRequest();
+
+        // 第一帧需要的参数
+        if (0 == status) {
+            // 第一帧必须发送的参数
+            JsonObject common = new JsonObject();
+            // 填充common，第一帧必须发送
+            common.addProperty("app_id", appId);
+            frame.setCommon(common);
+            // 填充business，第一帧必须发送
+            IatBusiness business = new IatBusiness(this);
+            frame.setBusiness(business);
+        }
+
+        // 填充data，每一帧都要发送
+        IatRequestData data = new IatRequestData(this);
+        data.setStatus(status);
+        if (bytes == null || bytes.length == 0) {
+            data.setAudio("");
+        } else {
+            data.setAudio(Base64.getEncoder().encodeToString(bytes));
+        }
+        frame.setData(data);
+
+        String json = StringUtils.gson.toJson(frame);
+        logger.debug("语音听写请求入参：{}", json);
+        webSocket.send(json);
     }
 
     /**
@@ -186,7 +237,6 @@ public class IatClient extends WebSocketClient {
      * @throws FileNotFoundException
      */
     public void send(File file, WebSocketListener webSocketListener) throws FileNotFoundException, MalformedURLException, SignatureException {
-        createWebSocketConnect(webSocketListener);
         FileInputStream fileInputStream = new FileInputStream(file);
         send(fileInputStream, webSocketListener);
     }
@@ -197,12 +247,11 @@ public class IatClient extends WebSocketClient {
      * @param inputStream 需要发送的流
      */
     public void send(InputStream inputStream, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
-        // 创建webSocket连接
-        createWebSocketConnect(webSocketListener);
         if (inputStream == null) {
-            webSocket.close(1000, null);
             return;
         }
+        // 创建webSocket连接
+        createWebSocketConnect(webSocketListener);
 
         // 语音听写数据发送任务
         IatSendTask iatSendTask = new IatSendTask();
@@ -220,11 +269,11 @@ public class IatClient extends WebSocketClient {
      * @param closeable 需要关闭的流，可为空
      */
     public void send(byte[] bytes, Closeable closeable, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
-        createWebSocketConnect(webSocketListener);
         if (bytes == null || bytes.length == 0) {
-            webSocket.close(1000, null);
             return;
         }
+        // 创建webSocket连接
+        createWebSocketConnect(webSocketListener);
 
         IatSendTask iatSendTask = new IatSendTask();
         new IatSendTask.Builder()
@@ -242,18 +291,6 @@ public class IatClient extends WebSocketClient {
 
     public String getOriginHostUrl() {
         return originHostUrl;
-    }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public String getApiSecret() {
-        return apiSecret;
-    }
-
-    public String getApiKey() {
-        return apiKey;
     }
 
     public String getLanguage() {
@@ -332,11 +369,6 @@ public class IatClient extends WebSocketClient {
         return okHttpClient;
     }
 
-    @Override
-    public WebSocket getWebSocket() {
-        return webSocket;
-    }
-
     public boolean isRetryOnConnectionFailure() {
         return retryOnConnectionFailure;
     }
@@ -389,6 +421,7 @@ public class IatClient extends WebSocketClient {
         private Integer nbest;
         private Integer wbest;
         private Integer frameSize = 1280;
+        private ExecutorService executorService;
 
         public IatClient build() {
             return new IatClient(this);
@@ -522,6 +555,11 @@ public class IatClient extends WebSocketClient {
 
         public IatClient.Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
             this.retryOnConnectionFailure = retryOnConnectionFailure;
+            return this;
+        }
+
+        public IatClient.Builder executorService(ExecutorService executorService) {
+            this.executorService = executorService;
             return this;
         }
 

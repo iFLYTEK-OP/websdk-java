@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Closeable;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author <ydwang16@iflytek.com>
@@ -62,7 +63,7 @@ public abstract class AbstractTimedTask implements Runnable {
                     String data = businessDataProcess(isDataEnd ? null : Arrays.copyOf(buffer, readLength), isDataEnd);
                     webSocketClient.getWebSocket().send(data);
 
-                    Thread.sleep(waitMillis);
+                    TimeUnit.MILLISECONDS.sleep(waitMillis);
                 } while (!isDataEnd);
             } else {
                 // 针对于byte数组的操作
@@ -81,7 +82,7 @@ public abstract class AbstractTimedTask implements Runnable {
                             logger.info("数据发送完毕!");
                             break;
                         }
-                        Thread.sleep(waitMillis);
+                        TimeUnit.MILLISECONDS.sleep(waitMillis);
                     }
 
                 }

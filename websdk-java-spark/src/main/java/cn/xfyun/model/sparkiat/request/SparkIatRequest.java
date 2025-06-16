@@ -54,9 +54,9 @@ public class SparkIatRequest {
 
         @SerializedName("app_id")
         private String appId;
-        private int status;
+        private Integer status;
 
-        public Header(String appId, int status) {
+        public Header(String appId, Integer status) {
             this.appId = appId;
             this.status = status;
         }
@@ -72,11 +72,11 @@ public class SparkIatRequest {
             this.appId = appId;
         }
 
-        public int getStatus() {
+        public Integer getStatus() {
             return status;
         }
 
-        public void setStatus(int status) {
+        public void setStatus(Integer status) {
             this.status = status;
         }
     }
@@ -158,20 +158,52 @@ public class SparkIatRequest {
             public Iat() {
             }
 
-            public String getLn() {
-                return ln;
+            public String getDomain() {
+                return domain;
             }
 
-            public void setLn(String ln) {
-                this.ln = ln;
+            public void setDomain(String domain) {
+                this.domain = domain;
+            }
+
+            public String getLanguage() {
+                return language;
+            }
+
+            public void setLanguage(String language) {
+                this.language = language;
+            }
+
+            public String getAccent() {
+                return accent;
+            }
+
+            public void setAccent(String accent) {
+                this.accent = accent;
+            }
+
+            public Integer getEos() {
+                return eos;
             }
 
             public void setEos(Integer eos) {
                 this.eos = eos;
             }
 
+            public Integer getVinfo() {
+                return vinfo;
+            }
+
             public void setVinfo(Integer vinfo) {
                 this.vinfo = vinfo;
+            }
+
+            public String getDwa() {
+                return dwa;
+            }
+
+            public void setDwa(String dwa) {
+                this.dwa = dwa;
             }
 
             public Integer getNbest() {
@@ -222,19 +254,6 @@ public class SparkIatRequest {
                 this.opt = opt;
             }
 
-            public Integer getLtc() {
-                return ltc;
-            }
-
-            public void setLtc(Integer ltc) {
-                this.ltc = ltc;
-            }
-
-            public String getDomain() {
-                return domain;
-            }
-
-
             public String getDhw() {
                 return dhw;
             }
@@ -251,48 +270,20 @@ public class SparkIatRequest {
                 this.rlang = rlang;
             }
 
-            public void setDomain(String domain) {
-                this.domain = domain;
+            public Integer getLtc() {
+                return ltc;
             }
 
-            public String getLanguage() {
-                return language;
+            public void setLtc(Integer ltc) {
+                this.ltc = ltc;
             }
 
-            public void setLanguage(String language) {
-                this.language = language;
+            public String getLn() {
+                return ln;
             }
 
-            public String getAccent() {
-                return accent;
-            }
-
-            public void setAccent(String accent) {
-                this.accent = accent;
-            }
-
-            public int getEos() {
-                return eos;
-            }
-
-            public void setEos(int eos) {
-                this.eos = eos;
-            }
-
-            public int getVinfo() {
-                return vinfo;
-            }
-
-            public void setVinfo(int vinfo) {
-                this.vinfo = vinfo;
-            }
-
-            public String getDwa() {
-                return dwa;
-            }
-
-            public void setDwa(String dwa) {
-                this.dwa = dwa;
+            public void setLn(String ln) {
+                this.ln = ln;
             }
 
             public Result getResult() {
@@ -385,12 +376,12 @@ public class SparkIatRequest {
 
             private String encoding;
             @SerializedName("sample_rate")
-            private int sampleRate;
-            private int channels;
+            private Integer sampleRate;
+            private Integer channels;
             @SerializedName("bit_depth")
-            private int bitDepth;
-            private int seq;
-            private int status;
+            private Integer bitDepth;
+            private Integer seq;
+            private Integer status;
             private String audio;
 
             public Audio(SparkIatClient client) {
@@ -411,43 +402,43 @@ public class SparkIatRequest {
                 this.encoding = encoding;
             }
 
-            public int getSampleRate() {
+            public Integer getSampleRate() {
                 return sampleRate;
             }
 
-            public void setSampleRate(int sampleRate) {
+            public void setSampleRate(Integer sampleRate) {
                 this.sampleRate = sampleRate;
             }
 
-            public int getChannels() {
+            public Integer getChannels() {
                 return channels;
             }
 
-            public void setChannels(int channels) {
+            public void setChannels(Integer channels) {
                 this.channels = channels;
             }
 
-            public int getBitDepth() {
+            public Integer getBitDepth() {
                 return bitDepth;
             }
 
-            public void setBitDepth(int bitDepth) {
+            public void setBitDepth(Integer bitDepth) {
                 this.bitDepth = bitDepth;
             }
 
-            public int getSeq() {
+            public Integer getSeq() {
                 return seq;
             }
 
-            public void setSeq(int seq) {
+            public void setSeq(Integer seq) {
                 this.seq = seq;
             }
 
-            public int getStatus() {
+            public Integer getStatus() {
                 return status;
             }
 
-            public void setStatus(int status) {
+            public void setStatus(Integer status) {
                 this.status = status;
             }
 

@@ -2,7 +2,14 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.WebSocketClient;
 import cn.xfyun.common.IseConstant;
+import cn.xfyun.model.request.iat.IatBusiness;
+import cn.xfyun.model.request.iat.IatRequest;
+import cn.xfyun.model.request.iat.IatRequestData;
+import cn.xfyun.model.request.ise.IseBusiness;
+import cn.xfyun.model.request.ise.IseRequest;
+import cn.xfyun.model.request.ise.IseRequestData;
 import cn.xfyun.service.ise.IseSendTask;
+import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.Hmac256Signature;
@@ -15,15 +22,17 @@ import okhttp3.internal.Util;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
+import java.sql.Time;
+import java.util.Base64;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 
 /**
+ * @version 1.0
  * @author: <flhong2@iflytek.com>
  * @description: 语音评测客户端
- * @version 1.0
  * @create: 2021-03-17 19:46
  **/
 public class IseClient extends WebSocketClient {
@@ -163,8 +172,13 @@ public class IseClient extends WebSocketClient {
      * plev：0(给出全部信息，汉语包含rec_node_type、perr_msg、fluency_score、phone_score信息的返回；
      * 英文包含accuracy_score、serr_msg、 syll_accent、fluency_score、standard_score、pitch信息的返回)
      */
-    private String plev ="0";
+    private String plev = "0";
     private Integer frameSize;
+    private ExecutorService executorService;
+
+    public ExecutorService getExecutorService() {
+        return executorService;
+    }
 
     public IseClient(Builder builder) {
         this.common = builder.common;
@@ -202,9 +216,109 @@ public class IseClient extends WebSocketClient {
         this.readTimeout = builder.readTimeout;
         this.writeTimeout = builder.writeTimeout;
         this.pingInterval = builder.pingInterval;
+        this.executorService = (null == builder.executorService) ? Executors.newSingleThreadExecutor() : builder.executorService;
     }
 
-    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
+    /**
+     * 语音评测服务端启动
+     */
+    public void start(WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+        // 创建webSocket连接
+        createWebSocketConnect(webSocketListener);
+    }
+
+    /**
+     * 语音评测发送数据
+     */
+    public void sendMessage(byte[] bytes, Integer status) {
+        // 发送数据,请求数据均为json字符串
+        IseRequest frame = new IseRequest();
+
+        // 填充business, 每一帧都要发送
+        IseBusiness business = new IseBusiness(this);
+        switch (status) {
+            case 0:
+                // 填充common,只有第一帧需要
+                JsonObject common = new JsonObject();
+                common.addProperty("app_id", appId);
+
+                // 填充business,第一帧必须发送
+                business.setCmd("ssb");
+                business.setAus(null);
+
+                // 填充data,每一帧都要发送
+                IseRequestData prepareData = new IseRequestData();
+                prepareData.setStatus(0);
+                prepareData.setData(null);
+
+                // 填充frame
+                frame.setCommon(common);
+                frame.setBusiness(business);
+                frame.setData(prepareData);
+
+                webSocket.send(StringUtils.gson.toJson(frame));
+
+                // 间隔40毫秒
+                try {
+                    Thread.sleep(40);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+
+                // 发送完第一帧改变status 为 1
+                frame.setCommon(null);
+                prepareData.setStatus(1);
+                if (bytes == null || bytes.length == 0) {
+                    prepareData.setData("");
+                } else {
+                    prepareData.setData(Base64.getEncoder().encodeToString(bytes));
+                }
+                business.setCmd("auw");
+                business.setAus(1);
+                frame.setBusiness(business);
+                webSocket.send(StringUtils.gson.toJson(frame));
+                break;
+            case 1:
+                IseBusiness continueBusiness = new IseBusiness();
+                if (!business.isTtp_skip()) {
+                    continueBusiness.setCmd("ttp");
+                } else {
+                    continueBusiness.setCmd("auw");
+                }
+                continueBusiness.setAus(2);
+                frame.setBusiness(continueBusiness);
+
+                IseRequestData continueDate = new IseRequestData();
+                continueDate.setStatus(1);
+                if (bytes == null || bytes.length == 0) {
+                    continueDate.setData("");
+                } else {
+                    continueDate.setData(Base64.getEncoder().encodeToString(bytes));
+                }
+
+                frame.setData(continueDate);
+                webSocket.send(StringUtils.gson.toJson(frame));
+                break;
+            // 最后一帧音频status = 2, 标志音频发送结束
+            case 2:
+                IseBusiness lastBusiness = new IseBusiness();
+                if (!business.isTtp_skip()) {
+                    lastBusiness.setCmd("ttp");
+                } else {
+                    lastBusiness.setCmd("auw");
+                }
+                lastBusiness.setAus(4);
+                frame.setBusiness(lastBusiness);
+
+                IseRequestData lastData = new IseRequestData();
+                lastData.setStatus(2);
+                lastData.setData("");
+
+                frame.setData(lastData);
+                break;
+        }
+        webSocket.send(StringUtils.gson.toJson(frame));
+    }
 
     /**
      * 发送文件给语音评测服务端
@@ -420,7 +534,7 @@ public class IseClient extends WebSocketClient {
         private String grade;
         private String rst = "entirety";
         private String iseUnite = "0";
-        private String plev ="0";
+        private String plev = "0";
 
         private String hostUrl = IseConstant.HOST_URL;
         private String apiKey;
@@ -430,6 +544,7 @@ public class IseClient extends WebSocketClient {
         private Hmac256Signature signature;
         private Request request;
         private OkHttpClient client;
+        private ExecutorService executorService;
 
         // websocket相关
         boolean retryOnConnectionFailure = true;
@@ -457,110 +572,131 @@ public class IseClient extends WebSocketClient {
             return this;
         }
 
-        public IseClient.Builder addAppId(String appId){
+        public IseClient.Builder addAppId(String appId) {
             this.appId = appId;
             common.addProperty("app_id", appId);
             return this;
         }
-        public IseClient.Builder addSub(String sub){
+
+        public IseClient.Builder addSub(String sub) {
             business.addProperty("sub", sub);
             this.sub = sub;
             return this;
         }
-        public IseClient.Builder addEnt(String ent){
+
+        public IseClient.Builder addEnt(String ent) {
             this.ent = ent;
             business.addProperty("ent", ent);
             return this;
         }
-        public IseClient.Builder addCategory(String category){
+
+        public IseClient.Builder addCategory(String category) {
             this.category = category;
             business.addProperty("category", category);
             return this;
         }
-        public IseClient.Builder addAus(int aus){
+
+        public IseClient.Builder addAus(int aus) {
             this.aus = aus;
             business.addProperty("aus", aus);
             return this;
         }
-        public IseClient.Builder addCmd(String cmd){
+
+        public IseClient.Builder addCmd(String cmd) {
             this.cmd = cmd;
             business.addProperty("cmd", cmd);
             return this;
         }
-        public IseClient.Builder addText(String text){
+
+        public IseClient.Builder addText(String text) {
             this.text = text;
             business.addProperty("text", text);
             return this;
         }
-        public IseClient.Builder addTte(String tte){
+
+        public IseClient.Builder addTte(String tte) {
             this.tte = tte;
             business.addProperty("tte", tte);
             return this;
         }
-        public IseClient.Builder addTtpSkip(boolean ttpSkip){
+
+        public IseClient.Builder addTtpSkip(boolean ttpSkip) {
             this.ttpSkip = ttpSkip;
             business.addProperty("ttp_skip", ttpSkip);
             return this;
         }
-        public IseClient.Builder addExtraAbility(String extraAbility){
+
+        public IseClient.Builder addExtraAbility(String extraAbility) {
             this.extraAbility = extraAbility;
             business.addProperty("extra_ability", extraAbility);
             return this;
         }
-        public IseClient.Builder addAue(String aue){
+
+        public IseClient.Builder addAue(String aue) {
             this.aue = aue;
             business.addProperty("aue", aue);
             return this;
         }
-        public IseClient.Builder addAuf(String auf){
+
+        public IseClient.Builder addAuf(String auf) {
             this.auf = auf;
             business.addProperty("auf", auf);
             return this;
         }
-        public IseClient.Builder addRstcd(String rstcd){
+
+        public IseClient.Builder addRstcd(String rstcd) {
             this.rstcd = rstcd;
             business.addProperty("rstcd", rstcd);
             return this;
         }
-        public IseClient.Builder addGroup(String group){
+
+        public IseClient.Builder addGroup(String group) {
             this.group = group;
             business.addProperty("group", group);
             return this;
         }
-        public IseClient.Builder addCheckType(String checkType){
+
+        public IseClient.Builder addCheckType(String checkType) {
             this.checkType = checkType;
             business.addProperty("check_type", checkType);
             return this;
         }
-        public IseClient.Builder addGrade(String grade){
+
+        public IseClient.Builder addGrade(String grade) {
             this.grade = grade;
             business.addProperty("grade", grade);
             return this;
         }
-        public IseClient.Builder addRst(String rst){
+
+        public IseClient.Builder addRst(String rst) {
             this.rst = rst;
             business.addProperty("rst", rst);
             return this;
         }
-        public IseClient.Builder addIseUnite(String iseUnite){
+
+        public IseClient.Builder addIseUnite(String iseUnite) {
             this.iseUnite = iseUnite;
             business.addProperty("ise_unite", iseUnite);
             return this;
         }
-        public IseClient.Builder addPlev(String plev){
+
+        public IseClient.Builder addPlev(String plev) {
             this.plev = plev;
             business.addProperty("plev", plev);
             return this;
         }
-        public IseClient.Builder addHostUrl(String hostUrl){
+
+        public IseClient.Builder addHostUrl(String hostUrl) {
             this.hostUrl = hostUrl;
             return this;
         }
-        public IseClient.Builder addAppKey(String apiKey){
+
+        public IseClient.Builder addAppKey(String apiKey) {
             this.apiKey = apiKey;
             return this;
         }
-        public IseClient.Builder addAppSecret(String apiSecret){
+
+        public IseClient.Builder addAppSecret(String apiSecret) {
             this.apiSecret = apiSecret;
             return this;
         }
@@ -627,6 +763,11 @@ public class IseClient extends WebSocketClient {
 
         public IseClient.Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
             this.retryOnConnectionFailure = retryOnConnectionFailure;
+            return this;
+        }
+
+        public IseClient.Builder executorService(ExecutorService executorService) {
+            this.executorService = executorService;
             return this;
         }
     }

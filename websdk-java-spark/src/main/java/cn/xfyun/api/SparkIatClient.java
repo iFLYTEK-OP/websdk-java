@@ -2,7 +2,9 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.AbstractClient;
 import cn.xfyun.config.SparkIatModelEnum;
+import cn.xfyun.model.sparkiat.request.SparkIatRequest;
 import cn.xfyun.service.sparkiat.SparkIatSendTask;
+import cn.xfyun.util.StringUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
@@ -13,6 +15,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
+import java.util.Base64;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -359,6 +362,47 @@ public class SparkIatClient extends AbstractClient {
 
     public ExecutorService getExecutor() {
         return executor;
+    }
+
+    /**
+     * 大模型转写服务端启动
+     */
+    public WebSocket start(WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+        // 创建webSocket连接
+        return newWebSocket(webSocketListener);
+    }
+
+    /**
+     * 大模型转写发送数据
+     */
+    public void sendMessage(WebSocket webSocket, byte[] bytes, Integer status, Integer seq) {
+        // 发送数据,请求数据均为json字符串
+        SparkIatRequest request = new SparkIatRequest();
+
+        // 请求头
+        SparkIatRequest.Header header = new SparkIatRequest.Header(appId, status);
+        request.setHeader(header);
+
+        // 请求参数 (第一帧才有)
+        if (0 == status) {
+            SparkIatRequest.Parameter parameter = new SparkIatRequest.Parameter(this);
+            request.setParameter(parameter);
+        }
+
+        // 请求体
+        SparkIatRequest.Payload payload = new SparkIatRequest.Payload(this);
+        if (bytes == null || bytes.length == 0) {
+            payload.getAudio().setAudio("");
+        } else {
+            payload.getAudio().setAudio(Base64.getEncoder().encodeToString(bytes));
+        }
+        payload.getAudio().setSeq(seq);
+        payload.getAudio().setStatus(status);
+        request.setPayload(payload);
+
+        String json = StringUtils.gson.toJson(request);
+        logger.debug("大模型语音听写请求入参：{}", json);
+        webSocket.send(json);
     }
 
     /**

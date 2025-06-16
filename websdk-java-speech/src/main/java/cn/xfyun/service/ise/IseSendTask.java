@@ -95,7 +95,7 @@ public class IseSendTask extends AbstractTimedTask {
                 continueFrame.setData(continueDate);
                 return StringUtils.gson.toJson(continueFrame);
 
-                //最后一帧音频status = 2,志音频发送结束
+                //最后一帧音频status = 2, 标志音频发送结束
             case STATUS_LAST_FRAME:
                 IseRequest lastFrame = new IseRequest();
                 IseBusiness lastBusiness = new IseBusiness();
