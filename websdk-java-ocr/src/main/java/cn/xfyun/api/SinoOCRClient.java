@@ -15,7 +15,7 @@ import java.io.IOException;
  * 国内通用票证识别sinosecu Client
  * 文档地址: <a href="https://www.xfyun.cn/doc/words/invoiceIdentification/API.html">...</a>
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
 public class SinoOCRClient extends PlatformHttpClient {
 

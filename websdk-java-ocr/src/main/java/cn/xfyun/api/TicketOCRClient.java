@@ -17,7 +17,7 @@ import java.io.IOException;
  * 票据卡证识别 Client
  * 文档地址: <a href="https://www.xfyun.cn/doc/words/TicketIdentification/API.html">...</a>
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
 public class TicketOCRClient extends PlatformHttpClient {
 

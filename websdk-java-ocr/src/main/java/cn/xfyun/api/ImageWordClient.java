@@ -46,7 +46,7 @@ public class ImageWordClient extends PlatformHttpClient {
         String signUrl = Signature.signHostDateAuthorization(hostUrl + serviceId, "POST", apiKey, apiSecret);
 
         // 请求体
-        String body = bodyParam(imageBase64, encoding);
+        String body = bodyParam(imageBase64, format);
 
         // 发送请求
         return sendPost(signUrl, JSON, body);

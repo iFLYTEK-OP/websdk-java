@@ -30,7 +30,7 @@ import java.util.concurrent.TimeoutException;
  * （Picture Document Reconstruction）图片文档还原 Client
  * 文档地址: <a href="https://www.xfyun.cn/doc/words/printed-word-recognition/API.html">...</a>
  *
- * @author zyding6
+ * @author <zyding6@ifytek.com>
  */
 public class PDRecClient extends AbstractClient {
 
@@ -234,7 +234,7 @@ public class PDRecClient extends AbstractClient {
 
     public static final class Builder {
 
-        private final String hostUrl = "https://ws-api.xf-yun.com/v1/private/ma008db16";
+        String hostUrl = "https://ws-api.xf-yun.com/v1/private/ma008db16";
         /**
          * websocket相关
          */
@@ -325,6 +325,11 @@ public class PDRecClient extends AbstractClient {
 
         public Builder format(String format) {
             this.format = format;
+            return this;
+        }
+
+        public Builder hostUrl(String hostUrl) {
+            this.hostUrl = hostUrl;
             return this;
         }
     }
