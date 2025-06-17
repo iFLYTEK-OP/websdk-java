@@ -5,12 +5,24 @@
 **示例代码**
 ```java
         ImageWordClient client = new ImageWordClient
-                .Builder(appId, apiKey, apiSecret, ImageWordEnum.IDCARD)
+                // 身份证识别      ImageWordEnum.IDCARD
+                // 营业执照识别    ImageWordEnum.BUSINESS_LICENSE
+                // 出租车发票识别  ImageWordEnum.TAXI_INVOICE
+                // 火车票识别      ImageWordEnum.TRAIN_TICKET
+                // 增值税发票识别  ImageWordEnum.INVOICE
+                // 多语种文字识别  ImageWordEnum.PRINTED_WORD
+                // 通用文字识别  ImageWordEnum.COMMON_WORD
+                .Builder(appId, apiKey, apiSecret, ImageWordEnum.COMMON_WORD)
                 .build();
-        InputStream inputStream = new FileInputStream(new File(resourcePath + "/image/car.jpg"));
-        byte[] imageByteArray = IOUtils.readFully(inputStream, -1, true);
-        String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.imageWord(imageBase64, "jpg"));
+        InputStream inputStream = Files.newInputStream(new File(resourcePath + filePath).toPath());
+        byte[] bytes = IoUtil.readBytes(inputStream);
+        String imageBase64 = Base64.getEncoder().encodeToString(bytes);
+        String result = client.imageWord(imageBase64, "jpg");
+        logger.info("请求结果：{}", result);
+        JSONObject obj = JSON.parseObject(result);
+        String encodeStr = obj.getJSONObject("payload").getJSONObject("result").getString("text");
+        String decodeStr = new String(Base64.getDecoder().decode(encodeStr), StandardCharsets.UTF_8);
+        logger.info("解码后结果：{}", decodeStr);
 ```
 
 更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/ocr/ImageWordClientApp.java)

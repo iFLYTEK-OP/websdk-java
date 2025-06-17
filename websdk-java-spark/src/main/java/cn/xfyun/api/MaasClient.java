@@ -5,6 +5,7 @@ import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.maas.MaasParam;
 import cn.xfyun.model.maas.request.MaasHttpRequest;
 import cn.xfyun.model.maas.request.MaasReqeust;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import okhttp3.*;
 import okhttp3.internal.Util;
@@ -92,14 +93,20 @@ public class MaasClient extends AbstractClient {
     private final Map<String, Object> streamOptions;
 
     public MaasClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient
-                .Builder()
-                .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .connectTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                .build();
+        if (builder.okHttpClient != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.okHttpClient;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         if (null != builder.wsUrl) {
             this.originHostUrl = builder.wsUrl.replace("ws://", "http://").replace("wss://", "https://");
         }
@@ -384,6 +391,7 @@ public class MaasClient extends AbstractClient {
         private boolean searchDisable = true;
         private boolean showRefLabel = false;
         private Map<String, Object> streamOptions;
+        private OkHttpClient okHttpClient;
 
         public MaasClient build() {
             return new MaasClient(this);
@@ -482,6 +490,11 @@ public class MaasClient extends AbstractClient {
 
         public Builder streamOptions(Map<String, Object> streamOptions) {
             this.streamOptions = streamOptions;
+            return this;
+        }
+
+        public Builder okHttpClient(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
             return this;
         }
     }

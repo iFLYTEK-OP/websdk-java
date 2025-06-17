@@ -8,42 +8,50 @@ package cn.xfyun.config;
 public enum ImageWordEnum {
 
     /**
-     *   营业执照识别
+     * 营业执照识别
      */
-    BUSINESS_LICENSE("sff4ea3cf", "bus_license", "sff4ea3cf_data_1"),
+    BUSINESS_LICENSE("营业执照识别", "sff4ea3cf", "bus_license", "sff4ea3cf_data_1"),
 
     /**
-     *   出租车发票识别
+     * 出租车发票识别
      */
-    TAXI_INVOICE("sb6db0171", "taxi_ticket", "sb6db0171_data_1"),
+    TAXI_INVOICE("出租车发票识别", "sb6db0171", "taxi_ticket", "sb6db0171_data_1"),
 
     /**
-     *   火车票识别
+     * 火车票识别
      */
-    TRAIN_TICKET("s19cfe728", "train_ticket", "s19cfe728_data_1"),
+    TRAIN_TICKET("火车票识别", "s19cfe728", "train_ticket", "s19cfe728_data_1"),
 
     /**
-     *   增值税发票识别
+     * 增值税发票识别
      */
-    INVOICE("s824758f1", "vat_invoice", "s824758f1_data_1"),
+    INVOICE("增值税发票识别", "s824758f1", "vat_invoice", "s824758f1_data_1"),
 
     /**
-     *   身份证识别
+     * 身份证识别
      */
-    IDCARD("s5ccecfce", "id_card", "s5ccecfce_data_1"),
+    IDCARD("身份证识别", "s5ccecfce", "id_card", "s5ccecfce_data_1"),
 
     /**
-     *   多语种文字识别
+     * 多语种文字识别
      */
-    PRINTED_WORD("s00b65163", "vat_invoice", "s00b65163_data_1");
+    PRINTED_WORD("多语种文字识别", "s00b65163", "vat_invoice", "s00b65163_data_1"),
 
-    private String serviceId;
+    /**
+     * 通用文字识别
+     */
+    COMMON_WORD("通用文字识别", "sf8e6aca1", "vat_invoice", "sf8e6aca1_data_1");
 
-    private String templateList;
+    private final String name;
 
-    private String payload;
+    private final String serviceId;
 
-    ImageWordEnum(String serviceId, String templateList, String payload){
+    private final String templateList;
+
+    private final String payload;
+
+    ImageWordEnum(String name, String serviceId, String templateList, String payload) {
+        this.name = name;
         this.serviceId = serviceId;
         this.templateList = templateList;
         this.payload = payload;
@@ -59,5 +67,18 @@ public enum ImageWordEnum {
 
     public String getPayload() {
         return payload;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public static ImageWordEnum getEnumByServiceId(String serviceId) {
+        for (ImageWordEnum e : ImageWordEnum.values()) {
+            if (e.serviceId.equals(serviceId)) {
+                return e;
+            }
+        }
+        return null;
     }
 }

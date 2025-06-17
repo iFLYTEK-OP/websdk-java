@@ -7,6 +7,7 @@ import cn.xfyun.model.sparkmodel.FunctionCall;
 import cn.xfyun.model.sparkmodel.SparkChatParam;
 import cn.xfyun.model.sparkmodel.WebSearch;
 import cn.xfyun.model.sparkmodel.request.*;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 import okhttp3.*;
@@ -133,14 +134,20 @@ public class SparkChatClient extends AbstractClient {
     private final boolean keepAlive;
 
     public SparkChatClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient
-                .Builder()
-                .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .connectTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                .build();
+        if (builder.okHttpClient != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.okHttpClient;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
         this.apiSecret = builder.apiSecret;
@@ -506,6 +513,7 @@ public class SparkChatClient extends AbstractClient {
         private String responseType;
         private List<String> suppressPlugin;
         private boolean keepAlive = false;
+        private OkHttpClient okHttpClient;
 
         public SparkChatClient build() {
             return new SparkChatClient(this);
@@ -635,6 +643,11 @@ public class SparkChatClient extends AbstractClient {
 
         public Builder keepAlive(boolean keepAlive) {
             this.keepAlive = keepAlive;
+            return this;
+        }
+
+        public Builder okHttpClient(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
             return this;
         }
     }

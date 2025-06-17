@@ -100,5 +100,9 @@ public abstract class AbstractImgUnderstandWebSocketListener extends WebSocketLi
         super.onFailure(webSocket, t, response);
         logger.error("webSocket failed .", t);
         onFail(webSocket, t, response);
+        // 必须手动关闭 response 否则连接泄漏
+        if (response != null) {
+            response.close();
+        }
     }
 }

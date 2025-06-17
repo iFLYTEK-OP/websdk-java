@@ -1,16 +1,18 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.WebSocketClient;
+import cn.xfyun.util.OkHttpUtils;
 import com.google.gson.JsonObject;
 import cn.xfyun.service.tts.AbstractTtsWebSocketListener;
 import okhttp3.OkHttpClient;
-import okhttp3.WebSocket;
+import okhttp3.internal.Util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author yingpeng@iflytek.com
@@ -121,11 +123,23 @@ public class TtsClient extends WebSocketClient {
     private String ent;
 
     public TtsClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient().newBuilder().build();
+        if (builder.httpClient != null) {
+            this.okHttpClient = builder.httpClient;
+        } else {
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         this.originHostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
         this.apiSecret = builder.apiSecret;
+
         this.aue = builder.aue;
         this.sfl = builder.sfl;
         this.auf = builder.auf;
@@ -138,18 +152,13 @@ public class TtsClient extends WebSocketClient {
         this.reg = builder.reg;
         this.rdn = builder.rdn;
         this.ent = builder.ent;
-    }
 
-    public String getAppId() {
-        return appId;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public String getApiSecret() {
-        return apiSecret;
+        this.callTimeout = builder.callTimeout;
+        this.connectTimeout = builder.connectTimeout;
+        this.readTimeout = builder.readTimeout;
+        this.writeTimeout = builder.writeTimeout;
+        this.pingInterval = builder.pingInterval;
+        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
     }
 
     public String getOriginHostUrl() {
@@ -208,11 +217,6 @@ public class TtsClient extends WebSocketClient {
         return okHttpClient;
     }
 
-    @Override
-    public WebSocket getWebSocket() {
-        return webSocket;
-    }
-
     /**
      * 在线语音合成处理方法
      *
@@ -221,20 +225,20 @@ public class TtsClient extends WebSocketClient {
      */
     public void send(String text, AbstractTtsWebSocketListener webSocketListener) throws UnsupportedEncodingException, MalformedURLException, SignatureException {
         createWebSocketConnect(webSocketListener);
-        //小语种必须使用UNICODE编码，合成的文本需使用utf16小端的编码方式
+        // 小语种必须使用UNICODE编码，合成的文本需使用utf16小端的编码方式
         if (MINOR_LANGUAGE.equals(tte)) {
             text = Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_16LE));
         } else {
             text = Base64.getEncoder().encodeToString(text.getBytes(StandardCharsets.UTF_8));
         }
-        //发送数据
+        // 发送数据
         JsonObject frame = new JsonObject();
         JsonObject common = new JsonObject();
         JsonObject business = new JsonObject();
         JsonObject data = new JsonObject();
-        //填充common
+        // 填充common
         common.addProperty("app_id", appId);
-        //填充business
+        // 填充business
         business.addProperty("aue", aue);
         business.addProperty("sfl", sfl);
         business.addProperty("auf", auf);
@@ -248,11 +252,11 @@ public class TtsClient extends WebSocketClient {
         business.addProperty("rdn", rdn);
         business.addProperty("ent", ent);
 
-        //填充data
+        // 填充data
         data.addProperty("text", text);
-        //固定位2
+        // 固定位2
         data.addProperty("status", 2);
-        //填充frame
+        // 填充frame
         frame.add("common", common);
         frame.add("business", business);
         frame.add("data", data);
@@ -260,6 +264,16 @@ public class TtsClient extends WebSocketClient {
     }
 
     public static final class Builder {
+
+        /**
+         * websocket相关
+         */
+        private boolean retryOnConnectionFailure = true;
+        private int callTimeout = 0;
+        private int connectTimeout = 10000;
+        private int readTimeout = 30000;
+        private int writeTimeout = 30000;
+        private int pingInterval = 0;
         private String hostUrl = "https://tts-api.xfyun.cn/v2/tts";
         private String appId;
         private String apiKey;
@@ -276,7 +290,9 @@ public class TtsClient extends WebSocketClient {
         private String reg = "0";
         private String rdn = "0";
         private String ent = "intp65";
-        public TtsClient build() throws MalformedURLException, SignatureException {
+        private OkHttpClient httpClient;
+
+        public TtsClient build() {
             return new TtsClient(this);
         }
 
@@ -353,6 +369,41 @@ public class TtsClient extends WebSocketClient {
 
         public TtsClient.Builder ent(String ent) {
             this.ent = ent;
+            return this;
+        }
+
+        public TtsClient.Builder callTimeout(long timeout, TimeUnit unit) {
+            this.callTimeout = Util.checkDuration("timeout", timeout, unit);
+            return this;
+        }
+
+        public TtsClient.Builder connectTimeout(long timeout, TimeUnit unit) {
+            this.connectTimeout = Util.checkDuration("timeout", timeout, unit);
+            return this;
+        }
+
+        public TtsClient.Builder readTimeout(long timeout, TimeUnit unit) {
+            this.readTimeout = Util.checkDuration("timeout", timeout, unit);
+            return this;
+        }
+
+        public TtsClient.Builder writeTimeout(long timeout, TimeUnit unit) {
+            this.writeTimeout = Util.checkDuration("timeout", timeout, unit);
+            return this;
+        }
+
+        public TtsClient.Builder pingInterval(long interval, TimeUnit unit) {
+            this.pingInterval = Util.checkDuration("interval", interval, unit);
+            return this;
+        }
+
+        public TtsClient.Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
+            this.retryOnConnectionFailure = retryOnConnectionFailure;
+            return this;
+        }
+
+        public TtsClient.Builder httpClient(OkHttpClient httpClient) {
+            this.httpClient = httpClient;
             return this;
         }
     }

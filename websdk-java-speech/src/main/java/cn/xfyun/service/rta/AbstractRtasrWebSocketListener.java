@@ -112,6 +112,10 @@ public abstract class AbstractRtasrWebSocketListener extends WebSocketListener {
 			t.printStackTrace();
 			onFail(webSocket, t, response);
 		}
+		// 必须手动关闭 response 否则连接泄漏
+		if (response != null) {
+			response.close();
+		}
 	}
 
 

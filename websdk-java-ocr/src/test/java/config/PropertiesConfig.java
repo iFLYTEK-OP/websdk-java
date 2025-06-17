@@ -41,6 +41,15 @@ public class PropertiesConfig {
     private static final String placeRecClientApiKey;
     private static final String placeRecClientApiSecret;
 
+    private static final String pdRecClientApiKey;
+    private static final String pdRecClientApiSecret;
+
+    private static final String sinoOcrClientApiKey;
+    private static final String sinoOcrClientApiSecret;
+
+    private static final String ticketOcrClientApiKey;
+    private static final String ticketOcrClientApiSecret;
+
     static {
         Properties properties = new Properties();
 
@@ -65,6 +74,12 @@ public class PropertiesConfig {
         jDOcrClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("jDOcrClientApiSecret")) ? System.getenv("jDOcrClientApiSecret") : properties.getProperty("jDOcrClientApiSecret");
         placeRecClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("placeRecClientApiKey")) ? System.getenv("placeRecClientApiKey") : properties.getProperty("placeRecClientApiKey");
         placeRecClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("placeRecClientApiSecret")) ? System.getenv("placeRecClientApiSecret") : properties.getProperty("placeRecClientApiSecret");
+        pdRecClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("pdRecClientApiKey")) ? System.getenv("pdRecClientApiKey") : properties.getProperty("pdRecClientApiKey");
+        pdRecClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("pdRecClientApiSecret")) ? System.getenv("pdRecClientApiSecret") : properties.getProperty("pdRecClientApiSecret");
+        sinoOcrClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("sinoOcrClientApiKey")) ? System.getenv("sinoOcrClientApiKey") : properties.getProperty("sinoOcrClientApiKey");
+        sinoOcrClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("sinoOcrClientApiSecret")) ? System.getenv("sinoOcrClientApiSecret") : properties.getProperty("sinoOcrClientApiSecret");
+        ticketOcrClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("ticketOcrClientApiKey")) ? System.getenv("ticketOcrClientApiKey") : properties.getProperty("ticketOcrClientApiKey");
+        ticketOcrClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("ticketOcrClientApiSecret")) ? System.getenv("ticketOcrClientApiSecret") : properties.getProperty("ticketOcrClientApiSecret");
     }
 
     public static String getAppId() {
@@ -130,5 +145,29 @@ public class PropertiesConfig {
 
     public static String getPlaceRecClientApiSecret() {
         return placeRecClientApiSecret;
+    }
+
+    public static String getPdRecClientApiKey() {
+        return pdRecClientApiKey;
+    }
+
+    public static String getPdRecClientApiSecret() {
+        return pdRecClientApiSecret;
+    }
+
+    public static String getSinoOcrClientApiKey() {
+        return sinoOcrClientApiKey;
+    }
+
+    public static String getSinoOcrClientApiSecret() {
+        return sinoOcrClientApiSecret;
+    }
+
+    public static String getTicketOcrClientApiKey() {
+        return ticketOcrClientApiKey;
+    }
+
+    public static String getTicketOcrClientApiSecret() {
+        return ticketOcrClientApiSecret;
     }
 }

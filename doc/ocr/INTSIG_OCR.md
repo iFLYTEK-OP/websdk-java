@@ -5,12 +5,20 @@
 **示例代码**
 ```java
         IntsigOcrClient client = new IntsigOcrClient
-                .Builder(appId, apiKey, IntsigRecgEnum.IDCARD)
+                // 身份证识别             IntsigRecgEnum.IDCARD
+                // 营业执照识别           IntsigRecgEnum.BUSINESS_LICENSE
+                // 增值税发票识别         IntsigRecgEnum.INVOICE
+                // 印刷文字识别（多语种）  IntsigRecgEnum.RECOGNIZE_DOCUMENT
+                // 通用文本识别（多语种）  IntsigRecgEnum.COMMON_WORD
+                // .Builder(appId, apiKey, apiSecret, IntsigRecgEnum.COMMON_WORD)
+                .Builder(appId, apiKey, IntsigRecgEnum.RECOGNIZE_DOCUMENT)
                 .build();
-        InputStream inputStream = new FileInputStream(new File(resourcePath + "/image/car.jpg"));
-        byte[] imageByteArray = IOUtils.readFully(inputStream, -1, true);
-        String imageBase64 = Base64.getEncoder().encodeToString(imageByteArray);
-        System.out.println(client.intsigRecg(imageBase64));
+        InputStream inputStream = Files.newInputStream(new File(resourcePath + filePath).toPath());
+        byte[] bytes = IoUtil.readBytes(inputStream);
+        String imageBase64 = Base64.getEncoder().encodeToString(bytes);
+        logger.info("请求地址：{}", client.getHostUrl());
+        String result = client.intsigRecg(imageBase64);
+        logger.info("请求结果：{}", result);
 ```
 
 更详细请参见[Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/ocr/IntsigOcrClientApp.java)

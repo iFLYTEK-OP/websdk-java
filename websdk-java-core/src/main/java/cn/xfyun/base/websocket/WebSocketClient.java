@@ -79,6 +79,6 @@ public abstract class WebSocketClient extends Client {
      */
     public void closeWebsocket() {
         this.webSocket.close(1000, null);
-        okHttpClient.connectionPool().evictAll();
+        // okHttpClient.connectionPool().evictAll();
     }
 }

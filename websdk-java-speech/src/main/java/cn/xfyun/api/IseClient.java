@@ -2,27 +2,23 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.WebSocketClient;
 import cn.xfyun.common.IseConstant;
-import cn.xfyun.model.request.iat.IatBusiness;
-import cn.xfyun.model.request.iat.IatRequest;
-import cn.xfyun.model.request.iat.IatRequestData;
 import cn.xfyun.model.request.ise.IseBusiness;
 import cn.xfyun.model.request.ise.IseRequest;
 import cn.xfyun.model.request.ise.IseRequestData;
 import cn.xfyun.service.ise.IseSendTask;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.Hmac256Signature;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okhttp3.internal.Util;
 
 import java.io.*;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
-import java.sql.Time;
 import java.util.Base64;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -176,11 +172,22 @@ public class IseClient extends WebSocketClient {
     private Integer frameSize;
     private ExecutorService executorService;
 
-    public ExecutorService getExecutorService() {
-        return executorService;
-    }
-
     public IseClient(Builder builder) {
+        if (builder.client != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.client;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
+
         this.common = builder.common;
         this.business = builder.business;
         this.appId = builder.appId;
@@ -207,7 +214,6 @@ public class IseClient extends WebSocketClient {
         this.apiSecret = builder.apiSecret;
         this.frameSize = builder.frameSize;
         this.request = builder.request;
-        this.okHttpClient = new OkHttpClient().newBuilder().build();
         this.signature = builder.signature;
 
         this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
@@ -374,8 +380,8 @@ public class IseClient extends WebSocketClient {
         executorService.submit(iseSendTask);
     }
 
-    public String getAppId() {
-        return appId;
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 
     public boolean isTtpSkip() {
@@ -458,25 +464,12 @@ public class IseClient extends WebSocketClient {
         return originHostUrl;
     }
 
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public String getApiSecret() {
-        return apiSecret;
-    }
-
     public Request getRequest() {
         return request;
     }
 
     public OkHttpClient getClient() {
         return okHttpClient;
-    }
-
-    @Override
-    public WebSocket getWebSocket() {
-        return webSocket;
     }
 
     public boolean isRetryOnConnectionFailure() {
@@ -546,7 +539,9 @@ public class IseClient extends WebSocketClient {
         private OkHttpClient client;
         private ExecutorService executorService;
 
-        // websocket相关
+        /**
+         * websocket相关
+         */
         boolean retryOnConnectionFailure = true;
         int callTimeout = 0;
         int connectTimeout = 10000;
@@ -768,6 +763,11 @@ public class IseClient extends WebSocketClient {
 
         public IseClient.Builder executorService(ExecutorService executorService) {
             this.executorService = executorService;
+            return this;
+        }
+
+        public IseClient.Builder client(OkHttpClient client) {
+            this.client = client;
             return this;
         }
     }

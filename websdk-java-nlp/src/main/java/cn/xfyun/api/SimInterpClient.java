@@ -3,6 +3,7 @@ package cn.xfyun.api;
 import cn.xfyun.base.websocket.AbstractClient;
 import cn.xfyun.model.simult.request.SimInterpRequest;
 import cn.xfyun.service.simult.SimInterpSendTask;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.WebSocket;
@@ -125,14 +126,20 @@ public class SimInterpClient extends AbstractClient {
     private final int bitDepth;
 
     public SimInterpClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient
-                .Builder()
-                .callTimeout(builder.callTimeout, TimeUnit.SECONDS)
-                .connectTimeout(builder.callTimeout, TimeUnit.SECONDS)
-                .readTimeout(builder.readTimeout, TimeUnit.SECONDS)
-                .writeTimeout(builder.writeTimeout, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                .build();
+        if (builder.okHttpClient != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.okHttpClient;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         this.originHostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
@@ -355,6 +362,7 @@ public class SimInterpClient extends AbstractClient {
         private int channels = 1;
         private int bitDepth = 16;
         private ExecutorService executor;
+        private OkHttpClient okHttpClient;
 
         public SimInterpClient build() {
             return new SimInterpClient(this);
@@ -474,6 +482,11 @@ public class SimInterpClient extends AbstractClient {
 
         public Builder executor(ExecutorService executor) {
             this.executor = executor;
+            return this;
+        }
+
+        public Builder okHttpClient(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
             return this;
         }
     }
