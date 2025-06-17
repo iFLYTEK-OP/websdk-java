@@ -148,5 +148,9 @@ public abstract class AbstractVoiceCloneWebSocketListener extends WebSocketListe
         super.onFailure(webSocket, t, response);
         logger.error("connection failed");
         onFail(webSocket, t, response);
+        // 必须手动关闭 response 否则连接泄漏
+        if (response != null) {
+            response.close();
+        }
     }
 }

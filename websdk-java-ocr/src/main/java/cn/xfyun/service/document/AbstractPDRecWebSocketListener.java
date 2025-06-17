@@ -131,5 +131,9 @@ public abstract class AbstractPDRecWebSocketListener extends WebSocketListener {
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
         logger.error("WebSocket connection failed", t);
         onFail(webSocket, t, response);
+        // 必须手动关闭 response 否则连接泄漏
+        if (response != null) {
+            response.close();
+        }
     }
 }
