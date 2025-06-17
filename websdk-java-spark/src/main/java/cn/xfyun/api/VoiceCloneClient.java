@@ -4,6 +4,7 @@ import cn.xfyun.base.websocket.AbstractClient;
 import cn.xfyun.config.VoiceCloneLangEnum;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.voiceclone.request.VoiceCloneRequest;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.WebSocket;
@@ -134,14 +135,20 @@ public class VoiceCloneClient extends AbstractClient {
     private final int status;
 
     public VoiceCloneClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient
-                .Builder()
-                .callTimeout(builder.callTimeout, TimeUnit.SECONDS)
-                .connectTimeout(builder.callTimeout, TimeUnit.SECONDS)
-                .readTimeout(builder.readTimeout, TimeUnit.SECONDS)
-                .writeTimeout(builder.writeTimeout, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                .build();
+        if (builder.okHttpClient != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.okHttpClient;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         this.originHostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
@@ -336,6 +343,7 @@ public class VoiceCloneClient extends AbstractClient {
         private int sampleRate = 24000;
         private int status = 2;
         private String vcn = "x5_clone";
+        private OkHttpClient okHttpClient;
 
         public VoiceCloneClient build() {
             return new VoiceCloneClient(this);
@@ -452,6 +460,11 @@ public class VoiceCloneClient extends AbstractClient {
 
         public Builder vcn(String vcn) {
             this.vcn = vcn;
+            return this;
+        }
+
+        public Builder okHttpClient(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
             return this;
         }
     }

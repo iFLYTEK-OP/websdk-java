@@ -6,11 +6,11 @@ import cn.xfyun.model.request.iat.IatRequest;
 import cn.xfyun.model.request.iat.IatRequestData;
 import cn.xfyun.service.iat.IatSendTask;
 import cn.xfyun.model.sign.AbstractSignature;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okhttp3.internal.Util;
 import org.slf4j.Logger;
@@ -157,7 +157,20 @@ public class IatClient extends WebSocketClient {
     private Integer frameSize;
 
     public IatClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient().newBuilder().build();
+        if (builder.okHttpClient != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.okHttpClient;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         this.originHostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
@@ -394,7 +407,10 @@ public class IatClient extends WebSocketClient {
     }
 
     public static class Builder {
-        // websocket相关
+
+        /**
+         * websocket相关
+         */
         boolean retryOnConnectionFailure = true;
         int callTimeout = 0;
         int connectTimeout = 10000;
@@ -422,6 +438,7 @@ public class IatClient extends WebSocketClient {
         private Integer wbest;
         private Integer frameSize = 1280;
         private ExecutorService executorService;
+        private OkHttpClient okHttpClient;
 
         public IatClient build() {
             return new IatClient(this);
@@ -563,5 +580,9 @@ public class IatClient extends WebSocketClient {
             return this;
         }
 
+        public IatClient.Builder okHttpClient(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
+            return this;
+        }
     }
 }

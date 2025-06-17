@@ -4,6 +4,7 @@ import cn.xfyun.base.websocket.AbstractClient;
 import cn.xfyun.config.SparkIatModelEnum;
 import cn.xfyun.model.sparkiat.request.SparkIatRequest;
 import cn.xfyun.service.sparkiat.SparkIatSendTask;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.WebSocket;
@@ -212,14 +213,20 @@ public class SparkIatClient extends AbstractClient {
     private final String ln;
 
     public SparkIatClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient
-                .Builder()
-                .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .connectTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                .build();
+        if (builder.okHttpClient != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.okHttpClient;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         this.originHostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
@@ -506,6 +513,7 @@ public class SparkIatClient extends AbstractClient {
         private String textFormat = "json";
         private String ln = "none";
         private ExecutorService executor;
+        private OkHttpClient okHttpClient;
 
         public SparkIatClient build() {
             return new SparkIatClient(this);
@@ -674,6 +682,11 @@ public class SparkIatClient extends AbstractClient {
 
         public Builder executor(ExecutorService executor) {
             this.executor = executor;
+            return this;
+        }
+
+        public Builder okHttpClient(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
             return this;
         }
     }

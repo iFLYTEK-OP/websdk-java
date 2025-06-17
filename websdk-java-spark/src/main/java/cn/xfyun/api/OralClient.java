@@ -3,6 +3,7 @@ package cn.xfyun.api;
 import cn.xfyun.base.websocket.AbstractClient;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.oral.request.OralRequest;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.WebSocket;
@@ -162,14 +163,20 @@ public class OralClient extends AbstractClient {
     private final String textFormat;
 
     public OralClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient
-                .Builder()
-                .callTimeout(builder.callTimeout, TimeUnit.SECONDS)
-                .connectTimeout(builder.callTimeout, TimeUnit.SECONDS)
-                .readTimeout(builder.readTimeout, TimeUnit.SECONDS)
-                .writeTimeout(builder.writeTimeout, TimeUnit.SECONDS)
-                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                .build();
+        if (builder.okHttpClient != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.okHttpClient;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         this.originHostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
@@ -375,6 +382,7 @@ public class OralClient extends AbstractClient {
         private int bitDepth = 16;
         private int frameSize = 0;
         private String textFormat = "plain";
+        private OkHttpClient okHttpClient;
 
         public OralClient build() {
             return new OralClient(this);
@@ -509,6 +517,11 @@ public class OralClient extends AbstractClient {
 
         public Builder textFormat(String textFormat) {
             this.textFormat = textFormat;
+            return this;
+        }
+
+        public Builder okHttpClient(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
             return this;
         }
     }

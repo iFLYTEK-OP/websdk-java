@@ -8,6 +8,7 @@ import cn.xfyun.model.document.PDRecParam;
 import cn.xfyun.model.document.request.PDRecRequest;
 import cn.xfyun.model.document.response.PDRecResponse;
 import cn.xfyun.service.document.AbstractPDRecWebSocketListener;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -60,14 +61,20 @@ public class PDRecClient extends AbstractClient {
     private final String format;
 
     public PDRecClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient
-                .Builder()
-                .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .connectTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                .build();
+        if (builder.okHttpClient != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.okHttpClient;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         this.originHostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
@@ -266,6 +273,7 @@ public class PDRecClient extends AbstractClient {
          * 可选值：plain(默认)、json、 xml
          */
         private String format = "plain";
+        private OkHttpClient okHttpClient;
 
         public PDRecClient build() {
             return new PDRecClient(this);
@@ -330,6 +338,11 @@ public class PDRecClient extends AbstractClient {
 
         public Builder hostUrl(String hostUrl) {
             this.hostUrl = hostUrl;
+            return this;
+        }
+
+        public Builder okHttpClient(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
             return this;
         }
     }

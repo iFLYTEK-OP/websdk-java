@@ -8,6 +8,7 @@ import cn.xfyun.model.sparkmodel.SparkChatParam;
 import cn.xfyun.model.sparkmodel.request.SparkSendRequest;
 import cn.xfyun.model.sparkmodel.response.ImageUnderstandResponse;
 import cn.xfyun.service.sparkmodel.AbstractImgUnderstandWebSocketListener;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Response;
@@ -66,14 +67,20 @@ public class ImageUnderstandClient extends AbstractClient {
     private final String domain;
 
     public ImageUnderstandClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient
-                .Builder()
-                .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .connectTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                .build();
+        if (builder.okHttpClient != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.okHttpClient;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
         this.apiSecret = builder.apiSecret;
@@ -329,6 +336,7 @@ public class ImageUnderstandClient extends AbstractClient {
         private int maxTokens = 2028;
         private int topK = 4;
         private String domain = "imagev3";
+        private OkHttpClient okHttpClient;
 
         public ImageUnderstandClient build() {
             return new ImageUnderstandClient(this);
@@ -393,6 +401,11 @@ public class ImageUnderstandClient extends AbstractClient {
 
         public Builder domain(String domain) {
             this.domain = domain;
+            return this;
+        }
+
+        public Builder okHttpClient(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
             return this;
         }
     }

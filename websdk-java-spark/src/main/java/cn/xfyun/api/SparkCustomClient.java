@@ -7,6 +7,7 @@ import cn.xfyun.model.sparkmodel.FileContent;
 import cn.xfyun.model.sparkmodel.FunctionCall;
 import cn.xfyun.model.sparkmodel.request.KnowledgeFileUpload;
 import cn.xfyun.model.sparkmodel.request.SparkCustomRequest;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import okhttp3.*;
 import okhttp3.internal.Util;
@@ -18,7 +19,6 @@ import java.net.MalformedURLException;
 import java.security.SignatureException;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -82,14 +82,20 @@ public class SparkCustomClient extends AbstractClient {
     private final String userId;
 
     public SparkCustomClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient
-                .Builder()
-                .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .connectTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                .build();
+        if (builder.okHttpClient != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.okHttpClient;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         this.originHostUrl = builder.hostUrl;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
@@ -346,6 +352,7 @@ public class SparkCustomClient extends AbstractClient {
         private Integer maxTokens = 4096;
         private List<FunctionCall> functions;
         private String userId;
+        private OkHttpClient okHttpClient;
 
         public SparkCustomClient build() {
             return new SparkCustomClient(this);
@@ -430,6 +437,11 @@ public class SparkCustomClient extends AbstractClient {
 
         public Builder userId(String userId) {
             this.userId = userId;
+            return this;
+        }
+
+        public Builder okHttpClient(OkHttpClient okHttpClient) {
+            this.okHttpClient = okHttpClient;
             return this;
         }
     }
