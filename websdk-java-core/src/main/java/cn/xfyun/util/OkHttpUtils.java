@@ -32,13 +32,4 @@ public class OkHttpUtils {
                 .connectionPool(connectionPool)
                 .build();
     }
-
-    public void close() throws IOException {
-        client.dispatcher().executorService().shutdown();
-        client.connectionPool().evictAll();
-        // 如果启用了缓存也需要关闭缓存
-        if (client.cache() != null) {
-            client.cache().close();
-        }
-    }
 }
