@@ -4,6 +4,7 @@ import okhttp3.ConnectionPool;
 import okhttp3.Dispatcher;
 import okhttp3.OkHttpClient;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -30,5 +31,14 @@ public class OkHttpUtils {
                 .dispatcher(dispatcher)
                 .connectionPool(connectionPool)
                 .build();
+    }
+
+    public void close() throws IOException {
+        client.dispatcher().executorService().shutdown();
+        client.connectionPool().evictAll();
+        // 如果启用了缓存也需要关闭缓存
+        if (client.cache() != null) {
+            client.cache().close();
+        }
     }
 }
