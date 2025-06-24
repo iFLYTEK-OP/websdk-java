@@ -2,18 +2,15 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.WebSocketClient;
 import cn.xfyun.common.IgrConstant;
-import cn.xfyun.model.request.iat.IatBusiness;
-import cn.xfyun.model.request.iat.IatRequest;
-import cn.xfyun.model.request.iat.IatRequestData;
 import cn.xfyun.model.request.igr.IgrRequest;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.Hmac256Signature;
 import cn.xfyun.service.igr.IgrSendTask;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
-import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
 import okhttp3.internal.Util;
 import org.slf4j.Logger;
@@ -74,6 +71,20 @@ public class IgrClient extends WebSocketClient {
     private ExecutorService executorService;
 
     public IgrClient(Builder builder) {
+        if (builder.client != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.client;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
         this.appId = builder.appId;
         this.ent = builder.ent;
         this.aue = builder.aue;
@@ -88,7 +99,6 @@ public class IgrClient extends WebSocketClient {
 
         this.request = builder.request;
         this.frameSize = builder.frameSize;
-        this.okHttpClient = new OkHttpClient().newBuilder().build();
         this.signature = builder.signature;
         this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
         this.callTimeout = builder.callTimeout;
@@ -239,25 +249,12 @@ public class IgrClient extends WebSocketClient {
         return this.originHostUrl;
     }
 
-    public String getApiKey() {
-        return this.apiKey;
-    }
-
-    public String getApiSecret() {
-        return this.apiSecret;
-    }
-
     public Request getRequest() {
         return this.request;
     }
 
     public OkHttpClient getClient() {
         return this.okHttpClient;
-    }
-
-    @Override
-    public WebSocket getWebSocket() {
-        return this.webSocket;
     }
 
     public boolean isRetryOnConnectionFailure() {
@@ -313,7 +310,9 @@ public class IgrClient extends WebSocketClient {
         private OkHttpClient client;
         private ExecutorService executorService;
 
-        // websocket相关
+        /**
+         * websocket相关
+         */
         boolean retryOnConnectionFailure = true;
         int callTimeout = 0;
         int connectTimeout = 10000;
@@ -329,8 +328,7 @@ public class IgrClient extends WebSocketClient {
             this.appId = appId;
             this.apiKey = apiKey;
             this.apiSecret = apiSecret;
-            Hmac256Signature signature = new Hmac256Signature(apiKey, apiSecret, hostUrl);
-            this.signature = signature;
+            this.signature = new Hmac256Signature(apiKey, apiSecret, hostUrl);
             return this;
         }
 
@@ -431,6 +429,11 @@ public class IgrClient extends WebSocketClient {
 
         public IgrClient.Builder executorService(ExecutorService executorService) {
             this.executorService = executorService;
+            return this;
+        }
+
+        public IgrClient.Builder client(OkHttpClient client) {
+            this.client = client;
             return this;
         }
     }

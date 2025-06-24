@@ -1,6 +1,7 @@
 package cn.xfyun.base.http;
 
 import cn.xfyun.base.Client;
+import cn.xfyun.util.OkHttpUtils;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -80,7 +81,7 @@ public abstract class HttpClient extends Client {
         }
     }
 
-    public String sendGet(String url, Map<String, String> header) throws IOException {
+    protected String sendGet(String url, Map<String, String> header) throws IOException {
         Request.Builder builder = new Request
                 .Builder()
                 .url(url)
@@ -125,14 +126,20 @@ public abstract class HttpClient extends Client {
         this.appId = builder.getAppId();
         this.apiKey = builder.getApiKey();
         this.apiSecret = builder.getApiSecret();
-        this.okHttpClient = new OkHttpClient
-                .Builder()
-                .callTimeout(builder.getCallTimeout(), TimeUnit.SECONDS)
-                .connectTimeout(builder.getConnectTimeout(), TimeUnit.SECONDS)
-                .readTimeout(builder.getReadTimeout(), TimeUnit.SECONDS)
-                .writeTimeout(builder.getWriteTimeout(), TimeUnit.SECONDS)
-                .retryOnConnectionFailure(builder.getRetryOnConnectionFailure())
-                .build();
+
+        if (builder.getHttpClient() != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.getHttpClient();
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .callTimeout(builder.getCallTimeout(), TimeUnit.SECONDS)
+                    .connectTimeout(builder.getConnectTimeout(), TimeUnit.SECONDS)
+                    .readTimeout(builder.getReadTimeout(), TimeUnit.SECONDS)
+                    .writeTimeout(builder.getWriteTimeout(), TimeUnit.SECONDS)
+                    .retryOnConnectionFailure(builder.getRetryOnConnectionFailure())
+                    .build();
+        }
     }
 
     public boolean getRetryOnConnectionFailure() {

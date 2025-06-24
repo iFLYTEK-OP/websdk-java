@@ -1,15 +1,12 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.WebSocketClient;
-import cn.xfyun.model.request.ise.IseBusiness;
-import cn.xfyun.model.request.ise.IseRequest;
-import cn.xfyun.model.request.ise.IseRequestData;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.RtasrSignature;
 import cn.xfyun.service.rta.AbstractRtasrWebSocketListener;
 import cn.xfyun.service.rta.RtasrSendTask;
+import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
-import com.google.gson.JsonObject;
 import okhttp3.*;
 import okhttp3.internal.Util;
 import okio.ByteString;
@@ -17,7 +14,6 @@ import okio.ByteString;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.security.SignatureException;
-import java.util.Base64;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -103,8 +99,7 @@ public class RtasrClient extends WebSocketClient {
      * */
     private Integer engLangType;
 
-    private static ExecutorService executorService = Executors.newSingleThreadExecutor();
-
+    private ExecutorService executorService;
 
     /**
      *   创建 client对象
@@ -112,7 +107,21 @@ public class RtasrClient extends WebSocketClient {
      * @param builder
      */
     public RtasrClient(Builder builder) {
-        this.okHttpClient = new OkHttpClient().newBuilder().build();
+        if (builder.httpClient != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.httpClient;
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
+                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
+                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
+                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
+                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
+                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
+                    .build();
+        }
+        this.executorService = (null == builder.executor) ? Executors.newSingleThreadExecutor() : builder.executor;
         this.appId = builder.appId;
         this.apiKey = builder.apiKey;
         this.request = builder.request;
@@ -277,9 +286,8 @@ public class RtasrClient extends WebSocketClient {
         return param.toString();
     }
 
-    @Override
-    public WebSocket getWebSocket() {
-        return webSocket;
+    public ExecutorService getExecutorService() {
+        return executorService;
     }
 
     public String getPunc() {
@@ -326,18 +334,6 @@ public class RtasrClient extends WebSocketClient {
         return originHostUrl;
     }
 
-    public String getAppId() {
-        return appId;
-    }
-
-    public String getApiSecret() {
-        return apiSecret;
-    }
-
-    public String getApiKey() {
-        return apiKey;
-    }
-
     public boolean isRetryOnConnectionFailure() {
         return retryOnConnectionFailure;
     }
@@ -374,7 +370,10 @@ public class RtasrClient extends WebSocketClient {
      *   rtasrClient构建对象
      */
     public static final class Builder {
-        // websocket相关
+
+        /**
+         * executor
+         */
         boolean retryOnConnectionFailure = true;
 
         int callTimeout = 0;
@@ -414,6 +413,10 @@ public class RtasrClient extends WebSocketClient {
         private Integer roleType;
 
         private Integer engLangType;
+
+        private ExecutorService executor;
+
+        private OkHttpClient httpClient;
 
         public RtasrClient.Builder request(Request request) {
             this.request = request;
@@ -477,8 +480,7 @@ public class RtasrClient extends WebSocketClient {
         }
 
         public RtasrClient build() {
-            RtasrClient rtasrClient = new RtasrClient(this);
-            return rtasrClient;
+            return new RtasrClient(this);
         }
 
         public Builder lang(String lang) {
@@ -513,6 +515,16 @@ public class RtasrClient extends WebSocketClient {
 
         public Builder engLangType(int engLangType) {
             this.engLangType = engLangType;
+            return this;
+        }
+
+        public Builder executor(ExecutorService executor) {
+            this.executor = executor;
+            return this;
+        }
+
+        public Builder httpClient(OkHttpClient httpClient) {
+            this.httpClient = httpClient;
             return this;
         }
     }

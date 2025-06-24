@@ -1,6 +1,8 @@
 package cn.xfyun.base.http;
 
 
+import okhttp3.OkHttpClient;
+
 /**
  * @author mqgao
  * @version 1.0
@@ -35,11 +37,21 @@ public abstract class HttpBuilder<T> {
      */
     private int writeTimeout = 10;
 
+    /**
+     * okHttpClient
+     */
+    private OkHttpClient httpClient;
+
     public HttpBuilder(String hostUrl, String appId, String apiKey, String apiSecret) {
         this.hostUrl = hostUrl;
         this.appId = appId;
         this.apiKey = apiKey;
         this.apiSecret = apiSecret;
+    }
+
+    public T httpClient(OkHttpClient httpClient) {
+        this.httpClient = httpClient;
+        return (T)this;
     }
 
     public T retryOnConnectionFailure(boolean retryOnConnectionFailure) {
@@ -121,6 +133,10 @@ public abstract class HttpBuilder<T> {
 
     public int getWriteTimeout() {
         return writeTimeout;
+    }
+
+    public OkHttpClient getHttpClient() {
+        return httpClient;
     }
 
     public abstract HttpClient build();
