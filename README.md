@@ -10,7 +10,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-spark</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.1.2</version>
+    <version>2.1.4</version>
 </dependency>
 ```
 
@@ -49,7 +49,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-speech</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>3.0.2</version>
+    <version>3.0.4</version>
 </dependency>
 ```
 重要版本更新说明
@@ -80,7 +80,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-nlp</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.6</version>
+    <version>2.0.8</version>
 </dependency>
 ```
 
@@ -99,7 +99,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-ocr</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.6</version>
+    <version>2.0.8</version>
 </dependency>
 ```
 
@@ -129,7 +129,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-face-detector</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.6</version>
+    <version>2.0.8</version>
 </dependency>
 ```
 
