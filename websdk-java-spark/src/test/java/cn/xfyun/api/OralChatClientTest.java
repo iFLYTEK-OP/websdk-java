@@ -147,7 +147,7 @@ public class OralChatClientTest {
         // 发送内容
         sendChat(oralChatClient, socket, param);
         // 发送结束帧
-        oralChatClient.stop(socket, param);
+        oralChatClient.stop(socket);
     }
 
     @Test
@@ -168,7 +168,7 @@ public class OralChatClientTest {
         // 发送内容
         sendChat(oralChatClient, socket, param);
         // 发送结束帧
-        oralChatClient.stop(socket, param);
+        oralChatClient.stop(socket);
     }
 
     /**
@@ -183,17 +183,17 @@ public class OralChatClientTest {
                 if (len < 1280) {
                     bytes = Arrays.copyOfRange(bytes, 0, len);
                     if (first) {
-                        oralChatClient.sendMsg(socket, bytes, 0, param);
+                        oralChatClient.sendMsg(socket, bytes, 0);
                     } else {
-                        oralChatClient.sendMsg(socket, bytes, 2, param);
+                        oralChatClient.sendMsg(socket, bytes, 2);
                     }
                     break;
                 }
                 if (first) {
                     first = false;
-                    oralChatClient.sendMsg(socket, bytes, 0, param);
+                    oralChatClient.sendMsg(socket, bytes, 0);
                 } else {
-                    oralChatClient.sendMsg(socket, bytes, 1, param);
+                    oralChatClient.sendMsg(socket, bytes, 1);
                 }
                 // 每隔40毫秒发送一次数据
                 TimeUnit.MILLISECONDS.sleep(40);

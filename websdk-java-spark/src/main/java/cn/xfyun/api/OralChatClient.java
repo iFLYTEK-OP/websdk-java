@@ -281,7 +281,7 @@ public class OralChatClient extends AbstractClient {
      * 超拟人交互服务端停止
      * @param socket websocket信息
      */
-    public void stop(WebSocket socket, OralChatParam param) {
+    private void stop(WebSocket socket, OralChatParam param) {
         try {
             if (null != param) {
                 String msg = buildParam(null, 2, param, true);
@@ -317,7 +317,7 @@ public class OralChatClient extends AbstractClient {
      * @param bytes  音频数据
      * @param status 当前音频的数据状态 0:首帧，1:中间帧，2:末帧
      */
-    public void sendMsg(WebSocket socket, byte[] bytes, int status, OralChatParam param) {
+    private void sendMsg(WebSocket socket, byte[] bytes, int status, OralChatParam param) {
         if (param == null) {
             logger.error("超拟人交互会话参数缺失");
             throw new BusinessException("超拟人交互会话参数缺失");

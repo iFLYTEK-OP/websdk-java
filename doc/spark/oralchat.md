@@ -61,7 +61,7 @@
 
 ### 1. 启动
 ```java
-public BlockingQueue<String> start(OralChatParam param, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException
+public WebSocket start(OralChatParam param, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException
 ```
 **参数说明**：
 
@@ -91,14 +91,14 @@ public BlockingQueue<String> start(OralChatParam param, WebSocketListener webSoc
 |     param.avatar      |  int   |                              高                              | N    |                     |
 |   webSocketListener   | Object |                      自定义ws抽象监听类                      | Y    |                     |
 
-**响应示例**：队列信息
+**响应示例**：ws信息
 
 
 
 ### 2. 停止
 
 ```java
-public void stop(BlockingQueue<String> queue)
+public void stop(WebSocket socket)
 ```
 
 **参数说明**：队列信息
@@ -110,14 +110,14 @@ public void stop(BlockingQueue<String> queue)
 ### 3. 发送消息
 
 ```java
-public void sendMessage(BlockingQueue<String> queue, byte[] bytes, int status)
+public void sendMsg(WebSocket socket, byte[] bytes, int status)
 ```
 
 **参数说明**：
 
 |  名称  |  类型  |                             描述                             | 必须 | 默认值 |
 | :----: | :----: | :----------------------------------------------------------: | ---- | ------ |
-| queue  | Object |                       方法1返回的队列                        | Y    |        |
+| socket | Object |                        方法1返回的ws                         | Y    |        |
 | bytes  |  byte  |         情景模式, maxLength:16，从AIUI/飞云平台创建          | N    |        |
 | status |  int   | 0:首帧(表示开启一轮对话)，1:中间帧，2:末帧(表示一轮对话结束) | Y    |        |
 
