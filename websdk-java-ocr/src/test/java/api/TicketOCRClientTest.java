@@ -1,6 +1,5 @@
 package api;
 
-import cn.xfyun.api.SinoOCRClient;
 import cn.xfyun.api.TicketOCRClient;
 import cn.xfyun.config.DocumentType;
 import cn.xfyun.model.ticket.TicketOCRParam;
