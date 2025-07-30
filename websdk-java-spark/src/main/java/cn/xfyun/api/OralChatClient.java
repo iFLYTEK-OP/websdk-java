@@ -342,7 +342,7 @@ public class OralChatClient extends AbstractClient {
         // 使用 identityHashCode 生成唯一ID
         String queueId = String.valueOf(System.identityHashCode(socket));
 
-        // 根据Id删除队列
+        // 根据Id获取队列
         return paramCache.get(queueId);
     }
 
@@ -435,9 +435,13 @@ public class OralChatClient extends AbstractClient {
         header.setScene(param.getScene());
         header.setUid(param.getUid());
         header.setStmid(String.valueOf(FrameType.FIRST_FRAME.getValue()));
-        header.setStatus((isEnd ?
-                FrameType.LAST_FRAME : firstFrame ?
-                FrameType.FIRST_FRAME : FrameType.MIDDLE_FRAME).getValue());
+        if (isEnd) {
+            header.setStatus(FrameType.LAST_FRAME.getValue());
+        } else if (firstFrame) {
+            header.setStatus(FrameType.FIRST_FRAME.getValue());
+        } else {
+            header.setStatus(FrameType.MIDDLE_FRAME.getValue());
+        }
 
         boolean isContinuousVad = StreamMode.CONTINUOUS_VAD.modeEquals(mode);
         if ((newChat && isContinuousVad) || firstFrame) {
