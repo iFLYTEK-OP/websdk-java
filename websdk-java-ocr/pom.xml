@@ -5,6 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <packaging>jar</packaging>
     <artifactId>websdk-java-ocr</artifactId>
+    <name>${project.artifactId}</name>
     <version>${websdk-java-ocr.version}</version>
     <parent>
         <artifactId>websdk-java-parent</artifactId>
