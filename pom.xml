@@ -6,7 +6,7 @@
     <artifactId>websdk-java</artifactId>
     <name>websdk-java</name>
     <packaging>pom</packaging>
-    <version>2.1.4</version>
+    <version>2.1.5</version>
     
     <url>https://github.com/iFLYTEK-OP</url>
     <description>xfyun SDK</description>
@@ -46,13 +46,9 @@
 
     <distributionManagement>
         <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+            <id>central</id>
+            <url>https://central.sonatype.com/repository/maven-snapshots/</url>
         </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-        </repository>
     </distributionManagement>
 
     <properties>
@@ -68,16 +64,17 @@
         <maven-javadoc-plugin.version>3.2.0</maven-javadoc-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.7</nexus-staging-maven-plugin.version>
         <maven-gpg-plugin.version>1.5</maven-gpg-plugin.version>
+        <central-publishing-maven-plugin.version>0.8.0</central-publishing-maven-plugin.version>
         <maven-deploy-plugin.version>3.0.0-M1</maven-deploy-plugin.version>
         <powermock.version>2.0.2</powermock.version>
         <jacoco.version>0.8.7</jacoco.version>
         <!--子模块版本管理-->
-        <websdk-java-spark.version>2.1.4</websdk-java-spark.version>
-        <websdk-java-speech.version>3.0.4</websdk-java-speech.version>
-        <websdk-java-core.version>2.0.8</websdk-java-core.version>
-        <websdk-java-nlp.version>2.0.8</websdk-java-nlp.version>
-        <websdk-java-face-detector.version>2.0.8</websdk-java-face-detector.version>
-        <websdk-java-ocr.version>2.0.8</websdk-java-ocr.version>
+        <websdk-java-spark.version>2.1.5</websdk-java-spark.version>
+        <websdk-java-speech.version>3.0.5</websdk-java-speech.version>
+        <websdk-java-core.version>2.0.9</websdk-java-core.version>
+        <websdk-java-nlp.version>2.0.9</websdk-java-nlp.version>
+        <websdk-java-face-detector.version>2.0.9</websdk-java-face-detector.version>
+        <websdk-java-ocr.version>2.0.9</websdk-java-ocr.version>
     </properties>
 
     <build>
@@ -202,7 +199,7 @@
                         <version>${maven-gpg-plugin.version}</version>
                         <executions>
                             <execution>
-                                <id>ossrh</id>
+                                <id>central</id>
                                 <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
@@ -210,30 +207,18 @@
                             </execution>
                         </executions>
                     </plugin>
-
+                    <!-- 发布到中央仓库 -->
                     <plugin>
-                        <groupId>org.sonatype.plugins</groupId>
-                        <artifactId>nexus-staging-maven-plugin</artifactId>
-                        <version>${nexus-staging-maven-plugin.version}</version>
+                        <groupId>org.sonatype.central</groupId>
+                        <artifactId>central-publishing-maven-plugin</artifactId>
+                        <version>${central-publishing-maven-plugin.version}</version>
                         <extensions>true</extensions>
                         <configuration>
-                            <serverId>ossrh</serverId>
-                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
-                            <autoReleaseAfterClose>false</autoReleaseAfterClose>
+                            <publishingServerId>central</publishingServerId>
                         </configuration>
                     </plugin>
                 </plugins>
             </build>
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>sonatype-snapshots</id>
-                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <repository>
-                    <id>sonatype-release</id>
-                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
         </profile>
     </profiles>
 </project>
