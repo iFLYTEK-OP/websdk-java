@@ -56,7 +56,12 @@ public abstract class AbstractSparkModelWebSocketListener extends WebSocketListe
     @Override
     public void onOpen(WebSocket webSocket, Response response) {
         super.onOpen(webSocket, response);
-        logger.info("webSocket is open");
+        try {
+            logger.debug("Handshake success, code={}, headers={}", response.code(), response.headers());
+        } finally {
+            // 防止握手失败资源泄漏
+            response.close();
+        }
     }
 
     @Override
@@ -98,11 +103,18 @@ public abstract class AbstractSparkModelWebSocketListener extends WebSocketListe
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
         super.onFailure(webSocket, t, response);
-        logger.error("webSocket failed .", t);
-        onFail(webSocket, t, response);
-        // 必须手动关闭 response 否则连接泄漏
-        if (response != null) {
-            response.close();
+        try {
+            // logger.error("webSocket connect failed .", t);
+            onFail(webSocket, t, response);
+        } finally {
+            // 必须手动关闭 response 否则连接泄漏
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (Exception closeError) {
+                    logger.debug("response close failed", closeError);
+                }
+            }
         }
     }
 }

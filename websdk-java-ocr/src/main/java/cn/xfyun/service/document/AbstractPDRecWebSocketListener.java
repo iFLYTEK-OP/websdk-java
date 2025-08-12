@@ -61,6 +61,17 @@ public abstract class AbstractPDRecWebSocketListener extends WebSocketListener {
     public abstract void onBusinessFail(WebSocket webSocket, PDRecResponse response);
 
     @Override
+    public void onOpen(WebSocket webSocket, Response response) {
+        super.onOpen(webSocket, response);
+        try {
+            logger.debug("Handshake success, code={}, headers={}", response.code(), response.headers());
+        } finally {
+            // 防止握手失败资源泄漏
+            response.close();
+        }
+    }
+
+    @Override
     public void onMessage(WebSocket webSocket, String text) {
         logger.debug("Received message: {}", text);
         try {
@@ -129,11 +140,19 @@ public abstract class AbstractPDRecWebSocketListener extends WebSocketListener {
 
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, Response response) {
-        logger.error("WebSocket connection failed", t);
-        onFail(webSocket, t, response);
-        // 必须手动关闭 response 否则连接泄漏
-        if (response != null) {
-            response.close();
+        super.onFailure(webSocket, t, response);
+        try {
+            // logger.error("webSocket connect failed .", t);
+            onFail(webSocket, t, response);
+        } finally {
+            // 必须手动关闭 response 否则连接泄漏
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (Exception closeError) {
+                    logger.debug("response close failed", closeError);
+                }
+            }
         }
     }
 }

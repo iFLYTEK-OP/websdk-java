@@ -107,11 +107,18 @@ public abstract class SimInterpWebSocketListener extends WebSocketListener {
     @Override
     public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
         super.onFailure(webSocket, t, response);
-        logger.error("webSocket connect failed .", t);
-        onFail(webSocket, t, response);
-        // 必须手动关闭 response 否则连接泄漏
-        if (response != null) {
-            response.close();
+        try {
+            // logger.error("webSocket connect failed .", t);
+            onFail(webSocket, t, response);
+        } finally {
+            // 必须手动关闭 response 否则连接泄漏
+            if (response != null) {
+                try {
+                    response.close();
+                } catch (Exception closeError) {
+                    logger.debug("response close failed", closeError);
+                }
+            }
         }
     }
 
