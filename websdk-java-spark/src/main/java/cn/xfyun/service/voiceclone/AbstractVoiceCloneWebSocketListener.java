@@ -84,7 +84,11 @@ public abstract class AbstractVoiceCloneWebSocketListener extends WebSocketListe
             logger.debug("Handshake success, code={}, headers={}", response.code(), response.headers());
         } finally {
             // 防止握手失败资源泄漏
-            response.close();
+            try {
+                response.close();
+            } catch (Exception closeError) {
+                logger.warn("response close failed", closeError);
+            }
         }
     }
 
@@ -153,15 +157,14 @@ public abstract class AbstractVoiceCloneWebSocketListener extends WebSocketListe
     public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
         super.onFailure(webSocket, t, response);
         try {
-            // logger.error("webSocket connect failed .", t);
             onFail(webSocket, t, response);
         } finally {
-            // 必须手动关闭 response 否则连接泄漏
+            // 手动关闭,防止连接泄漏
             if (response != null) {
                 try {
                     response.close();
                 } catch (Exception closeError) {
-                    logger.debug("response close failed", closeError);
+                    logger.warn("response close failed", closeError);
                 }
             }
         }
