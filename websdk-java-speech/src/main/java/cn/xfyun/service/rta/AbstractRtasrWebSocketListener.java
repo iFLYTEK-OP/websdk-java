@@ -66,6 +66,16 @@ public abstract class AbstractRtasrWebSocketListener extends WebSocketListener {
 	@Override
 	public void onOpen(WebSocket webSocket, Response response) {
 		super.onOpen(webSocket, response);
+		try {
+			logger.debug("Handshake success, code={}, headers={}", response.code(), response.headers());
+		} finally {
+			// 防止握手失败资源泄漏
+			try {
+				response.close();
+			} catch (Exception closeError) {
+				logger.warn("response close failed", closeError);
+			}
+		}
 	}
 
 	@Override
@@ -106,17 +116,23 @@ public abstract class AbstractRtasrWebSocketListener extends WebSocketListener {
 
 	@Override
 	public void onFailure(WebSocket webSocket, Throwable t, @Nullable Response response) {
-		if (t instanceof EOFException) {
-			onClosed();
-		} else {
-			t.printStackTrace();
-			onFail(webSocket, t, response);
-		}
-		// 必须手动关闭 response 否则连接泄漏
-		if (response != null) {
-			response.close();
+		try {
+			// logger.error("webSocket connect failed .", t);
+			if (t instanceof EOFException) {
+				onClosed();
+			} else {
+				t.printStackTrace();
+				onFail(webSocket, t, response);
+			}
+		} finally {
+			// 手动关闭,防止连接泄漏
+			if (response != null) {
+				try {
+					response.close();
+				} catch (Exception closeError) {
+					logger.warn("response close failed", closeError);
+				}
+			}
 		}
 	}
-
-
 }
