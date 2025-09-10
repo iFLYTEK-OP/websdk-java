@@ -48,6 +48,7 @@ public class PropertiesConfig {
     private static final String resumeGenClientApiKey;
     private static final String resumeGenClientApiSecret;
     private static final String sparkBatchAPIPassword;
+    private static final String aiuiKnowledgePassword;
 
     static {
         Properties properties = new Properties();
@@ -87,6 +88,7 @@ public class PropertiesConfig {
         resumeGenClientApiKey = StringUtils.isNullOrEmpty(properties.getProperty("resumeGenClientApiKey")) ? System.getenv("resumeGenClientApiKey") : properties.getProperty("resumeGenClientApiKey");
         resumeGenClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("resumeGenClientApiSecret")) ? System.getenv("resumeGenClientApiSecret") : properties.getProperty("resumeGenClientApiSecret");
         sparkBatchAPIPassword = StringUtils.isNullOrEmpty(properties.getProperty("sparkBatchAPIPassword")) ? System.getenv("sparkBatchAPIPassword") : properties.getProperty("sparkBatchAPIPassword");
+        aiuiKnowledgePassword = StringUtils.isNullOrEmpty(properties.getProperty("aiuiKnowledgePassword")) ? System.getenv("aiuiKnowledgePassword") : properties.getProperty("aiuiKnowledgePassword");
     }
 
     public static String getAppId() {
@@ -207,5 +209,9 @@ public class PropertiesConfig {
 
     public static String getSparkBatchAPIPassword() {
         return sparkBatchAPIPassword;
+    }
+
+    public static String getAiUiKnowledgePassword() {
+        return aiuiKnowledgePassword;
     }
 }
