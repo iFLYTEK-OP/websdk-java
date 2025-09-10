@@ -164,6 +164,11 @@ public class TelerobotClient {
         private Integer soTimeout = 30000;
 
         /**
+         * 代理地址
+         */
+        private String proxyUrl;
+
+        /**
          * 重试次数
          */
         private Integer retryCount = 3;
@@ -189,13 +194,18 @@ public class TelerobotClient {
             return this;
         }
 
+        public Builder proxyUrl(String proxyUrl) {
+            this.proxyUrl = proxyUrl;
+            return this;
+        }
+
         public Builder retryCount(Integer retryCount){
             this.retryCount = retryCount;
             return this;
         }
 
         public TelerobotClient build() {
-            this.connector = HttpConnector.build(maxConnections, connTimeout, soTimeout, retryCount);
+            this.connector = HttpConnector.build(maxConnections, connTimeout, soTimeout, retryCount, proxyUrl);
             return new TelerobotClient(this);
         }
     }

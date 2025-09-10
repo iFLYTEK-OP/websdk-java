@@ -1,15 +1,13 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.AbstractClient;
+import cn.xfyun.base.websocket.WebsocketBuilder;
 import cn.xfyun.config.SparkIatModelEnum;
 import cn.xfyun.model.sparkiat.request.SparkIatRequest;
 import cn.xfyun.service.sparkiat.SparkIatSendTask;
-import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
-import okhttp3.OkHttpClient;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
-import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +17,6 @@ import java.security.SignatureException;
 import java.util.Base64;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 大模型语音听写 Client
@@ -213,24 +210,8 @@ public class SparkIatClient extends AbstractClient {
     private final String ln;
 
     public SparkIatClient(Builder builder) {
-        if (builder.okHttpClient != null) {
-            // 使用用户提供的okHttpClient
-            this.okHttpClient = builder.okHttpClient;
-        } else {
-            // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
-                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
-                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
-                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                    .build();
-        }
+        super(builder);
         this.originHostUrl = builder.hostUrl;
-        this.appId = builder.appId;
-        this.apiKey = builder.apiKey;
-        this.apiSecret = builder.apiSecret;
         this.executor = (null == builder.executor) ? Executors.newSingleThreadExecutor() : builder.executor;
 
         this.language = builder.language;
@@ -258,13 +239,6 @@ public class SparkIatClient extends AbstractClient {
         this.textFormat = builder.textFormat;
         this.langType = builder.langType;
         this.ln = builder.ln;
-
-        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
-        this.callTimeout = builder.callTimeout;
-        this.connectTimeout = builder.connectTimeout;
-        this.readTimeout = builder.readTimeout;
-        this.writeTimeout = builder.writeTimeout;
-        this.pingInterval = builder.pingInterval;
     }
 
     public String getLanguage() {
@@ -474,19 +448,9 @@ public class SparkIatClient extends AbstractClient {
         executor.submit(sparkIatSendTask);
     }
 
-    public static class Builder {
+    public static final class Builder extends WebsocketBuilder<Builder> {
 
-        // websocket相关
-        private boolean retryOnConnectionFailure = true;
-        private int callTimeout = 0;
-        private int connectTimeout = 10000;
-        private int readTimeout = 30000;
-        private int writeTimeout = 30000;
-        private int pingInterval = 0;
         private String hostUrl = CN_LANGUAGE_API;
-        private String appId;
-        private String apiKey;
-        private String apiSecret;
         private Integer langType = 1;
         private String language = "zh_cn";
         private final String domain = "slm";
@@ -513,7 +477,6 @@ public class SparkIatClient extends AbstractClient {
         private String textFormat = "json";
         private String ln = "none";
         private ExecutorService executor;
-        private OkHttpClient okHttpClient;
 
         public SparkIatClient build() {
             return new SparkIatClient(this);
@@ -525,9 +488,7 @@ public class SparkIatClient extends AbstractClient {
          * @param langType 语言类型
          */
         public Builder signature(String appId, String apiKey, String apiSecret, Integer langType) {
-            this.appId = appId;
-            this.apiKey = apiKey;
-            this.apiSecret = apiSecret;
+            super.signature(appId, apiKey, apiSecret);
             if (SparkIatModelEnum.ZH_CN_MULACC.codeEquals(langType)) {
                 this.hostUrl = MULTI_LANGUAGE_API;
                 this.accent = "mulacc";
@@ -645,36 +606,6 @@ public class SparkIatClient extends AbstractClient {
             return this;
         }
 
-        public Builder callTimeout(long timeout, TimeUnit unit) {
-            this.callTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder connectTimeout(long timeout, TimeUnit unit) {
-            this.connectTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder readTimeout(long timeout, TimeUnit unit) {
-            this.readTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder writeTimeout(long timeout, TimeUnit unit) {
-            this.writeTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder pingInterval(long interval, TimeUnit unit) {
-            this.pingInterval = Util.checkDuration("interval", interval, unit);
-            return this;
-        }
-
-        public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
-            this.retryOnConnectionFailure = retryOnConnectionFailure;
-            return this;
-        }
-
         public Builder ln(String ln) {
             this.ln = ln;
             return this;
@@ -682,11 +613,6 @@ public class SparkIatClient extends AbstractClient {
 
         public Builder executor(ExecutorService executor) {
             this.executor = executor;
-            return this;
-        }
-
-        public Builder okHttpClient(OkHttpClient okHttpClient) {
-            this.okHttpClient = okHttpClient;
             return this;
         }
     }

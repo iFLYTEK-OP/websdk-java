@@ -9,6 +9,7 @@ import okhttp3.internal.Util;
 
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.Base64;
@@ -127,6 +128,7 @@ public class TtsClient extends WebSocketClient {
             this.okHttpClient = builder.httpClient;
         } else {
             this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .proxy(builder.proxy)
                     .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
                     .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
                     .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
@@ -291,6 +293,7 @@ public class TtsClient extends WebSocketClient {
         private String rdn = "0";
         private String ent = "intp65";
         private OkHttpClient httpClient;
+        private Proxy proxy;
 
         public TtsClient build() {
             return new TtsClient(this);
@@ -404,6 +407,11 @@ public class TtsClient extends WebSocketClient {
 
         public TtsClient.Builder httpClient(OkHttpClient httpClient) {
             this.httpClient = httpClient;
+            return this;
+        }
+
+        public TtsClient.Builder proxy(Proxy proxy) {
+            this.proxy = proxy;
             return this;
         }
     }

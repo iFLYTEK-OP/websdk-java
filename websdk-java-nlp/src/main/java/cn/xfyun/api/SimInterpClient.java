@@ -1,14 +1,12 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.AbstractClient;
+import cn.xfyun.base.websocket.WebsocketBuilder;
 import cn.xfyun.model.simult.request.SimInterpRequest;
 import cn.xfyun.service.simult.SimInterpSendTask;
-import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
-import okhttp3.OkHttpClient;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
-import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +16,6 @@ import java.security.SignatureException;
 import java.util.Base64;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 同声传译 Client
@@ -126,24 +123,8 @@ public class SimInterpClient extends AbstractClient {
     private final int bitDepth;
 
     public SimInterpClient(Builder builder) {
-        if (builder.okHttpClient != null) {
-            // 使用用户提供的okHttpClient
-            this.okHttpClient = builder.okHttpClient;
-        } else {
-            // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
-                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
-                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
-                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                    .build();
-        }
+        super(builder);
         this.originHostUrl = builder.hostUrl;
-        this.appId = builder.appId;
-        this.apiKey = builder.apiKey;
-        this.apiSecret = builder.apiSecret;
 
         this.language = builder.language;
         this.languageType = builder.languageType;
@@ -160,12 +141,6 @@ public class SimInterpClient extends AbstractClient {
         this.channels = builder.channels;
         this.bitDepth = builder.bitDepth;
 
-        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
-        this.callTimeout = builder.callTimeout;
-        this.connectTimeout = builder.connectTimeout;
-        this.readTimeout = builder.readTimeout;
-        this.writeTimeout = builder.writeTimeout;
-        this.pingInterval = builder.pingInterval;
         this.executor = (null == builder.executor) ? Executors.newSingleThreadExecutor() : builder.executor;
     }
 
@@ -332,21 +307,9 @@ public class SimInterpClient extends AbstractClient {
         executor.submit(sparkIatSendTask);
     }
 
-    public static final class Builder {
+    public static final class Builder extends WebsocketBuilder<Builder> {
 
-        /**
-         * websocket相关
-         */
-        boolean retryOnConnectionFailure = true;
-        int callTimeout = 0;
-        int connectTimeout = 30000;
-        int readTimeout = 30000;
-        int writeTimeout = 30000;
-        int pingInterval = 0;
         private String hostUrl = "https://ws-api.xf-yun.com/v1/private/simult_interpretation";
-        private String appId;
-        private String apiKey;
-        private String apiSecret;
         private String language = "zh_cn";
         private int languageType = 1;
         private String domain = "ist_ed_open";
@@ -362,46 +325,13 @@ public class SimInterpClient extends AbstractClient {
         private int channels = 1;
         private int bitDepth = 16;
         private ExecutorService executor;
-        private OkHttpClient okHttpClient;
 
         public SimInterpClient build() {
             return new SimInterpClient(this);
         }
 
         public Builder signature(String appId, String apiKey, String apiSecret) {
-            this.appId = appId;
-            this.apiKey = apiKey;
-            this.apiSecret = apiSecret;
-            return this;
-        }
-
-        public Builder callTimeout(long timeout, TimeUnit unit) {
-            this.callTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder connectTimeout(long timeout, TimeUnit unit) {
-            this.connectTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder readTimeout(long timeout, TimeUnit unit) {
-            this.readTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder writeTimeout(long timeout, TimeUnit unit) {
-            this.writeTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder pingInterval(long interval, TimeUnit unit) {
-            this.pingInterval = Util.checkDuration("interval", interval, unit);
-            return this;
-        }
-
-        public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
-            this.retryOnConnectionFailure = retryOnConnectionFailure;
+            super.signature(appId, apiKey, apiSecret);
             return this;
         }
 
@@ -482,11 +412,6 @@ public class SimInterpClient extends AbstractClient {
 
         public Builder executor(ExecutorService executor) {
             this.executor = executor;
-            return this;
-        }
-
-        public Builder okHttpClient(OkHttpClient okHttpClient) {
-            this.okHttpClient = okHttpClient;
             return this;
         }
     }

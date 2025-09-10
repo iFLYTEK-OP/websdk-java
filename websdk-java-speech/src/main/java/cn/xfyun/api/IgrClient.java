@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.security.SignatureException;
 import java.util.Base64;
 import java.util.concurrent.ExecutorService;
@@ -77,6 +78,7 @@ public class IgrClient extends WebSocketClient {
         } else {
             // 复用全局的okHttpClient
             this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .proxy(builder.proxy)
                     .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
                     .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
                     .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
@@ -309,6 +311,7 @@ public class IgrClient extends WebSocketClient {
         private Request request;
         private OkHttpClient client;
         private ExecutorService executorService;
+        private Proxy proxy;
 
         /**
          * websocket相关
@@ -434,6 +437,11 @@ public class IgrClient extends WebSocketClient {
 
         public IgrClient.Builder client(OkHttpClient client) {
             this.client = client;
+            return this;
+        }
+
+        public IgrClient.Builder proxy(Proxy proxy) {
+            this.proxy = proxy;
             return this;
         }
     }
