@@ -1,14 +1,12 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.AbstractClient;
+import cn.xfyun.base.websocket.WebsocketBuilder;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.oral.request.OralRequest;
-import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
-import okhttp3.OkHttpClient;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
-import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,7 +14,6 @@ import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.Base64;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 超拟人合成 Client
@@ -163,24 +160,8 @@ public class OralClient extends AbstractClient {
     private final String textFormat;
 
     public OralClient(Builder builder) {
-        if (builder.okHttpClient != null) {
-            // 使用用户提供的okHttpClient
-            this.okHttpClient = builder.okHttpClient;
-        } else {
-            // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
-                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
-                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
-                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                    .build();
-        }
+        super(builder);
         this.originHostUrl = builder.hostUrl;
-        this.appId = builder.appId;
-        this.apiKey = builder.apiKey;
-        this.apiSecret = builder.apiSecret;
 
         this.oralLevel = builder.oralLevel;
         this.sparkAssist = builder.sparkAssist;
@@ -200,13 +181,6 @@ public class OralClient extends AbstractClient {
         this.bitDepth = builder.bitDepth;
         this.frameSize = builder.frameSize;
         this.textFormat = builder.textFormat;
-
-        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
-        this.callTimeout = builder.callTimeout;
-        this.connectTimeout = builder.connectTimeout;
-        this.readTimeout = builder.readTimeout;
-        this.writeTimeout = builder.writeTimeout;
-        this.pingInterval = builder.pingInterval;
     }
 
     public String getOralLevel() {
@@ -349,21 +323,9 @@ public class OralClient extends AbstractClient {
         return StringUtils.gson.toJson(request);
     }
 
-    public static final class Builder {
+    public static final class Builder extends WebsocketBuilder<Builder> {
 
-        /**
-         * websocket相关
-         */
-        boolean retryOnConnectionFailure = true;
-        int callTimeout = 0;
-        int connectTimeout = 30000;
-        int readTimeout = 30000;
-        int writeTimeout = 30000;
-        int pingInterval = 0;
         private String hostUrl = "https://cbm01.cn-huabei-1.xf-yun.com/v1/private/mcd9m97e6";
-        private String appId;
-        private String apiKey;
-        private String apiSecret;
         private String oralLevel = "mid";
         private int sparkAssist = 1;
         private int stopSplit = 0;
@@ -382,46 +344,13 @@ public class OralClient extends AbstractClient {
         private int bitDepth = 16;
         private int frameSize = 0;
         private String textFormat = "plain";
-        private OkHttpClient okHttpClient;
 
         public OralClient build() {
             return new OralClient(this);
         }
 
         public Builder signature(String appId, String apiKey, String apiSecret) {
-            this.appId = appId;
-            this.apiKey = apiKey;
-            this.apiSecret = apiSecret;
-            return this;
-        }
-
-        public Builder callTimeout(long timeout, TimeUnit unit) {
-            this.callTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder connectTimeout(long timeout, TimeUnit unit) {
-            this.connectTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder readTimeout(long timeout, TimeUnit unit) {
-            this.readTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder writeTimeout(long timeout, TimeUnit unit) {
-            this.writeTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder pingInterval(long interval, TimeUnit unit) {
-            this.pingInterval = Util.checkDuration("interval", interval, unit);
-            return this;
-        }
-
-        public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
-            this.retryOnConnectionFailure = retryOnConnectionFailure;
+            super.signature(appId, apiKey, apiSecret);
             return this;
         }
 
@@ -517,11 +446,6 @@ public class OralClient extends AbstractClient {
 
         public Builder textFormat(String textFormat) {
             this.textFormat = textFormat;
-            return this;
-        }
-
-        public Builder okHttpClient(OkHttpClient okHttpClient) {
-            this.okHttpClient = okHttpClient;
             return this;
         }
     }

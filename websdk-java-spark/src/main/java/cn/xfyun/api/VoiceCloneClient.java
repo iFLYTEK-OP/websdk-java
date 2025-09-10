@@ -1,15 +1,13 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.AbstractClient;
+import cn.xfyun.base.websocket.WebsocketBuilder;
 import cn.xfyun.config.VoiceCloneLangEnum;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.voiceclone.request.VoiceCloneRequest;
-import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
-import okhttp3.OkHttpClient;
 import okhttp3.WebSocket;
 import okhttp3.WebSocketListener;
-import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +15,6 @@ import java.net.MalformedURLException;
 import java.nio.charset.StandardCharsets;
 import java.security.SignatureException;
 import java.util.Base64;
-import java.util.concurrent.TimeUnit;
 
 /**
  * 一句话复刻合成Client
@@ -135,24 +132,8 @@ public class VoiceCloneClient extends AbstractClient {
     private final int status;
 
     public VoiceCloneClient(Builder builder) {
-        if (builder.okHttpClient != null) {
-            // 使用用户提供的okHttpClient
-            this.okHttpClient = builder.okHttpClient;
-        } else {
-            // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
-                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
-                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
-                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                    .build();
-        }
+        super(builder);
         this.originHostUrl = builder.hostUrl;
-        this.appId = builder.appId;
-        this.apiKey = builder.apiKey;
-        this.apiSecret = builder.apiSecret;
 
         this.textEncoding = builder.textEncoding;
         this.textCompress = builder.textCompress;
@@ -170,13 +151,6 @@ public class VoiceCloneClient extends AbstractClient {
         this.sampleRate = builder.sampleRate;
         this.vcn = builder.vcn;
         this.status = builder.status;
-
-        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
-        this.callTimeout = builder.callTimeout;
-        this.connectTimeout = builder.connectTimeout;
-        this.readTimeout = builder.readTimeout;
-        this.writeTimeout = builder.writeTimeout;
-        this.pingInterval = builder.pingInterval;
     }
 
     public String getTextEncoding() {
@@ -314,19 +288,9 @@ public class VoiceCloneClient extends AbstractClient {
         return StringUtils.gson.toJson(request);
     }
 
-    public static final class Builder {
+    public static final class Builder extends WebsocketBuilder<Builder> {
 
-        // websocket相关
-        boolean retryOnConnectionFailure = true;
-        int callTimeout = 0;
-        int connectTimeout = 30000;
-        int readTimeout = 30000;
-        int writeTimeout = 30000;
-        int pingInterval = 0;
         private String hostUrl = "http://cn-huabei-1.xf-yun.com/v1/private/voice_clone";
-        private String appId;
-        private String apiKey;
-        private String apiSecret;
         private String textEncoding = "utf8";
         private String textCompress = "raw";
         private String textFormat = "plain";
@@ -343,48 +307,15 @@ public class VoiceCloneClient extends AbstractClient {
         private int sampleRate = 24000;
         private int status = 2;
         private String vcn = "x5_clone";
-        private OkHttpClient okHttpClient;
 
         public VoiceCloneClient build() {
             return new VoiceCloneClient(this);
         }
 
         public Builder signature(String resId, VoiceCloneLangEnum langEnum, String appId, String apiKey, String apiSecret) {
-            this.appId = appId;
-            this.apiKey = apiKey;
-            this.apiSecret = apiSecret;
+            super.signature(appId, apiKey, apiSecret);
             this.resId = resId;
             this.languageId = langEnum.code();
-            return this;
-        }
-
-        public Builder callTimeout(long timeout, TimeUnit unit) {
-            this.callTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder connectTimeout(long timeout, TimeUnit unit) {
-            this.connectTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder readTimeout(long timeout, TimeUnit unit) {
-            this.readTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder writeTimeout(long timeout, TimeUnit unit) {
-            this.writeTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder pingInterval(long interval, TimeUnit unit) {
-            this.pingInterval = Util.checkDuration("interval", interval, unit);
-            return this;
-        }
-
-        public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
-            this.retryOnConnectionFailure = retryOnConnectionFailure;
             return this;
         }
 
@@ -460,11 +391,6 @@ public class VoiceCloneClient extends AbstractClient {
 
         public Builder vcn(String vcn) {
             this.vcn = vcn;
-            return this;
-        }
-
-        public Builder okHttpClient(OkHttpClient okHttpClient) {
-            this.okHttpClient = okHttpClient;
             return this;
         }
     }

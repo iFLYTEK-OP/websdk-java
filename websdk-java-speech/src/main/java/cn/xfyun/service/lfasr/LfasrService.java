@@ -72,8 +72,8 @@ public class LfasrService {
      * @return LfasrService实例
      * @throws SignatureException 签名异常
      */
-    public static LfasrService build(String appId, String secretKey, int maxConnections, int connTimeout, int soTimeout) throws SignatureException {
-        HttpConnector connector = HttpConnector.build(maxConnections, connTimeout, soTimeout, 3);
+    public static LfasrService build(String appId, String secretKey, int maxConnections, int connTimeout, int soTimeout, String proxyUrl) throws SignatureException {
+        HttpConnector connector = HttpConnector.build(maxConnections, connTimeout, soTimeout, 3, proxyUrl);
         LfasrSignature signature = new LfasrSignature(appId, secretKey);
         return new LfasrService(connector, signature);
     }

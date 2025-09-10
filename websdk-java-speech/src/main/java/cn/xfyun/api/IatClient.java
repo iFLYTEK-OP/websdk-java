@@ -18,6 +18,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.security.SignatureException;
 import java.util.Base64;
 import java.util.concurrent.ExecutorService;
@@ -163,6 +164,7 @@ public class IatClient extends WebSocketClient {
         } else {
             // 复用全局的okHttpClient
             this.okHttpClient = OkHttpUtils.client.newBuilder()
+                    .proxy(builder.proxy)
                     .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
                     .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
                     .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
@@ -439,6 +441,7 @@ public class IatClient extends WebSocketClient {
         private Integer frameSize = 1280;
         private ExecutorService executorService;
         private OkHttpClient okHttpClient;
+        private Proxy proxy;
 
         public IatClient build() {
             return new IatClient(this);
@@ -582,6 +585,11 @@ public class IatClient extends WebSocketClient {
 
         public IatClient.Builder okHttpClient(OkHttpClient okHttpClient) {
             this.okHttpClient = okHttpClient;
+            return this;
+        }
+
+        public IatClient.Builder proxy(Proxy proxy) {
+            this.proxy = proxy;
             return this;
         }
     }

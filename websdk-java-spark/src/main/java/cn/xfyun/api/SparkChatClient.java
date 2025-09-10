@@ -1,17 +1,16 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.AbstractClient;
+import cn.xfyun.base.websocket.WebsocketBuilder;
 import cn.xfyun.config.SparkModel;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sparkmodel.FunctionCall;
 import cn.xfyun.model.sparkmodel.SparkChatParam;
 import cn.xfyun.model.sparkmodel.WebSearch;
 import cn.xfyun.model.sparkmodel.request.*;
-import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 import okhttp3.*;
-import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -134,23 +133,7 @@ public class SparkChatClient extends AbstractClient {
     private final boolean keepAlive;
 
     public SparkChatClient(Builder builder) {
-        if (builder.okHttpClient != null) {
-            // 使用用户提供的okHttpClient
-            this.okHttpClient = builder.okHttpClient;
-        } else {
-            // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
-                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
-                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
-                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                    .build();
-        }
-        this.appId = builder.appId;
-        this.apiKey = builder.apiKey;
-        this.apiSecret = builder.apiSecret;
+        super(builder);
         this.originHostUrl = builder.hostUrl;
 
         this.sparkModel = builder.sparkModel;
@@ -167,13 +150,6 @@ public class SparkChatClient extends AbstractClient {
         this.responseType = builder.responseType;
         this.suppressPlugin = builder.suppressPlugin;
         this.keepAlive = builder.keepAlive;
-
-        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
-        this.callTimeout = builder.callTimeout;
-        this.connectTimeout = builder.connectTimeout;
-        this.readTimeout = builder.readTimeout;
-        this.writeTimeout = builder.writeTimeout;
-        this.pingInterval = builder.pingInterval;
     }
 
     public String getResponseType() {
@@ -482,22 +458,10 @@ public class SparkChatClient extends AbstractClient {
         return StringUtils.gson.toJson(sendRequest);
     }
 
-    public static final class Builder {
+    public static final class Builder extends WebsocketBuilder<Builder> {
 
         public final String SPARK_X1_URL = "https://spark-api-open.xf-yun.com/v2/chat/completions";
         public final String SPARK_URL = "https://spark-api-open.xf-yun.com/v1/chat/completions";
-        /**
-         * websocket相关
-         */
-        private boolean retryOnConnectionFailure = true;
-        private int callTimeout = 0;
-        private int connectTimeout = 30000;
-        private int readTimeout = 60000;
-        private int writeTimeout = 30000;
-        private int pingInterval = 0;
-        private String appId;
-        private String apiKey;
-        private String apiSecret;
         private SparkModel sparkModel;
         private String hostUrl = SPARK_URL;
         private float temperature = 0.5F;
@@ -513,16 +477,14 @@ public class SparkChatClient extends AbstractClient {
         private String responseType;
         private List<String> suppressPlugin;
         private boolean keepAlive = false;
-        private OkHttpClient okHttpClient;
 
         public SparkChatClient build() {
             return new SparkChatClient(this);
         }
 
         public Builder signatureWs(String appId, String apiKey, String apiSecret, SparkModel model) {
-            this.appId = appId;
-            this.apiKey = apiKey;
-            this.apiSecret = apiSecret;
+            super.signature(appId, apiKey, apiSecret);
+            super.readTimeout(60000, TimeUnit.MILLISECONDS);
             this.sparkModel = model;
             this.hostUrl = model.getUrl();
             if (SparkModel.SPARK_X1 == model) {
@@ -534,7 +496,8 @@ public class SparkChatClient extends AbstractClient {
         }
 
         public Builder signatureHttp(String apiPassword, SparkModel model) {
-            this.apiKey = apiPassword;
+            super.signature(null, apiPassword, null);
+            super.readTimeout(60000, TimeUnit.MILLISECONDS);
             this.sparkModel = model;
             this.temperature = 1;
             if (SparkModel.SPARK_X1 == model) {
@@ -543,36 +506,6 @@ public class SparkChatClient extends AbstractClient {
                 this.presencePenalty = 2.01F;
                 this.hostUrl = SPARK_X1_URL;
             }
-            return this;
-        }
-
-        public Builder callTimeout(long timeout, TimeUnit unit) {
-            this.callTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder connectTimeout(long timeout, TimeUnit unit) {
-            this.connectTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder readTimeout(long timeout, TimeUnit unit) {
-            this.readTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder writeTimeout(long timeout, TimeUnit unit) {
-            this.writeTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder pingInterval(long interval, TimeUnit unit) {
-            this.pingInterval = Util.checkDuration("interval", interval, unit);
-            return this;
-        }
-
-        public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
-            this.retryOnConnectionFailure = retryOnConnectionFailure;
             return this;
         }
 
@@ -643,11 +576,6 @@ public class SparkChatClient extends AbstractClient {
 
         public Builder keepAlive(boolean keepAlive) {
             this.keepAlive = keepAlive;
-            return this;
-        }
-
-        public Builder okHttpClient(OkHttpClient okHttpClient) {
-            this.okHttpClient = okHttpClient;
             return this;
         }
     }

@@ -1,6 +1,7 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.AbstractClient;
+import cn.xfyun.base.websocket.WebsocketBuilder;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.common.request.RequestHeader;
 import cn.xfyun.model.common.request.Result;
@@ -8,14 +9,11 @@ import cn.xfyun.model.document.PDRecParam;
 import cn.xfyun.model.document.request.PDRecRequest;
 import cn.xfyun.model.document.response.PDRecResponse;
 import cn.xfyun.service.document.AbstractPDRecWebSocketListener;
-import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import okhttp3.OkHttpClient;
 import okhttp3.Response;
 import okhttp3.WebSocket;
-import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,36 +59,13 @@ public class PDRecClient extends AbstractClient {
     private final String format;
 
     public PDRecClient(Builder builder) {
-        if (builder.okHttpClient != null) {
-            // 使用用户提供的okHttpClient
-            this.okHttpClient = builder.okHttpClient;
-        } else {
-            // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
-                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
-                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
-                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                    .build();
-        }
+        super(builder);
         this.originHostUrl = builder.hostUrl;
-        this.appId = builder.appId;
-        this.apiKey = builder.apiKey;
-        this.apiSecret = builder.apiSecret;
 
         this.category = builder.category;
         this.encoding = builder.encoding;
         this.compress = builder.compress;
         this.format = builder.format;
-
-        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
-        this.callTimeout = builder.callTimeout;
-        this.connectTimeout = builder.connectTimeout;
-        this.readTimeout = builder.readTimeout;
-        this.writeTimeout = builder.writeTimeout;
-        this.pingInterval = builder.pingInterval;
     }
 
     public String getCategory() {
@@ -239,21 +214,9 @@ public class PDRecClient extends AbstractClient {
         return jsonTree.toString();
     }
 
-    public static final class Builder {
+    public static final class Builder extends WebsocketBuilder<Builder> {
 
         String hostUrl = "https://ws-api.xf-yun.com/v1/private/ma008db16";
-        /**
-         * websocket相关
-         */
-        boolean retryOnConnectionFailure = true;
-        int callTimeout = 0;
-        int connectTimeout = 60000;
-        int readTimeout = 60000;
-        int writeTimeout = 60000;
-        int pingInterval = 0;
-        private String appId;
-        private String apiKey;
-        private String apiSecret;
         /**
          * ch_en_public_cloud：中英文识别
          */
@@ -273,46 +236,16 @@ public class PDRecClient extends AbstractClient {
          * 可选值：plain(默认)、json、 xml
          */
         private String format = "plain";
-        private OkHttpClient okHttpClient;
 
         public PDRecClient build() {
             return new PDRecClient(this);
         }
 
         public Builder signature(String appId, String apiKey, String apiSecret) {
-            this.appId = appId;
-            this.apiKey = apiKey;
-            this.apiSecret = apiSecret;
-            return this;
-        }
-
-        public Builder callTimeout(long timeout, TimeUnit unit) {
-            this.callTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder connectTimeout(long timeout, TimeUnit unit) {
-            this.connectTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder readTimeout(long timeout, TimeUnit unit) {
-            this.readTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder writeTimeout(long timeout, TimeUnit unit) {
-            this.writeTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder pingInterval(long interval, TimeUnit unit) {
-            this.pingInterval = Util.checkDuration("interval", interval, unit);
-            return this;
-        }
-
-        public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
-            this.retryOnConnectionFailure = retryOnConnectionFailure;
+            super.signature(appId, apiKey, apiSecret);
+            super.readTimeout(60000, TimeUnit.MILLISECONDS);
+            super.writeTimeout(60000, TimeUnit.MILLISECONDS);
+            super.connectTimeout(60000, TimeUnit.MILLISECONDS);
             return this;
         }
 
@@ -338,11 +271,6 @@ public class PDRecClient extends AbstractClient {
 
         public Builder hostUrl(String hostUrl) {
             this.hostUrl = hostUrl;
-            return this;
-        }
-
-        public Builder okHttpClient(OkHttpClient okHttpClient) {
-            this.okHttpClient = okHttpClient;
             return this;
         }
     }

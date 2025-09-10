@@ -69,7 +69,7 @@ public class OralChatClientTest {
                 .sampleRateOut(24000)
                 .vgap(80)
                 .domain("domain")
-                .okHttpClient(null)
+                .httpClient(null)
                 .build();
 
         Assert.assertEquals(client.getAppId(), appId);

@@ -477,6 +477,7 @@ public class LfasrClient {
         private Integer maxConnections = 50;
         private Integer connTimeout = 10000;
         private Integer soTimeout = 30000;
+        private String proxyUrl;
 
         private String fileName;
         private Long fileSize;
@@ -528,6 +529,11 @@ public class LfasrClient {
 
         public LfasrClient.Builder soTimeout(Integer soTimeout) {
             this.soTimeout = soTimeout;
+            return this;
+        }
+
+        public LfasrClient.Builder proxyUrl(String proxyUrl) {
+            this.proxyUrl = proxyUrl;
             return this;
         }
 
@@ -668,7 +674,8 @@ public class LfasrClient {
                             this.secretKey, 
                             maxConnections, 
                             connTimeout, 
-                            soTimeout
+                            soTimeout,
+                            proxyUrl
                         );
                     }
                 }
