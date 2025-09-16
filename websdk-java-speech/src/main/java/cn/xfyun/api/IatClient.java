@@ -163,7 +163,7 @@ public class IatClient extends WebSocketClient {
             this.okHttpClient = builder.okHttpClient;
         } else {
             // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
+            this.okHttpClient = OkHttpUtils.getDefaultClient().newBuilder()
                     .proxy(builder.proxy)
                     .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
                     .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
