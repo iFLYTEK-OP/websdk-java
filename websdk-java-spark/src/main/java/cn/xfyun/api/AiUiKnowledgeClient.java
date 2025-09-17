@@ -132,9 +132,8 @@ public class AiUiKnowledgeClient extends HttpClient {
         header.put("Authorization", "Bearer " + this.apiPassword);
 
         // 拼接参数获取url
-        String url = aiUiKnowledge.getUrl();
-        HttpUrl.Builder builder = Objects.requireNonNull(HttpUrl.parse(hostUrl), "非法的请求路径: " + url)
-                .newBuilder().addEncodedPathSegments(url);
+        String url = hostUrl + aiUiKnowledge.getUrl();
+        HttpUrl.Builder builder = Objects.requireNonNull(HttpUrl.parse(url), "非法的请求路径: " + url).newBuilder();
         if (param != null) {
             JsonElement jsonTree = StringUtils.gson.toJsonTree(param);
             for (Map.Entry<String, JsonElement> entry : jsonTree.getAsJsonObject().entrySet()) {

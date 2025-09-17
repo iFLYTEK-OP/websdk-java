@@ -45,7 +45,7 @@ public class AgentClient extends HttpClient {
         param.setStream(Boolean.TRUE);
 
         // 构建sse请求
-        Request sseRequest = getSseRequest(WorkFlowEnum.COMPLETIONS.getUrl(), param.toJSONString());
+        Request sseRequest = getSseRequest(hostUrl + WorkFlowEnum.COMPLETIONS.getUrl(), param.toJSONString());
 
         // 发送请求
         okHttpClient.newCall(sseRequest).enqueue(callback);
@@ -81,7 +81,7 @@ public class AgentClient extends HttpClient {
         paramCheck(param);
 
         // 构建sse请求
-        Request sseRequest = getSseRequest(WorkFlowEnum.RESUME.getUrl(), param.toJSONString());
+        Request sseRequest = getSseRequest(hostUrl + WorkFlowEnum.RESUME.getUrl(), param.toJSONString());
 
         // 发送请求
         okHttpClient.newCall(sseRequest).enqueue(callback);
