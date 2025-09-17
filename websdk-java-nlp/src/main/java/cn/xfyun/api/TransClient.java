@@ -59,11 +59,29 @@ public class TransClient extends HttpClient {
      */
     private final String resId;
 
+    /**
+     * 自研机器翻译服务端地址
+     */
+    private final String itsServerUrl;
+
+    /**
+     * 自研机器翻译（新）服务端地址
+     */
+    private final String itsV2ServerUrl;
+
+    /**
+     * 小牛翻译服务端地址
+     */
+    private final String niuServerUrl;
+
     public TransClient(Builder builder) {
         super(builder);
         this.from = builder.from;
         this.to = builder.to;
         this.resId = builder.resId;
+        this.itsServerUrl = builder.itsServerUrl;
+        this.itsV2ServerUrl = builder.itsV2ServerUrl;
+        this.niuServerUrl = builder.niuServerUrl;
     }
 
     public String getFrom() {
@@ -78,6 +96,18 @@ public class TransClient extends HttpClient {
         return resId;
     }
 
+    public String getItsServerUrl() {
+        return itsServerUrl;
+    }
+
+    public String getItsV2ServerUrl() {
+        return itsV2ServerUrl;
+    }
+
+    public String getNiuServerUrl() {
+        return niuServerUrl;
+    }
+
     /**
      * 自研翻译，默认源语种为中文
      *
@@ -89,12 +119,12 @@ public class TransClient extends HttpClient {
         TransParam param = TransParam.builder().text(text).build();
 
         // 发送请求
-        return send(Builder.ITS_SERVER_URL, param);
+        return send(itsServerUrl, param);
     }
 
     public String sendIst(TransParam param) throws Exception {
         // 发送请求
-        return send(Builder.ITS_SERVER_URL, param);
+        return send(itsServerUrl, param);
     }
 
     /**
@@ -114,7 +144,7 @@ public class TransClient extends HttpClient {
         String body = builtV2Body(param);
 
         // 获取鉴权请求地址
-        String realUrl = Signature.signHostDateAuthorization(Builder.ITS_PRO_SERVER_URL, "POST", apiKey, apiSecret);
+        String realUrl = Signature.signHostDateAuthorization(itsV2ServerUrl, "POST", apiKey, apiSecret);
 
         // 发送请求
         return sendPost(realUrl, JSON, null, body);
@@ -139,12 +169,12 @@ public class TransClient extends HttpClient {
         TransParam param = TransParam.builder().text(text).build();
 
         // 发送请求
-        return send(Builder.NIU_TRANS_SERVER_URL, param);
+        return send(niuServerUrl, param);
     }
 
     public String sendNiuTrans(TransParam param) throws Exception {
         // 发送请求
-        return send(Builder.NIU_TRANS_SERVER_URL, param);
+        return send(niuServerUrl, param);
     }
 
     /**
@@ -245,15 +275,15 @@ public class TransClient extends HttpClient {
         /**
          * 自研机器翻译服务端地址
          */
-        private static final String ITS_SERVER_URL = "https://itrans.xfyun.cn/v2/its";
+        private String itsServerUrl = "https://itrans.xfyun.cn/v2/its";
         /**
          * 自研机器翻译（新）服务端地址
          */
-        private static final String ITS_PRO_SERVER_URL = "https://itrans.xf-yun.com/v1/its";
+        private String itsV2ServerUrl = "https://itrans.xf-yun.com/v1/its";
         /**
          * 小牛翻译服务端地址
          */
-        private static final String NIU_TRANS_SERVER_URL = "https://ntrans.xfyun.cn/v2/ots";
+        private String niuServerUrl = "https://ntrans.xfyun.cn/v2/ots";
         private String from = "cn";
         private String to = "en";
         /**
@@ -266,7 +296,7 @@ public class TransClient extends HttpClient {
         private String resId;
 
         public Builder(String appId, String apiKey, String apiSecret) {
-            super(ITS_SERVER_URL, appId, apiKey, apiSecret);
+            super("", appId, apiKey, apiSecret);
         }
 
         public Builder from(String from) {
@@ -281,6 +311,21 @@ public class TransClient extends HttpClient {
 
         public Builder resId(String resId) {
             this.resId = resId;
+            return this;
+        }
+
+        public Builder itsServerUrl(String itsServerUrl) {
+            this.itsServerUrl = itsServerUrl;
+            return this;
+        }
+
+        public Builder itsV2ServerUrl(String itsV2ServerUrl) {
+            this.itsV2ServerUrl = itsV2ServerUrl;
+            return this;
+        }
+
+        public Builder niuServerUrl(String niuServerUrl) {
+            this.niuServerUrl = niuServerUrl;
             return this;
         }
 

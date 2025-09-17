@@ -43,17 +43,27 @@ public class VoiceTrainClient extends HttpClient {
     private String token;
 
     /**
+     * token请求路径
+     */
+    private final String tokenUrl;
+
+    /**
      * token过期时间
      */
     private long tokenExpiryTime;
 
     public VoiceTrainClient(Builder builder) {
         super(builder);
+        this.tokenUrl = builder.tokenUrl;
         refreshToken();
     }
 
     public String getToken() {
         return token;
+    }
+
+    public String getTokenUrl() {
+        return tokenUrl;
     }
 
     /**
@@ -244,17 +254,19 @@ public class VoiceTrainClient extends HttpClient {
      */
     private String send(VoiceTrainEnum trainEnum, String bodyStr, String timestamp, RequestBody body) throws IOException {
         Map<String, String> header;
+        String url = hostUrl;
         if (trainEnum == VoiceTrainEnum.TOKEN) {
             header = VoiceCloneSignature.tokenSign(apiKey, timestamp, bodyStr);
         } else {
+            url += trainEnum.getUrl();
             header = VoiceCloneSignature.commonSign(appId, apiKey, bodyStr, token);
         }
         // 请求结果
         logger.debug("{}请求URL：{}，入参：{}", trainEnum.getDesc(), trainEnum.getUrl(), bodyStr);
         if (null != body) {
-            return sendPost(trainEnum.getUrl(), header, body, null);
+            return sendPost(url, header, body, null);
         } else {
-            return sendPost(trainEnum.getUrl(), JSON, header, bodyStr);
+            return sendPost(url, JSON, header, bodyStr);
         }
     }
 
@@ -308,10 +320,17 @@ public class VoiceTrainClient extends HttpClient {
 
     public static final class Builder extends HttpBuilder<Builder> {
 
-        private static final String HOST_URL = "http://opentrain.xfyousheng.com/voice_train/";
+        private static final String HOST_URL = "http://opentrain.xfyousheng.com/voice_train";
+
+        private String tokenUrl = VoiceTrainEnum.TOKEN.getUrl();
 
         public Builder(String appId, String apiKey) {
             super(HOST_URL, appId, apiKey, null);
+        }
+
+        public Builder tokenUrl(String tokenUrl) {
+            this.tokenUrl = tokenUrl;
+            return this;
         }
 
         @Override

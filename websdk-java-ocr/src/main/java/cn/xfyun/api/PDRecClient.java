@@ -216,7 +216,7 @@ public class PDRecClient extends AbstractClient {
 
     public static final class Builder extends WebsocketBuilder<Builder> {
 
-        String hostUrl = "https://ws-api.xf-yun.com/v1/private/ma008db16";
+        private String hostUrl = "https://ws-api.xf-yun.com/v1/private/ma008db16";
         /**
          * ch_en_public_cloud：中英文识别
          */

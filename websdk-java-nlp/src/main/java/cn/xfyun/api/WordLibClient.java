@@ -214,12 +214,12 @@ public class WordLibClient extends HttpClient {
         RequestBody body = RequestBody.create(JSON, param);
 
         // 发送请求
-        return sendPost(wordLibEnum.getUrl(), null, body, parameters);
+        return sendPost(hostUrl + wordLibEnum.getUrl(), null, body, parameters);
     }
 
     public static final class Builder extends HttpBuilder<Builder> {
 
-        private static final String HOST_URL = "https://audit.iflyaisol.com/audit_res/v1/";
+        private static final String HOST_URL = "https://audit.iflyaisol.com/audit_res/v1";
 
         public Builder(String appId, String apiKey, String apiSecret) {
             super(HOST_URL, appId, apiKey, apiSecret);

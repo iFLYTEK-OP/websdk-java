@@ -133,7 +133,8 @@ public class AiUiKnowledgeClient extends HttpClient {
 
         // 拼接参数获取url
         String url = aiUiKnowledge.getUrl();
-        HttpUrl.Builder builder = Objects.requireNonNull(HttpUrl.parse(url), "非法的请求路径: " + url).newBuilder();
+        HttpUrl.Builder builder = Objects.requireNonNull(HttpUrl.parse(hostUrl), "非法的请求路径: " + url)
+                .newBuilder().addEncodedPathSegments(url);
         if (param != null) {
             JsonElement jsonTree = StringUtils.gson.toJsonTree(param);
             for (Map.Entry<String, JsonElement> entry : jsonTree.getAsJsonObject().entrySet()) {
@@ -152,7 +153,7 @@ public class AiUiKnowledgeClient extends HttpClient {
 
     public static final class Builder extends HttpBuilder<Builder> {
 
-        private static final String HOST_URL = "https://sparkcons-rag.cn-huabei-1.xf-yun.com/aiuiKnowledge/aiuiKnowledge/";
+        private static final String HOST_URL = "https://sparkcons-rag.cn-huabei-1.xf-yun.com/aiuiKnowledge/rag/api";
         private final String apiPassword;
 
         public Builder(String apiPassword) {
