@@ -257,6 +257,7 @@ public class VoiceTrainClient extends HttpClient {
         String url = hostUrl;
         if (trainEnum == VoiceTrainEnum.TOKEN) {
             header = VoiceCloneSignature.tokenSign(apiKey, timestamp, bodyStr);
+            url = tokenUrl;
         } else {
             url += trainEnum.getUrl();
             header = VoiceCloneSignature.commonSign(appId, apiKey, bodyStr, token);

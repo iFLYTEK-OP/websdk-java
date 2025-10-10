@@ -61,7 +61,7 @@ public class FunctionCall {
          * 参数信息描述
          * 该内容由用户定义，命中该方法时需要返回哪些参数
          */
-        private String properties;
+        private Object properties;
 
         /**
          * 必须返回的参数列表
@@ -77,11 +77,11 @@ public class FunctionCall {
             this.type = type;
         }
 
-        public String getProperties() {
+        public Object getProperties() {
             return properties;
         }
 
-        public void setProperties(String properties) {
+        public void setProperties(Object properties) {
             this.properties = properties;
         }
 
