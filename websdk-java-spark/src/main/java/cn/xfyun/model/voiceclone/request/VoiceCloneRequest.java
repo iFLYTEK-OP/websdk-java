@@ -101,6 +101,7 @@ public class VoiceCloneRequest {
             private Integer rdn;
             private Integer rhy;
             private Integer pybuffer;
+            private String style;
             private Audio audio;
 
             public Tts(VoiceCloneClient client) {
@@ -116,6 +117,14 @@ public class VoiceCloneRequest {
             }
 
             public Tts() {
+            }
+
+            public String getStyle() {
+                return style;
+            }
+
+            public void setStyle(String style) {
+                this.style = style;
             }
 
             public Integer getPybuffer() {

@@ -22,6 +22,7 @@ import java.util.Base64;
  *
  * @author <zyding6@ifytek.com>
  */
+@Deprecated
 public class VoiceCloneClient extends AbstractClient {
 
     private static final Logger logger = LoggerFactory.getLogger(VoiceCloneClient.class);

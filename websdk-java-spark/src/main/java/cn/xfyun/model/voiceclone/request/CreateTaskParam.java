@@ -68,6 +68,11 @@ public class CreateTaskParam {
     private Integer denoiseSwitch;
 
     /**
+     * 版本类型，美化版需传omni_v1
+     */
+    private String engineVersion;
+
+    /**
      * 范围0.0～5.0，单位0.1，默认0.0
      * 大于0，则开启音频检测。该值为对应的检测阈值,音频得分高于该值时将会生成音频特征
      */
@@ -84,6 +89,7 @@ public class CreateTaskParam {
         this.callbackUrl = builder.callbackUrl;
         this.denoiseSwitch = builder.denoiseSwitch;
         this.mosRatio = builder.mosRatio;
+        this.engineVersion = builder.engineVersion;
     }
 
     public String getTaskName() {
@@ -166,6 +172,14 @@ public class CreateTaskParam {
         this.mosRatio = mosRatio;
     }
 
+    public String getEngineVersion() {
+        return engineVersion;
+    }
+
+    public void setEngineVersion(String engineVersion) {
+        this.engineVersion = engineVersion;
+    }
+
     public String toJsonString() {
         return StringUtils.gson.toJson(this);
     }
@@ -175,16 +189,17 @@ public class CreateTaskParam {
     }
 
     public static final class Builder {
-        private String taskName = "";
-        private Integer sex = 1;
-        private Integer ageGroup = 1;
-        private String thirdUser = "";
+        private String taskName;
+        private Integer sex;
+        private Integer ageGroup;
+        private String thirdUser;
         private String language;
-        private String resourceName = "";
+        private String resourceName;
         private Integer resourceType = 12;
         private String callbackUrl;
         private Integer denoiseSwitch;
         private Float mosRatio;
+        private String engineVersion;
 
         public CreateTaskParam build() {
             return new CreateTaskParam(this);
@@ -240,6 +255,11 @@ public class CreateTaskParam {
 
         public Builder denoiseSwitch(int denoiseSwitch) {
             this.denoiseSwitch = denoiseSwitch;
+            return this;
+        }
+
+        public Builder engineVersion(String engineVersion) {
+            this.engineVersion = engineVersion;
             return this;
         }
     }
