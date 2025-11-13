@@ -409,7 +409,7 @@ public class SparkChatClient extends AbstractClient {
 
         // 指定模型输出json格式
         if (!StringUtils.isNullOrEmpty(responseType)) {
-            sendRequest.setResponseFormat(new SparkChatPostRequest.ResponseFormat());
+            sendRequest.setResponseFormat(new SparkChatPostRequest.ResponseFormat(responseType));
         }
 
         // 额外参数
