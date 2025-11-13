@@ -265,7 +265,7 @@ public class OralClient extends AbstractClient {
      */
     public void send(String text, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
         // 参数校验
-        paramCheck(text);
+        // paramCheck(text);
 
         // 初始化websocket链接
         WebSocket socket = newWebSocket(webSocketListener);

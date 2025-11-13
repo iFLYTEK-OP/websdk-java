@@ -50,6 +50,11 @@ public class SparkChatClient extends AbstractClient {
     private final float temperature;
 
     /**
+     * 大模型类型
+     */
+    private final String domain;
+
+    /**
      * 模型回答的tokens的最大长度
      * Pro、Max、Max-32K、4.0 Ultra 取值为[1,8192]，默认为4096;
      * Lite、Pro-128K 取值为[1,4096]，默认为4096。
@@ -137,6 +142,7 @@ public class SparkChatClient extends AbstractClient {
         this.originHostUrl = builder.hostUrl;
 
         this.sparkModel = builder.sparkModel;
+        this.domain = builder.domain;
         this.temperature = builder.temperature;
         this.maxTokens = builder.maxTokens;
         this.topK = builder.topK;
@@ -154,6 +160,10 @@ public class SparkChatClient extends AbstractClient {
 
     public String getResponseType() {
         return responseType;
+    }
+
+    public String getDomain() {
+        return domain;
     }
 
     public List<String> getSuppressPlugin() {
@@ -362,6 +372,11 @@ public class SparkChatClient extends AbstractClient {
         sendRequest.setToolChoice(toolChoice);
         sendRequest.setSuppressPlugin(suppressPlugin);
         if (SparkModel.SPARK_X1 == sparkModel) {
+            if (null != param.getThinkingType()) {
+                SparkChatRequest.Parameter.Chat.Thinking thinking = new SparkChatRequest.Parameter.Chat.Thinking();
+                thinking.setType(param.getThinkingType());
+                sendRequest.setThinking(thinking);
+            }
             sendRequest.setKeepAlive(keepAlive);
         }
 
@@ -396,7 +411,18 @@ public class SparkChatClient extends AbstractClient {
         if (!StringUtils.isNullOrEmpty(responseType)) {
             sendRequest.setResponseFormat(new SparkChatPostRequest.ResponseFormat());
         }
-        return StringUtils.gson.toJson(sendRequest);
+
+        // 额外参数
+        if (null != param.getExtraBody()) {
+            Map<String, Object> extraBody = param.getExtraBody();
+            JsonObject jsonObject = StringUtils.gson.toJsonTree(sendRequest).getAsJsonObject();
+            extraBody.keySet().forEach(key -> {
+                jsonObject.add(key, StringUtils.gson.toJsonTree(extraBody.get(key)));
+            });
+            return jsonObject.toString();
+        } else {
+            return StringUtils.gson.toJson(sendRequest);
+        }
     }
 
     /**
@@ -418,12 +444,21 @@ public class SparkChatClient extends AbstractClient {
         // 请求参数
         SparkChatRequest.Parameter parameter = new SparkChatRequest.Parameter();
         SparkChatRequest.Parameter.Chat chat = new SparkChatRequest.Parameter.Chat();
-        chat.setDomain(sparkModel.getDomain());
+        if (null != domain) {
+            chat.setDomain(domain);
+        } else {
+            chat.setDomain(sparkModel.getDomain());
+        }
         chat.setTemperature(temperature);
         chat.setMaxTokens(maxTokens);
         chat.setTopK(topK);
         // X1推理大模型
         if (SparkModel.SPARK_X1 == sparkModel) {
+            if (null != param.getThinkingType()) {
+                SparkChatRequest.Parameter.Chat.Thinking thinking = new SparkChatRequest.Parameter.Chat.Thinking();
+                thinking.setType(param.getThinkingType());
+                chat.setThinking(thinking);
+            }
             chat.setTopP(topP);
             chat.setFrequencyPenalty(frequencyPenalty);
             chat.setPresencePenalty(presencePenalty);
@@ -455,7 +490,22 @@ public class SparkChatClient extends AbstractClient {
         }
         payload.setMessage(message);
         sendRequest.setPayload(payload);
-        return StringUtils.gson.toJson(sendRequest);
+
+        // 额外参数
+        if (null != param.getExtraBody()) {
+            Map<String, Object> extraBody = param.getExtraBody();
+            JsonObject jsonObject = StringUtils.gson.toJsonTree(sendRequest).getAsJsonObject();
+             JsonObject parameterObject = jsonObject.getAsJsonObject("parameter");
+            JsonObject chatObject = parameterObject.getAsJsonObject("chat");
+            extraBody.keySet().forEach(key -> {
+                chatObject.add(key, StringUtils.gson.toJsonTree(extraBody.get(key)));
+            });
+            parameterObject.add("chat", chatObject);
+            jsonObject.add("parameter", parameterObject);
+            return jsonObject.toString();
+        } else {
+            return StringUtils.gson.toJson(sendRequest);
+        }
     }
 
     public static final class Builder extends WebsocketBuilder<Builder> {
@@ -477,6 +527,7 @@ public class SparkChatClient extends AbstractClient {
         private String responseType;
         private List<String> suppressPlugin;
         private boolean keepAlive = false;
+        private String domain;
 
         public SparkChatClient build() {
             return new SparkChatClient(this);
@@ -576,6 +627,11 @@ public class SparkChatClient extends AbstractClient {
 
         public Builder keepAlive(boolean keepAlive) {
             this.keepAlive = keepAlive;
+            return this;
+        }
+
+        public Builder domain(String domain) {
+            this.domain = domain;
             return this;
         }
     }
