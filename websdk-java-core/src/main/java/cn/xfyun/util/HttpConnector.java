@@ -45,13 +45,16 @@ public class HttpConnector {
     private HttpConnector() {
     }
 
-    public static HttpConnector build(int maxConnections, int connTimeout, int soTimeout, int retryCount) {
+    public static HttpConnector build(int maxConnections, int connTimeout, int soTimeout, int retryCount, String proxyUrl) {
         HttpConnector connector = ConnectorBuilder.CONNECTOR;
         connector.pool.setMaxTotal(maxConnections);
         connector.pool.setDefaultMaxPerRoute(5);
 
         RequestConfig.Builder builder = RequestConfig.custom().setConnectionRequestTimeout(5000)
                 .setConnectTimeout(connTimeout).setSocketTimeout(soTimeout);
+        if (proxyUrl != null) {
+            builder.setProxy(HttpHost.create(proxyUrl.trim()));
+        }
 
         HttpClientBuilder httpClientBuilder = HttpClients.custom().setDefaultRequestConfig(builder.build())
                 .setConnectionManager(connector.pool);

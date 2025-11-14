@@ -3,6 +3,7 @@ package api;
 import cn.xfyun.api.ImageComplianceClient;
 import cn.xfyun.config.ModeType;
 import cn.xfyun.exception.BusinessException;
+import cn.xfyun.model.compliance.image.ImageCompParam;
 import cn.xfyun.util.FileUtil;
 import config.PropertiesConfig;
 import org.junit.Assert;
@@ -48,9 +49,10 @@ public class ImageComplianceClientTest {
     public void testParamBuild() {
         ImageComplianceClient client = new ImageComplianceClient
                 .Builder(appId, apiKey, apiSecret)
-                .bizType("pornDetection")
                 .build();
-        Assert.assertEquals(client.getBizType(), "pornDetection");
+        Assert.assertEquals(client.getAppId(), appId);
+        Assert.assertEquals(client.getApiSecret(), apiSecret);
+        Assert.assertEquals(client.getApiKey(), apiKey);
     }
 
     @Test
@@ -60,9 +62,21 @@ public class ImageComplianceClientTest {
                 .build();
 
         try {
-            client.send(null, null);
+            client.send(null);
         } catch (BusinessException e) {
-            Assert.assertTrue(e.getMessage().contains("content或modeType不能为空"));
+            Assert.assertTrue(e.getMessage().contains("参数不能为空"));
+        }
+        ImageCompParam param = ImageCompParam.builder().build();
+        try {
+            client.send(param);
+        } catch (BusinessException e) {
+            Assert.assertTrue(e.getMessage().contains("content不能为空"));
+        }
+        param.setContent("123");
+        try {
+            client.send(param);
+        } catch (BusinessException e) {
+            Assert.assertTrue(e.getMessage().contains("modeType不能为空"));
         }
     }
 
@@ -72,7 +86,11 @@ public class ImageComplianceClientTest {
                 .Builder(appId, apiKey, apiSecret)
                 .build();
 
-        String pathResp = correctionClient.send(FileUtil.fileToBase64(resourcePath + imagePath), ModeType.BASE64);
+        ImageCompParam param = ImageCompParam.builder()
+                .content(FileUtil.fileToBase64(resourcePath + imagePath))
+                .modeType(ModeType.BASE64)
+                .build();
+        String pathResp = correctionClient.send(param);
         logger.info("图片地址返回结果: {}", pathResp);
     }
 
@@ -82,7 +100,11 @@ public class ImageComplianceClientTest {
                 .Builder(appId, apiKey, apiSecret)
                 .build();
 
-        String urlResp = correctionClient.send(imageUrl, ModeType.LINK);
+        ImageCompParam param = ImageCompParam.builder()
+                .content(imageUrl)
+                .modeType(ModeType.LINK)
+                .build();
+        String urlResp = correctionClient.send(param);
         logger.info("图片链接返回结果: {}", urlResp);
     }
 }

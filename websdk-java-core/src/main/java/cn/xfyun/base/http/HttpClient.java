@@ -20,13 +20,7 @@ public abstract class HttpClient extends Client {
     protected static final MediaType FORM = MediaType.get("application/x-www-form-urlencoded; charset=utf-8");
     protected static final MediaType BINARY = MediaType.get("binary/octet-stream");
 
-    protected Request request;
-
     protected OkHttpClient okHttpClient;
-
-    public Request getRequest() {
-        return request;
-    }
 
     public OkHttpClient getOkHttpClient() {
         return okHttpClient;
@@ -71,7 +65,7 @@ public abstract class HttpClient extends Client {
                 builder.addHeader(entry.getKey(), entry.getValue());
             }
         }
-        request = builder.build();
+        Request request = builder.build();
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (null != response.body()) {
                 return response.body().string();
@@ -91,7 +85,7 @@ public abstract class HttpClient extends Client {
                 builder.addHeader(entry.getKey(), entry.getValue());
             }
         }
-        request = builder.build();
+        Request request = builder.build();
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (null != response.body()) {
                 return response.body().string();
@@ -111,7 +105,7 @@ public abstract class HttpClient extends Client {
                 builder.addHeader(entry.getKey(), entry.getValue());
             }
         }
-        request = builder.build();
+        Request request = builder.build();
         try (Response response = okHttpClient.newCall(request).execute()) {
             if (null != response.body()) {
                 return response.body().string();
@@ -132,7 +126,8 @@ public abstract class HttpClient extends Client {
             this.okHttpClient = builder.getHttpClient();
         } else {
             // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
+            this.okHttpClient = OkHttpUtils.getDefaultClient().newBuilder()
+                    .proxy(builder.getProxy())
                     .callTimeout(builder.getCallTimeout(), TimeUnit.SECONDS)
                     .connectTimeout(builder.getConnectTimeout(), TimeUnit.SECONDS)
                     .readTimeout(builder.getReadTimeout(), TimeUnit.SECONDS)

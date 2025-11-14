@@ -53,6 +53,7 @@ public class SparkChatPostRequest {
     private List<String> suppressPlugin;
     @SerializedName("keep_alive")
     private Boolean keepAlive;
+    private SparkChatRequest.Parameter.Chat.Thinking thinking;
 
     public SparkChatPostRequest() {
     }
@@ -194,6 +195,14 @@ public class SparkChatPostRequest {
 
     public void setKeepAlive(Boolean keepAlive) {
         this.keepAlive = keepAlive;
+    }
+
+    public SparkChatRequest.Parameter.Chat.Thinking getThinking() {
+        return thinking;
+    }
+
+    public void setThinking(SparkChatRequest.Parameter.Chat.Thinking thinking) {
+        this.thinking = thinking;
     }
 
     public static class ResponseFormat {

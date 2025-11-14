@@ -1,14 +1,13 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.AbstractClient;
+import cn.xfyun.base.websocket.WebsocketBuilder;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.maas.MaasParam;
 import cn.xfyun.model.maas.request.MaasHttpRequest;
 import cn.xfyun.model.maas.request.MaasReqeust;
-import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import okhttp3.*;
-import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -93,27 +92,11 @@ public class MaasClient extends AbstractClient {
     private final Map<String, Object> streamOptions;
 
     public MaasClient(Builder builder) {
-        if (builder.okHttpClient != null) {
-            // 使用用户提供的okHttpClient
-            this.okHttpClient = builder.okHttpClient;
-        } else {
-            // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
-                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
-                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
-                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                    .build();
-        }
+        super(builder);
         if (null != builder.wsUrl) {
             this.originHostUrl = builder.wsUrl.replace("ws://", "http://").replace("wss://", "https://");
         }
         this.requestUrl = builder.requestUrl;
-        this.appId = builder.appId;
-        this.apiKey = builder.apiKey;
-        this.apiSecret = builder.apiSecret;
 
         this.patchId = builder.patchId;
         this.domain = builder.domain;
@@ -124,13 +107,6 @@ public class MaasClient extends AbstractClient {
         this.searchDisable = builder.searchDisable;
         this.showRefLabel = builder.showRefLabel;
         this.streamOptions = builder.streamOptions;
-
-        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
-        this.callTimeout = builder.callTimeout;
-        this.connectTimeout = builder.connectTimeout;
-        this.readTimeout = builder.readTimeout;
-        this.writeTimeout = builder.writeTimeout;
-        this.pingInterval = builder.pingInterval;
     }
 
     public String getAuditing() {
@@ -354,20 +330,8 @@ public class MaasClient extends AbstractClient {
         }
     }
 
-    public static final class Builder {
+    public static final class Builder extends WebsocketBuilder<Builder> {
 
-        /**
-         * websocket相关
-         */
-        boolean retryOnConnectionFailure = true;
-        int callTimeout = 0;
-        int connectTimeout = 30000;
-        int readTimeout = 60000;
-        int writeTimeout = 30000;
-        int pingInterval = 0;
-        private String appId;
-        private String apiKey;
-        private String apiSecret;
         /**
          * 部分模型因部署配置不同，其请求地址可能略有差异，具体可参考服务管控>模型服务列表右侧调用信息
          */
@@ -391,55 +355,24 @@ public class MaasClient extends AbstractClient {
         private boolean searchDisable = true;
         private boolean showRefLabel = false;
         private Map<String, Object> streamOptions;
-        private OkHttpClient okHttpClient;
 
         public MaasClient build() {
             return new MaasClient(this);
         }
 
         public Builder signatureWs(String resourceId, String modelId, String appId, String apiKey, String apiSecret) {
-            this.appId = appId;
-            this.apiKey = apiKey;
-            this.apiSecret = apiSecret;
+            super.signature(appId, apiKey, apiSecret);
+            super.readTimeout(60000, TimeUnit.MILLISECONDS);
             this.patchId = Collections.singletonList(resourceId);
             this.domain = modelId;
             return this;
         }
 
         public Builder signatureHttp(String resourceId, String modelId, String apiKey) {
-            this.apiKey = apiKey;
+            super.signature(null, apiKey, null);
+            super.readTimeout(60000, TimeUnit.MILLISECONDS);
             this.patchId = Collections.singletonList(resourceId);
             this.domain = modelId;
-            return this;
-        }
-
-        public Builder callTimeout(long timeout, TimeUnit unit) {
-            this.callTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder connectTimeout(long timeout, TimeUnit unit) {
-            this.connectTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder readTimeout(long timeout, TimeUnit unit) {
-            this.readTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder writeTimeout(long timeout, TimeUnit unit) {
-            this.writeTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder pingInterval(long interval, TimeUnit unit) {
-            this.pingInterval = Util.checkDuration("interval", interval, unit);
-            return this;
-        }
-
-        public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
-            this.retryOnConnectionFailure = retryOnConnectionFailure;
             return this;
         }
 
@@ -490,11 +423,6 @@ public class MaasClient extends AbstractClient {
 
         public Builder streamOptions(Map<String, Object> streamOptions) {
             this.streamOptions = streamOptions;
-            return this;
-        }
-
-        public Builder okHttpClient(OkHttpClient okHttpClient) {
-            this.okHttpClient = okHttpClient;
             return this;
         }
     }

@@ -3,6 +3,7 @@ package cn.xfyun.base.websocket;
 import cn.xfyun.model.sign.AbstractSignature;
 import cn.xfyun.model.sign.Hmac256Signature;
 import cn.xfyun.util.AuthUtil;
+import cn.xfyun.util.OkHttpUtils;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.WebSocket;
@@ -10,6 +11,7 @@ import okhttp3.WebSocketListener;
 
 import java.net.MalformedURLException;
 import java.security.SignatureException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * websocket能力的客户端
@@ -46,6 +48,34 @@ public abstract class AbstractClient {
     protected int readTimeout;
     protected int writeTimeout;
     protected int pingInterval;
+
+    public AbstractClient(WebsocketBuilder builder) {
+        this.appId = builder.getAppId();
+        this.apiKey = builder.getApiKey();
+        this.apiSecret = builder.getApiSecret();
+
+        this.retryOnConnectionFailure = builder.getRetryOnConnectionFailure();
+        this.callTimeout = builder.getCallTimeout();
+        this.connectTimeout = builder.getConnectTimeout();
+        this.readTimeout = builder.getReadTimeout();
+        this.writeTimeout = builder.getWriteTimeout();
+        this.pingInterval = builder.getPingInterval();
+
+        if (builder.getHttpClient() != null) {
+            // 使用用户提供的okHttpClient
+            this.okHttpClient = builder.getHttpClient();
+        } else {
+            // 复用全局的okHttpClient
+            this.okHttpClient = OkHttpUtils.getDefaultClient().newBuilder()
+                    .proxy(builder.getProxy())
+                    .callTimeout(builder.getCallTimeout(), TimeUnit.SECONDS)
+                    .connectTimeout(builder.getConnectTimeout(), TimeUnit.SECONDS)
+                    .readTimeout(builder.getReadTimeout(), TimeUnit.SECONDS)
+                    .writeTimeout(builder.getWriteTimeout(), TimeUnit.SECONDS)
+                    .retryOnConnectionFailure(builder.getRetryOnConnectionFailure())
+                    .build();
+        }
+    }
 
     public String getAppId() {
         return appId;

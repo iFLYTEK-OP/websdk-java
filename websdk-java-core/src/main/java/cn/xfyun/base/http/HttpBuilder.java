@@ -2,6 +2,8 @@ package cn.xfyun.base.http;
 
 
 import okhttp3.OkHttpClient;
+import java.net.Proxy;
+
 
 /**
  * @author mqgao
@@ -42,6 +44,11 @@ public abstract class HttpBuilder<T> {
      */
     private OkHttpClient httpClient;
 
+    /**
+     * proxy
+     */
+    private Proxy proxy;
+
     public HttpBuilder(String hostUrl, String appId, String apiKey, String apiSecret) {
         this.hostUrl = hostUrl;
         this.appId = appId;
@@ -76,6 +83,11 @@ public abstract class HttpBuilder<T> {
 
     public T writeTimeout(int writeTimeout) {
         this.writeTimeout = writeTimeout;
+        return (T)this;
+    }
+
+    public T proxy(Proxy proxy) {
+        this.proxy = proxy;
         return (T)this;
     }
 
@@ -137,6 +149,10 @@ public abstract class HttpBuilder<T> {
 
     public OkHttpClient getHttpClient() {
         return httpClient;
+    }
+
+    public Proxy getProxy() {
+        return proxy;
     }
 
     public abstract HttpClient build();

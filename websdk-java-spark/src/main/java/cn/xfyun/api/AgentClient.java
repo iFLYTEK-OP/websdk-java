@@ -45,7 +45,7 @@ public class AgentClient extends HttpClient {
         param.setStream(Boolean.TRUE);
 
         // 构建sse请求
-        Request sseRequest = getSseRequest(WorkFlowEnum.COMPLETIONS.getUrl(), param.toJSONString());
+        Request sseRequest = getSseRequest(hostUrl + WorkFlowEnum.COMPLETIONS.getUrl(), param.toJSONString());
 
         // 发送请求
         okHttpClient.newCall(sseRequest).enqueue(callback);
@@ -81,7 +81,7 @@ public class AgentClient extends HttpClient {
         paramCheck(param);
 
         // 构建sse请求
-        Request sseRequest = getSseRequest(WorkFlowEnum.RESUME.getUrl(), param.toJSONString());
+        Request sseRequest = getSseRequest(hostUrl + WorkFlowEnum.RESUME.getUrl(), param.toJSONString());
 
         // 发送请求
         okHttpClient.newCall(sseRequest).enqueue(callback);
@@ -134,9 +134,9 @@ public class AgentClient extends HttpClient {
         header.put("Authorization", "Bearer " + apiKey + ":" + apiSecret);
 
         // 拼接参数获取url
-        String url = workFlowEnum.getUrl();
+        String url = hostUrl + workFlowEnum.getUrl();
         if (param != null) {
-            url = String.format(workFlowEnum.getUrl(), param);
+            url = String.format(url, param);
         }
         // 请求结果
         logger.debug("{}请求URL：{}，入参：{}", workFlowEnum.getDesc(), url, null == body ? "" : body.toString());
@@ -163,7 +163,7 @@ public class AgentClient extends HttpClient {
 
     public static final class Builder extends HttpBuilder<Builder> {
 
-        private static final String HOST_URL = "https://xingchen-api.xf-yun.com/workflow/";
+        private static final String HOST_URL = "https://xingchen-api.xf-yun.com/workflow/v1";
 
         public Builder(String apikey, String apiSecret) {
             super(HOST_URL, null, apikey, apiSecret);

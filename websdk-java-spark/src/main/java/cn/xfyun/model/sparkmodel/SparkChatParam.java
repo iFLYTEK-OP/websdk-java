@@ -1,6 +1,7 @@
 package cn.xfyun.model.sparkmodel;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 大模型会话请求实体类
@@ -42,12 +43,28 @@ public class SparkChatParam {
      */
     private String userId;
 
+    /**
+     * 用于控制深度思考模式
+     * 支持以下3种模式切换：
+     * enabled：强制开启深度思考能力
+     * disabled：强制关闭深度思考能力
+     * auto：模型自行判断是否进行深度思考
+     */
+    private String thinkingType;
+
+    /**
+     * 额外参数
+     */
+    private Map<String, Object> extraBody;
+
     public SparkChatParam(Builder builder) {
         this.webSearch = builder.webSearch;
         this.functions = builder.functions;
         this.messages = builder.messages;
         this.chatId = builder.chatId;
         this.userId = builder.userId;
+        this.thinkingType = builder.thinkingType;
+        this.extraBody = builder.extraBody;
     }
 
     public SparkChatParam() {
@@ -93,6 +110,22 @@ public class SparkChatParam {
         this.userId = userId;
     }
 
+    public String getThinkingType() {
+        return thinkingType;
+    }
+
+    public void setThinkingType(String thinkingType) {
+        this.thinkingType = thinkingType;
+    }
+
+    public Map<String, Object> getExtraBody() {
+        return extraBody;
+    }
+
+    public void setExtraBody(Map<String, Object> extraBody) {
+        this.extraBody = extraBody;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -104,6 +137,8 @@ public class SparkChatParam {
         private List<RoleContent> messages;
         private String chatId;
         private String userId;
+        private String thinkingType;
+        private Map<String, Object> extraBody;
 
         private Builder() {
         }
@@ -134,6 +169,16 @@ public class SparkChatParam {
 
         public Builder userId(String userId) {
             this.userId = userId;
+            return this;
+        }
+
+        public Builder thinkingType(String thinkingType) {
+            this.thinkingType = thinkingType;
+            return this;
+        }
+
+        public Builder extraBody(Map<String, Object> extraBody) {
+            this.extraBody = extraBody;
             return this;
         }
     }

@@ -13,6 +13,7 @@ import okio.ByteString;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.Proxy;
 import java.security.SignatureException;
 import java.util.Objects;
 import java.util.concurrent.ExecutorService;
@@ -112,7 +113,8 @@ public class RtasrClient extends WebSocketClient {
             this.okHttpClient = builder.httpClient;
         } else {
             // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
+            this.okHttpClient = OkHttpUtils.getDefaultClient().newBuilder()
+                    .proxy(builder.proxy)
                     .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
                     .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
                     .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
@@ -417,6 +419,7 @@ public class RtasrClient extends WebSocketClient {
         private ExecutorService executor;
 
         private OkHttpClient httpClient;
+        private Proxy proxy;
 
         public RtasrClient.Builder request(Request request) {
             this.request = request;
@@ -525,6 +528,11 @@ public class RtasrClient extends WebSocketClient {
 
         public Builder httpClient(OkHttpClient httpClient) {
             this.httpClient = httpClient;
+            return this;
+        }
+
+        public Builder proxy(Proxy proxy) {
+            this.proxy = proxy;
             return this;
         }
     }

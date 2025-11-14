@@ -76,8 +76,8 @@ public class TransParam {
     public static final class Builder {
 
         private String text;
-        private String from = "cn";
-        private String to = "en";
+        private String from;
+        private String to;
         private String resId;
 
         private Builder() {

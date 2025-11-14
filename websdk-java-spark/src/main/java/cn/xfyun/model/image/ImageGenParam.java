@@ -87,8 +87,8 @@ public class ImageGenParam {
 
     public static final class Builder {
 
-        private int width = 512;
-        private int height = 512;
+        private Integer width;
+        private Integer height;
         private List<RoleContent> messages;
 
         private Builder() {

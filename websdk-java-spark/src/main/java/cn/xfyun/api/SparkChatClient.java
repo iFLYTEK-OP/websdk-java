@@ -1,17 +1,16 @@
 package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.AbstractClient;
+import cn.xfyun.base.websocket.WebsocketBuilder;
 import cn.xfyun.config.SparkModel;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sparkmodel.FunctionCall;
 import cn.xfyun.model.sparkmodel.SparkChatParam;
 import cn.xfyun.model.sparkmodel.WebSearch;
 import cn.xfyun.model.sparkmodel.request.*;
-import cn.xfyun.util.OkHttpUtils;
 import cn.xfyun.util.StringUtils;
 import com.google.gson.JsonObject;
 import okhttp3.*;
-import okhttp3.internal.Util;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,6 +48,11 @@ public class SparkChatClient extends AbstractClient {
      * http 取值范围[0, 2] 默认值1.0
      */
     private final float temperature;
+
+    /**
+     * 大模型类型
+     */
+    private final String domain;
 
     /**
      * 模型回答的tokens的最大长度
@@ -134,26 +138,11 @@ public class SparkChatClient extends AbstractClient {
     private final boolean keepAlive;
 
     public SparkChatClient(Builder builder) {
-        if (builder.okHttpClient != null) {
-            // 使用用户提供的okHttpClient
-            this.okHttpClient = builder.okHttpClient;
-        } else {
-            // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
-                    .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
-                    .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)
-                    .writeTimeout(builder.writeTimeout, TimeUnit.MILLISECONDS)
-                    .callTimeout(builder.callTimeout, TimeUnit.MILLISECONDS)
-                    .pingInterval(builder.pingInterval, TimeUnit.MILLISECONDS)
-                    .retryOnConnectionFailure(builder.retryOnConnectionFailure)
-                    .build();
-        }
-        this.appId = builder.appId;
-        this.apiKey = builder.apiKey;
-        this.apiSecret = builder.apiSecret;
+        super(builder);
         this.originHostUrl = builder.hostUrl;
 
         this.sparkModel = builder.sparkModel;
+        this.domain = builder.domain;
         this.temperature = builder.temperature;
         this.maxTokens = builder.maxTokens;
         this.topK = builder.topK;
@@ -167,17 +156,14 @@ public class SparkChatClient extends AbstractClient {
         this.responseType = builder.responseType;
         this.suppressPlugin = builder.suppressPlugin;
         this.keepAlive = builder.keepAlive;
-
-        this.retryOnConnectionFailure = builder.retryOnConnectionFailure;
-        this.callTimeout = builder.callTimeout;
-        this.connectTimeout = builder.connectTimeout;
-        this.readTimeout = builder.readTimeout;
-        this.writeTimeout = builder.writeTimeout;
-        this.pingInterval = builder.pingInterval;
     }
 
     public String getResponseType() {
         return responseType;
+    }
+
+    public String getDomain() {
+        return domain;
     }
 
     public List<String> getSuppressPlugin() {
@@ -386,6 +372,11 @@ public class SparkChatClient extends AbstractClient {
         sendRequest.setToolChoice(toolChoice);
         sendRequest.setSuppressPlugin(suppressPlugin);
         if (SparkModel.SPARK_X1 == sparkModel) {
+            if (null != param.getThinkingType()) {
+                SparkChatRequest.Parameter.Chat.Thinking thinking = new SparkChatRequest.Parameter.Chat.Thinking();
+                thinking.setType(param.getThinkingType());
+                sendRequest.setThinking(thinking);
+            }
             sendRequest.setKeepAlive(keepAlive);
         }
 
@@ -418,9 +409,20 @@ public class SparkChatClient extends AbstractClient {
 
         // 指定模型输出json格式
         if (!StringUtils.isNullOrEmpty(responseType)) {
-            sendRequest.setResponseFormat(new SparkChatPostRequest.ResponseFormat());
+            sendRequest.setResponseFormat(new SparkChatPostRequest.ResponseFormat(responseType));
         }
-        return StringUtils.gson.toJson(sendRequest);
+
+        // 额外参数
+        if (null != param.getExtraBody()) {
+            Map<String, Object> extraBody = param.getExtraBody();
+            JsonObject jsonObject = StringUtils.gson.toJsonTree(sendRequest).getAsJsonObject();
+            extraBody.keySet().forEach(key -> {
+                jsonObject.add(key, StringUtils.gson.toJsonTree(extraBody.get(key)));
+            });
+            return jsonObject.toString();
+        } else {
+            return StringUtils.gson.toJson(sendRequest);
+        }
     }
 
     /**
@@ -442,12 +444,21 @@ public class SparkChatClient extends AbstractClient {
         // 请求参数
         SparkChatRequest.Parameter parameter = new SparkChatRequest.Parameter();
         SparkChatRequest.Parameter.Chat chat = new SparkChatRequest.Parameter.Chat();
-        chat.setDomain(sparkModel.getDomain());
+        if (null != domain) {
+            chat.setDomain(domain);
+        } else {
+            chat.setDomain(sparkModel.getDomain());
+        }
         chat.setTemperature(temperature);
         chat.setMaxTokens(maxTokens);
         chat.setTopK(topK);
         // X1推理大模型
         if (SparkModel.SPARK_X1 == sparkModel) {
+            if (null != param.getThinkingType()) {
+                SparkChatRequest.Parameter.Chat.Thinking thinking = new SparkChatRequest.Parameter.Chat.Thinking();
+                thinking.setType(param.getThinkingType());
+                chat.setThinking(thinking);
+            }
             chat.setTopP(topP);
             chat.setFrequencyPenalty(frequencyPenalty);
             chat.setPresencePenalty(presencePenalty);
@@ -479,25 +490,28 @@ public class SparkChatClient extends AbstractClient {
         }
         payload.setMessage(message);
         sendRequest.setPayload(payload);
-        return StringUtils.gson.toJson(sendRequest);
+
+        // 额外参数
+        if (null != param.getExtraBody()) {
+            Map<String, Object> extraBody = param.getExtraBody();
+            JsonObject jsonObject = StringUtils.gson.toJsonTree(sendRequest).getAsJsonObject();
+             JsonObject parameterObject = jsonObject.getAsJsonObject("parameter");
+            JsonObject chatObject = parameterObject.getAsJsonObject("chat");
+            extraBody.keySet().forEach(key -> {
+                chatObject.add(key, StringUtils.gson.toJsonTree(extraBody.get(key)));
+            });
+            parameterObject.add("chat", chatObject);
+            jsonObject.add("parameter", parameterObject);
+            return jsonObject.toString();
+        } else {
+            return StringUtils.gson.toJson(sendRequest);
+        }
     }
 
-    public static final class Builder {
+    public static final class Builder extends WebsocketBuilder<Builder> {
 
         public final String SPARK_X1_URL = "https://spark-api-open.xf-yun.com/v2/chat/completions";
         public final String SPARK_URL = "https://spark-api-open.xf-yun.com/v1/chat/completions";
-        /**
-         * websocket相关
-         */
-        private boolean retryOnConnectionFailure = true;
-        private int callTimeout = 0;
-        private int connectTimeout = 30000;
-        private int readTimeout = 60000;
-        private int writeTimeout = 30000;
-        private int pingInterval = 0;
-        private String appId;
-        private String apiKey;
-        private String apiSecret;
         private SparkModel sparkModel;
         private String hostUrl = SPARK_URL;
         private float temperature = 0.5F;
@@ -513,16 +527,15 @@ public class SparkChatClient extends AbstractClient {
         private String responseType;
         private List<String> suppressPlugin;
         private boolean keepAlive = false;
-        private OkHttpClient okHttpClient;
+        private String domain;
 
         public SparkChatClient build() {
             return new SparkChatClient(this);
         }
 
         public Builder signatureWs(String appId, String apiKey, String apiSecret, SparkModel model) {
-            this.appId = appId;
-            this.apiKey = apiKey;
-            this.apiSecret = apiSecret;
+            super.signature(appId, apiKey, apiSecret);
+            super.readTimeout(60000, TimeUnit.MILLISECONDS);
             this.sparkModel = model;
             this.hostUrl = model.getUrl();
             if (SparkModel.SPARK_X1 == model) {
@@ -534,7 +547,8 @@ public class SparkChatClient extends AbstractClient {
         }
 
         public Builder signatureHttp(String apiPassword, SparkModel model) {
-            this.apiKey = apiPassword;
+            super.signature(null, apiPassword, null);
+            super.readTimeout(60000, TimeUnit.MILLISECONDS);
             this.sparkModel = model;
             this.temperature = 1;
             if (SparkModel.SPARK_X1 == model) {
@@ -543,36 +557,6 @@ public class SparkChatClient extends AbstractClient {
                 this.presencePenalty = 2.01F;
                 this.hostUrl = SPARK_X1_URL;
             }
-            return this;
-        }
-
-        public Builder callTimeout(long timeout, TimeUnit unit) {
-            this.callTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder connectTimeout(long timeout, TimeUnit unit) {
-            this.connectTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder readTimeout(long timeout, TimeUnit unit) {
-            this.readTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder writeTimeout(long timeout, TimeUnit unit) {
-            this.writeTimeout = Util.checkDuration("timeout", timeout, unit);
-            return this;
-        }
-
-        public Builder pingInterval(long interval, TimeUnit unit) {
-            this.pingInterval = Util.checkDuration("interval", interval, unit);
-            return this;
-        }
-
-        public Builder retryOnConnectionFailure(boolean retryOnConnectionFailure) {
-            this.retryOnConnectionFailure = retryOnConnectionFailure;
             return this;
         }
 
@@ -646,8 +630,8 @@ public class SparkChatClient extends AbstractClient {
             return this;
         }
 
-        public Builder okHttpClient(OkHttpClient okHttpClient) {
-            this.okHttpClient = okHttpClient;
+        public Builder domain(String domain) {
+            this.domain = domain;
             return this;
         }
     }

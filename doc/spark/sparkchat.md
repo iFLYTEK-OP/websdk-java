@@ -28,7 +28,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-spark</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.1.4</version>
+    <version>2.1.7</version>
 </dependency>
 ```
 
@@ -87,6 +87,8 @@ public class SparkChatClientApp {
                 // 增加函数调用 仅Spark Max/4.0 Ultra 支持了该功能
                 // .functions(getFunctions())
                 .chatId("123456")
+            	// .thinkingType("disabled")
+            	// .extraBody(extraBody)
                 // .userId("testUse_123")
                 .build();
 

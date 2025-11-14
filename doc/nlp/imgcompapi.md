@@ -29,7 +29,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-nlp</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.8</version>
+    <version>2.0.11</version>
 </dependency>
 ```
 
@@ -45,35 +45,31 @@ import cn.xfyun.util.FileUtil;
                 .Builder(appId, apiKey, apiSecret)
                 .build();
 
-        String pathResp = correctionClient.send(FileUtil.fileToBase64(resourcePath + imagePath), ModeType.BASE64);
+        ImageCompParam param = ImageCompParam.builder()
+                .modeType(ModeType.BASE64)
+                .content(FileUtil.fileToBase64(resourcePath + imagePath))
+                .build();
+        String pathResp = correctionClient.send(param);
         logger.info("图片地址返回结果: {}", pathResp);
-
-        String urlResp = correctionClient.send(imageUrl, ModeType.LINK);
-        logger.info("图片链接返回结果: {}", urlResp);
 ```
 
 更详细请参见 [Demo](https://github.com/iFLYTEK-OP/websdk-java-demo/blob/main/src/main/java/cn/xfyun/demo/nlp/ImageComplianceClientApp.java)
-
-## 平台参数
-
-|  名称   |  类型  |                             描述                             | 必须 | 默认 |
-| :-----: | :----: | :----------------------------------------------------------: | :--: | :--: |
-| bizType | String | 通过策略配置审核分类和自定义词库，不传取默认策略。词库黑白名单功能开放中，敬请期待 |  N   |  /   |
 
 ## 方法详解
 
 ### 1. 创建合规任务
 ```java
-public String send(String content, ModeType modeType) throws IOException, SignatureException
+public String send(ImageCompParam param) throws IOException, SignatureException
 ```
 **参数说明**：
 
-- 参数可设置：
+- param参数可设置：
 
 |   名称   |  类型  |                             描述                             | 必须 |
 | :------: | :----: | :----------------------------------------------------------: | :--: |
-| content  |  int   | 待识别图片信息<br/>modeType为link时，值为外链信息<br/>modeType为base64时，值为图片base64编码信息 |  N   |
+| content  | String | 待识别图片信息<br/>modeType为link时，值为外链信息<br/>modeType为base64时，值为图片base64编码信息 |  Y   |
 | modeType | Object | 枚举<br />modeType为link时，值为外链信息<br/>modeType为base64时，值为图片base64编码信息 |  Y   |
+| bizType  | String | 指定检测的敏感分类： * pornDetection 色情 * violentTerrorism 暴恐 * political 涉政 * lowQualityIrrigation 低质量灌水 * contraband 违禁 * advertisement 广告 * uncivilizedLanguage 不文明用语 |  N   |
 
 **响应示例**：
 

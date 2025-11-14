@@ -136,9 +136,9 @@ public class AIPPTV2Client extends HttpClient {
         header.put("timestamp", String.valueOf(timestamp));
 
         // 拼接参数获取url
-        String url = aipptEnum.getUrl();
+        String url = hostUrl + aipptEnum.getUrl();
         if (param != null) {
-            url = String.format(aipptEnum.getUrl(), param);
+            url = String.format(url, param);
         }
         // 请求结果
         logger.debug("{}请求URL：{}，入参：{}", aipptEnum.getDesc(), url, null == body ? "" : body.toString());
@@ -147,7 +147,7 @@ public class AIPPTV2Client extends HttpClient {
 
     public static final class Builder extends HttpBuilder<Builder> {
 
-        private static final String HOST_URL = "https://zwapi.xfyun.cn/";
+        private static final String HOST_URL = "https://zwapi.xfyun.cn/api/ppt/v2";
 
         public Builder(String appId, String apiSecret) {
             super(HOST_URL, appId, null, apiSecret);
