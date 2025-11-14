@@ -42,7 +42,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-spark</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.1.4</version>
+    <version>2.1.7</version>
 </dependency>
 ```
 
@@ -268,6 +268,7 @@ public String createTask(CreateTaskParam param) throws Exception
 | callbackUrl   | string | false    | 任务结果回调地址，训练结束时进行回调                         |
 | denoiseSwitch | int    | false    | 降噪开关, 默认0<br/>0: 关闭降噪 1:开启降噪                   |
 | mosRatio      | float  | false    | 范围0.0～5.0，单位0.1，默认0.0<br/>大于0，则开启音频检测。该值为对应的检测阈值,音频得分高于该值时将会生成音频特征 |
+| engineVersion | String | false    | 版本类型，美化版需传omni_v1（合成时vcn赋值x6_clone） ， 不传为标准版（合成时vcn赋值x5_clone） |
 
 **响应体**
 
@@ -372,17 +373,18 @@ public String result(String taskId) throws Exception
 | data     | null   |          |                  |
 | flag     | bool   | true     | true or false    |
 
-### 8. 一句话合成
+### 8. 一句话合成(标准版、美化版)
 
 ```java
-public void send(String text, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException {
+public void send(VoiceCloneParam voiceCloneParam, WebSocketListener webSocketListener) throws MalformedURLException, SignatureException
 ```
 
 **请求体：**
 
-| 参数名称 | 类型   | 是否必需 | 参数说明                                           |
-| -------- | ------ | -------- | -------------------------------------------------- |
-| text     | string | true     | 文本内容，base64编码后不超过8000字节，约2000个字符 |
+| 参数名称       | 类型           | 是否必需       | 参数说明                                           |
+| -------------- | -------------- | -------------- | -------------------------------------------------- |
+| text           | string         | true           | 文本内容，base64编码后不超过8000字节，约2000个字符 |
+| 其余见合成参数 | 其余见合成参数 | 其余见合成参数 | 其余见合成参数                                     |
 
 **响应体：**
 
