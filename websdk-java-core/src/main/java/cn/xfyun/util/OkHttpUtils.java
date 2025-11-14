@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Objects;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -18,23 +18,90 @@ public class OkHttpUtils {
 
     private static final Logger logger = LoggerFactory.getLogger(OkHttpUtils.class);
 
-    public static final OkHttpClient client;
+    private static volatile OkHttpClient client;
 
     static {
+        getDefaultClient();
+    }
+
+    /**
+     * 创建一个具有推荐默认配置的 OkHttpClient 实例。
+     * 这些默认值旨在平衡性能和资源消耗，适用于大多数线上环境。
+     */
+    private static OkHttpClient createDefaultClient() {
         Dispatcher dispatcher = new Dispatcher();
         // 调整最大并发请求数为更保守的默认值
         dispatcher.setMaxRequests(100);
         // 单个主机最大并发数
         dispatcher.setMaxRequestsPerHost(10);
 
-        // 最大空闲连接数、空闲时间
+        // 连接池配置
         ConnectionPool connectionPool = new ConnectionPool(
                 5, 5, TimeUnit.MINUTES);
 
-        client = new OkHttpClient.Builder()
+        return new OkHttpClient.Builder()
                 .dispatcher(dispatcher)
                 .connectionPool(connectionPool)
                 .build();
+    }
+
+    /**
+     * 获取默认的 OkHttpClient 实例。
+     * 使用双重检查锁定实现懒加载和线程安全。
+     * 建议用于一般场景。
+     *
+     * @return 默认的 OkHttpClient 实例
+     */
+    public static OkHttpClient getDefaultClient() {
+        if (client == null) {
+            synchronized (OkHttpUtils.class) {
+                if (client == null) {
+                    client = createDefaultClient();
+                }
+            }
+        }
+        return client;
+    }
+
+    /**
+     * 允许外部提供自定义的 OkHttpClient 实例。
+     * 这样 SDK 的使用者可以完全控制配置。
+     *
+     * @param defaultClient 自定义的 OkHttpClient 实例
+     * @param closeOld      销毁老的 OkHttpClient 实例
+     */
+    public static void setDefaultClient(OkHttpClient defaultClient, boolean closeOld) {
+        if (defaultClient == null) {
+            throw new IllegalArgumentException("defaultClient must not be null");
+        }
+
+        synchronized (OkHttpUtils.class) {
+            OkHttpClient oldClient = client;
+            client = defaultClient;
+
+            if (closeOld && oldClient != null && oldClient != defaultClient) {
+                // 关闭连接池：清理所有连接
+                oldClient.connectionPool().evictAll();
+
+                // 关闭 Dispatcher 的线程池
+                ExecutorService executorService = oldClient.dispatcher().executorService();
+                executorService.shutdown();
+
+                try {
+                    // 尝试等待线程池优雅关闭（可选，避免阻塞太久）
+                    if (!executorService.awaitTermination(500, TimeUnit.MILLISECONDS)) {
+                        executorService.shutdownNow(); // 强制关闭
+                    }
+                } catch (InterruptedException e) {
+                    executorService.shutdownNow();
+                    Thread.currentThread().interrupt();
+                    logger.warn("Interrupted while closing old OkHttpClient dispatcher", e);
+                }
+
+                // 注意：OkHttpClient 没有像 close() 这样的方法，但以上操作已释放关键资源
+                logger.debug("Old OkHttpClient instance has been closed and resources released.");
+            }
+        }
     }
 
     /**
@@ -87,51 +154,58 @@ public class OkHttpUtils {
                                    RequestBody body,
                                    Map<String, String> headers,
                                    Map<String, String> params) throws IOException {
-        // 改进：更明确的 URL 验证
         if (url == null) {
             throw new IllegalArgumentException("URL must not be null");
         }
+
         HttpUrl parsedUrl = HttpUrl.parse(url);
         if (parsedUrl == null) {
             throw new IllegalArgumentException("Invalid URL format: " + url);
         }
 
         HttpUrl.Builder urlBuilder = parsedUrl.newBuilder();
-        if (Objects.nonNull(params)) {
-            for (Map.Entry<String, String> entry : params.entrySet()) {
-                // HttpUrl.Builder 会处理 null 值和编码
-                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
-            }
+        if (params != null && !params.isEmpty()) {
+            params.forEach((k, v) -> {
+                if (k != null && v != null) {
+                    urlBuilder.addQueryParameter(k, v);
+                }
+            });
         }
 
-        Request.Builder builder = new Request.Builder()
-                .url(urlBuilder.build().toString());
+        Request.Builder reqBuilder = new Request.Builder()
+                .url(urlBuilder.build());
 
-        if ("GET".equalsIgnoreCase(method)) {
-            if (body != null) {
-                // 记录警告或抛出异常
-                logger.warn("Warning: GET request with body is not recommended.");
-            }
-            builder.get();
-        } else if ("POST".equalsIgnoreCase(method)) {
-            builder.post(body != null ? body : RequestBody.create(null, new byte[0]));
-        } else if ("PUT".equalsIgnoreCase(method)) {
-            builder.put(body != null ? body : RequestBody.create(null, new byte[0]));
-        } else if ("DELETE".equalsIgnoreCase(method)) {
-            builder.delete(body);
-        } else {
-            // 其他方法，如 HEAD, PATCH, OPTIONS 等
-            builder.method(method, body);
+        switch (method.toUpperCase()) {
+            case "GET":
+                if (body != null) {
+                    logger.warn("GET request with body is not recommended.");
+                }
+                reqBuilder.get();
+                break;
+            case "POST":
+                reqBuilder.post(body != null ? body : RequestBody.create(null, new byte[0]));
+                break;
+            case "PUT":
+                reqBuilder.put(body != null ? body : RequestBody.create(null, new byte[0]));
+                break;
+            case "DELETE":
+                reqBuilder.delete(body);
+                break;
+            default:
+                reqBuilder.method(method.toUpperCase(), body);
         }
 
-        // 设置请求头
-        if (Objects.nonNull(headers)) {
-            for (Map.Entry<String, String> entry : headers.entrySet()) {
-                builder.addHeader(entry.getKey(), entry.getValue());
-            }
+        if (headers != null && !headers.isEmpty()) {
+            headers.forEach((k, v) -> {
+                if (k != null && v != null) {
+                    reqBuilder.addHeader(k, v);
+                }
+            });
         }
-        Request request = builder.build();
-        return client.newCall(request).execute();
+
+        Request request = reqBuilder.build();
+        logger.debug("Executing {} request: {}", method.toUpperCase(), request.url());
+        return getDefaultClient().newCall(request).execute();
     }
 }
 

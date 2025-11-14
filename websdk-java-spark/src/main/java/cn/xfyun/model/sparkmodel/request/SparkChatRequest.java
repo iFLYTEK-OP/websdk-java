@@ -117,6 +117,7 @@ public class SparkChatRequest {
             private Float presencePenalty;
             @SerializedName("frequency_penalty")
             private Float frequencyPenalty;
+            private Thinking thinking;
 
             public String getChatId() {
                 return chatId;
@@ -188,6 +189,27 @@ public class SparkChatRequest {
 
             public void setFrequencyPenalty(Float frequencyPenalty) {
                 this.frequencyPenalty = frequencyPenalty;
+            }
+
+            public Thinking getThinking() {
+                return thinking;
+            }
+
+            public void setThinking(Thinking thinking) {
+                this.thinking = thinking;
+            }
+
+            public static class Thinking {
+
+                private String type;
+
+                public String getType() {
+                    return type;
+                }
+
+                public void setType(String type) {
+                    this.type = type;
+                }
             }
         }
     }

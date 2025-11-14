@@ -5,13 +5,14 @@ import cn.xfyun.base.http.HttpClient;
 import cn.xfyun.config.AiUiKnowledge;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.aiui.knowledge.*;
+import cn.xfyun.util.StringUtils;
+import com.google.gson.JsonElement;
 import okhttp3.HttpUrl;
 import okhttp3.RequestBody;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -131,33 +132,27 @@ public class AiUiKnowledgeClient extends HttpClient {
         header.put("Authorization", "Bearer " + this.apiPassword);
 
         // 拼接参数获取url
-        String url = aiUiKnowledge.getUrl();
+        String url = hostUrl + aiUiKnowledge.getUrl();
         HttpUrl.Builder builder = Objects.requireNonNull(HttpUrl.parse(url), "非法的请求路径: " + url).newBuilder();
         if (param != null) {
-            for (Field field : param.getClass().getDeclaredFields()) {
-                field.setAccessible(true);
-                try {
-                    Object f = field.get(param);
-                    if (f != null) {
-                        builder.addQueryParameter(field.getName(), f.toString());
-                    }
-                } catch (IllegalAccessException e) {
-                    logger.warn("{}获取参数异常", field.getName());
+            JsonElement jsonTree = StringUtils.gson.toJsonTree(param);
+            for (Map.Entry<String, JsonElement> entry : jsonTree.getAsJsonObject().entrySet()) {
+                if (entry.getValue().isJsonNull()) {
+                    continue;
                 }
+                builder.addQueryParameter(entry.getKey(), entry.getValue().toString());
             }
         }
         url = builder.toString();
 
         // 请求结果
         logger.debug("{}请求URL：{}，入参：{}", aiUiKnowledge.getDesc(), url, null == body ? "" : body.toString());
-        String resp = sendRequest(url, aiUiKnowledge.getMethod(), header, body);
-        // return StringUtils.gson.fromJson(resp, ApiResponse.class);
-        return resp;
+        return sendRequest(url, aiUiKnowledge.getMethod(), header, body);
     }
 
     public static final class Builder extends HttpBuilder<Builder> {
 
-        private static final String HOST_URL = "https://sparkcons-rag.cn-huabei-1.xf-yun.com/aiuiKnowledge/aiuiKnowledge/";
+        private static final String HOST_URL = "https://sparkcons-rag.cn-huabei-1.xf-yun.com/aiuiKnowledge/rag/api";
         private final String apiPassword;
 
         public Builder(String apiPassword) {

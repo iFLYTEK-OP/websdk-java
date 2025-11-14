@@ -127,7 +127,7 @@ public class TtsClient extends WebSocketClient {
         if (builder.httpClient != null) {
             this.okHttpClient = builder.httpClient;
         } else {
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
+            this.okHttpClient = OkHttpUtils.getDefaultClient().newBuilder()
                     .proxy(builder.proxy)
                     .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
                     .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)

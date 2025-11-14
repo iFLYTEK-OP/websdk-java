@@ -54,12 +54,19 @@ public abstract class AbstractClient {
         this.apiKey = builder.getApiKey();
         this.apiSecret = builder.getApiSecret();
 
+        this.retryOnConnectionFailure = builder.getRetryOnConnectionFailure();
+        this.callTimeout = builder.getCallTimeout();
+        this.connectTimeout = builder.getConnectTimeout();
+        this.readTimeout = builder.getReadTimeout();
+        this.writeTimeout = builder.getWriteTimeout();
+        this.pingInterval = builder.getPingInterval();
+
         if (builder.getHttpClient() != null) {
             // 使用用户提供的okHttpClient
             this.okHttpClient = builder.getHttpClient();
         } else {
             // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
+            this.okHttpClient = OkHttpUtils.getDefaultClient().newBuilder()
                     .proxy(builder.getProxy())
                     .callTimeout(builder.getCallTimeout(), TimeUnit.SECONDS)
                     .connectTimeout(builder.getConnectTimeout(), TimeUnit.SECONDS)

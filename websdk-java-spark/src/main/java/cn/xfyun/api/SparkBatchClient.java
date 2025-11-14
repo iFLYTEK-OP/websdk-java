@@ -180,9 +180,9 @@ public class SparkBatchClient extends HttpClient {
         header.put("Authorization", "Bearer " + apiKey);
 
         // 拼接参数获取url
-        String url = batchEnum.getUrl();
+        String url = hostUrl + batchEnum.getUrl();
         if (param != null) {
-            url = String.format(batchEnum.getUrl(), param);
+            url = String.format(url, param);
         }
 
         // 请求结果
@@ -252,7 +252,7 @@ public class SparkBatchClient extends HttpClient {
 
     public static final class Builder extends HttpBuilder<Builder> {
 
-        private static final String HOST_URL = "https://spark-api-open.xf-yun.com/";
+        private static final String HOST_URL = "https://spark-api-open.xf-yun.com/v1";
 
         public Builder(String appId, String apiPassword) {
             super(HOST_URL, appId, apiPassword, null);

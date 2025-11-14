@@ -7,13 +7,13 @@ package cn.xfyun.config;
  **/
 public enum WordLibEnum {
 
-    CREATE_BLACK("https://audit.iflyaisol.com/audit_res/v1/wordLib/createBlack", "新增黑名单词库", "POST"),
-    CREATE_WHITE("https://audit.iflyaisol.com/audit_res/v1/wordLib/createWhite", "新增白名单词库", "POST"),
-    ADD_WORD("https://audit.iflyaisol.com/audit_res/v1/wordLib/addWord", "根据lib_id添加黑名单词条", "POST"),
-    INFO("https://audit.iflyaisol.com/audit_res/v1/wordLib/info", "根据lib_id查询词条明细", "POST"),
-    DEL_WORD("https://audit.iflyaisol.com/audit_res/v1/wordLib/delWord", "根据lib_id删除词条", "POST"),
-    LIST("https://audit.iflyaisol.com/audit_res/v1/wordLib/list", "根据appid查询账户下所有词库", "POST"),
-    DEL_LIB("https://audit.iflyaisol.com/audit_res/v1/wordLib/delete", "根据lib_id删除词库", "POST");
+    CREATE_BLACK("/wordLib/createBlack", "新增黑名单词库", "POST"),
+    CREATE_WHITE("/wordLib/createWhite", "新增白名单词库", "POST"),
+    ADD_WORD("/wordLib/addWord", "根据lib_id添加黑名单词条", "POST"),
+    INFO("/wordLib/info", "根据lib_id查询词条明细", "POST"),
+    DEL_WORD("/wordLib/delWord", "根据lib_id删除词条", "POST"),
+    LIST("/wordLib/list", "根据appid查询账户下所有词库", "POST"),
+    DEL_LIB("/wordLib/delete", "根据lib_id删除词库", "POST");
 
     private final String url;
     private final String desc;

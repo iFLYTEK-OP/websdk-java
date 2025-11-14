@@ -179,7 +179,7 @@ public class IseClient extends WebSocketClient {
             this.okHttpClient = builder.client;
         } else {
             // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
+            this.okHttpClient = OkHttpUtils.getDefaultClient().newBuilder()
                     .proxy(builder.proxy)
                     .connectTimeout(builder.connectTimeout, TimeUnit.MILLISECONDS)
                     .readTimeout(builder.readTimeout, TimeUnit.MILLISECONDS)

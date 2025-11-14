@@ -126,7 +126,7 @@ public abstract class HttpClient extends Client {
             this.okHttpClient = builder.getHttpClient();
         } else {
             // 复用全局的okHttpClient
-            this.okHttpClient = OkHttpUtils.client.newBuilder()
+            this.okHttpClient = OkHttpUtils.getDefaultClient().newBuilder()
                     .proxy(builder.getProxy())
                     .callTimeout(builder.getCallTimeout(), TimeUnit.SECONDS)
                     .connectTimeout(builder.getConnectTimeout(), TimeUnit.SECONDS)

@@ -7,9 +7,9 @@ package cn.xfyun.config;
  **/
 public enum WorkFlowEnum {
 
-    COMPLETIONS("https://xingchen-api.xf-yun.com/workflow/v1/chat/completions", "执行工作流", "POST"),
-    RESUME("https://xingchen-api.xf-yun.com/workflow/v1/resume", "恢复运行工作流", "POST"),
-    UPLOAD_FILE("https://xingchen-api.xf-yun.com/workflow/v1/upload_file", "文件上传", "POST");
+    COMPLETIONS("/chat/completions", "执行工作流", "POST"),
+    RESUME("/resume", "恢复运行工作流", "POST"),
+    UPLOAD_FILE("/upload_file", "文件上传", "POST");
 
     private final String url;
     private final String desc;

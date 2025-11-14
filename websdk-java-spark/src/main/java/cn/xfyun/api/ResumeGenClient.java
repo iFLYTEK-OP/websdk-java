@@ -32,7 +32,7 @@ public class ResumeGenClient extends PlatformHttpClient {
         paramCheck(text);
 
         // 获取签名
-        String realUrl = Signature.signHostDateAuthorization(hostUrl, "POST", apiKey, apiSecret);
+        String realUrl = Signature.signHostDateAuthorization(hostUrl + serviceId, "POST", apiKey, apiSecret);
 
         // 构建请求体
         String body = buildParam(text, realUrl);
@@ -79,7 +79,7 @@ public class ResumeGenClient extends PlatformHttpClient {
 
     public static final class Builder extends PlatformBuilder<Builder> {
 
-        private static final String HOST_URL = "https://cn-huadong-1.xf-yun.com/v1/private/s73f4add9";
+        private static final String HOST_URL = "https://cn-huadong-1.xf-yun.com/v1/private/";
         private static final String SERVICE_ID = "s73f4add9";
 
         public Builder(String appId, String apiKey, String apiSecret) {
