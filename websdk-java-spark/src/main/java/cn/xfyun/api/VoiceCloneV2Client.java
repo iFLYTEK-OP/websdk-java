@@ -2,6 +2,7 @@ package cn.xfyun.api;
 
 import cn.xfyun.base.websocket.AbstractClient;
 import cn.xfyun.base.websocket.WebsocketBuilder;
+import cn.xfyun.config.VcnVersionEnum;
 import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.voiceclone.VoiceCloneParam;
 import cn.xfyun.model.voiceclone.request.VoiceCloneRequest;
@@ -141,6 +142,9 @@ public class VoiceCloneV2Client extends AbstractClient {
         if (null == param) {
             throw new BusinessException("参数不能为空");
         }
+        if (StringUtils.isNullOrEmpty(param.getVcn())) {
+            throw new BusinessException("vcn不能为空");
+        }
         param.selfCheck();
     }
 
@@ -162,7 +166,12 @@ public class VoiceCloneV2Client extends AbstractClient {
         tts.setSpeed(param.getSpeed());
         tts.setVolume(param.getVolume());
         tts.setPitch(param.getPitch());
-        tts.setLanguageId(param.getLanguageId());
+        // omni参数特殊处理
+        if (VcnVersionEnum.V6.getVersion().equals(param.getVcn())) {
+            tts.setLanguageId(param.getLanguageId());
+        } else {
+            tts.setLanguageID(param.getLanguageId());
+        }
         tts.setBgs(param.getBgs());
         tts.setReg(param.getReg());
         tts.setRdn(param.getRdn());
