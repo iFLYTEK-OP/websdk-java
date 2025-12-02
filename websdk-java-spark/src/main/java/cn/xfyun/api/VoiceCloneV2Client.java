@@ -168,9 +168,9 @@ public class VoiceCloneV2Client extends AbstractClient {
         tts.setPitch(param.getPitch());
         // omni参数特殊处理
         if (VcnVersionEnum.V6.getVersion().equals(param.getVcn())) {
-            tts.setLanguageId(param.getLanguageId());
+            tts.setX6languageId(param.getLanguageId());
         } else {
-            tts.setLanguageID(param.getLanguageId());
+            tts.setX5languageId(param.getLanguageId());
         }
         tts.setBgs(param.getBgs());
         tts.setReg(param.getReg());

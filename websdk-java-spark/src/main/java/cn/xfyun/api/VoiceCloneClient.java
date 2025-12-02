@@ -274,7 +274,7 @@ public class VoiceCloneClient extends AbstractClient {
         VoiceCloneRequest.Parameter parameter = new VoiceCloneRequest.Parameter(this);
         parameter.getTts().setVcn(vcn);
         parameter.getTts().setPybuffer(1);
-        parameter.getTts().setLanguageID(languageId);
+        parameter.getTts().setX5languageId(languageId);
         request.setParameter(parameter);
         // 请求体
         VoiceCloneRequest.Payload payload = new VoiceCloneRequest.Payload();
