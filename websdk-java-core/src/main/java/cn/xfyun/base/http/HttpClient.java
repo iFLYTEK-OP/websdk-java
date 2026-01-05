@@ -115,6 +115,17 @@ public abstract class HttpClient extends Client {
         }
     }
 
+    protected String sendRequest(String url, String method, Map<String, String> header, RequestBody requestBody, Map<String, String> parameter) throws IOException {
+        // 构建完整的URL
+        HttpUrl.Builder urlBuilder = Objects.requireNonNull(HttpUrl.parse(url)).newBuilder();
+        if (Objects.nonNull(parameter)) {
+            for (Map.Entry<String, String> entry : parameter.entrySet()) {
+                urlBuilder.addQueryParameter(entry.getKey(), entry.getValue());
+            }
+        }
+        return sendRequest(urlBuilder.build().toString(), method, header, requestBody);
+    }
+
     public HttpClient(HttpBuilder builder) {
         this.hostUrl = builder.getHostUrl();
         this.appId = builder.getAppId();

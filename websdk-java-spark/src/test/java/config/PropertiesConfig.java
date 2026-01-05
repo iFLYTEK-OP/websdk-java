@@ -49,6 +49,8 @@ public class PropertiesConfig {
     private static final String resumeGenClientApiSecret;
     private static final String sparkBatchAPIPassword;
     private static final String aiuiKnowledgePassword;
+    private static final String webSearchPassword;
+    private static final String ragApiSecret;
 
     static {
         Properties properties = new Properties();
@@ -89,6 +91,8 @@ public class PropertiesConfig {
         resumeGenClientApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("resumeGenClientApiSecret")) ? System.getenv("resumeGenClientApiSecret") : properties.getProperty("resumeGenClientApiSecret");
         sparkBatchAPIPassword = StringUtils.isNullOrEmpty(properties.getProperty("sparkBatchAPIPassword")) ? System.getenv("sparkBatchAPIPassword") : properties.getProperty("sparkBatchAPIPassword");
         aiuiKnowledgePassword = StringUtils.isNullOrEmpty(properties.getProperty("aiuiKnowledgePassword")) ? System.getenv("aiuiKnowledgePassword") : properties.getProperty("aiuiKnowledgePassword");
+        webSearchPassword = StringUtils.isNullOrEmpty(properties.getProperty("webSearchPassword")) ? System.getenv("webSearchPassword") : properties.getProperty("webSearchPassword");
+        ragApiSecret = StringUtils.isNullOrEmpty(properties.getProperty("ragApiSecret")) ? System.getenv("ragApiSecret") : properties.getProperty("ragApiSecret");
     }
 
     public static String getAppId() {
@@ -213,5 +217,13 @@ public class PropertiesConfig {
 
     public static String getAiUiKnowledgePassword() {
         return aiuiKnowledgePassword;
+    }
+
+    public static String getWebSearchPassword() {
+        return webSearchPassword;
+    }
+
+    public static String getRagApiSecret() {
+        return ragApiSecret;
     }
 }
