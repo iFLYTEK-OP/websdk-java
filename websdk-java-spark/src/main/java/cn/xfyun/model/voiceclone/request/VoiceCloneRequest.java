@@ -92,7 +92,9 @@ public class VoiceCloneRequest {
         public static class Tts {
             private String vcn;
             @SerializedName("LanguageID")
-            private Integer languageId;
+            private Integer x5LanguageId;
+            @SerializedName("languageID")
+            private Integer x6LanguageId;
             private Integer speed;
             private Integer volume;
             private Integer pitch;
@@ -108,7 +110,6 @@ public class VoiceCloneRequest {
                 this.speed = client.getSpeed();
                 this.volume = client.getVolume();
                 this.pitch = client.getPitch();
-                this.languageId = client.getLanguageId();
                 this.bgs = client.getBgs();
                 this.reg = client.getReg();
                 this.rdn = client.getRdn();
@@ -199,12 +200,20 @@ public class VoiceCloneRequest {
                 this.rhy = rhy;
             }
 
-            public Integer getLanguageId() {
-                return languageId;
+            public Integer getX5LanguageId() {
+                return x5LanguageId;
             }
 
-            public void setLanguageId(Integer languageId) {
-                this.languageId = languageId;
+            public void setX5LanguageId(Integer x5LanguageId) {
+                this.x5LanguageId = x5LanguageId;
+            }
+
+            public Integer getX6LanguageId() {
+                return x6LanguageId;
+            }
+
+            public void setX6LanguageId(Integer x6LanguageId) {
+                this.x6LanguageId = x6LanguageId;
             }
 
             public Audio getAudio() {
