@@ -10,7 +10,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-spark</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.1.8</version>
+    <version>2.1.9</version>
 </dependency>
 ```
 
@@ -51,13 +51,17 @@
 
 [16、aiui个性化知识库-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/aiuiknowledge.md)
 
+[17、知识库-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/ragapi.md)
+
+[18、聚合搜索-API](https://github.com/iFLYTEK-OP/websdk-java/blob/master/doc/spark/websearchapi.md)
+
 ### 语音相关能力
 ```xml
 <dependency>
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-speech</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>3.0.8</version>
+    <version>3.0.9</version>
 </dependency>
 ```
 重要版本更新说明
@@ -88,7 +92,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-nlp</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.12</version>
+    <version>2.0.13</version>
 </dependency>
 ```
 
@@ -107,7 +111,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-ocr</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.12</version>
+    <version>2.0.13</version>
 </dependency>
 ```
 
@@ -139,7 +143,7 @@
     <groupId>cn.xfyun</groupId>
     <artifactId>websdk-java-face-detector</artifactId>
     <!--请替换成最新稳定版本-->
-    <version>2.0.12</version>
+    <version>2.0.13</version>
 </dependency>
 ```
 
