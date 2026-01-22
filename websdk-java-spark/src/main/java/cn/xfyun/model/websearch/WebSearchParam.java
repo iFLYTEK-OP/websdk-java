@@ -2,7 +2,7 @@ package cn.xfyun.model.websearch;
 
 
 /**
- * 聚合搜素哦请求实体类
+ * 聚合搜索请求实体类
  *
  * @author <zyding6@ifytek.com>
  **/

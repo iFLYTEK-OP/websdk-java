@@ -4,7 +4,7 @@ import cn.xfyun.exception.BusinessException;
 import cn.xfyun.model.sparkmodel.RoleContent;
 import cn.xfyun.util.StringUtils;
 
-import java.util.List;
+import java.util.*;
 
 /**
  * 知识库文件问答请求入参
@@ -12,6 +12,9 @@ import java.util.List;
  * @author <zyding6@ifytek.com>
  **/
 public class EmbeddingParam {
+
+    private static final Set<String> VALID_TYPES =
+            Collections.unmodifiableSet(new HashSet<>(Arrays.asList("query", "para")));
 
     /**
      * 需要向量化的数据
@@ -108,9 +111,9 @@ public class EmbeddingParam {
             throw new BusinessException("appId,apiKey,apiSecret can not be null");
         }
         if (messages == null || messages.isEmpty()) {
-            throw new BusinessException("messages is null");
+            throw new BusinessException("messages must not be empty");
         }
-        if (StringUtils.isNullOrEmpty(domain)) {
+        if (StringUtils.isNullOrEmpty(domain) || !VALID_TYPES.contains(domain)) {
             throw new BusinessException("domain value must between [query,para]");
         }
     }
