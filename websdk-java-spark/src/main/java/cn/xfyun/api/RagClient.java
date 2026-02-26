@@ -90,15 +90,12 @@ public class RagClient extends PlatformHttpClient {
         // 初始化链接client
         WebSocket webSocket = newWebSocket(listener);
 
-        try {
-            // 构建请求参数
-            String param = buildParam(chat);
-            logger.debug("知识库问答ws请求参数：{}", param);
-            // 发送请求
-            webSocket.send(param);
-        } catch (Exception e) {
-            logger.error("知识库问答ws消息发送失败", e);
-        }
+        // 构建请求参数
+        String param = StringUtils.gson.toJson(chat);
+        logger.debug("知识库问答ws请求参数：{}", param);
+
+        // 发送请求
+        webSocket.send(param);
     }
 
     /**
@@ -494,24 +491,6 @@ public class RagClient extends PlatformHttpClient {
 
         // 发送请求
         return send(RagEnum.REPO_DEL, requestBody, null);
-    }
-
-    /**
-     * 构建会话参数
-     */
-    private String buildParam(FileChat chat) {
-        JsonObject sendRequest = new JsonObject();
-        sendRequest.addProperty("repoId", chat.getRepoId());
-        sendRequest.add("repoIds", StringUtils.gson.toJsonTree(chat.getRepoIds()));
-        sendRequest.add("fileIds", StringUtils.gson.toJsonTree(chat.getFileIds()));
-        sendRequest.addProperty("llmVersion", chat.getLlmVersion());
-        sendRequest.addProperty("topN", chat.getTopN());
-        sendRequest.add("messages", StringUtils.gson.toJsonTree(chat.getMessages()));
-        sendRequest.add("chatExtends", StringUtils.gson.toJsonTree(chat.getChatExtends()));
-
-        String json = StringUtils.gson.toJson(sendRequest);
-        logger.debug("知识库文档请求入参: {}", json);
-        return json;
     }
 
     /**
